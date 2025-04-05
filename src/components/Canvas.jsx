@@ -9,8 +9,15 @@ import {
   forwardRef,
   useImperativeHandle,
 } from "react";
-import { ITEM_TYPES, ROOM_TYPES,FURNITURE_TYPES_LABEL } from "@/types/room";
-import { Trash2, Undo2, Redo2, Minus, Plus, Compass } from "lucide-react";
+import { ITEM_TYPES, ROOM_TYPES, FURNITURE_TYPES_LABEL } from "@/types/room";
+import {
+  Trash2,
+  Undo2,
+  Redo2,
+  Minus,
+  Plus,
+  RotateCcwSquare,
+} from "lucide-react";
 import Image from "next/image";
 const ROOM_COLORS = {
   [ROOM_TYPES.LIVING_ROOM]: "#F0DF9C", // 客厅
@@ -64,7 +71,6 @@ export const Canvas = forwardRef(({ items }, ref) => {
     },
   });
 
-
   useEffect(() => {
     const newHistory = history.slice(0, historyIndex + 1);
     newHistory.push([...items]);
@@ -116,7 +122,13 @@ export const Canvas = forwardRef(({ items }, ref) => {
     },
     [position]
   );
-
+  const furnitureInroom = (furniture, parentRoom) => {
+    if(!furniture.position || !parentRoom.position)return false;
+    return furniture.position.x >= parentRoom.position.x &&
+      furniture.position.x <= parentRoom.position.x + parentRoom.size.width &&
+      furniture.position.y + 20 >= parentRoom.position.y &&
+      furniture.position.y <= parentRoom.position.y + parentRoom.size.height;
+  };
   // 处理房间拖动开始
   const handleRoomMouseDown = useCallback((e, room) => {
     e.stopPropagation();
@@ -127,7 +139,41 @@ export const Canvas = forwardRef(({ items }, ref) => {
       x: e.clientX - room.position.x,
       y: e.clientY - room.position.y,
     });
-  }, []);
+    if (room.type === ITEM_TYPES.ROOM) {
+      //给每个家具设置一个偏移量
+      const furnitureList = localItems
+        .map(
+          (item) =>{
+            if( item.type === ITEM_TYPES.FURNITURE &&
+              furnitureInroom(item, room)){
+                return {
+                  ...item,
+                  parentId:room.id,
+                  offset: {
+                    x: item.position.x - room.position.x,
+                    y: item.position.y - room.position.y,
+                  }
+                }
+              }else{
+                return {
+                  ...item,
+                  parentId:null,
+
+                }
+              }
+
+          }
+          
+        )
+        // console.log('ddd',furnitureList);
+        let updatedItems = localItems.map((item) => {
+          let target = furnitureList.find(furniture=>furniture.id===item.id);
+          return target || item;
+        })
+        // console.log('updatedItems',updatedItems);
+        setLocalItems(updatedItems);
+      }
+  }, [localItems]);
 
   // 处理调整大小开始
   const handleResizeStart = useCallback((e, room, corner) => {
@@ -187,7 +233,6 @@ export const Canvas = forwardRef(({ items }, ref) => {
           }
           return item;
         });
-
         setLocalItems(updatedItems);
         setResizeStart({
           x: e.clientX,
@@ -196,25 +241,61 @@ export const Canvas = forwardRef(({ items }, ref) => {
       } else if (isRoomDragging && draggedRoom) {
         const newX = e.clientX - roomDragStart.x;
         const newY = e.clientY - roomDragStart.y;
+        let updatedItems = [];
+        // console.log('localItems',localItems);
+        if (draggedRoom.type === ITEM_TYPES.ROOM) {
+          //其中家具一起移动
+          const furnitureIdList = localItems
+            .filter(
+              (item) =>{
+              //  console.log(item,  furnitureInroom(item, draggedRoom));
+                return item.type === ITEM_TYPES.FURNITURE && item.parentId === draggedRoom.id
+                // furnitureInroom(item, draggedRoom)
+              }
+              
+            )
+            .map((item) => item.id);
 
-        const updatedItems = localItems.map((item) => {
-          if (item.id === draggedRoom.id) {
-            return {
-              ...item,
-              position: {
-                x: newX,
-                y: newY,
-              },
-            };
-          }
-          return item;
-        });
+          updatedItems = localItems.map((item) => {
+            if (item.id === draggedRoom.id) {
+              return {
+                ...item,
+                position: {
+                  x: newX,
+                  y: newY,
+                },
+              };
+            } else if (furnitureIdList.includes(item.id)) {
+              // console.log(item.offset);
+              return {
+                ...item,
+                position: {
+                  x: newX+item.offset?.x || 0,
+                  y: newY+item.offset?.y ||0,
+                },
+              };
+            }
+            return item;
+          });
+        } else {
+          updatedItems = localItems.map((item) => {
+            if (item.id === draggedRoom.id) {
+              return {
+                ...item,
+                position: {
+                  x: newX,
+                  y: newY,
+                },
+              };
+            }
+            return item;
+          });
+        }
 
         setLocalItems(updatedItems);
       } else if (isDragging) {
         const newX = e.clientX - dragStart.x;
         const newY = e.clientY - dragStart.y;
-        console.log(newX, newY);
         setPosition({
           x: newX,
           y: newY,
@@ -242,23 +323,22 @@ export const Canvas = forwardRef(({ items }, ref) => {
     (e) => {
       // 如果是房间拖动或调整大小结束，记录历史
       if (isRoomDragging || isResizing) {
-        const newX = e.clientX - roomDragStart.x-canvasPosition.x;
-        const newY = e.clientY - roomDragStart.y-canvasPosition.y;
+        const newX = e.clientX - roomDragStart.x - canvasPosition.x;
+        const newY = e.clientY - roomDragStart.y - canvasPosition.y;
         if (!localItems.some((item) => item.id === draggedRoom.id)) {
           //新添加的房间/家具,设置坐标
-          setLocalItems([...localItems,
+          setLocalItems([
+            ...localItems,
             {
               ...draggedRoom,
               position: {
                 x: newX,
                 y: newY,
               },
-            }
-          ])
-  
+            },
+          ]);
         }
 
-        
         const newHistory = history.slice(0, historyIndex + 1);
         newHistory.push([...localItems]);
         setHistory(newHistory);
@@ -281,64 +361,73 @@ export const Canvas = forwardRef(({ items }, ref) => {
       draggedRoom,
     ]
   );
-const onHandleActiveRoom =(room) => {
-  if(room.type === ITEM_TYPES.FURNITURE){
-    //每次选中家具，都对当前家具的房间重新排序
-    let  parentRoom =localItems.find(item => {
-     // console.log(room.position.x, item.position.x,item.size.width,room.position.y,item.position.y,item.size.height)
-     return item.type === ITEM_TYPES.ROOM && 
-     room.position.x >= item.position.x && 
-     room.position.x <= item.position.x + item.size.width &&
-     room.position.y >= item.position.y && 
-     room.position.y <= item.position.y + item.size.height
-   })
-  //  
-  if(!parentRoom){
-   console.log('选中家具，当前未匹配到房间')
-   let newLocalItems = _.cloneDeep(localItems);
-   let target = newLocalItems.filter(item => item.id === room.id)[0];
-   if(target){
-     target.data.label = `未分配-${FURNITURE_TYPES_LABEL[target.data.type]}`;
-     room.data.label = `未分配-${FURNITURE_TYPES_LABEL[target.data.type]}`;
-     setLocalItems(newLocalItems);
-   }
-  }else{
-  //按x坐标升序排序
-  const furnitureList = localItems.filter(item => item.type === ITEM_TYPES.FURNITURE && item.data.type === room.data.type &&
-    item.position.x >= parentRoom.position.x && 
-    item.position.x <= parentRoom.position.x + parentRoom.size.width && 
-    item.position.y >= parentRoom.position.y && item.position.y <= parentRoom.position.y + parentRoom.size.height)
-    .sort((a, b) => a.position.x - b.position.x).map((item,index)=>{
-      let label = `${parentRoom.data.label}-${FURNITURE_TYPES_LABEL[room.data.type]}${index+ 1}`;
-      if(item.id === room.id){
-        room.data.label = label;
-        room.data.parentRoom = parentRoom;
-      }
-      return {
-        ...item,
-        data:{
-          ...item.data,
-          label,
-          parentRoom
+  const onHandleActiveRoom = (room) => {
+    if (room.type === ITEM_TYPES.FURNITURE) {
+      //每次选中家具，都对当前家具的房间重新排序
+      let parentRoom = localItems.find((item) => {
+        //console.log(room.position.x, item.position.x,item.size.width,room.position.y,item.position.y,item.size.height)
+        return (
+          item.type === ITEM_TYPES.ROOM && furnitureInroom(room, item)
+        );
+      });
+      //
+      if (!parentRoom) {
+        console.log("选中家具，当前未匹配到房间");
+        let newLocalItems = _.cloneDeep(localItems);
+        let target = newLocalItems.filter((item) => item.id === room.id)[0];
+        if (target) {
+          target.data.label = `未分配-${
+            FURNITURE_TYPES_LABEL[target.data.type]
+          }`;
+          room.data.label = `未分配-${FURNITURE_TYPES_LABEL[target.data.type]}`;
+          setLocalItems(newLocalItems);
         }
+      } else {
+        //按x坐标升序排序
+        const furnitureList = localItems
+          .filter(
+            (item) =>
+              item.type === ITEM_TYPES.FURNITURE &&
+              item.data.type === room.data.type &&
+              item.position.x >= parentRoom.position.x &&
+              item.position.x <=
+                parentRoom.position.x + parentRoom.size.width &&
+              item.position.y + 20 >= parentRoom.position.y &&
+              item.position.y <= parentRoom.position.y + parentRoom.size.height
+          )
+          .sort((a, b) => a.position.x - b.position.x)
+          .map((item, index) => {
+            let label = `${parentRoom.data.label}-${
+              FURNITURE_TYPES_LABEL[room.data.type]
+            }${index + 1}`;
+            if (item.id === room.id) {
+              room.data.label = label;
+              room.data.parentRoom = parentRoom;
+            }
+            return {
+              ...item,
+              data: {
+                ...item.data,
+                label,
+                parentRoom,
+              },
+            };
+          });
+        // console.log('furnitureList',furnitureList)
+        let newLocalItems = localItems.map((item) => {
+          let target = furnitureList.find(
+            (furniture) => furniture.id === item.id
+          );
+          return target || item;
+        });
+        setLocalItems(newLocalItems);
       }
-  
-    })
-    ;
-    // console.log('furnitureList',furnitureList)
-    let newLocalItems = localItems.map(item=>{
-      let target = furnitureList.find(furniture => furniture.id === item.id);
-      return target || item;
-    })
-    setLocalItems(newLocalItems);
-  }
-}
-setTimeout(()=>{
-  // console.log('room',room)
-  setActiveRoom(room);
-})
- 
-}
+    }
+    setTimeout(() => {
+      // console.log('room',room)
+      setActiveRoom(room);
+    });
+  };
   // 添加和移除事件监听器
   useEffect(() => {
     const container = containerRef.current;
@@ -400,6 +489,44 @@ setTimeout(()=>{
       setLocalItems(history[historyIndex + 1]);
     }
   };
+  const handleRotate = useCallback(() => {
+    if (!activeRoom) return;
+
+    const updatedItems = localItems.map((item) => {
+      if (item.id === activeRoom.id) {
+        // 计算新的旋转角度（每次增加90度，对360取模）
+        const newRotation = ((item.rotation || 0) - 90) % 360;
+
+        // 如果是90度或270度旋转，需要交换宽高
+        // const isOddRotation = Math.abs(newRotation) % 180 === 90;
+        // const newWidth = isOddRotation ? item.size.height : item.size.width;
+        // const newHeight = isOddRotation ? item.size.width : item.size.height;
+        //          // 计算旋转后的新位置，保持中心点不变
+        //          const centerX = item.position.x + item.size.width / 2;
+        //          const centerY = item.position.y + item.size.height / 2;
+        //  console.log(newWidth,newHeight)
+        //  // 计算新的左上角位置
+        //  const newX = centerX - newWidth / 2;
+        //  const newY = centerY - newHeight / 2;
+        //  console.log(item.position.x,newX,item.position.y ,newY)
+        return {
+          ...item,
+          rotation: newRotation,
+          //  position: {
+          //    x: newX,
+          //    y: newY
+          //  },
+          //  size: {
+          //    width: newWidth,
+          //    height: newHeight
+          // }
+        };
+      }
+      return item;
+    });
+
+    setLocalItems(updatedItems);
+  }, [activeRoom, localItems]);
   // console.log('localItems',localItems)
   return (
     <div className="relative w-full h-[calc(100vh-64px)] overflow-hidden bg-background">
@@ -499,9 +626,8 @@ setTimeout(()=>{
                         left: "50%",
                         top: "-64px",
                         transform: "translateX(-50%)",
-                        minWidth: "180px",
                       }}
-                      className="absolute h-[40px] rounded-4xl bg-white shadow-lg  items-center px-3 gap-2 md:flex hidden"
+                      className="min-w-fit whitespace-nowrap  absolute h-[40px] rounded-4xl bg-white shadow-lg  items-center px-3 gap-2 md:flex hidden"
                     >
                       <span className="text-sm text-gray-600">已选中：</span>
                       <div className="flex flex-grow items-center gap-1">
@@ -522,12 +648,12 @@ setTimeout(()=>{
 
                       {/* 删除按钮 */}
                       <button
-                        className="flex-shrink-0 text-red-500 hover:text-red-600 transition-colors"
+                        className="flex-shrink-0 text-red-500"
                         onClick={() => {
+                          e.stopPropagation();
                           const newItems = localItems.filter(
                             (item) => item.id !== activeRoom.id
                           );
-                          // 记录到历史
                           setLocalItems(newItems);
                           setActiveRoom(null);
                         }}
@@ -602,9 +728,7 @@ setTimeout(()=>{
                 <div
                   key={item.id}
                   data-room-element="true"
-                  className={`absolute ${
-                    activeRoom?.id === item.id ? "ring-2 ring-red-500" : ""
-                  } cursor-move z-200`}
+                  className={`absolute cursor-move z-200`}
                   style={{
                     left: item.position.x,
                     top: item.position.y,
@@ -623,9 +747,8 @@ setTimeout(()=>{
                         left: "50%",
                         top: "-64px",
                         transform: "translateX(-50%)",
-                        minWidth: 100+activeRoom.data.label.length*20+'px'
                       }}
-                      className="absolute h-[40px] rounded-4xl bg-white shadow-lg  items-center px-3 gap-2 md:flex hidden"
+                      className="min-w-fit whitespace-nowrap absolute h-[40px] rounded-4xl bg-white shadow-lg  items-center px-3 gap-2 md:flex hidden"
                     >
                       <span className="text-sm text-gray-600">已选中：</span>
                       <div className="flex flex-grow items-center gap-1">
@@ -634,7 +757,10 @@ setTimeout(()=>{
                           style={{
                             width: "12px",
                             height: "12px",
-                            backgroundColor: ROOM_COLORS[activeRoom.data.parentRoom?.data.type],
+                            backgroundColor:
+                              ROOM_COLORS[
+                                activeRoom.data.parentRoom?.data.type
+                              ],
                             borderRadius: "2px",
                           }}
                         />
@@ -643,11 +769,21 @@ setTimeout(()=>{
                           {activeRoom.data.label}
                         </span>
                       </div>
-
+                      {/* 旋转按钮 */}
+                      <button
+                        className="flex-shrink-0"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRotate();
+                        }}
+                      >
+                        <RotateCcwSquare className="w-4 h-4" />
+                      </button>
                       {/* 删除按钮 */}
                       <button
                         className="flex-shrink-0 text-red-500 hover:text-red-600 transition-colors"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           const newItems = localItems.filter(
                             (item) => item.id !== activeRoom.id
                           );
@@ -660,7 +796,16 @@ setTimeout(()=>{
                     </div>
                   )}
                   <Image
-                    className="bg-[#EFF7F4] rounded-lg"
+                    className={
+                      activeRoom?.id === item.id ? "ring-2 ring-red-500" : ""
+                    }
+                    style={{
+                      transform: item.rotation
+                        ? `rotate(${item.rotation}deg)`
+                        : "none",
+                      transformOrigin: "center",
+                    }}
+                    //  objectFit= 'contain'
                     src={item.activeIcon}
                     alt="Furniture"
                     width={item.size.width}
@@ -702,11 +847,10 @@ setTimeout(()=>{
           {/* 删除按钮 */}
           <button
             className="flex-shrink-0 text-red-500 hover:text-red-600 transition-colors"
-            onClick={() => {
+            onClick={(e) => {
               const newItems = localItems.filter(
                 (item) => item.id !== activeRoom.id
               );
-              // 记录到历史
               setLocalItems(newItems);
               setActiveRoom(null);
             }}
