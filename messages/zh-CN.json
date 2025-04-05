@@ -1,0 +1,36 @@
+{
+  "Index": {
+    "title": "风水布局",
+    "description": "为您的空间带来和谐"
+  },
+  "Navigation": {
+    "design": "设计布局",
+    "login": "登录",
+    "register": "注册"
+  },
+  "home": {
+    "hero": {
+      "title": "风水布局设计",
+      "subtitle": "为您的空间带来和谐与平衡",
+      "description": "通过专业的风水布局设计，让您的居住或工作空间充满正能量，提升生活品质。",
+      "cta": "开始设计"
+    },
+    "features": {
+      "title": "特色功能",
+      "subtitle": "运用现代科技，传承传统智慧，为您打造完美居所"
+    }
+  },
+  "design": {
+    "rooms": "房间",
+    "furniture": "家具",
+    "items": {
+      "livingRoom": "客厅",
+      "bedroom": "卧室",
+      "door": "门",
+      "window": "窗",
+      "bed": "床",
+      "sofa": "沙发",
+      "table": "桌子"
+    }
+  }
+} 
