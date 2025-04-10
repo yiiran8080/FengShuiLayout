@@ -15,6 +15,8 @@ import { ProxyAgent, fetch as undici } from "undici";
 // }
 export const { handlers, signIn, signOut, auth } = NextAuth(
   {
+    trustHost: true,
+
     providers: [
       GithubProvider,
       GoogleProvider({
