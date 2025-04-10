@@ -4,13 +4,7 @@
 
 import { useEffect } from "react";
 
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
+export default function Error({ error }: { error: never }) {
   useEffect(() => {
     // 将错误记录到错误报告服务
     console.error(error);
