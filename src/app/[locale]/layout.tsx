@@ -1,10 +1,11 @@
-import { NextIntlClientProvider } from "next-intl";
+import { NextIntlClientProvider, hasLocale } from "next-intl";
+import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
-import { Inter } from "next/font/google";
-import Navbar from "@/components/Navbar";
+import { Inter, Lora } from "next/font/google";
+import AuthProvider from "@/components/AuthProvider";
 import "../globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
+import { setRequestLocale } from "next-intl/server";
+const lora = Lora({ subsets: ["latin", "symbols"] });
 
 export function generateStaticParams() {
   return [{ locale: "zh-CN" }, { locale: "zh-TW" }];
@@ -12,25 +13,22 @@ export function generateStaticParams() {
 
 export default async function LocaleLayout({
   children,
-  params: { locale },
+  params,
 }: {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }) {
-  let messages;
-  try {
-    messages = (await import(`../../../messages/${locale}.json`)).default;
-  } catch {
+  const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
-
+  setRequestLocale(locale);
   return (
     <html lang={locale}>
-      <body className={inter.className}>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <Navbar />
-          {children}
-        </NextIntlClientProvider>
+      <body className={lora.className}>
+        <AuthProvider>
+          <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        </AuthProvider>
       </body>
     </html>
   );

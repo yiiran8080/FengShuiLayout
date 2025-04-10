@@ -1,12 +1,25 @@
 'use client'
-import { DndContext, DragOverlay, pointerWithin } from '@dnd-kit/core';
-import { useState, useRef,useEffect } from 'react';
+import {
+  DndContext,
+  DragOverlay,
+  TouchSensor,    // 添加触摸传感器
+  MouseSensor,
+  useSensor,
+  useSensors,
+  pointerWithin,
+  closestCorners
+} from '@dnd-kit/core';
+import { useState, useRef, useEffect } from 'react';
 import { ITEM_TYPES, ROOM_TYPES, FURNITURE_TYPES } from '@/types/room';
-import { DraggableItem } from '@/components/DraggableItem';
 import { Canvas } from '@/components/Canvas';
-import Navbar from '@/components/NavbarDesign';
+import NavbarDesign from '@/components/NavbarDesign';
+import NavbarDesignMobile from '@/components/NavbarDesignMobile';
 import Image from 'next/image';
-
+import useMobile from '../../hooks/useMobile';
+import DragBarPC from '@/components/dragBarComp/DragBarPC';
+import DragBarMobile from '@/components/dragBarComp/DragBarMobile';
+import { get, put } from "@/lib/ajax";
+import { useSession } from 'next-auth/react'
 const ROOM_COLORS = {
   [ROOM_TYPES.LIVING_ROOM]: '#F0DF9C',   // 客厅
   [ROOM_TYPES.DINING_ROOM]: '#F5D4BC',   // 饭厅
@@ -170,264 +183,241 @@ const furnitureItems = [
 ];
 
 export default function DesignPage() {
-  const [items, setItems] = useState([]);
+  const sensors = useSensors(
+    useSensor(TouchSensor, {
+      tolerance: 50,
+    }),
+    useSensor(MouseSensor, {
+      // 鼠标传感器配置
+      activationConstraint: {
+        distance: 10,    // 激活所需的移动距离
+      },
+    }
+    )
+  );
+  // const [items, setItems] = useState([]);
   const [active, setActive] = useState(null);
   const [isOverCanvas, setIsOverCanvas] = useState(false);
   const [canvasPosition, setCanvasPosition] = useState({ x: 0, y: 0 });
   const [sidebarWidth, setSidebarWidth] = useState(0);
+  const [showTab, setShowTab] = useState(false);
+  const [history, setHistory] = useState([[]]);
+  const [historyIndex, setHistoryIndex] = useState(0);
+
   const canvasRef = useRef(null);
   const sidebarRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useMobile();
   const draggingItemSize = isMobile ? 48 : 56;
-// 添加useEffect监听窗口大小
-useEffect(() => {
-  const checkMobile = () => {
-    setIsMobile(window.matchMedia('(max-width: 768px)').matches);
-  };
-  
-  checkMobile();
-  window.addEventListener('resize', checkMobile);
-  
-  return () => {
-    window.removeEventListener('resize', checkMobile);
-  };
-}, []);
+
+
   // 添加useEffect监听侧边栏宽度
-useEffect(() => {
-  const updateWidth = () => {
-    if (sidebarRef.current) {
-      setSidebarWidth(sidebarRef.current.offsetWidth);
-    }
-  };
+  useEffect(() => {
+    const updateWidth = () => {
+      if (sidebarRef.current) {
+        setSidebarWidth(sidebarRef.current.offsetWidth);
+      }
+    };
 
-  updateWidth();
-  window.addEventListener('resize', updateWidth);
+    updateWidth();
+    window.addEventListener('resize', updateWidth);
 
-  return () => {
-    window.removeEventListener('resize', updateWidth);
-  };
-}, []);
+    return () => {
+      window.removeEventListener('resize', updateWidth);
+    };
+  }, []);
+  const { data: session } = useSession();
+  // useEffect(() => {
+  //   //请求接口获取用户信息
+  //   async function getData() {
+  //     if (!session) return;
+  //     const userInfo = session.user;
+  //     console.log('userInfo', userInfo)
+  //     if (!userInfo) return;
+  //     if (userInfo.userId) {
+  //       const { status, data } = await get(`/api/users/${userInfo.userId}`)
+  //       console.log('data', data)
+  //     }
+  //   }
+  //   getData();
+
+  // }, [session]);
   const handleDragStart = (event) => {
+    // event.preventDefault();
     const { active } = event;
     setActive(active);
 
-    // console.log(event.active);
+    console.log(event.active);
     setIsOverCanvas(false);
-  
+
 
   };
-
-  const handleDragOver = (event) => {
+  const initOverCanvas = (event, roomDragStart) => {
     const { over } = event;
+    const isOverCanvasArea = over?.id === 'canvas';
+    // document.getElementById('canvas-drop-area')?.contains(event.over.node);
 
-    setIsOverCanvas(over?.id === 'canvas');
-    if (over && over.id === 'canvas') {
+    setIsOverCanvas(isOverCanvasArea);
+    if (isOverCanvasArea) {
+
       const localItems = canvasRef.current.getLocalItems();
-      const label =`${active.data.current.label}${localItems.filter(item => item.data.type === active.data.current.type).length + 1}`;
+      const label = `${active.data.current.label}${localItems.filter(item => item.data.type === active.data.current.type).length + 1}`;
       const newItem = {
         id: `${active.data.current.type}-${localItems.filter(item => item.data.type === active.data.current.type).length + 1}`,
         type: active.data.current.cateType,
         data: {
           ...active.data.current,
-          label:active.data.current.cateType===ITEM_TYPES.ROOM?label:'',
+          label: active.data.current.cateType === ITEM_TYPES.ROOM ? label : '',
         },
-       
-        // position: {
-        //   x: currentX,
-        //   y: currentY
-        // },
         size: active.data.current.size,
         activeIcon: active.data.current.activeIcon
       };
+
       canvasRef.current.setIsRoomDragging(true);
-      canvasRef.current.setRoomDragStart({x:sidebarWidth,y:draggingItemSize})
+      canvasRef.current.setRoomDragStart(roomDragStart);
       canvasRef.current.setDraggedRoom(newItem)
-    }else{
+    } else {
       canvasRef.current.setIsRoomDragging(false);
+    }
+  }
+  const handleDragMove = (event) => {
+    if (!isMobile) return;
+    if (event.delta.y < -120) {
+      initOverCanvas(event, { x: 0, y: 78 })
+    }
+  }
+  const handleDragOver = (event) => {
+    if (isMobile) return;
+    initOverCanvas(event, { x: sidebarWidth, y: draggingItemSize })
+  }
+  const handleDragEnd = (event) => {
+    // if (!isMobile) return;
+    // console.log('over', event)
+    // if (event.delta.y < -120) {
+    //   initOverCanvas(event, { x: 0, y: 78 })
+    // }
+  };
+  const onSaveProject = () => {
+    console.log('save project')
+  }
+  const onShowTab = () => {
+    setShowTab(true)
+  }
+  // 处理撤销
+  const handleUndo = () => {
+    if (historyIndex > 0) {
+      canvasRef.current?.setActiveRoom(null);
+      setHistoryIndex((prev) => prev - 1);
+      // console.log('xxx',history,history[historyIndex - 1])
+      canvasRef.current?.setLocalItems(history[historyIndex - 1]);
     }
   };
 
-  // const handleDragEnd = (event) => {
-  //   const { active, over } = event;
-  //   //canvasRef.current.setIsRoomDragging(false);
-  //   // const localItems = canvasRef.current.getLocalItems();
-  //   // setItems([...localItems, canvasRef.current.draggedRoom]);
-  //   return;
-  //   if (over && over.id === 'canvas') {
-  //     const localItems = canvasRef.current.getLocalItems();
-  //     let label = '',parentRoom;
-  //     // let currentX = event.delta.x -canvasPosition.x;
-  //     // let currentY = event.delta.y -100+(event.active.rect.current.translated?.top || 0) - canvasPosition.y;
-  //     // console.log(active)
-  //     if(active.data.current.cateType === ITEM_TYPES.ROOM){
-  //       label =  `${active.data.current.label}${localItems.filter(item => item.data.type === active.data.current.type).length + 1}`;
-  //     }else{
-  //       //家具label处理
-  //       //当前所在的房间
-      
-  //       // parentRoom = localItems.find(item => {
-  //       //   // console.log(currentX,item.position.x,item.size.width,currentY,item.position.y,item.size.height)
-  //       //   return  item.type === ITEM_TYPES.ROOM && 
-  //       //   currentX >= item.position.x && 
-  //       //   currentX <= item.position.x + item.size.width &&
-  //       //   currentY >= item.position.y && 
-  //       //   currentY <= item.position.y + item.size.height
-  //       // })
-  //       //   console.log('parentRoom',parentRoom)
-
-  //       //  return
-  //         //找到在这个房间里所有的家具
-  //       // const furnitureList = localItems.filter(item => item.type === ITEM_TYPES.FURNITURE && item.position.x >= parentRoom.position.x && item.position.x <= parentRoom.position.x + parentRoom.size.width && item.position.y >= parentRoom.position.y && item.position.y <= parentRoom.position.y + parentRoom.size.height);
-  //       // label =  `${parentRoom ? parentRoom.data.label : '未分配'}-
-  //       //    ${active.data.current.label}${furnitureList.filter(item => item.data.type === active.data.current.type).length + 1}`
-  //     }
-  //     const newItem = {
-  //       id: `${active.data.current.type}-${items.length + 1}`,
-  //       type: active.data.current.cateType,
-  //       data: {
-  //         ...active.data.current,
-  //         label,
-  //         parentRoom
-  //       },
-       
-  //       // position: {
-  //       //   x: currentX,
-  //       //   y: currentY
-  //       // },
-  //       size: active.data.current.size,
-  //       activeIcon: active.data.current.activeIcon
-  //     };
-
-  //     setItems([...localItems, newItem]);
-  //   }
-
-  //   setActive(null);
-  //   setIsOverCanvas(false);
-  // };
-
-
+  // 处理重做
+  const handleRedo = () => {
+    if (historyIndex < history.length - 1) {
+      canvasRef.current?.setActiveRoom(null);
+      setHistoryIndex((prev) => prev + 1);
+      canvasRef.current?.setLocalItems(history[historyIndex + 1]);
+    }
+  };
   return (
     <>
-      <Navbar />
-      <DndContext
-        // onDragEnd={handleDragEnd}
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
-      >
-        <div className="min-h-screen bg-gray-50">
-          <div className="container p-0" style={{ maxWidth: '100%' }}>
-            <div className="grid grid-cols-12">
-              {/* Sidebar */}
-              <div   ref={sidebarRef} className="col-span-2 bg-white p-4 shadow border-r-gray-100 border-r-2">
-                <div className="mb-8">
-                  <h3 className="text-2xl font-semibold mb-4">房间</h3>
-                  <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-2">
-                    {roomItems.map((item) => (
-                      <DraggableItem
-                        key={item.id}
-                        id={item.id}
-                        type={item.type}
-                        data={item.data}
-                        isOverCanvas={isOverCanvas}
-                      >
-                        <div className="flex flex-col items-center">
-                          <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                            <Image
-                              className='p-3 bg-[#EFF7F4] rounded-lg'
-                              src={item.data.icon}
-                              alt={item.data.label}
-                              width={draggingItemSize}
-                              height={draggingItemSize}
-                            />
-                          </div>
-                          <span className="mt-1 text-sm text-gray-600">{item.data.label}</span>
-                        </div>
-                      </DraggableItem>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-2xl font-semibold mb-4">家具</h3>
-                  <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-2">
-                    {furnitureItems.map((item) => (
-                      <DraggableItem
-                        key={item.id}
-                        id={item.id}
-                        type={item.type}
-                        data={item.data}
-                        isOverCanvas={isOverCanvas}
-                      >
-                        <div className="flex flex-col items-center">
-                          <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                            <Image
-                              className='bg-[#EFF7F4] rounded-lg'
-                              src={item.data.icon}
-                              alt={item.data.label}
-                              width={draggingItemSize}
-                              height={draggingItemSize}
-                            />
-                          </div>
-                          <span className="mt-1 text-sm text-gray-600">{item.data.label}</span>
-                        </div>
-                      </DraggableItem>
-                    ))}
-                  </div>
+      {
+        isMobile ? (
+          <NavbarDesignMobile
+            onSaveProject={onSaveProject}
+            history={history}
+            historyIndex={historyIndex}
+            handleUndo={handleUndo}
+            handleRedo={handleRedo}
+          />
+        ) : (
+          <NavbarDesign onSaveProject={onSaveProject} />
+        )
+      }
+      <div className="pt-16">
+        <DndContext
+          sensors={sensors}
+          onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          // onDragEnd={handleDragEnd}
+          onDragMove={handleDragMove}
+        // collisionDetection={pointerWithin}
+        >
+          <div className="min-h-[calc(100vh-64px)] bg-gray-50">
+            <div className="container p-0" style={{ maxWidth: '100%' }}>
+              <div className="flex h-[calc(100vh-64px)]">
+                {
+                  isMobile ? (
+                    <DragBarMobile showTab={showTab} setShowTab={setShowTab} roomItems={roomItems} furnitureItems={furnitureItems} isOverCanvas={isOverCanvas} draggingItemSize={draggingItemSize} />
+                  ) : (
+                    <DragBarPC sidebarRef={sidebarRef} roomItems={roomItems} furnitureItems={furnitureItems} isOverCanvas={isOverCanvas} draggingItemSize={draggingItemSize} />
+                  )
+                }
+                {/* Canvas */}
+                <div className="flex-1 overflow-auto" id="canvas-drop-area">
+                  <Canvas ref={canvasRef}
+                    history={history}
+                    historyIndex={historyIndex}
+                    setHistory={setHistory}
+                    setHistoryIndex={setHistoryIndex}
+                    handleUndo={handleUndo}
+                    handleRedo={handleRedo}
+                    showTab={showTab} onPositionChange={setCanvasPosition} onShowTab={onShowTab} />
                 </div>
               </div>
 
-              {/* Canvas */}
-              <div className="col-span-10">
-                <Canvas ref={canvasRef} items={items} onPositionChange={setCanvasPosition} />
-              </div>
+
             </div>
           </div>
-        </div>
-        <DragOverlay>
-          {
-            active?.id && isOverCanvas && (
-              active.data.current.cateType === ITEM_TYPES.ROOM ? (
-                // 房间在画布上的样式
-                <div
-                  className="flex flex-col items-center justify-center bg-white/80 rounded-lg"
-                  style={{
-                    width: defaultRoomSize.width,
-                    height: defaultRoomSize.height,
-                    border: '8px solid',
-                    borderColor: ROOM_COLORS[roomItems.find(item => item.id === active.id)?.data.type],
-                    borderRadius: '8px',
-                  }}
-                >
-                  <div className="flex flex-col items-center">
-                    <Image
-                      className='bg-[#EFF7F4] rounded-lg'
-                      src={active.data.current.icon}
-                      alt="Room"
-                      width={draggingItemSize}
-                      height={draggingItemSize}
-                    />
+          <DragOverlay>
+            {
+              active?.id && isOverCanvas && (
+                active.data.current.cateType === ITEM_TYPES.ROOM ? (
+                  // 房间在画布上的样式
+                  <div
+                    className="flex flex-col items-center justify-center bg-white/80 rounded-lg"
+                    style={{
+                      transform: isMobile ? 'translateY(78px)' : 'translateY(0)',
+                      width: defaultRoomSize.width,
+                      height: defaultRoomSize.height,
+                      border: '8px solid',
+                      borderColor: ROOM_COLORS[roomItems.find(item => item.id === active.id)?.data.type],
+                      borderRadius: '8px',
+                    }}
+                  >
+                    <div className="flex flex-col items-center">
+                      <Image
+                        className='bg-[#EFF7F4] rounded-lg'
+                        src={active.data.current.icon}
+                        alt="Room"
+                        width={draggingItemSize}
+                        height={draggingItemSize}
+                      />
 
-                    <span className="mt-1 text-sm text-gray-600">
-                      {active.data.current.label + (canvasRef.current.getLocalItems().filter(item => item.data.type === active.data.current.type).length + 1)}
-                    </span>
+                      <span className="mt-1 text-sm text-gray-600">
+                        {active.data.current.label + (canvasRef.current.getLocalItems().filter(item => item.data.type === active.data.current.type).length + 1)}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                // 家具在画布上的样式
-                <Image
-                  // className='bg-[#EFF7F4] rounded-lg'
-                  src={active.data.current.activeIcon}
-                  alt="Furniture"
-                  width={active.data.current.size.width}
-                  height={active.data.current.size.height}
-                />
+                ) : (
+                  // 家具在画布上的样式
+                  <Image
+                    // className='bg-[#EFF7F4] rounded-lg'
+                    src={active.data.current.activeIcon}
+                    alt="Furniture"
+                    width={active.data.current.size.width}
+                    height={active.data.current.size.height}
+                  />
+                )
+
               )
+            }
 
-            )
-          }
+          </DragOverlay>
+        </DndContext>
+      </div>
 
-        </DragOverlay>
-      </DndContext>
     </>
   );
 }

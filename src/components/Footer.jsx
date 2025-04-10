@@ -16,9 +16,9 @@ export default function Footer() {
       { name: '用户协议', href: '#' }
     ],
     social: [
-      { name: '微信', href: '#', icon: '/images/empty.png' },
-      { name: '微博', href: '#', icon: '/images/empty.png' },
-      { name: '抖音', href: '#', icon: '/images/empty.png' }
+      { name: '微信', href: '#', icon: '/images/hero/empty.png' },
+      { name: '微博', href: '#', icon: '/images/hero/empty.png' },
+      { name: '抖音', href: '#', icon: '/images/hero/empty.png' }
     ]
   };
 
@@ -69,7 +69,7 @@ export default function Footer() {
             <h3 className="text-white font-semibold mb-4">关注我们</h3>
             <div className="flex space-x-4">
               {links.social.map((social) => (
-                <Link 
+                <Link
                   key={social.name}
                   href={social.href}
                   className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors"

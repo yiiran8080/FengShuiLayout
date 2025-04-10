@@ -22,8 +22,9 @@ export function DraggableItem({ id, type, data, children, isOverCanvas }) {
     position: 'relative',
     zIndex: isDragging ? 1000 : 1,
     visibility: isDragging && isOverCanvas ? 'hidden' : 'visible',
+    // touchAction: 'none'
   } : undefined;
-
+  // , touchAction: 'none' 
   return (
     <div
       ref={setNodeRef}

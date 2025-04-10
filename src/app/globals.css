@@ -8,15 +8,15 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: #333;
+    --foreground: 0 0% 20%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
     --primary: 160 84% 39%;
     --primary-foreground: 355.7 100% 97.3%;
-    --secondary: 152 76% 95%;
-    --secondary-foreground: 160 84% 39%;
+    --secondary: 158 44% 96%;
+    --secondary-foreground: 166 85% 23%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
     --accent: 160 84% 39%;
@@ -32,6 +32,7 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+
   }
 
   .dark {
@@ -85,11 +86,17 @@
     background: linear-gradient(rgba(0, 77, 64, 0.7), rgba(0, 77, 64, 0.7)),
                 url('/hero-bg.jpg') center/cover;
   }
-  
-  .text-gradient {
-    background: linear-gradient(135deg, #00695C 0%, #4CAF50 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
 
+  .bg-button-primary{
+    background-color: #096E56;
+  }
+  .bg-button-gradient {
+    background: linear-gradient(135deg, #19AD6B 0%, #16A183 100%);
+  }
+  .text-hero {
+    color:#073E31
+  }
+  .secondary-foreground{
+    color:#25826C
+  }
 }
