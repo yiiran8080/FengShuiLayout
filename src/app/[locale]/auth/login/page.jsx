@@ -29,11 +29,11 @@ export default function LoginPage() {
         <div className="min-h-screen bg-gray-50">
             <Navbar />
 
-            <div className="flex flex-col items-center bg-secondary justify-center px-6 py-12 mx-auto">
-                <div className="w-full p-10 space-y-8 ">
-                    <div className="text-center">
+            <div className="flex flex-col items-center bg-secondary md:bg-gray-50 justify-center px-6 py-12  mx-auto">
+                <div className="w-full p-10 space-y-8 bg-secondary md:w-100 md:shadow-lg">
+                    <div className="flex flex-col items-center ">
                         <h1 className="text-5xl font-bold text-primary">HarmoniQ</h1>
-                        <p className="mt-16 text-[#086E56] text-sm">
+                        <p className="mt-16 text-[#086E56] text-sm text-center">
                             要使用HarmoniQ服務，您必須登錄現有帳戶或使用以下選項創建一個帳戶。
                         </p>
                     </div>
