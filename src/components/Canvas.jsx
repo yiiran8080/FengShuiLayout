@@ -34,7 +34,9 @@ const ROOM_COLORS = {
   [ROOM_TYPES.GARDEN]: "#AACDBC", // 花园
   [ROOM_TYPES.GARAGE]: "#C7C7DD", // 车库
   [ROOM_TYPES.CORRIDOR]: "#CDCDCD", // 走廊
-};
+
+}; // 引入缩放步长系数
+const scaleStepFactor = 0.1;
 
 const CANVAS_PADDING = 500; // 画布边缘预留空间
 const MAX_SCALE = 200;
@@ -57,7 +59,7 @@ export const Canvas = forwardRef(
   ) => {
     const t = useTranslations("design");
     const isMobile = useMobile();
-    const [position, setPosition] = useState({ x: 0, y: 0 });
+    const [position, setPosition] = useState({ x: -200, y: -1000 });
     const [isDragging, setIsDragging] = useState(false);
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
     const [activeRoom, setActiveRoom] = useState(null);
@@ -108,14 +110,14 @@ export const Canvas = forwardRef(
 
     // 计算画布需要的大小
     // useEffect(() => {
-    //   if (items.length === 0) return;
+    //   if (localItems.length === 0) return;
 
     //   let maxX = -Infinity;
     //   let maxY = -Infinity;
     //   let minX = Infinity;
     //   let minY = Infinity;
 
-    //   items.forEach(item => {
+    //   localItems.forEach(item => {
     //     const itemRight = item.position.x + item.size?.width;
     //     const itemBottom = item.position.y + item.size?.height;
 
@@ -131,58 +133,15 @@ export const Canvas = forwardRef(
 
     //   if (newWidth !== canvasSize.width || newHeight !== canvasSize.height) {
     //     setCanvasSize({ width: newWidth, height: newHeight });
+    //     setPosition({ x: newWidth - 5000, y: minY });
     //   }
-    // }, [items, canvasSize.width, canvasSize.height]);
+    // }, [localItems, canvasSize.width, canvasSize.height]);
 
     // 计算两点之间的距离
     const getDistance = (x1, y1, x2, y2) => {
       return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     };
 
-    // 处理触摸移动事件
-    // const handleTouchMove = useCallback((e) => {
-    //   if (e.touches?.length === 2) {
-    //     e.preventDefault();
-    //     const touch1 = e.touches[0];
-    //     const touch2 = e.touches[1];
-
-    //     // 计算当前双指距离
-    //     const currentDistance = getDistance(
-    //       touch1.pageX,
-    //       touch1.pageY,
-    //       touch2.pageX,
-    //       touch2.pageY
-    //     );
-
-    //     // 如果是第一次双指触摸，记录初始距离
-    //     if (!touchStore.initialDistance) {
-    //       setTouchStore(prev => ({
-    //         ...prev,
-    //         initialDistance: currentDistance,
-    //         originScale: scale
-    //       }));
-    //       return;
-    //     }
-
-    //     // 计算缩放比例
-    //     const scaleFactor = currentDistance / touchStore.initialDistance;
-    //     const newScale = Math.min(
-    //       MAX_SCALE,
-    //       Math.max(MIN_SCALE, Math.round(touchStore.originScale * scaleFactor))
-    //     );
-
-    //     setScale(newScale);
-    //   }
-    // }, [scale, touchStore]);
-
-    // // 处理触摸结束事件
-    // const handleTouchEnd = useCallback(() => {
-    //   setTouchStore(prev => ({
-    //     ...prev,
-    //     isMoving: false,
-    //     initialDistance: 0
-    //   }));
-    // }, []);
 
     // 处理画布拖动开始
     const handleCanvasMouseDown = useCallback(
@@ -322,10 +281,10 @@ export const Canvas = forwardRef(
     }, []);
 
     // 处理鼠标移动事件
-    const handleMouseMove = useCallback(
+    const handleMouseMove =
       (e) => {
         if (e.touches?.length === 2) {
-          //e.preventDefault();
+          e.preventDefault();
           const touch1 = e.touches[0];
           const touch2 = e.touches[1];
 
@@ -340,8 +299,9 @@ export const Canvas = forwardRef(
             const scaleFactor = currentDistance / touchStore.initialDistance;
             const newScale = Math.min(
               MAX_SCALE,
-              Math.max(MIN_SCALE, Math.round(touchStore.originScale * scaleFactor))
+              Math.max(MIN_SCALE, Math.round(touchStore.originScale * scaleFactor * scaleStepFactor))
             );
+            onTransCanvas(newScale);
             setScale(newScale);
           } else {
             setTouchStore(prev => ({
@@ -523,22 +483,8 @@ export const Canvas = forwardRef(
             y: newY,
           });
         }
-      },
-      [
-        isDragging,
-        dragStart,
-        isRoomDragging,
-        draggedRoom,
-        roomDragStart,
-        localItems,
-        isResizing,
-        activeRoom,
-        resizeCorner,
-        resizeStart,
-        touchStore,
-        scale,
-      ]
-    );
+      }
+
 
     // 处理鼠标松开事件
     const handleMouseUp = useCallback(
@@ -708,15 +654,37 @@ export const Canvas = forwardRef(
 
     // 处理缩放
     const handleZoom = (type) => {
+      let newScale;
       if (type === "in" && scale < MAX_SCALE) {
-        setScale((prev) => Math.min(MAX_SCALE, prev + 10));
+        newScale = scale + 10;
       } else if (type === "out" && scale > MIN_SCALE) {
-        setScale((prev) => Math.max(MIN_SCALE, prev - 10));
+        newScale = scale - 10;
       } else if (type === "reset") {
-        setScale(100);
+        newScale = 100;
+      } else {
+        return;
       }
-    };
 
+      onTransCanvas(newScale);
+
+      // 更新状态
+      setScale(newScale);
+
+    };
+    function onTransCanvas(newScale) {
+      // 获取画布容器和画布元素
+      const canvasRect = document.getElementById("canvas-drop-area").getBoundingClientRect();
+      const containerRect = containerRef.current.querySelector('.cursor-move').getBoundingClientRect();
+      const x1 = (containerRect.width - canvasRect.width) / 2;
+      const y1 = (containerRect.height - canvasRect.height) / 2;
+      // 获取画布相对于视口的位置和尺寸
+      //const canvasRect = containerRef.current.querySelector('.cursor-move').getBoundingClientRect();
+      const newPositionX = (containerRect.width - canvasRect.width * (newScale / 100)) / 2;
+      const newPositionY = (containerRect.height - canvasRect.height * (newScale / 100)) / 2;
+      //setPosition({ x: newPositionX, y: newPositionY });
+      //console.log(newPositionX - x1, newPositionY - y1, position);
+      setPosition({ x: position.x - (newPositionX - x1), y: position.y - (newPositionY - y1) });
+    }
     const handleRotate = useCallback(() => {
       if (!activeRoom) return;
 
@@ -814,7 +782,7 @@ export const Canvas = forwardRef(
               <div className="flex items-center gap-2 bg-white rounded-full shadow-lg px-3 py-2">
                 <button
                   className="p-1 rounded hover:bg-gray-100 text-gray-600"
-                  onClick={() => handleZoom("out")}
+                  onClick={(e) => handleZoom("out")}
                   disabled={scale <= 50}
                 >
                   <Minus className="w-4 h-4" />
@@ -824,7 +792,7 @@ export const Canvas = forwardRef(
                 </span>
                 <button
                   className="p-1 rounded hover:bg-gray-100 text-gray-600"
-                  onClick={() => handleZoom("in")}
+                  onClick={(e) => handleZoom("in")}
                   disabled={scale >= 200}
                 >
                   <Plus className="w-4 h-4" />
