@@ -3,7 +3,7 @@ import { Save, UserPen, Menu, CircleHelp, X } from 'lucide-react';
 import Undo from './canvasComp/Undo';
 import { useState } from 'react';
 import MenuBar from './MenuBar';
-export default function NavbarDesignMobile({ onSaveProject, history, historyIndex, handleUndo, handleRedo }) {
+export default function NavbarDesignMobile({ onSaveProject, history, historyIndex, handleUndo, handleRedo, onUserOpen }) {
   const [showTip, setShowTip] = useState(false);
   return (
     <div className='fixed top-0 left-0 right-0 z-50'>
@@ -17,7 +17,7 @@ export default function NavbarDesignMobile({ onSaveProject, history, historyInde
 
             <div className="flex items-center space-x-4 text-foreground  gap-3">
               <span className='flex items-center gap-1 cursor-pointer'><CircleHelp className="w-4 h-4" onClick={() => setShowTip(true)} /></span>
-              <span className='flex items-center gap-1 cursor-pointer' ><UserPen className="w-4 h-4" /> </span>
+              <span className='flex items-center gap-1 cursor-pointer' ><UserPen className="w-4 h-4" onClick={() => onUserOpen(true)} /> </span>
               <MenuBar className="text-foreground" />
             </div>
           </div>

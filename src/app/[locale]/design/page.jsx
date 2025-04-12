@@ -9,6 +9,7 @@ import {
   pointerWithin,
   closestCorners
 } from '@dnd-kit/core';
+import { redirect } from "next/navigation";
 import { useState, useRef, useEffect } from 'react';
 import { ITEM_TYPES, ROOM_TYPES, FURNITURE_TYPES } from '@/types/room';
 import { Canvas } from '@/components/Canvas';
@@ -18,8 +19,11 @@ import Image from 'next/image';
 import useMobile from '../../hooks/useMobile';
 import DragBarPC from '@/components/dragBarComp/DragBarPC';
 import DragBarMobile from '@/components/dragBarComp/DragBarMobile';
-import { get, put } from "@/lib/ajax";
+import { get, post } from "@/lib/ajax";
 import { useSession } from 'next-auth/react'
+import UserInfoDialog from '@/components/UserInfoDialog';
+import { toast } from "sonner"
+import ClipLoader from "react-spinners/ClipLoader";
 const ROOM_COLORS = {
   [ROOM_TYPES.LIVING_ROOM]: '#F0DF9C',   // 客厅
   [ROOM_TYPES.DINING_ROOM]: '#F5D4BC',   // 饭厅
@@ -195,23 +199,25 @@ export default function DesignPage() {
     }
     )
   );
-  // const [items, setItems] = useState([]);
   const [active, setActive] = useState(null);
   const [isOverCanvas, setIsOverCanvas] = useState(false);
-  const [canvasPosition, setCanvasPosition] = useState({ x: 0, y: 0 });
   const [sidebarWidth, setSidebarWidth] = useState(0);
   const [showTab, setShowTab] = useState(false);
   const [history, setHistory] = useState([[]]);
   const [historyIndex, setHistoryIndex] = useState(0);
-
+  const [showUserInfoDialog, setShowUserInfoDialog] = useState(false);
+  const [userInfo, setuserInfo] = useState({})
+  const [loading, setLoading] = useState(false);
   const canvasRef = useRef(null);
   const sidebarRef = useRef(null);
   const isMobile = useMobile();
   const draggingItemSize = isMobile ? 48 : 56;
 
+  const { data: session } = useSession();
 
   // 添加useEffect监听侧边栏宽度
   useEffect(() => {
+    toast.success("用户信息保存成功！");
     const updateWidth = () => {
       if (sidebarRef.current) {
         setSidebarWidth(sidebarRef.current.offsetWidth);
@@ -225,40 +231,54 @@ export default function DesignPage() {
       window.removeEventListener('resize', updateWidth);
     };
   }, []);
-  const { data: session } = useSession();
-  // useEffect(() => {
-  //   //请求接口获取用户信息
-  //   async function getData() {
-  //     if (!session) return;
-  //     const userInfo = session.user;
-  //     console.log('userInfo', userInfo)
-  //     if (!userInfo) return;
-  //     if (userInfo.userId) {
-  //       const { status, data } = await get(`/api/users/${userInfo.userId}`)
-  //       console.log('data', data)
-  //     }
-  //   }
-  //   getData();
 
-  // }, [session]);
+
+  // 加载设计数据  TODO
+  useEffect(() => {
+    const loadDesign = async () => {
+      //const userId = 'yunyanyr@gmail.com';
+      const userId = session?.user?.userId;
+      if (!userId) return;
+      //console.log('session', session?.user?.userId)
+      try {
+        const { status, data: userInfo } = await get(`/api/users/${userId}`)
+        const { data: designData } = await get(`/api/design/${userId}`);
+        // console.log('data', userInfo, localItems)
+        setuserInfo(userInfo);
+        setShowUserInfoDialog(true);
+        const { localItems = [], canvasPosition = { x: 0, y: 0 }, compassRotation = 0 } = designData;
+        let newItems = localItems.map(item => {
+          return {
+            ...item,
+            type: item._type,
+            data: {
+              ...item.data,
+              type: item.data._type
+            }
+          }
+        })
+        canvasRef.current?.setLocalItems(newItems);
+        canvasRef.current?.setPosition(canvasPosition);
+        canvasRef.current?.setCompassRotation(compassRotation);
+      } catch (error) {
+        console.error('Error loading design:', error);
+      }
+    };
+    loadDesign();
+  }, [session?.user?.userId]);
+
+
   const handleDragStart = (event) => {
-    // event.preventDefault();
     const { active } = event;
     setActive(active);
-
-    console.log(event.active);
     setIsOverCanvas(false);
-
-
   };
   const initOverCanvas = (event, roomDragStart) => {
     const { over } = event;
     const isOverCanvasArea = over?.id === 'canvas';
-    // document.getElementById('canvas-drop-area')?.contains(event.over.node);
 
     setIsOverCanvas(isOverCanvasArea);
     if (isOverCanvasArea) {
-
       const localItems = canvasRef.current.getLocalItems();
       const label = `${active.data.current.label}${localItems.filter(item => item.data.type === active.data.current.type).length + 1}`;
       const newItem = {
@@ -290,14 +310,37 @@ export default function DesignPage() {
     initOverCanvas(event, { x: sidebarWidth, y: draggingItemSize })
   }
   const handleDragEnd = (event) => {
-    // if (!isMobile) return;
-    // console.log('over', event)
-    // if (event.delta.y < -120) {
-    //   initOverCanvas(event, { x: 0, y: 78 })
-    // }
   };
-  const onSaveProject = () => {
-    console.log('save project')
+
+  // 保存设计数据 TODO
+  const onSaveProject = async () => {
+
+    if (!session?.user?.userId) {
+      redirect('/auth/login');
+    }
+    //const userId = 'yunyanyr@gmail.com'
+    try {
+      setLoading(true)
+      const { status } = await post(`/api/design/${session.user.userId}`, {
+        localItems: canvasRef.current.getLocalItems(),
+        canvasPosition: canvasRef.current.position,
+        compassRotation: canvasRef.current.compassRotation
+
+      });
+      if (status == 0) {
+        toast.success("保存成功！");
+      }
+
+      // 可以添加成功提示
+    } catch (error) {
+      console.error('Error saving design:', error);
+      // 可以添加错误提示
+    } finally {
+      setLoading(false)
+    }
+  };
+  const onGenReport = async () => {
+    await onSaveProject();
   }
   const onShowTab = () => {
     setShowTab(true)
@@ -307,7 +350,6 @@ export default function DesignPage() {
     if (historyIndex > 0) {
       canvasRef.current?.setActiveRoom(null);
       setHistoryIndex((prev) => prev - 1);
-      // console.log('xxx',history,history[historyIndex - 1])
       canvasRef.current?.setLocalItems(history[historyIndex - 1]);
     }
   };
@@ -320,8 +362,51 @@ export default function DesignPage() {
       canvasRef.current?.setLocalItems(history[historyIndex + 1]);
     }
   };
+
+  // 处理用户信息提交 TODO
+  const handleUserInfoSubmit = async (userInfo) => {
+    if (!session?.user?.userId) {
+      redirect('/auth/login');
+    }
+    setLoading(true)
+    setuserInfo(userInfo);
+
+    const userId = 'yunyanyr@gmail.com'
+    try {
+      const { status } = await post(`/api/users/${session.user.userId}`, {
+        gender: userInfo.gender,
+        birthDateTime: userInfo.birthDateTime.toISOString()
+      });
+      if (status == 0) {
+        toast.success("用户信息保存成功！");
+        setShowUserInfoDialog(false);
+      }
+
+
+    } catch (error) {
+      toast.error("用户信息保存失败：" + error.message);
+      console.error('Error saving user info:', error);
+    } finally {
+      setLoading(false)
+    }
+  };
+
   return (
     <>
+      <ClipLoader
+        color={'#666'}
+        loading={loading}
+        cssOverride={{ position: 'fixed', left: '50%', top: '50%', zIndex: 60 }}
+        size={30}
+        aria-label="loading..."
+        data-testid="loader"
+      />
+      <UserInfoDialog
+        open={showUserInfoDialog}
+        onUserOpen={setShowUserInfoDialog}
+        onSubmit={handleUserInfoSubmit}
+        userInfo={userInfo}
+      />
       {
         isMobile ? (
           <NavbarDesignMobile
@@ -330,9 +415,10 @@ export default function DesignPage() {
             historyIndex={historyIndex}
             handleUndo={handleUndo}
             handleRedo={handleRedo}
+            onUserOpen={setShowUserInfoDialog}
           />
         ) : (
-          <NavbarDesign onSaveProject={onSaveProject} />
+          <NavbarDesign onSaveProject={onSaveProject} onUserOpen={setShowUserInfoDialog} />
         )
       }
       <div className="pt-16">
@@ -340,7 +426,6 @@ export default function DesignPage() {
           sensors={sensors}
           onDragStart={handleDragStart}
           onDragOver={handleDragOver}
-          // onDragEnd={handleDragEnd}
           onDragMove={handleDragMove}
         // collisionDetection={pointerWithin}
         >
@@ -363,7 +448,9 @@ export default function DesignPage() {
                     setHistoryIndex={setHistoryIndex}
                     handleUndo={handleUndo}
                     handleRedo={handleRedo}
-                    showTab={showTab} onPositionChange={setCanvasPosition} onShowTab={onShowTab} />
+                    onGenReport={onGenReport}
+                    showTab={showTab}
+                    onShowTab={onShowTab} />
                 </div>
               </div>
 

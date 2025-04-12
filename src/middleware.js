@@ -31,23 +31,23 @@ export default async function middleware(request) {
     const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
     //console.log("token", token);
     // If not authenticated, redirect to login page
-    // if (!token) {
+    if (!token) {
 
-    //     //console.log('pathname', request.nextUrl.pathname);
-    //     const referer = request.headers.get('referer') || '';
-    //     // console.log('referer', referer);
-    //     // // 检查来源是否已经是登录页，避免循环重定向
-    //     // if (referer.includes('/auth/login')) {
-    //     //     return response;
-    //     // }
-    //     //允许目标页面是首页
-    //     if (request.nextUrl.pathname === '/zh-CN' || request.nextUrl.pathname === '/zh-TW') {
-    //         return response;
-    //     }
+        //console.log('pathname', request.nextUrl.pathname);
+        const referer = request.headers.get('referer') || '';
+        // console.log('referer', referer);
+        // // 检查来源是否已经是登录页，避免循环重定向
+        if (referer.includes('/auth/login')) {
+            return response;
+        }
+        //允许目标页面是首页
+        if (request.nextUrl.pathname === '/zh-CN' || request.nextUrl.pathname === '/zh-TW') {
+            return response;
+        }
 
-    //     const locale = referer.indexOf('zh-CN') >= 0 ? 'zh-CN' : 'zh-TW';
-    //     return NextResponse.redirect(new URL(`/${locale}/auth/login`, request.url));
-    // }
+        const locale = referer.indexOf('zh-CN') >= 0 ? 'zh-CN' : 'zh-TW';
+        return NextResponse.redirect(new URL(`/${locale}/auth/login`, request.url));
+    }
 
     return response;
 }

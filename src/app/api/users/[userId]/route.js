@@ -4,7 +4,9 @@ import User from '@/models/User';
 import { getUserInfo } from "@/lib/session";
 // import { getServerSession } from 'next-auth/next';
 // import { authOptions } from '../../auth/[...nextauth]/route';
-import { genSuccessData, genUnAuthData } from "../../utils/gen-res-data";
+import { genSuccessData, genUnAuthData, genErrorData } from "../../utils/gen-res-data";
+
+
 // Get user by ID
 //用谷歌邮箱做用户唯一id
 export async function GET(request, { params }) {
@@ -24,18 +26,21 @@ export async function GET(request, { params }) {
     } catch (error) {
         console.error('Error fetching user:', error);
         return NextResponse.json(
-            { message: 'Failed to fetch user', error: error.message },
-            { status: 500 }
+            genErrorData('Failed to fetch user'),
         );
     }
 }
 
-// Update user by ID
-export async function PUT(request, { params }) {
+// Update user by ID TODO
+export async function POST(request, { params }) {
     try {
-        const { userId } = params;
-        const data = await request.json();
+        //const userInfo = { userId: "yunyanyr@gmail.com" };
+        const userInfo = await getUserInfo();
+        if (userInfo == null) return Response.json(genUnAuthData());
 
+        const { userId } = await params;
+        const data = await request.json();
+        //console.log(data, userId);
         // Authenticate the request (in real app, ensure only the user or admin can update)
         // const session = await getServerSession(authOptions);
         // if (!session || (session.user.id !== userId && !session.user.isAdmin)) {
@@ -47,33 +52,20 @@ export async function PUT(request, { params }) {
         // Find the user
         const user = await User.findOne({ userId });
         if (!user) {
-            return NextResponse.json(
-                { message: 'User not found' },
-                { status: 404 }
-            );
+            await User.create({
+                userId,
+                ...data
+            });
+        } else {
+            user.gender = data.gender;
+            user.birthDateTime = new Date(data.birthDateTime);
+            await user.save();
         }
 
-        // Update allowed fields only
-        const allowedFields = ['gender', 'birthYear', 'birthMonth', 'birthDay', 'birthHour'];
-        allowedFields.forEach(field => {
-            if (data[field] !== undefined) {
-                user[field] = data[field];
-            }
-        });
-
-        user.updatedAt = new Date();
-        await user.save();
-
-        return NextResponse.json({
-            message: 'User updated successfully',
-            user
-        });
+        return NextResponse.json(genSuccessData())
     } catch (error) {
         console.error('Error updating user:', error);
-        return NextResponse.json(
-            { message: 'Failed to update user', error: error.message },
-            { status: 500 }
-        );
+        return NextResponse.json(genErrorData('Failed to update user'))
     }
 }
 

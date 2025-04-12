@@ -5,6 +5,7 @@ import { signIn } from 'next-auth/react';
 //import { signIn } from "@/auth";
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
+import ClipLoader from "react-spinners/ClipLoader";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -15,6 +16,8 @@ export default function LoginPage() {
         try {
             // provider, { callbackUrl: '/' }
             await signIn(provider, { callbackUrl: '/' });
+            setIsLoading(false);
+
         } catch (error) {
             console.error(`Error signing in with ${provider}:`, error);
         } finally {
@@ -39,7 +42,7 @@ export default function LoginPage() {
                         <button
                             onClick={() => handleSignIn('google')}
                             disabled={isLoading}
-                            className="cursor-pointer flex items-center justify-center w-full px-4 py-3 font-medium text-white transition-colors bg-button-primary rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2"
+                            className={`"cursor-pointer flex items-center justify-center w-full px-4 py-3 font-medium text-white transition-colors rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2" ${isLoading ? 'bg-muted' : 'bg-button-primary'}`}
                         >
                             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                                 <path
@@ -60,12 +63,20 @@ export default function LoginPage() {
                                 />
                             </svg>
                             Sign in with Google
+                            <ClipLoader
+                                color={'#666'}
+                                loading={isLoading}
+                                cssOverride={{ position: 'fixed' }}
+                                size={30}
+                                aria-label="loading..."
+                                data-testid="loader"
+                            />
                         </button>
 
                         <button
                             onClick={() => handleSignIn('apple')}
                             disabled={isLoading}
-                            className="cursor-pointer flex items-center justify-center w-full px-4 py-3 font-medium text-white transition-colors rounded-full bg-[#25826D] focus:outline-none focus:ring-2 focus:ring-offset-2"
+                            className={`cursor-pointer flex items-center justify-center w-full px-4 py-3 font-medium text-white transition-colors rounded-full  focus:outline-none focus:ring-2 focus:ring-offset-2 ${isLoading ? 'bg-muted' : 'bg-[#25826D]'}`}
                         >
                             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                                 <path
