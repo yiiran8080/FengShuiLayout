@@ -267,6 +267,12 @@ export const Canvas = forwardRef(
         let store = { ...touchStore };
         if (e.touches?.length == 2) {
           if (!store.isMoving) return;
+          if (!store.pageX2) {
+            store.pageX2 = e.touches[1].pageX;
+          }
+          if (!store.pageY2) {
+            store.pageY2 = e.touches[1].pageY;
+          }
           // 双指缩放比例计算
           const zoom =
             getDistance(
@@ -301,8 +307,8 @@ export const Canvas = forwardRef(
           return;
         }
 
-        store.isMoving = false;
-        setTouchStore(store);
+        // store.isMoving = false;
+        // setTouchStore(store);
         // console.log('handleMouseMove', e)
         if (isResizing && activeRoom && resizeCorner) {
           let deltaX, deltaY;
