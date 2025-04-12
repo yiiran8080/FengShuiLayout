@@ -4,7 +4,7 @@ import Image from "next/image"
 
 export default function DragBarPC(props) {
     const { sidebarRef, roomItems, furnitureItems, isOverCanvas, draggingItemSize } = props
-    return <div ref={sidebarRef} className="md:block hidden overflow-auto w-1/6 bg-white p-4 shadow border-r-gray-100 border-r-2">
+    return <div ref={sidebarRef} className="md:block hidden overflow-auto overflow-x-hidden w-1/6 bg-white p-4 shadow border-r-gray-100 border-r-2">
         <div className="mb-8">
             <h3 className="text-2xl font-semibold mb-4">房间</h3>
             <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-2">
