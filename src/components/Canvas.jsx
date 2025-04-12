@@ -77,6 +77,7 @@ export const Canvas = forwardRef(
       pageY: 0,
       pageX2: 0,
       pageY2: 0,
+      initialDistance: 0,
     });
     const [compassRotation, setCompassRotation] = useState(0); //指南针旋转角度
 
@@ -133,6 +134,56 @@ export const Canvas = forwardRef(
     //   }
     // }, [items, canvasSize.width, canvasSize.height]);
 
+    // 计算两点之间的距离
+    const getDistance = (x1, y1, x2, y2) => {
+      return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    };
+
+    // 处理触摸移动事件
+    // const handleTouchMove = useCallback((e) => {
+    //   if (e.touches?.length === 2) {
+    //     e.preventDefault();
+    //     const touch1 = e.touches[0];
+    //     const touch2 = e.touches[1];
+
+    //     // 计算当前双指距离
+    //     const currentDistance = getDistance(
+    //       touch1.pageX,
+    //       touch1.pageY,
+    //       touch2.pageX,
+    //       touch2.pageY
+    //     );
+
+    //     // 如果是第一次双指触摸，记录初始距离
+    //     if (!touchStore.initialDistance) {
+    //       setTouchStore(prev => ({
+    //         ...prev,
+    //         initialDistance: currentDistance,
+    //         originScale: scale
+    //       }));
+    //       return;
+    //     }
+
+    //     // 计算缩放比例
+    //     const scaleFactor = currentDistance / touchStore.initialDistance;
+    //     const newScale = Math.min(
+    //       MAX_SCALE,
+    //       Math.max(MIN_SCALE, Math.round(touchStore.originScale * scaleFactor))
+    //     );
+
+    //     setScale(newScale);
+    //   }
+    // }, [scale, touchStore]);
+
+    // // 处理触摸结束事件
+    // const handleTouchEnd = useCallback(() => {
+    //   setTouchStore(prev => ({
+    //     ...prev,
+    //     isMoving: false,
+    //     initialDistance: 0
+    //   }));
+    // }, []);
+
     // 处理画布拖动开始
     const handleCanvasMouseDown = useCallback(
       (e) => {
@@ -140,23 +191,34 @@ export const Canvas = forwardRef(
           return;
         }
 
-        //console.log('handleCanvasMouseDown', e)
         if (e.button !== 0 && !e.touches) return; //非左键
 
-        if (e.touches?.length == 2) {
-          let store = { ...touchStore };
-          store.isMoving = true;
-          // 第一个触摸点的坐标
-          store.pageX = e.touches[0].pageX;
-          store.pageY = e.touches[0].pageY;
-          store.pageX2 = e.touches[1].pageX;
-          store.pageY2 = e.touches[2].pageY;
-          setTouchStore(store);
+        if (e.touches?.length === 2) {
+          const touch1 = e.touches[0];
+          const touch2 = e.touches[1];
+          const initialDistance = getDistance(
+            touch1.pageX,
+            touch1.pageY,
+            touch2.pageX,
+            touch2.pageY
+          );
+
+          setTouchStore(prev => ({
+            ...prev,
+            isMoving: true,
+            pageX: touch1.pageX,
+            pageY: touch1.pageY,
+            pageX2: touch2.pageX,
+            pageY2: touch2.pageY,
+            initialDistance,
+            originScale: scale
+          }));
           return;
         }
+
         setActiveRoom(null);
         setIsDragging(true);
-        if (e.touches?.length == 1) {
+        if (e.touches?.length === 1) {
           setDragStart({
             x: e.touches[0].clientX - position.x,
             y: e.touches[0].clientY - position.y,
@@ -168,8 +230,9 @@ export const Canvas = forwardRef(
           });
         }
       },
-      [position, touchStore]
+      [position, scale]
     );
+
     const furnitureInroom = (furniture, parentRoom) => {
       if (!furniture.position || !parentRoom.position) return false;
       return (
@@ -257,60 +320,37 @@ export const Canvas = forwardRef(
         });
       }
     }, []);
-    const getDistance = function (start, stop) {
-      return Math.hypot(stop.x - start.x, stop.y - start.y);
-    };
+
     // 处理鼠标移动事件
     const handleMouseMove = useCallback(
       (e) => {
-        //移动端双指缩放
-        let store = { ...touchStore };
-        if (e.touches?.length == 2) {
-          if (!store.isMoving) return;
-          if (!store.pageX2) {
-            store.pageX2 = e.touches[1].pageX;
-          }
-          if (!store.pageY2) {
-            store.pageY2 = e.touches[1].pageY;
-          }
-          // 双指缩放比例计算
-          const zoom =
-            getDistance(
-              {
-                x: e.touches[0].pageX,
-                y: e.touches[0].pageY,
-              },
-              {
-                x: e.touches[1].pageX,
-                y: e.touches[1].pageY,
-              }
-            ) /
-            getDistance(
-              {
-                x: store.pageX,
-                y: store.pageY,
-              },
-              {
-                x: store.pageX2,
-                y: store.pageY2,
-              }
-            );
-          let newScale = scale * zoom;
-          // 最大缩放比例限制
-          if (newScale > MAX_SCALE) {
-            newScale = MAX_SCALE;
-          }
-          if (newScale < MIN_SCALE) {
-            newScale = MIN_SCALE;
-          }
-          setScale(newScale);
-          return;
-        }
+        if (e.touches?.length === 2) {
+          //e.preventDefault();
+          const touch1 = e.touches[0];
+          const touch2 = e.touches[1];
 
-        // store.isMoving = false;
-        // setTouchStore(store);
-        // console.log('handleMouseMove', e)
-        if (isResizing && activeRoom && resizeCorner) {
+          const currentDistance = getDistance(
+            touch1.pageX,
+            touch1.pageY,
+            touch2.pageX,
+            touch2.pageY
+          );
+
+          if (touchStore.initialDistance) {
+            const scaleFactor = currentDistance / touchStore.initialDistance;
+            const newScale = Math.min(
+              MAX_SCALE,
+              Math.max(MIN_SCALE, Math.round(touchStore.originScale * scaleFactor))
+            );
+            setScale(newScale);
+          } else {
+            setTouchStore(prev => ({
+              ...prev,
+              initialDistance: currentDistance,
+              originScale: scale
+            }));
+          }
+        } else if (isResizing && activeRoom && resizeCorner) {
           let deltaX, deltaY;
           if (e.touches?.length == 1) {
             deltaX = e.touches[0].clientX - resizeStart.x;
@@ -471,7 +511,7 @@ export const Canvas = forwardRef(
           setLocalItems(updatedItems);
         } else if (isDragging) {
           let newX, newY;
-          if (e.touches?.length == 1) {
+          if (e.touches?.length === 1) {
             newX = e.touches[0].clientX - dragStart.x;
             newY = e.touches[0].clientY - dragStart.y;
           } else {
@@ -504,7 +544,7 @@ export const Canvas = forwardRef(
     const handleMouseUp = useCallback(
       (e) => {
         if (e.touches?.length < 2) {
-          setTouchStore((touchStore) => ({ ...touchStore, isMoving: false }));
+          setTouchStore(prev => ({ ...prev, isMoving: false, initialDistance: 0 }));
         }
         // console.log('handleMouseUp', e)
         // 如果是房间拖动或调整大小结束，记录历史
@@ -626,7 +666,7 @@ export const Canvas = forwardRef(
         setActiveRoom(room);
       });
     };
-    // 添加和移除事件监听器
+    // 添加事件监听器
     useEffect(() => {
       const container = containerRef.current;
       if (!container) return;
