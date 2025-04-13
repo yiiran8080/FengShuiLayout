@@ -298,13 +298,18 @@ export const Canvas = forwardRef(
           );
 
           if (touchStore.initialDistance) {
-            const scaleFactor = currentDistance / touchStore.initialDistance;
-            const newScale = Math.min(
-              110,
-              Math.max(90, Math.round(touchStore.originScale * scaleFactor * scaleStepFactor))
-            );
-            onTransCanvas(newScale);
-            setScale(newScale);
+            if (currentDistance > touchStore.initialDistance) {
+              handleZoom('in');
+            } else {
+              handleZoom('out');
+            }
+            // const scaleFactor = Math.max(currentDistance / touchStore.initialDistance) ;
+            // const newScale = Math.min(
+            //   110,
+            //   Math.max(90, Math.round(touchStore.originScale * scaleFactor))
+            // );
+            // onTransCanvas(newScale);
+            // setScale(newScale);
           } else {
             setTouchStore(prev => ({
               ...prev,
@@ -624,7 +629,7 @@ export const Canvas = forwardRef(
       window.addEventListener("mouseup", handleMouseUp);
 
       container.addEventListener("touchstart", handleCanvasMouseDown);
-      window.addEventListener("touchmove", handleMouseMove);
+      window.addEventListener("touchmove", handleMouseMove, { passive: false });
       window.addEventListener("touchend", handleMouseUp);
 
       return () => {
@@ -655,7 +660,7 @@ export const Canvas = forwardRef(
     };
 
     // 处理缩放
-    const handleZoom = (type) => {
+    function handleZoom(type) {
       let newScale;
       if (type === "in" && scale < MAX_SCALE) {
         newScale = scale + 10;
@@ -667,25 +672,33 @@ export const Canvas = forwardRef(
         return;
       }
 
-      onTransCanvas(newScale);
+      onTransCanvas(type, newScale,);
 
       // 更新状态
       setScale(newScale);
 
     };
-    function onTransCanvas(newScale) {
+    function onTransCanvas(type, newScale) {
       // 获取画布容器和画布元素
-      const canvasRect = document.getElementById("canvas-drop-area").getBoundingClientRect();
-      const containerRect = containerRef.current.querySelector('.cursor-move').getBoundingClientRect();
-      const x1 = (containerRect.width - canvasRect.width) / 2;
-      const y1 = (containerRect.height - canvasRect.height) / 2;
-      // 获取画布相对于视口的位置和尺寸
-      //const canvasRect = containerRef.current.querySelector('.cursor-move').getBoundingClientRect();
-      const newPositionX = (containerRect.width - canvasRect.width * (newScale / 100)) / 2;
-      const newPositionY = (containerRect.height - canvasRect.height * (newScale / 100)) / 2;
+      // const container = document.getElementById("canvas-drop-area");
+      // const containerRect = document.getElementById("canvas-drop-area").getBoundingClientRect();
+      // //console.log('111', containerRect, container.querySelector('.cursor-move'));
+      // const canvasRect = container.querySelector('.cursor-move').getBoundingClientRect();
+      // console.log('222', canvasRect.width, canvasRect.height);
+      // const x1 = (containerRect.width - canvasRect.width) / 2;
+      // const y1 = (containerRect.height - canvasRect.height) / 2;
+      // // 获取画布相对于视口的位置和尺寸
+      // //const canvasRect = containerRef.current.querySelector('.cursor-move').getBoundingClientRect();
+      // const newPositionX = (containerRect.width - canvasRect.width * (newScale / 100)) / 2;
+      // const newPositionY = (containerRect.height - canvasRect.height * (newScale / 100)) / 2;
       //setPosition({ x: newPositionX, y: newPositionY });
       //console.log(newPositionX - x1, newPositionY - y1, position);
-      setPosition({ x: position.x - (newPositionX - x1), y: position.y - (newPositionY - y1) });
+      if (type === 'in') {
+        setPosition({ x: position.x + 150, y: position.y + 150 });
+      } else if (type === 'out') {
+        setPosition({ x: position.x - 150, y: position.y - 150 });
+      }
+
     }
     const handleRotate = useCallback(() => {
       if (!activeRoom) return;
