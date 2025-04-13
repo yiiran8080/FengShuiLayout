@@ -6,13 +6,14 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import ClipLoader from "react-spinners/ClipLoader";
-
+import { ToastContainer, toast } from 'react-toastify';
 export default function LoginPage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSignIn = async (provider) => {
         setIsLoading(true);
+        toast.info('正在跳转，请稍候...', { autoClose: 5000 });
         try {
             // provider, { callbackUrl: '/' }
             await signIn(provider, { callbackUrl: '/' });
@@ -20,8 +21,6 @@ export default function LoginPage() {
 
         } catch (error) {
             console.error(`Error signing in with ${provider}:`, error);
-        } finally {
-            setIsLoading(false);
         }
     };
 

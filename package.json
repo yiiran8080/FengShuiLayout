@@ -38,6 +38,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-spinners": "^0.15.0",
+    "react-toastify": "^11.0.5",
     "rmc-picker": "^5.0.10",
     "sonner": "^2.0.3",
     "tailwind-merge": "^3.1.0",

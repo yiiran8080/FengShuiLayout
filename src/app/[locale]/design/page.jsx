@@ -22,8 +22,8 @@ import DragBarMobile from '@/components/dragBarComp/DragBarMobile';
 import { get, post } from "@/lib/ajax";
 import { useSession } from 'next-auth/react'
 import UserInfoDialog from '@/components/UserInfoDialog';
-import { toast } from "sonner"
 import ClipLoader from "react-spinners/ClipLoader";
+import { ToastContainer, toast } from 'react-toastify';
 const ROOM_COLORS = {
   [ROOM_TYPES.LIVING_ROOM]: '#F0DF9C',   // 客厅
   [ROOM_TYPES.DINING_ROOM]: '#F5D4BC',   // 饭厅
@@ -217,7 +217,6 @@ export default function DesignPage() {
 
   // 添加useEffect监听侧边栏宽度
   useEffect(() => {
-    toast.success("用户信息保存成功！");
     const updateWidth = () => {
       if (sidebarRef.current) {
         setSidebarWidth(sidebarRef.current.offsetWidth);
@@ -235,14 +234,25 @@ export default function DesignPage() {
 
   // 加载设计数据  TODO
   useEffect(() => {
+    //toast.error("查询错误:")
     const loadDesign = async () => {
       //const userId = 'yunyanyr@gmail.com';
       const userId = session?.user?.userId;
       if (!userId) return;
+
       //console.log('session', session?.user?.userId)
       try {
-        const { status, data: userInfo } = await get(`/api/users/${userId}`)
-        const { data: designData } = await get(`/api/design/${userId}`);
+        const { status: status0, message: message0, data: userInfo } = await get(`/api/users/${userId}`)
+        const { status: status1, message: message1, data: designData } = await get(`/api/design/${userId}`);
+        console.log('designData', status0, message0)
+        if (status0 !== 0) {
+          toast.error("查询用户错误:" + message0)
+          return
+        }
+        if (status1 !== 0) {
+          toast.error("查询布局错误:" + message1)
+          return
+        }
         // console.log('data', userInfo, localItems)
         setuserInfo(userInfo);
         setShowUserInfoDialog(true);
@@ -261,6 +271,7 @@ export default function DesignPage() {
         canvasRef.current?.setPosition(canvasPosition);
         canvasRef.current?.setCompassRotation(compassRotation);
       } catch (error) {
+        toast.error("加载布局错误:" + error)
         console.error('Error loading design:', error);
       }
     };
@@ -333,6 +344,7 @@ export default function DesignPage() {
 
       // 可以添加成功提示
     } catch (error) {
+      toast.error("保存失败：" + error);
       console.error('Error saving design:', error);
       // 可以添加错误提示
     } finally {
@@ -378,13 +390,13 @@ export default function DesignPage() {
         birthDateTime: userInfo.birthDateTime.toISOString()
       });
       if (status == 0) {
-        toast.success("用户信息保存成功！");
+        toast.success("保存成功！");
         setShowUserInfoDialog(false);
       }
 
 
     } catch (error) {
-      toast.error("用户信息保存失败：" + error.message);
+      toast.error("保存失败：" + error);
       console.error('Error saving user info:', error);
     } finally {
       setLoading(false)
@@ -401,6 +413,7 @@ export default function DesignPage() {
         aria-label="loading..."
         data-testid="loader"
       />
+
       <UserInfoDialog
         open={showUserInfoDialog}
         onUserOpen={setShowUserInfoDialog}

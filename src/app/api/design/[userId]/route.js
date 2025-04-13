@@ -12,7 +12,7 @@ export async function GET(request, { params }) {
         return NextResponse.json(genSuccessData(design || {}))
     } catch (error) {
         console.error('Error fetching design:', error);
-        return NextResponse.json(genErrorData('Internal Server Error'));
+        return NextResponse.json(genErrorData('Error fetching design'));
     }
 }
 //TODO
@@ -46,7 +46,8 @@ export async function POST(request, { params }) {
         } else {
             await Design.create({
                 userId,
-                ...body
+                ...body,
+                localItems
             });
         }
 

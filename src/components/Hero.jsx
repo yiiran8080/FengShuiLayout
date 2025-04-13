@@ -3,11 +3,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useTranslations } from "next-intl";
 import useMobile from '../app/hooks/useMobile';
+import { ToastContainer, toast } from 'react-toastify';
 export default function Hero() {
   const t = useTranslations("home.hero");
   const isMobile = useMobile();
   return (
     <section className="relative min-h-screen flex items-center">
+
       <div className="absolute inset-0 z-0">
         <Image
           src="/images/hero/heroback.png"

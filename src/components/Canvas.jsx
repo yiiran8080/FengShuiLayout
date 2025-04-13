@@ -298,8 +298,8 @@ export const Canvas = forwardRef(
           if (touchStore.initialDistance) {
             const scaleFactor = currentDistance / touchStore.initialDistance;
             const newScale = Math.min(
-              MAX_SCALE,
-              Math.max(MIN_SCALE, Math.round(touchStore.originScale * scaleFactor * scaleStepFactor))
+              110,
+              Math.max(80, Math.round(touchStore.originScale * scaleFactor * scaleStepFactor))
             );
             //WonTransCanvas(newScale);
             setScale(newScale);
@@ -727,9 +727,9 @@ export const Canvas = forwardRef(
       console.log("compass");
       // 增加45度，并保持在0-360范围内
       let newRotation = compassRotation + 45;
-      if (newRotation >= 360) {
-        newRotation -= 360;
-      }
+      // if (newRotation >= 360) {
+      //   newRotation -= 360;
+      // }
       setCompassRotation(newRotation);
     };
     const Sizehandler = (room) => {
