@@ -299,9 +299,9 @@ export const Canvas = forwardRef(
 
           if (touchStore.initialDistance) {
             if (currentDistance > touchStore.initialDistance) {
-              handleZoom('in');
+              handleZoom('in', 1);
             } else {
-              handleZoom('out');
+              handleZoom('out', 1);
             }
             // const scaleFactor = Math.max(currentDistance / touchStore.initialDistance) ;
             // const newScale = Math.min(
@@ -660,12 +660,12 @@ export const Canvas = forwardRef(
     };
 
     // 处理缩放
-    function handleZoom(type) {
+    function handleZoom(type, step = 10) {
       let newScale;
       if (type === "in" && scale < MAX_SCALE) {
-        newScale = scale + 10;
+        newScale = scale + step;
       } else if (type === "out" && scale > MIN_SCALE) {
-        newScale = scale - 10;
+        newScale = scale - step;
       } else if (type === "reset") {
         newScale = 100;
       } else {

@@ -236,12 +236,17 @@ export default function DesignPage() {
   useEffect(() => {
     //toast.error("查询错误:")
     const loadDesign = async () => {
+
       //const userId = 'yunyanyr@gmail.com';
       const userId = session?.user?.userId;
-      if (!userId) return;
+      if (!userId) {
+        toast.error("用户未登录");
+        return
+      }
 
       //console.log('session', session?.user?.userId)
       try {
+        setLoading(true);
         const { status: status0, message: message0, data: userInfo } = await get(`/api/users/${userId}`)
         const { status: status1, message: message1, data: designData } = await get(`/api/design/${userId}`);
         console.log('designData', status0, message0)
@@ -271,7 +276,9 @@ export default function DesignPage() {
         canvasRef.current?.setPosition(canvasPosition);
         canvasRef.current?.setCompassRotation(compassRotation);
         canvasRef.current?.setScale(scale);
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
         toast.error("加载布局错误:" + error)
         console.error('Error loading design:', error);
       }
@@ -404,7 +411,19 @@ export default function DesignPage() {
       setLoading(false)
     }
   };
-
+  // if (loading) {
+  //   return (
+  //     <div className="flex flex-col py-25 px-5 ">
+  //       {/* <Skeleton className="h-12 w-full" /> */}
+  //       <div className="space-y-2">
+  //         <Skeleton className="h-6 w-full" />
+  //         <Skeleton className="h-6 w-full" />
+  //         <Skeleton className="h-6 w-full" />
+  //         <Skeleton className="h-6 w-full" />
+  //       </div>
+  //     </div>
+  //   );
+  // }
   return (
     <>
       <ClipLoader
