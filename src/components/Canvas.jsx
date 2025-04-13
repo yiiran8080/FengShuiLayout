@@ -671,8 +671,9 @@ export const Canvas = forwardRef(
       } else {
         return;
       }
-
-      onTransCanvas(type, newScale,);
+      if (step == 10) {
+        onTransCanvas(type, newScale);
+      }
 
       // 更新状态
       setScale(newScale);
