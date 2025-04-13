@@ -96,6 +96,8 @@ export const Canvas = forwardRef(
         setCompassRotation,
         position,
         compassRotation,
+        scale,
+        setScale
       }),
       [localItems]
     );
@@ -283,8 +285,8 @@ export const Canvas = forwardRef(
     // 处理鼠标移动事件
     const handleMouseMove =
       (e) => {
+        e.preventDefault();
         if (e.touches?.length === 2) {
-          e.preventDefault();
           const touch1 = e.touches[0];
           const touch2 = e.touches[1];
 
@@ -299,9 +301,9 @@ export const Canvas = forwardRef(
             const scaleFactor = currentDistance / touchStore.initialDistance;
             const newScale = Math.min(
               110,
-              Math.max(80, Math.round(touchStore.originScale * scaleFactor * scaleStepFactor))
+              Math.max(90, Math.round(touchStore.originScale * scaleFactor * scaleStepFactor))
             );
-            //WonTransCanvas(newScale);
+            onTransCanvas(newScale);
             setScale(newScale);
           } else {
             setTouchStore(prev => ({
@@ -778,29 +780,29 @@ export const Canvas = forwardRef(
                 handleRedo={handleRedo}
                 className={" bg-white rounded-full shadow-lg  px-3 py-2"}
               />
-              {/* 缩放控制 */}
-              <div className="flex items-center gap-2 bg-white rounded-full shadow-lg px-3 py-2">
-                <button
-                  className="p-1 rounded hover:bg-gray-100 text-gray-600"
-                  onClick={(e) => handleZoom("out")}
-                  disabled={scale <= 50}
-                >
-                  <Minus className="w-4 h-4" />
-                </button>
-                <span className="text-sm font-medium text-gray-600 min-w-[48px] text-center">
-                  {scale}%
-                </span>
-                <button
-                  className="p-1 rounded hover:bg-gray-100 text-gray-600"
-                  onClick={(e) => handleZoom("in")}
-                  disabled={scale >= 200}
-                >
-                  <Plus className="w-4 h-4" />
-                </button>
-              </div>
+
             </>
           )}
-
+          {/* 缩放控制 */}
+          <div className="flex items-center gap-2 bg-white rounded-full shadow-lg px-3 py-2">
+            <button
+              className="p-1 rounded hover:bg-gray-100 text-gray-600"
+              onClick={(e) => handleZoom("out")}
+              disabled={scale <= 50}
+            >
+              <Minus className="w-4 h-4" />
+            </button>
+            <span className="text-sm font-medium text-gray-600 min-w-[48px] text-center">
+              {scale}%
+            </span>
+            <button
+              className="p-1 rounded hover:bg-gray-100 text-gray-600"
+              onClick={(e) => handleZoom("in")}
+              disabled={scale >= 200}
+            >
+              <Plus className="w-4 h-4" />
+            </button>
+          </div>
           {/* 指南针 */}
           <div
             style={{

@@ -256,7 +256,7 @@ export default function DesignPage() {
         // console.log('data', userInfo, localItems)
         setuserInfo(userInfo);
         setShowUserInfoDialog(true);
-        const { localItems = [], canvasPosition = { x: 0, y: 0 }, compassRotation = 0 } = designData;
+        const { localItems = [], scale = 100, canvasPosition = { x: 0, y: 0 }, compassRotation = 0 } = designData;
         let newItems = localItems.map(item => {
           return {
             ...item,
@@ -270,6 +270,7 @@ export default function DesignPage() {
         canvasRef.current?.setLocalItems(newItems);
         canvasRef.current?.setPosition(canvasPosition);
         canvasRef.current?.setCompassRotation(compassRotation);
+        canvasRef.current?.setScale(scale);
       } catch (error) {
         toast.error("加载布局错误:" + error)
         console.error('Error loading design:', error);
@@ -335,7 +336,8 @@ export default function DesignPage() {
       const { status } = await post(`/api/design/${session.user.userId}`, {
         localItems: canvasRef.current.getLocalItems(),
         canvasPosition: canvasRef.current.position,
-        compassRotation: canvasRef.current.compassRotation
+        compassRotation: canvasRef.current.compassRotation,
+        scale: canvasRef.current.scale,
 
       });
       if (status == 0) {

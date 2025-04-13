@@ -11,6 +11,7 @@ const designSchema = new mongoose.Schema({
         y: Number
     },
     compassRotation: Number,
+    scale: Number,
 
     localItems: [{
         id: String,
