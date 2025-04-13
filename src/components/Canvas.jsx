@@ -301,7 +301,7 @@ export const Canvas = forwardRef(
               MAX_SCALE,
               Math.max(MIN_SCALE, Math.round(touchStore.originScale * scaleFactor * scaleStepFactor))
             );
-            onTransCanvas(newScale);
+            //WonTransCanvas(newScale);
             setScale(newScale);
           } else {
             setTouchStore(prev => ({
