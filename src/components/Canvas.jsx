@@ -499,6 +499,7 @@ export const Canvas = forwardRef(
         if (e.touches?.length < 2) {
           setTouchStore(prev => ({ ...prev, isMoving: false, initialDistance: 0 }));
         }
+        console.log("localItems", localItems);
         // console.log('handleMouseUp', e)
         // 如果是房间拖动或调整大小结束，记录历史
         if (isRoomDragging || isResizing) {
@@ -510,6 +511,7 @@ export const Canvas = forwardRef(
             newX = e.clientX - roomDragStart.x - position.x;
             newY = e.clientY - roomDragStart.y - position.y;
           }
+
           let newItems;
           if (
             draggedRoom &&
@@ -519,8 +521,8 @@ export const Canvas = forwardRef(
             const newRoom = {
               ...draggedRoom,
               position: {
-                x: newX,
-                y: newY,
+                x: newX + (scale - 100) * 18,
+                y: newY + (scale - 100) * 18,
               },
             };
             newItems = [...localItems, newRoom];
