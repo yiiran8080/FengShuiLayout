@@ -43,7 +43,7 @@ const scaleStepFactor = 0.1;
 const CANVAS_PADDING = 500; // 画布边缘预留空间
 const MAX_SCALE = 200;
 const MIN_SCALE = 50;
-
+let containerRect;
 export const Canvas = forwardRef(
   (
     {
@@ -60,7 +60,8 @@ export const Canvas = forwardRef(
     },
     ref
   ) => {
-    const containerRect = document.getElementById("canvas-drop-area")?.getBoundingClientRect();
+
+
     const t = useTranslations("design");
     const isMobile = useMobile();
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -113,7 +114,9 @@ export const Canvas = forwardRef(
         accepts: [ITEM_TYPES.ROOM, ITEM_TYPES.FURNITURE],
       },
     });
-
+    useEffect(() => {
+      containerRect = document.getElementById("canvas-drop-area")?.getBoundingClientRect();
+    }, [])
     // 计算画布需要的大小
     // useEffect(() => {
     //   if (localItems.length === 0) return;
