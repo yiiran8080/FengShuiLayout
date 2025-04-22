@@ -37,133 +37,7 @@ const ROOM_COLORS = {
   [ROOM_TYPES.GARAGE]: '#C7C7DD',        // 车库
   [ROOM_TYPES.CORRIDOR]: '#CDCDCD',      // 走廊
 };
-const defaultRoomSize = { width: 324, height: 324 }
-// const defaultFurSize = { width: draggingItemSize, height: 32 }
 
-const roomItems = [
-  {
-    id: 'living-room',
-    type: ITEM_TYPES.ROOM,
-    data: {
-      cateType: ITEM_TYPES.ROOM,
-      type: ROOM_TYPES.LIVING_ROOM,
-      label: '客厅',
-      icon: '/images/room-icon/room.png',
-      size: defaultRoomSize
-    }
-  },
-  {
-    id: 'dining-room',
-    type: ITEM_TYPES.ROOM,
-    data: {
-      cateType: ITEM_TYPES.ROOM,
-      type: ROOM_TYPES.DINING_ROOM,
-      label: '饭厅',
-      icon: '/images/room-icon/room.png',
-      size: defaultRoomSize
-    }
-  },
-  {
-    id: 'storage-room',
-    type: ITEM_TYPES.ROOM,
-    data: {
-      cateType: ITEM_TYPES.ROOM,
-      type: ROOM_TYPES.STORAGE_ROOM,
-      label: '储物室',
-      icon: '/images/room-icon/room.png',
-      size: defaultRoomSize
-    }
-  },
-  {
-    id: 'study-room',
-    type: ITEM_TYPES.ROOM,
-    data: {
-      cateType: ITEM_TYPES.ROOM,
-      type: ROOM_TYPES.STUDY_ROOM,
-      label: '书房',
-      icon: '/images/room-icon/room.png',
-      size: defaultRoomSize
-    }
-  },
-  {
-    id: 'bedroom',
-    type: ITEM_TYPES.ROOM,
-    data: {
-      cateType: ITEM_TYPES.ROOM,
-      type: ROOM_TYPES.BEDROOM,
-      label: '睡房',
-      icon: '/images/room-icon/room.png',
-      size: defaultRoomSize
-    }
-  },
-  {
-    id: 'bathroom',
-    type: ITEM_TYPES.ROOM,
-    data: {
-      cateType: ITEM_TYPES.ROOM,
-      type: ROOM_TYPES.BATHROOM,
-      label: '浴室',
-      icon: '/images/room-icon/room.png',
-      size: defaultRoomSize
-    }
-  },
-  {
-    id: 'kitchen',
-    type: ITEM_TYPES.ROOM,
-    data: {
-      cateType: ITEM_TYPES.ROOM,
-      type: ROOM_TYPES.KITCHEN,
-      label: '厨房',
-      icon: '/images/room-icon/room.png',
-      size: defaultRoomSize
-    }
-  },
-  {
-    id: 'balcony',
-    type: ITEM_TYPES.ROOM,
-    data: {
-      cateType: ITEM_TYPES.ROOM,
-      type: ROOM_TYPES.BALCONY,
-      label: '阳台',
-      icon: '/images/room-icon/room.png',
-      size: defaultRoomSize
-    }
-  },
-  {
-    id: 'garden',
-    type: ITEM_TYPES.ROOM,
-    data: {
-      cateType: ITEM_TYPES.ROOM,
-      type: ROOM_TYPES.GARDEN,
-      label: '花园',
-      icon: '/images/room-icon/room.png',
-      size: defaultRoomSize
-    }
-  },
-  {
-    id: 'garage',
-    type: ITEM_TYPES.ROOM,
-    data: {
-      cateType: ITEM_TYPES.ROOM,
-      type: ROOM_TYPES.GARAGE,
-      label: '车库',
-      icon: '/images/room-icon/room.png',
-      size: defaultRoomSize
-    }
-  },
-  {
-    id: 'corridor',
-    type: ITEM_TYPES.ROOM,
-    data: {
-      cateType: ITEM_TYPES.ROOM,
-      type: ROOM_TYPES.CORRIDOR,
-      label: '走廊',
-      icon: '/images/room-icon/room.png',
-      size: defaultRoomSize
-    }
-  },
-
-];
 
 const furnitureItems = [
   { id: 'door-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.DOOR, label: '门', icon: '/images/fur-icon/door.png', activeIcon: '/images/fur-icon/door-gr.png', size: { width: 40, height: 40 } } },
@@ -212,7 +86,133 @@ export default function DesignPage() {
   const sidebarRef = useRef(null);
   const isMobile = useMobile();
   const draggingItemSize = isMobile ? 48 : 56;
+  const defaultRoomSize = isMobile ? { width: 200, height: 200 } : { width: 324, height: 324 }
+  // const defaultFurSize = { width: draggingItemSize, height: 32 }
 
+  const roomItems = [
+    {
+      id: 'living-room',
+      type: ITEM_TYPES.ROOM,
+      data: {
+        cateType: ITEM_TYPES.ROOM,
+        type: ROOM_TYPES.LIVING_ROOM,
+        label: '客厅',
+        icon: '/images/room-icon/room.png',
+        size: defaultRoomSize
+      }
+    },
+    {
+      id: 'dining-room',
+      type: ITEM_TYPES.ROOM,
+      data: {
+        cateType: ITEM_TYPES.ROOM,
+        type: ROOM_TYPES.DINING_ROOM,
+        label: '饭厅',
+        icon: '/images/room-icon/room.png',
+        size: defaultRoomSize
+      }
+    },
+    {
+      id: 'storage-room',
+      type: ITEM_TYPES.ROOM,
+      data: {
+        cateType: ITEM_TYPES.ROOM,
+        type: ROOM_TYPES.STORAGE_ROOM,
+        label: '储物室',
+        icon: '/images/room-icon/room.png',
+        size: defaultRoomSize
+      }
+    },
+    {
+      id: 'study-room',
+      type: ITEM_TYPES.ROOM,
+      data: {
+        cateType: ITEM_TYPES.ROOM,
+        type: ROOM_TYPES.STUDY_ROOM,
+        label: '书房',
+        icon: '/images/room-icon/room.png',
+        size: defaultRoomSize
+      }
+    },
+    {
+      id: 'bedroom',
+      type: ITEM_TYPES.ROOM,
+      data: {
+        cateType: ITEM_TYPES.ROOM,
+        type: ROOM_TYPES.BEDROOM,
+        label: '睡房',
+        icon: '/images/room-icon/room.png',
+        size: defaultRoomSize
+      }
+    },
+    {
+      id: 'bathroom',
+      type: ITEM_TYPES.ROOM,
+      data: {
+        cateType: ITEM_TYPES.ROOM,
+        type: ROOM_TYPES.BATHROOM,
+        label: '浴室',
+        icon: '/images/room-icon/room.png',
+        size: defaultRoomSize
+      }
+    },
+    {
+      id: 'kitchen',
+      type: ITEM_TYPES.ROOM,
+      data: {
+        cateType: ITEM_TYPES.ROOM,
+        type: ROOM_TYPES.KITCHEN,
+        label: '厨房',
+        icon: '/images/room-icon/room.png',
+        size: defaultRoomSize
+      }
+    },
+    {
+      id: 'balcony',
+      type: ITEM_TYPES.ROOM,
+      data: {
+        cateType: ITEM_TYPES.ROOM,
+        type: ROOM_TYPES.BALCONY,
+        label: '阳台',
+        icon: '/images/room-icon/room.png',
+        size: defaultRoomSize
+      }
+    },
+    {
+      id: 'garden',
+      type: ITEM_TYPES.ROOM,
+      data: {
+        cateType: ITEM_TYPES.ROOM,
+        type: ROOM_TYPES.GARDEN,
+        label: '花园',
+        icon: '/images/room-icon/room.png',
+        size: defaultRoomSize
+      }
+    },
+    {
+      id: 'garage',
+      type: ITEM_TYPES.ROOM,
+      data: {
+        cateType: ITEM_TYPES.ROOM,
+        type: ROOM_TYPES.GARAGE,
+        label: '车库',
+        icon: '/images/room-icon/room.png',
+        size: defaultRoomSize
+      }
+    },
+    {
+      id: 'corridor',
+      type: ITEM_TYPES.ROOM,
+      data: {
+        cateType: ITEM_TYPES.ROOM,
+        type: ROOM_TYPES.CORRIDOR,
+        label: '走廊',
+        icon: '/images/room-icon/room.png',
+        size: defaultRoomSize
+      }
+    },
+
+  ];
   const { data: session } = useSession();
 
   // 添加useEffect监听侧边栏宽度
@@ -321,7 +321,7 @@ export default function DesignPage() {
   const handleDragMove = (event) => {
     if (!isMobile) return;
     if (event.delta.y < -120) {
-      initOverCanvas(event, { x: 0, y: 78 })
+      initOverCanvas(event, { x: 0, y: 50 })
     }
   }
   const handleDragOver = (event) => {

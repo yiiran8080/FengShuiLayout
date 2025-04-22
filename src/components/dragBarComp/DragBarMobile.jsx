@@ -2,6 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect } from "react";
 import { DraggableItem } from "../DraggableItem";
 import Image from "next/image";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
 import { cn } from "@/lib/utils";
 export default function DragBarMobile(props) {
@@ -35,57 +36,65 @@ export default function DragBarMobile(props) {
                         家具
                     </TabsTrigger>
                 </TabsList>
-                <TabsContent value="room" className="overflow-x-auto pb-7">
-                    <div className="grid grid-cols-6 gap-x-2 gap-y-4  min-w-110 w-auto">
-                        {roomItems.map((item) => (
-                            <DraggableItem
-                                key={item.id}
-                                id={item.id}
-                                type={item.type}
-                                data={item.data}
-                                isOverCanvas={isOverCanvas}
-                            >
-                                <div className="flex flex-col items-center">
-                                    <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                                        <Image
-                                            className='p-3 bg-[#EFF7F4] rounded-lg'
-                                            src={item.data.icon}
-                                            alt={item.data.label}
-                                            width={draggingItemSize}
-                                            height={draggingItemSize}
-                                        />
+                <TabsContent value="room" >
+                    <ScrollArea className="w-full pb-7">
+                        <div className="grid grid-cols-6 gap-x-8 gap-y-4 min-w-110 ">
+                            {roomItems.map((item) => (
+                                <DraggableItem
+                                    key={item.id}
+                                    id={item.id}
+                                    type={item.type}
+                                    data={item.data}
+                                    isOverCanvas={isOverCanvas}
+                                >
+                                    <div className="flex flex-col items-center">
+                                        <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                            <Image
+                                                className='p-3 bg-[#EFF7F4] rounded-lg'
+                                                src={item.data.icon}
+                                                alt={item.data.label}
+                                                width={draggingItemSize}
+                                                height={draggingItemSize}
+                                            />
+                                        </div>
+                                        <span className="mt-1 text-[12px] text-gray-600">{item.data.label}</span>
                                     </div>
-                                    <span className="mt-1 text-[12px] text-gray-600">{item.data.label}</span>
-                                </div>
-                            </DraggableItem>
-                        ))}
-                    </div>
+                                </DraggableItem>
+                            ))}
+                        </div>
+                        <ScrollBar orientation="horizontal" />
+                    </ScrollArea>
+
                 </TabsContent>
-                <TabsContent value="furniture" className="overflow-x-auto  pb-7">
-                    <div className="grid grid-rows-2 grid-cols-9 gap-x-2 gap-y-4  min-w-150 w-auto">
-                        {furnitureItems.map((item) => (
-                            <DraggableItem
-                                key={item.id}
-                                id={item.id}
-                                type={item.type}
-                                data={item.data}
-                                isOverCanvas={isOverCanvas}
-                            >
-                                <div className="flex flex-col items-center">
-                                    <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                                        <Image
-                                            className='bg-[#EFF7F4] rounded-lg'
-                                            src={item.data.icon}
-                                            alt={item.data.label}
-                                            width={draggingItemSize}
-                                            height={draggingItemSize}
-                                        />
+                <TabsContent value="furniture">
+                    <ScrollArea className="w-full pb-7">
+                        <div className="grid grid-rows-2 grid-cols-9 gap-x-8 gap-y-4  min-w-150 w-auto">
+                            {furnitureItems.map((item) => (
+                                <DraggableItem
+                                    key={item.id}
+                                    id={item.id}
+                                    type={item.type}
+                                    data={item.data}
+                                    isOverCanvas={isOverCanvas}
+                                >
+                                    <div className="flex flex-col items-center">
+                                        <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                            <Image
+                                                className='bg-[#EFF7F4] rounded-lg'
+                                                src={item.data.icon}
+                                                alt={item.data.label}
+                                                width={draggingItemSize}
+                                                height={draggingItemSize}
+                                            />
+                                        </div>
+                                        <span className="mt-1 text-[12px] text-gray-600">{item.data.label}</span>
                                     </div>
-                                    <span className="mt-1 text-sm text-gray-600">{item.data.label}</span>
-                                </div>
-                            </DraggableItem>
-                        ))}
-                    </div>
+                                </DraggableItem>
+                            ))}
+                        </div>
+                        <ScrollBar orientation="horizontal" />
+                    </ScrollArea>
+
 
                 </TabsContent>
             </Tabs>
