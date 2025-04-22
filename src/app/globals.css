@@ -63,14 +63,7 @@
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
+
 
 @layer base {
   * {
@@ -78,6 +71,16 @@
   }
   body {
     @apply bg-background text-foreground;
+
+  -webkit-user-select: none; /* Chrome, Safari, Opera */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+
+  -webkit-user-drag: none; /* Chrome, Safari, Opera */
+  -moz-user-drag: none; /* Firefox */
+  -ms-user-drag: none; /* Internet Explorer/Edge */
+
   }
 }
 

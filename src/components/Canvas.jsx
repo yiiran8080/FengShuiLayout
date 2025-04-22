@@ -56,11 +56,11 @@ export const Canvas = forwardRef(
       setHistoryIndex,
       handleUndo,
       handleRedo,
-      onGenReport
+      onGenReport,
     },
     ref
   ) => {
-
+    const containerRect = document.getElementById("canvas-drop-area")?.getBoundingClientRect();
     const t = useTranslations("design");
     const isMobile = useMobile();
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -499,8 +499,8 @@ export const Canvas = forwardRef(
           }
           // console.log('ne', newX, newY, e.clientX, e.clientY);
           //无限画布效果。
-          const container = document.getElementById("canvas-drop-area");
-          const containerRect = document.getElementById("canvas-drop-area").getBoundingClientRect();
+
+
           let canvasWidth, canvasHeight;
           if (newX > 0 || newY > 0) {
             return

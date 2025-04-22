@@ -474,8 +474,9 @@ export default function DesignPage() {
                   )
                 }
                 {/* Canvas */}
-                <div className="flex-1 overflow-auto" id="canvas-drop-area">
+                <div className="flex-1 overflow-auto" id="canvas-drop-area" >
                   <Canvas ref={canvasRef}
+
                     history={history}
                     historyIndex={historyIndex}
                     setHistory={setHistory}
