@@ -14,13 +14,13 @@ jobs:
            echo "${{secrets.FENGSHUI_PEM}}" > key.pem
            chmod 400 key.pem
        - name: deploy
-         run: ssh -o StrictHostKeyChecking=no -i key.pem ec2-user@${{secrets.EC2_IP}} "
+         run: ssh -o StrictHostKeyChecking=no -i key.pem ${{secrets.EC2_USERNAME}}@${{secrets.EC2_IP}} "
              cd ~/home/workspace/FengShuiLayout/
              git checkout test-deploy
              git checkout .
              git pull origin test-deploy
              echo '------ git pull done ------' ;
-             docker rm $(docker stop $(docker ps -a -q --filter ancestor=huashuiai-web-docker))
+             docker rm $(docker stop $(docker ps -a -q --filter ancestor=fengshui-web-docker))
              docker build -t fengshui-web-docker .
              echo '------ docker build done ------'
              docker run -d -p 3000:3000 fengshui-web-docker
