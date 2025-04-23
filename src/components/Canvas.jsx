@@ -186,13 +186,13 @@ export const Canvas = forwardRef(
 
         setActiveRoom(null);
         setIsDragging(true);
-        let updatedItems = localItems.map(item => {
-          return {
-            ...item,
-            relativePosition: item.position
-          }
-        })
-        setLocalItems(updatedItems);
+        // let updatedItems = localItems.map(item => {
+        //   return {
+        //     ...item,
+        //     relativePosition: item.position
+        //   }
+        // })
+        // setLocalItems(updatedItems);
         if (e.touches?.length === 1) {
           setDragStart({
             x: e.touches[0].clientX - position.x,
@@ -205,21 +205,21 @@ export const Canvas = forwardRef(
           });
         }
       },
-      [position, scale, localItems]
+      [position, scale]
     );
 
     const furnitureInroom = (furniture, parentRoom) => {
       if (!furniture.position || !parentRoom.position) return false;
       return (
         furniture.position.x >= parentRoom.position.x &&
-        furniture.position.x <= parentRoom.position.x + parentRoom.size.width &&
-        furniture.position.x + furniture.size.width <=
-        parentRoom.position.x + parentRoom.size.width &&
+        furniture.position.x <= parentRoom.position.x + parentRoom.size.width * (scale / 100) &&
+        furniture.position.x + furniture.size.width * (scale / 100) <=
+        parentRoom.position.x + parentRoom.size.width * (scale / 100) &&
         furniture.position.y + 20 >= parentRoom.position.y &&
         furniture.position.y <=
-        parentRoom.position.y + parentRoom.size.height &&
-        furniture.position.y - 20 + furniture.size.height <=
-        parentRoom.position.y + parentRoom.size.height
+        parentRoom.position.y + parentRoom.size.height * (scale / 100) &&
+        furniture.position.y - 20 + furniture.size.height * (scale / 100) <=
+        parentRoom.position.y + parentRoom.size.height * (scale / 100)
       );
     };
     // 处理房间拖动开始
@@ -248,6 +248,7 @@ export const Canvas = forwardRef(
               item.type === ITEM_TYPES.FURNITURE &&
               furnitureInroom(item, room)
             ) {
+              console.log("家具在里面", item, room);
               return {
                 ...item,
                 parentId: room.id,
@@ -402,14 +403,15 @@ export const Canvas = forwardRef(
                 condition = newSize.width >= 100 && newSize.height >= 100;
               } else if (item.data.type === FURNITURE_TYPES.WINDOW) {
                 condition = newSize.width >= 8 && newSize.height >= 8;
-              } else condition = newSize.width >= 32 && newSize.height >= 32;
+              } else condition = newSize.width >= 20 && newSize.height >= 20;
 
               // 房间最小尺寸100，家具最小尺寸
               if (condition) {
                 return {
                   ...item,
                   size: newSize,
-                  position: newPosition,
+                  //position: newPosition,
+                  //relativePosition: newPosition
                 };
               }
               return item;
@@ -462,12 +464,20 @@ export const Canvas = forwardRef(
                     x: newX,
                     y: newY,
                   },
+                  relativePosition: {
+                    x: newX,
+                    y: newY,
+                  },
                 };
               } else if (furnitureIdList.includes(item.id)) {
                 // console.log(item.offset);
                 return {
                   ...item,
                   position: {
+                    x: newX + item.offset?.x || 0,
+                    y: newY + item.offset?.y || 0,
+                  },
+                  relativePosition: {
                     x: newX + item.offset?.x || 0,
                     y: newY + item.offset?.y || 0,
                   },
@@ -481,6 +491,10 @@ export const Canvas = forwardRef(
                 return {
                   ...item,
                   position: {
+                    x: newX,
+                    y: newY,
+                  },
+                  relativePosition: {
                     x: newX,
                     y: newY,
                   },
@@ -527,6 +541,9 @@ export const Canvas = forwardRef(
           }
           if (2000 + newX < containerRect.width) {
             canvasWidth = 2000 - newX;
+            // if (scale < 100) {
+            //   canvasWidth = canvasWidth / (scale / 100)
+            // }
 
 
           }
@@ -577,13 +594,40 @@ export const Canvas = forwardRef(
                   x: newX,
                   y: newY,
                 },
+                relativePosition: {
+                  x: newX,
+                  y: newY,
+                },
+                data: {
+                  ...draggedRoom.data,
+                  label: `${draggedRoom.data.label}`,
+                  //parentRoom: draggedRoom.id,
+                }
               };
               newItems = [...localItems, newRoom];
 
               setLocalItems(newItems);
               onHandleActiveRoom(newRoom, newItems);
-            } else {
-              newItems = [...localItems];
+            } else if (draggedRoom) {
+              //移动结束一个已有的房间/家具
+              newItems = _.cloneDeep(localItems);
+              let target = newItems.find(item => item.id === draggedRoom.id);
+              if (target) {
+                target.relativePosition = {
+                  x: newX,
+                  y: newY,
+                }
+              }
+              // newItems = localItems.map(item => {
+              //   return {
+              //     ...item,
+              //     relativePosition: {
+              //       x: newX,
+              //       y: newY,
+              //     },
+              //   }
+              // });
+              setLocalItems(newItems);
             }
 
             const newHistory = history.slice(0, historyIndex + 1);
@@ -728,42 +772,21 @@ export const Canvas = forwardRef(
       } else {
         return;
       }
-      // if (step == 10) {
-      //   onTransCanvas(type, newScale);
-      // }
-      // setCanvasSize(canvasSize => {
-      //   return {
-      //     ...canvasSize,
-      //     width: canvasSize.width + canvasSize.width * (1 - newScale / 100),
-      //     height: canvasSize.height + canvasSize.height * (1 - newScale / 100)
-      //   }
-      // })
+      let updatedItems = localItems.map((item) => {
+        return {
+          ...item,
+          position: {
+            x: item.relativePosition.x * (newScale / 100),
+            y: item.relativePosition.y * (newScale / 100)
+          },
+        }
+      })
+      setLocalItems(updatedItems);
       // 更新状态
       setScale(newScale);
 
     };
-    function onTransCanvas(type, newScale) {
-      // 获取画布容器和画布元素
-      // const container = document.getElementById("canvas-drop-area");
-      // const containerRect = document.getElementById("canvas-drop-area").getBoundingClientRect();
-      // //console.log('111', containerRect, container.querySelector('.cursor-move'));
-      // const canvasRect = container.querySelector('.cursor-move').getBoundingClientRect();
-      // console.log('222', canvasRect.width, canvasRect.height);
-      // const x1 = (containerRect.width - canvasRect.width) / 2;
-      // const y1 = (containerRect.height - canvasRect.height) / 2;
-      // // 获取画布相对于视口的位置和尺寸
-      // //const canvasRect = containerRef.current.querySelector('.cursor-move').getBoundingClientRect();
-      // const newPositionX = (containerRect.width - canvasRect.width * (newScale / 100)) / 2;
-      // const newPositionY = (containerRect.height - canvasRect.height * (newScale / 100)) / 2;
-      //setPosition({ x: newPositionX, y: newPositionY });
-      //console.log(newPositionX - x1, newPositionY - y1, position);
-      if (type === 'in') {
-        setPosition({ x: position.x + 150, y: position.y + 150 });
-      } else if (type === 'out') {
-        setPosition({ x: position.x - 150, y: position.y - 150 });
-      }
 
-    }
     const handleRotate = useCallback(() => {
       if (!activeRoom) return;
 
@@ -842,7 +865,8 @@ export const Canvas = forwardRef(
       );
     };
 
-    // console.log('localItems',localItems)
+    // console.log('localItems',localItems) 
+    // scale(${scale / 100})
     return (
       <div className="relative w-full min-h-[calc(100vh-64px)] overflow-hidden bg-background">
         {/* 右上角控制面板 */}
@@ -933,6 +957,7 @@ export const Canvas = forwardRef(
                       width: item.size.width,
                       height: item.size.height,
                       transform: `scale(${scale / 100})`,
+                      transformOrigin: "top left",
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -1027,6 +1052,7 @@ export const Canvas = forwardRef(
                       width: item.size.width,
                       height: item.size.height,
                       transform: `scale(${scale / 100})`,
+                      transformOrigin: "top left",
                     }}
                     onClick={(e) => {
                       e.stopPropagation();

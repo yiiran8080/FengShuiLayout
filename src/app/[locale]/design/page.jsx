@@ -97,7 +97,7 @@ export default function DesignPage() {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.LIVING_ROOM,
         label: '客厅',
-        icon: '/images/room-icon/room.png',
+        icon: '/images/room-icon/living_room.png',
         size: defaultRoomSize
       }
     },
@@ -108,7 +108,7 @@ export default function DesignPage() {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.DINING_ROOM,
         label: '饭厅',
-        icon: '/images/room-icon/room.png',
+        icon: '/images/room-icon/dining_room.png',
         size: defaultRoomSize
       }
     },
@@ -119,7 +119,7 @@ export default function DesignPage() {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.STORAGE_ROOM,
         label: '储物室',
-        icon: '/images/room-icon/room.png',
+        icon: '/images/room-icon/storage_room.png',
         size: defaultRoomSize
       }
     },
@@ -130,7 +130,7 @@ export default function DesignPage() {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.STUDY_ROOM,
         label: '书房',
-        icon: '/images/room-icon/room.png',
+        icon: '/images/room-icon/study_room.png',
         size: defaultRoomSize
       }
     },
@@ -141,7 +141,7 @@ export default function DesignPage() {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.BEDROOM,
         label: '睡房',
-        icon: '/images/room-icon/room.png',
+        icon: '/images/room-icon/bedroom.png',
         size: defaultRoomSize
       }
     },
@@ -152,7 +152,7 @@ export default function DesignPage() {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.BATHROOM,
         label: '浴室',
-        icon: '/images/room-icon/room.png',
+        icon: '/images/room-icon/bathroom.png',
         size: defaultRoomSize
       }
     },
@@ -163,7 +163,7 @@ export default function DesignPage() {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.KITCHEN,
         label: '厨房',
-        icon: '/images/room-icon/room.png',
+        icon: '/images/room-icon/kitchen.png',
         size: defaultRoomSize
       }
     },
@@ -174,7 +174,7 @@ export default function DesignPage() {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.BALCONY,
         label: '阳台',
-        icon: '/images/room-icon/room.png',
+        icon: '/images/room-icon/balcony.png',
         size: defaultRoomSize
       }
     },
@@ -185,7 +185,7 @@ export default function DesignPage() {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.GARDEN,
         label: '花园',
-        icon: '/images/room-icon/room.png',
+        icon: '/images/room-icon/garden.png',
         size: defaultRoomSize
       }
     },
@@ -196,7 +196,7 @@ export default function DesignPage() {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.GARAGE,
         label: '车库',
-        icon: '/images/room-icon/room.png',
+        icon: '/images/room-icon/garage.png',
         size: defaultRoomSize
       }
     },
@@ -207,7 +207,7 @@ export default function DesignPage() {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.CORRIDOR,
         label: '走廊',
-        icon: '/images/room-icon/room.png',
+        icon: '/images/room-icon/corridor.png',
         size: defaultRoomSize
       }
     },
@@ -320,7 +320,7 @@ export default function DesignPage() {
   }
   const handleDragMove = (event) => {
     if (!isMobile) return;
-    console.log('y', event.delta.y);
+    // console.log('y', event.delta.y);
     if (event.delta.y < -120) {
       initOverCanvas(event, { x: 0, y: 50 })
     }

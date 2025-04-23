@@ -15,8 +15,6 @@ export const ROOM_TYPES = {
   GARDEN: 'garden',
   GARAGE: 'garage',
   CORRIDOR: 'corridor',
-  DOOR: 'door',
-  WINDOW: 'window'
 }
 
 export const FURNITURE_TYPES = {
@@ -40,7 +38,7 @@ export const FURNITURE_TYPES = {
   SHOWER: 'shower',
   BATHTUB: 'bathtub'
 };
-export const  FURNITURE_TYPES_LABEL = {
+export const FURNITURE_TYPES_LABEL = {
   [FURNITURE_TYPES.DOOR]: '门',
   [FURNITURE_TYPES.WINDOW]: '窗',
   [FURNITURE_TYPES.TABLE]: '枱',

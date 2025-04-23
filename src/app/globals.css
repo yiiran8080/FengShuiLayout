@@ -80,7 +80,22 @@
   -webkit-user-drag: none; /* Chrome, Safari, Opera */
   -moz-user-drag: none; /* Firefox */
   -ms-user-drag: none; /* Internet Explorer/Edge */
+::-webkit-scrollbar{
+  width:12px
 
+}
+::-webkit-scrollbar-track{
+  background: #f1f1f1;
+  
+}
+::-webkit-scrollbar-thumb{
+  background: #888;
+  
+}
+::-webkit-scrollbar-thumb:hover{
+  background: #555;
+  
+}
   }
 }
 
@@ -91,7 +106,7 @@
   }
 
   .bg-button-primary{
-    background-color: #096E56;
+    background-color: #096e44;
   }
   .bg-button-gradient {
     background: linear-gradient(135deg, #19AD6B 0%, #16A183 100%);

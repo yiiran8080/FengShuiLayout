@@ -50,7 +50,7 @@ export default function DragBarMobile(props) {
                                     <div className="flex flex-col items-center">
                                         <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
                                             <Image
-                                                className='p-3 bg-[#EFF7F4] rounded-lg'
+                                                className='bg-[#EFF7F4] rounded-lg'
                                                 src={item.data.icon}
                                                 alt={item.data.label}
                                                 width={draggingItemSize}
@@ -62,7 +62,9 @@ export default function DragBarMobile(props) {
                                 </DraggableItem>
                             ))}
                         </div>
-                        <ScrollBar orientation="horizontal" />
+                        <ScrollBar orientation="horizontal" forceMount>
+                            <ScrollArea.Thumb />
+                        </ScrollBar>
                     </ScrollArea>
 
                 </TabsContent>
@@ -92,7 +94,7 @@ export default function DragBarMobile(props) {
                                 </DraggableItem>
                             ))}
                         </div>
-                        <ScrollBar orientation="horizontal" />
+                        <ScrollBar orientation="horizontal" forceMount />
                     </ScrollArea>
 
 

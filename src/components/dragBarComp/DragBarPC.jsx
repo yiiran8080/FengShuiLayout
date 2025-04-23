@@ -22,7 +22,7 @@ export default function DragBarPC(props) {
                             <div className="flex flex-col items-center">
                                 <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
                                     <Image
-                                        className='p-3 bg-[#EFF7F4] rounded-lg'
+                                        className=' bg-[#EFF7F4] rounded-lg'
                                         src={item.data.icon}
                                         alt={item.data.label}
                                         width={draggingItemSize}
