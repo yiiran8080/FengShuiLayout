@@ -186,13 +186,6 @@ export const Canvas = forwardRef(
 
         setActiveRoom(null);
         setIsDragging(true);
-        // let updatedItems = localItems.map(item => {
-        //   return {
-        //     ...item,
-        //     relativePosition: item.position
-        //   }
-        // })
-        // setLocalItems(updatedItems);
         if (e.touches?.length === 1) {
           setDragStart({
             x: e.touches[0].clientX - position.x,
@@ -410,7 +403,7 @@ export const Canvas = forwardRef(
                 return {
                   ...item,
                   size: newSize,
-                  //position: newPosition,
+                  position: newPosition,
                   //relativePosition: newPosition
                 };
               }
@@ -464,20 +457,12 @@ export const Canvas = forwardRef(
                     x: newX,
                     y: newY,
                   },
-                  relativePosition: {
-                    x: newX,
-                    y: newY,
-                  },
                 };
               } else if (furnitureIdList.includes(item.id)) {
                 // console.log(item.offset);
                 return {
                   ...item,
                   position: {
-                    x: newX + item.offset?.x || 0,
-                    y: newY + item.offset?.y || 0,
-                  },
-                  relativePosition: {
                     x: newX + item.offset?.x || 0,
                     y: newY + item.offset?.y || 0,
                   },
@@ -491,10 +476,6 @@ export const Canvas = forwardRef(
                 return {
                   ...item,
                   position: {
-                    x: newX,
-                    y: newY,
-                  },
-                  relativePosition: {
                     x: newX,
                     y: newY,
                   },
@@ -594,10 +575,6 @@ export const Canvas = forwardRef(
                   x: newX,
                   y: newY,
                 },
-                relativePosition: {
-                  x: newX,
-                  y: newY,
-                },
                 data: {
                   ...draggedRoom.data,
                   label: `${draggedRoom.data.label}`,
@@ -608,26 +585,9 @@ export const Canvas = forwardRef(
 
               setLocalItems(newItems);
               onHandleActiveRoom(newRoom, newItems);
-            } else if (draggedRoom) {
+            } else {
               //移动结束一个已有的房间/家具
-              newItems = _.cloneDeep(localItems);
-              let target = newItems.find(item => item.id === draggedRoom.id);
-              if (target) {
-                target.relativePosition = {
-                  x: newX,
-                  y: newY,
-                }
-              }
-              // newItems = localItems.map(item => {
-              //   return {
-              //     ...item,
-              //     relativePosition: {
-              //       x: newX,
-              //       y: newY,
-              //     },
-              //   }
-              // });
-              setLocalItems(newItems);
+              newItems = localItems
             }
 
             const newHistory = history.slice(0, historyIndex + 1);
@@ -773,11 +733,12 @@ export const Canvas = forwardRef(
         return;
       }
       let updatedItems = localItems.map((item) => {
+        console.log(1 + (newScale - scale) / 100)
         return {
           ...item,
           position: {
-            x: item.relativePosition.x * (newScale / 100),
-            y: item.relativePosition.y * (newScale / 100)
+            x: item.position.x * (1 + (newScale - scale) / 100),
+            y: item.position.y * (1 + (newScale - scale) / 100)
           },
         }
       })
