@@ -434,6 +434,8 @@ export const Canvas = forwardRef(
             newX = e.clientX - roomDragStart.x;
             newY = e.clientY - roomDragStart.y;
           }
+          newX = Math.max(0, newX); // 限制x轴最小值为0
+          newY = Math.max(0, newY); // 限制y轴最小值为0
           let updatedItems = [];
           // console.log('localItems',localItems);
           if (draggedRoom.type === ITEM_TYPES.ROOM) {
@@ -922,7 +924,7 @@ export const Canvas = forwardRef(
                       width: item.size.width,
                       height: item.size.height,
                       // transform: `scale(${scale / 100})`,
-                      transformOrigin: "top left",
+                      transformOrigin: "center",
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -1017,7 +1019,7 @@ export const Canvas = forwardRef(
                       width: item.size.width,
                       height: item.size.height,
                       // transform: `scale(${scale / 100})`,
-                      transformOrigin: "top left",
+                      transformOrigin: "center",
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
