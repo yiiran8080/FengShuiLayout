@@ -23,15 +23,15 @@ jobs:
             # Now we have got the access of EC2 and we will start the deploy .
             cd /home/workspace/FengShuiLayout/ ;
             echo '------ cd done ------' ;
-            git checkout test-deploy ;
-            git checkout . ;
-            git pull origin test-deploy ;
+            sudo git checkout test-deploy ;
+            sudo git checkout . ;
+            sudo git pull origin test-deploy ;
             echo '------ git pull done ------' ;
-            docker rm $(docker stop $(docker ps -a -q --filter ancestor=fengshui-web-docker)) ;
+            sudo docker rm $(sudo docker stop $(sudo docker ps -a -q --filter ancestor=fengshui-web-docker)) ;
             echo '------ docker rm done ------' ;
-            docker build -t fengshui-web-docker . ;
+            sudo docker build -t fengshui-web-docker . ;
             echo '------ docker build done ------'
-            docker run -d -p 3000:3000 fengshui-web-docker ;
+            sudo docker run -d -p 3000:3000 fengshui-web-docker ;
             echo '------ docker run done ------' ;
             '
           rm -rf private_key
