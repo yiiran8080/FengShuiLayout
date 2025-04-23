@@ -14,12 +14,12 @@ jobs:
            echo "${{secrets.FENGSHUI_PEM}}" > key.pem
            chmod 400 key.pem
        - name: deploy
-         run: |
-           ssh -i key.pem ec2-user@${secrets.EC2_IP} "
+         run: ssh -i key.pem ec2-user@${{secrets.EC2_IP}} "
              cd ~/home/workspace/FengShuiLayout/
              git checkout test-deploy
              git checkout .
              git pull origin test-deploy
+             echo '------ git pull done ------' ;
              docker rm $(docker stop $(docker ps -a -q --filter ancestor=huashuiai-web-docker))
              docker build -t fengshui-web-docker .
              echo '------ docker build done ------'
