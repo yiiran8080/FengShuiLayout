@@ -18,17 +18,17 @@ jobs:
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
-            cd ~/home/workspace/FengshuiLayout/ ;
+            cd ~/home/workspace/FengShuiLayout/ ;
             echo '------ cd done ------' ;
             git checkout test-deploy
             git checkout .
             git pull origin test-deploy
             echo '------ git pull done ------' ;
-            docker rm $(docker stop $(docker ps -a -q --filter ancestor=huashuiai-web-docker))
+            docker rm $(docker stop $(docker ps -a -q --filter ancestor=fengshui-web-docker))
             echo '------ docker rm done ------' ;
-            docker build -t huashuiai-web-docker .
+            docker build -t fengshui-web-docker .
             echo '------ docker build done ------'
-            docker run -d -p 3000:3000 huashuiai-web-docker
+            docker run -d -p 3000:3000 fengshui-web-docker
             echo '------ docker run done ------' ;
           '
       - name: success
