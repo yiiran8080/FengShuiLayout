@@ -731,13 +731,13 @@ export const Canvas = forwardRef(
       // if (step == 10) {
       //   onTransCanvas(type, newScale);
       // }
-      setCanvasSize(canvasSize => {
-        return {
-          ...canvasSize,
-          width: canvasSize.width + canvasSize.width * (1 - newScale / 100),
-          height: canvasSize.height + canvasSize.height * (1 - newScale / 100)
-        }
-      })
+      // setCanvasSize(canvasSize => {
+      //   return {
+      //     ...canvasSize,
+      //     width: canvasSize.width + canvasSize.width * (1 - newScale / 100),
+      //     height: canvasSize.height + canvasSize.height * (1 - newScale / 100)
+      //   }
+      // })
       // 更新状态
       setScale(newScale);
 
@@ -769,8 +769,8 @@ export const Canvas = forwardRef(
 
       const updatedItems = localItems.map((item) => {
         if (item.id === activeRoom.id) {
-          // 计算新的旋转角度（每次增加90度，对360取模）
-          const newRotation = ((item.rotation || 0) - 90) % 360;
+          // 计算新的旋转角度（每次增加45度，对360取模）
+          const newRotation = ((item.rotation || 0) - 45) % 360;
 
           // 如果是90度或270度旋转，需要交换宽高
           // const isOddRotation = Math.abs(newRotation) % 180 === 90;
@@ -803,7 +803,7 @@ export const Canvas = forwardRef(
       setLocalItems(updatedItems);
     }, [activeRoom, localItems]);
     const onCompassClick = () => {
-      console.log("compass");
+      // console.log("compass");
       // 增加45度，并保持在0-360范围内
       let newRotation = compassRotation + 45;
       // if (newRotation >= 360) {

@@ -249,7 +249,7 @@ export default function DesignPage() {
         setLoading(true);
         const { status: status0, message: message0, data: userInfo } = await get(`/api/users/${userId}`)
         const { status: status1, message: message1, data: designData } = await get(`/api/design/${userId}`);
-        console.log('designData', status0, message0)
+        // console.log('designData', status0, message0)
         if (status0 !== 0) {
           toast.error("查询用户错误:" + message0)
           return
@@ -320,6 +320,7 @@ export default function DesignPage() {
   }
   const handleDragMove = (event) => {
     if (!isMobile) return;
+    console.log('y', event.delta.y);
     if (event.delta.y < -120) {
       initOverCanvas(event, { x: 0, y: 50 })
     }
