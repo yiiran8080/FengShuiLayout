@@ -733,13 +733,17 @@ export const Canvas = forwardRef(
         return;
       }
       let updatedItems = localItems.map((item) => {
-        console.log(1 + (newScale - scale) / 100)
+        // console.log(1 + (newScale - scale) / 100)
         return {
           ...item,
           position: {
             x: item.position.x * (1 + (newScale - scale) / 100),
             y: item.position.y * (1 + (newScale - scale) / 100)
           },
+          size: {
+            width: item.size.width * (1 + (newScale - scale) / 100),
+            height: item.size.height * (1 + (newScale - scale) / 100)
+          }
         }
       })
       setLocalItems(updatedItems);
@@ -917,7 +921,7 @@ export const Canvas = forwardRef(
                       top: item.position.y,
                       width: item.size.width,
                       height: item.size.height,
-                      transform: `scale(${scale / 100})`,
+                      // transform: `scale(${scale / 100})`,
                       transformOrigin: "top left",
                     }}
                     onClick={(e) => {
@@ -1012,7 +1016,7 @@ export const Canvas = forwardRef(
                       top: item.position.y,
                       width: item.size.width,
                       height: item.size.height,
-                      transform: `scale(${scale / 100})`,
+                      // transform: `scale(${scale / 100})`,
                       transformOrigin: "top left",
                     }}
                     onClick={(e) => {
