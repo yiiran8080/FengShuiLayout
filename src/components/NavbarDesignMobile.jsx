@@ -3,6 +3,7 @@ import { Save, UserPen, Menu, CircleHelp, X } from 'lucide-react';
 import Undo from './canvasComp/Undo';
 import { useState } from 'react';
 import MenuBar from './MenuBar';
+import Avatar from "@/components/Avatar";
 export default function NavbarDesignMobile({ onSaveProject, history, historyIndex, handleUndo, handleRedo, onUserOpen }) {
   const [showTip, setShowTip] = useState(false);
   return (
@@ -19,6 +20,7 @@ export default function NavbarDesignMobile({ onSaveProject, history, historyInde
               <span className='flex items-center gap-1 cursor-pointer'><CircleHelp className="w-4 h-4" onClick={() => setShowTip(true)} /></span>
               <span className='flex items-center gap-1 cursor-pointer' ><UserPen className="w-4 h-4" onClick={() => onUserOpen(true)} /> </span>
               <MenuBar className="text-foreground" />
+              <Avatar />
             </div>
           </div>
         </div>

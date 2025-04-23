@@ -5,6 +5,7 @@ import Image from "next/image";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
 import { cn } from "@/lib/utils";
+
 export default function DragBarMobile(props) {
     const { showTab, setShowTab, roomItems, furnitureItems, isOverCanvas, draggingItemSize } = props
     const [active, setActive] = useState('')

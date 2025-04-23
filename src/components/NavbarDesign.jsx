@@ -4,6 +4,7 @@ import LanguageToggle from './LanguageToggle';
 import { Save, UserPen } from 'lucide-react';
 import Undo from './canvasComp/Undo';
 import useMobile from '../app/hooks/useMobile';
+import Avatar from './Avatar';
 export default function NavbarDesign({ onSaveProject, onUserOpen }) {
   const { isMobile } = useMobile();
   return (
@@ -25,6 +26,7 @@ export default function NavbarDesign({ onSaveProject, onUserOpen }) {
               开始测算
               <span className="text-lg">✨</span>
             </Link>
+            <Avatar />
           </div>
 
 
