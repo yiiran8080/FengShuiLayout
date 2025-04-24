@@ -82,9 +82,8 @@
   -ms-user-drag: none; /* Internet Explorer/Edge */
 ::-webkit-scrollbar{
   width:6px;
-  
-
 }
+::-webkit-overflow-scrolling: touch;
 ::-webkit-scrollbar-track{
   background: #f1f1f1;
     border-radius: 20px;

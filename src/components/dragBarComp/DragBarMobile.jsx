@@ -37,7 +37,7 @@ export default function DragBarMobile(props) {
                         家具
                     </TabsTrigger>
                 </TabsList>
-                <TabsContent value="room" className="w-full pb-7 overflow-auto">
+                <TabsContent value="room" className="w-full pb-7 overflow-auto scrolling-touch">
 
                     <div className="grid grid-cols-6 gap-x-8 gap-y-4 min-w-110 ">
                         {roomItems.map((item) => (
@@ -67,7 +67,7 @@ export default function DragBarMobile(props) {
 
 
                 </TabsContent>
-                <TabsContent value="furniture" className="w-full pb-7 overflow-auto">
+                <TabsContent value="furniture" className="w-full pb-7 overflow-auto scrolling-touch">
 
                     <div className="grid grid-rows-2 grid-cols-9 gap-x-8 gap-y-4  min-w-150 w-auto">
                         {furnitureItems.map((item) => (
