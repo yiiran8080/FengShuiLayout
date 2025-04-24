@@ -41,7 +41,7 @@ const ROOM_COLORS = {
 const scaleStepFactor = 0.1;
 
 const CANVAS_PADDING = 500; // 画布边缘预留空间
-const MAX_SCALE = 200;
+const MAX_SCALE = 120;
 const MIN_SCALE = 50;
 let containerRect;
 export const Canvas = forwardRef(
@@ -522,17 +522,17 @@ export const Canvas = forwardRef(
             // });
             // setLocalItems(updatedItems);
           }
-          if (2000 + newX < containerRect.width) {
-            canvasWidth = 2000 - newX;
+          if (2000 + newX < containerRect.width / (scale / 100)) {
+            canvasWidth = (2000 - newX) / (scale / 100);
             // if (scale < 100) {
             //   canvasWidth = canvasWidth / (scale / 100)
             // }
 
 
           }
-          if (2000 + newY < containerRect.height) {
+          if (2000 + newY < containerRect.height / (scale / 100)) {
 
-            canvasHeight = 2000 - newY
+            canvasHeight = (2000 - newY) / (scale / 100)
           }
 
           setPosition({
@@ -574,8 +574,9 @@ export const Canvas = forwardRef(
               const newRoom = {
                 ...draggedRoom,
                 position: {
-                  x: newX,
-                  y: newY,
+                  x: newX / (scale / 100),
+
+                  y: newY / (scale / 100),
                 },
                 data: {
                   ...draggedRoom.data,
@@ -734,21 +735,61 @@ export const Canvas = forwardRef(
       } else {
         return;
       }
-      let updatedItems = localItems.map((item) => {
-        // console.log(1 + (newScale - scale) / 100)
-        return {
-          ...item,
-          position: {
-            x: item.position.x * (1 + (newScale - scale) / 100),
-            y: item.position.y * (1 + (newScale - scale) / 100)
-          },
-          size: {
-            width: item.size.width * (1 + (newScale - scale) / 100),
-            height: item.size.height * (1 + (newScale - scale) / 100)
-          }
-        }
-      })
-      setLocalItems(updatedItems);
+
+
+      if (type === 'out') {
+        setCanvasSize({
+          width: (canvasSize.width - (position.x < 0 ? position.x : 0)) * (1 + (scale - newScale) / 100),
+          height: (canvasSize.height - (position.y < 0 ? position.y : 0)) * (1 + (scale - newScale) / 100)
+        })
+      }
+      // let updatedItems = localItems.map((item) => {
+      //   // console.log(1 + (newScale - scale) / 100)
+      //   // let width = item.size.width + 300 * ((newScale - scale) / 100);
+      //   // let height = item.size.height + 300 * ((newScale - scale) / 100);
+      //   let dom = document.getElementById(item.id);
+      //   let rect = dom.getBoundingClientRect();
+      //   //console.log(rect, dom.style.top, dom.style.left, dom.style.width, dom.style.height)
+      //   // return item;
+      //   const initialTop = 1 * dom.style.top.split('px')[0];
+      //   const initialLeft = 1 * dom.style.left.split('px')[0];
+      //   const initialWidth = 1 * dom.style.width.split('px')[0];
+      //   const initialHeight = 1 * dom.style.height.split('px')[0];
+
+
+      //   // 计算缩放后的位置和尺寸
+      //   const scaledWidth = initialWidth * newScale / 100;
+      //   const scaledHeight = initialHeight * newScale / 100;
+      //   const scaledTop = initialTop - (scaledHeight - initialHeight) / 2;
+      //   const scaledLeft = initialLeft - (scaledWidth - initialWidth) / 2;
+      //   console.log(initialTop, initialLeft, scaledTop, scaledLeft)
+      //   // 应用缩放和调整后的位置
+      //   return {
+      //     ...item,
+      //     position: {
+      //       x: scaledLeft,
+      //       y: scaledTop
+      //     }
+      //   }
+      //   // box.style.transform = `scale(${scale})`;
+      //   // box.style.top = `${scaledTop}px`;
+      //   // box.style.left = `${scaledLeft}px`;
+      //   // return {
+      //   //   ...item,
+      //   //   position: {
+      //   //     x: item.position.x * (1 + (newScale - scale) / 100),
+      //   //     y: item.position.y * (1 + (newScale - scale) / 100),
+      //   //   },
+      //   //   // item.size.width * (1 + (newScale - scale) / 100),
+      //   //   //item.position.x * (1 + (newScale - scale) / 100),
+      //   //   //+ 300 * ((newScale - scale) / 100),
+      //   //   // size: {
+      //   //   //   width,
+      //   //   //   height,
+      //   //   // }
+      //   // }
+      // })
+      // setLocalItems(updatedItems);
       // 更新状态
       setScale(newScale);
 
@@ -902,7 +943,7 @@ export const Canvas = forwardRef(
           style={{
             width: `${canvasSize.width}px`,
             height: `${canvasSize.height}px`,
-            transform: `translate(${position.x}px, ${position.y}px)`,
+            transform: `translate(${position.x}px, ${position.y}px) scale(${scale / 100})`,
             transformOrigin: "top left",
             backgroundImage:
               "radial-gradient(circle, #ddd 1px, transparent 1px)",
@@ -914,6 +955,7 @@ export const Canvas = forwardRef(
               if (item.type === ITEM_TYPES.ROOM) {
                 return (
                   <div
+                    id={item.id}
                     key={item.id}
                     data-room-element="true"
                     className={`absolute ${activeRoom?.id === item.id ? "ring-2 ring-red-500" : ""
@@ -924,7 +966,7 @@ export const Canvas = forwardRef(
                       width: item.size.width,
                       height: item.size.height,
                       // transform: `scale(${scale / 100})`,
-                      transformOrigin: "center",
+                      // transformOrigin: "center",
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -1018,8 +1060,8 @@ export const Canvas = forwardRef(
                       top: item.position.y,
                       width: item.size.width,
                       height: item.size.height,
-                      // transform: `scale(${scale / 100})`,
-                      transformOrigin: "center",
+                      // transform: `translate(${position.x}px, ${position.y}px)`,
+                      // transformOrigin: "center",
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
