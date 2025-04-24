@@ -23,7 +23,7 @@ import { cn } from "@/lib/utils";
 // import InfiniteCanvas from 'infinite-canvas';
 
 import useMobile from "@/app/hooks/useMobile";
-import { cva } from "class-variance-authority";
+import { ToastContainer, toast } from 'react-toastify';
 const ROOM_COLORS = {
   [ROOM_TYPES.LIVING_ROOM]: "#F0DF9C", // 客厅
   [ROOM_TYPES.DINING_ROOM]: "#F5D4BC", // 饭厅
@@ -290,6 +290,7 @@ export const Canvas = forwardRef(
       }
     }, []);
 
+    const debounceToastInfo = _.throttle(toast.info, 3000);
     // 处理鼠标移动事件
     const handleMouseMove =
       (e) => {
@@ -503,25 +504,19 @@ export const Canvas = forwardRef(
 
           let canvasWidth, canvasHeight;
           if (newX > 0 || newY > 0) {
+            // debounceToastInfo("到底啦",
+            //   {
+            //     closeButton: false
+            //   })
             return
-            // setPosition({
-            //   x: 0,
-            //   y: 0,
-            // });
-            // // setCanvasSize({ width: 2000 + newX, height: 2000 + newY })
-            // let updatedItems = localItems.map((item) => {
-
-            //   return {
-            //     ...item,
-            //     position: {
-            //       x: item.relativePosition.x + newX,
-            //       y: item.relativePosition.y + newY,
-            //     },
-            //   };
-
-            // });
-            // setLocalItems(updatedItems);
           }
+          if (newX < -1000 || newY < -1000) {
+            // debounceToastInfo("到底啦", {
+            //   closeButton: false
+            // })
+            return;
+          }
+
           if (2000 + newX < containerRect.width / (scale / 100)) {
             canvasWidth = (2000 - newX) / (scale / 100);
             // if (scale < 100) {
@@ -724,7 +719,7 @@ export const Canvas = forwardRef(
     };
 
     // 处理缩放
-    function handleZoom(type, step = 10) {
+    function handleZoom(type, step = 5) {
       let newScale;
       if (type === "in" && scale < MAX_SCALE) {
         newScale = scale + step;
@@ -791,10 +786,32 @@ export const Canvas = forwardRef(
       // })
       // setLocalItems(updatedItems);
       // 更新状态
+      //onTransCanvas(type, newScale);
       setScale(newScale);
 
     };
+    function onTransCanvas(type, newScale) {
+      // 获取画布容器和画布元素
+      // const container = document.getElementById("canvas-drop-area");
+      // const containerRect = document.getElementById("canvas-drop-area").getBoundingClientRect();
+      // //console.log('111', containerRect, container.querySelector('.cursor-move'));
+      // const canvasRect = container.querySelector('.cursor-move').getBoundingClientRect();
+      // console.log('222', canvasRect.width, canvasRect.height);
+      // const x1 = (containerRect.width - canvasRect.width) / 2;
+      // const y1 = (containerRect.height - canvasRect.height) / 2;
+      // // 获取画布相对于视口的位置和尺寸
+      // //const canvasRect = containerRef.current.querySelector('.cursor-move').getBoundingClientRect();
+      // const newPositionX = (containerRect.width - canvasRect.width * (newScale / 100)) / 2;
+      // const newPositionY = (containerRect.height - canvasRect.height * (newScale / 100)) / 2;
+      //setPosition({ x: newPositionX, y: newPositionY });
+      //console.log(newPositionX - x1, newPositionY - y1, position);
+      // if (type === 'in') {
+      //   setPosition({ x: position.x + 150, y: position.y + 150 });
+      // } else if (type === 'out') {
+      //   setPosition({ x: position.x - 150, y: position.y - 150 });
+      // }
 
+    }
     const handleRotate = useCallback(() => {
       if (!activeRoom) return;
 
@@ -939,14 +956,14 @@ export const Canvas = forwardRef(
             {/* 显示当前角度 */}
           </div>
         </div>
-
+        {/* translate(${position.x}px, ${position.y}px) */}
         <div
 
           className="absolute cursor-move"
           style={{
             width: `${canvasSize.width}px`,
             height: `${canvasSize.height}px`,
-            transform: `translate(${position.x}px, ${position.y}px) scale(${scale / 100})`,
+            transform: `translate(${position.x}px, ${position.y}px)  scale(${scale / 100})`,
             transformOrigin: "top left",
             backgroundImage:
               "radial-gradient(circle, #ddd 1px, transparent 1px)",
