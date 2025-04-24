@@ -86,7 +86,7 @@ export default function DesignPage() {
   const sidebarRef = useRef(null);
   const isMobile = useMobile();
   const draggingItemSize = isMobile ? 48 : 56;
-  const defaultRoomSize = isMobile ? { width: 200, height: 200 } : { width: 324, height: 324 }
+  const defaultRoomSize = isMobile ? { width: 200, height: 200 } : { width: 300, height: 300 }
   // const defaultFurSize = { width: draggingItemSize, height: 32 }
 
   const roomItems = [

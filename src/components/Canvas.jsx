@@ -205,14 +205,14 @@ export const Canvas = forwardRef(
       if (!furniture.position || !parentRoom.position) return false;
       return (
         furniture.position.x >= parentRoom.position.x &&
-        furniture.position.x <= parentRoom.position.x + parentRoom.size.width * (scale / 100) &&
-        furniture.position.x + furniture.size.width * (scale / 100) <=
-        parentRoom.position.x + parentRoom.size.width * (scale / 100) &&
+        furniture.position.x <= parentRoom.position.x + parentRoom.size.width &&
+        furniture.position.x + furniture.size.width <=
+        parentRoom.position.x + parentRoom.size.width &&
         furniture.position.y + 20 >= parentRoom.position.y &&
         furniture.position.y <=
-        parentRoom.position.y + parentRoom.size.height * (scale / 100) &&
-        furniture.position.y - 20 + furniture.size.height * (scale / 100) <=
-        parentRoom.position.y + parentRoom.size.height * (scale / 100)
+        parentRoom.position.y + parentRoom.size.height &&
+        furniture.position.y - 20 + furniture.size.height <=
+        parentRoom.position.y + parentRoom.size.height
       );
     };
     // 处理房间拖动开始
@@ -876,7 +876,13 @@ export const Canvas = forwardRef(
     // console.log('localItems',localItems) 
     // scale(${scale / 100})
     return (
-      <div className="relative w-full min-h-[calc(100vh-64px)] overflow-hidden bg-background">
+      <div
+        ref={(node) => {
+          containerRef.current = node;
+          setNodeRef(node);
+        }}
+        className="relative w-full min-h-[calc(100vh-64px)] overflow-hidden bg-background"
+      >
         {/* 右上角控制面板 */}
         <div className="fixed top-20 right-6 flex items-center gap-4 z-9">
           {!isMobile && (
@@ -907,7 +913,7 @@ export const Canvas = forwardRef(
             <button
               className="p-1 rounded hover:bg-gray-100 text-gray-600"
               onClick={(e) => handleZoom("in")}
-              disabled={scale >= 200}
+              disabled={scale >= 120}
             >
               <Plus className="w-4 h-4" />
             </button>
@@ -935,10 +941,7 @@ export const Canvas = forwardRef(
         </div>
 
         <div
-          ref={(node) => {
-            containerRef.current = node;
-            setNodeRef(node);
-          }}
+
           className="absolute cursor-move"
           style={{
             width: `${canvasSize.width}px`,

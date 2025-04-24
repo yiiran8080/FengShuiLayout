@@ -81,15 +81,17 @@
   -moz-user-drag: none; /* Firefox */
   -ms-user-drag: none; /* Internet Explorer/Edge */
 ::-webkit-scrollbar{
-  width:12px
+  width:6px;
+  
 
 }
 ::-webkit-scrollbar-track{
   background: #f1f1f1;
-  
+    border-radius: 20px;
 }
 ::-webkit-scrollbar-thumb{
-  background: #888;
+  background: #dad9d9;
+  border-radius: 20px;
   
 }
 ::-webkit-scrollbar-thumb:hover{
