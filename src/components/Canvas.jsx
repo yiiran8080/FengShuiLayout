@@ -503,18 +503,21 @@ export const Canvas = forwardRef(
 
 
           let canvasWidth, canvasHeight;
-          if (newX > 0 || newY > 0) {
+          if (newX > 0) {
             // debounceToastInfo("到底啦",
             //   {
             //     closeButton: false
             //   })
-            return
+            newX = 0;
           }
-          if (newX < -1000 || newY < -1000) {
-            // debounceToastInfo("到底啦", {
-            //   closeButton: false
-            // })
-            return;
+          if (newY > 0) {
+            newY = 0;
+          }
+          if (newX < -1000) {
+            newX = -1000;
+          }
+          if (newY < -1000) {
+            newY = -1000;
           }
 
           if (2000 + newX < containerRect.width / (scale / 100)) {
