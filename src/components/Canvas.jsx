@@ -158,6 +158,8 @@ export const Canvas = forwardRef(
         if (e.target.closest('[data-room-element="true"]')) {
           return;
         }
+        //console.log('handleCanvasMouseDown', e.target.id)
+        if (e.target.id !== 'canvas') return;
 
         if (e.button !== 0 && !e.touches) return; //非左键
 
@@ -241,7 +243,7 @@ export const Canvas = forwardRef(
               item.type === ITEM_TYPES.FURNITURE &&
               furnitureInroom(item, room)
             ) {
-              console.log("家具在里面", item, room);
+              // console.log("家具在里面", item, room);
               return {
                 ...item,
                 parentId: room.id,
@@ -295,6 +297,9 @@ export const Canvas = forwardRef(
     const handleMouseMove =
       (e) => {
         e.preventDefault();
+        //e.stopPropagation();
+        //console.log('handleMouseMove', e.target);
+        // if (e.target.id !== 'canvas' || !e.target.closest('[data-room-element="true"]')) return;
         if (e.touches?.length === 2) {
           const touch1 = e.touches[0];
           const touch2 = e.touches[1];
@@ -961,7 +966,7 @@ export const Canvas = forwardRef(
         </div>
         {/* translate(${position.x}px, ${position.y}px) */}
         <div
-
+          id='canvas'
           className="absolute cursor-move"
           style={{
             width: `${canvasSize.width}px`,
@@ -978,7 +983,7 @@ export const Canvas = forwardRef(
               if (item.type === ITEM_TYPES.ROOM) {
                 return (
                   <div
-                    id={item.id}
+                    // id={item.id}
                     key={item.id}
                     data-room-element="true"
                     className={`absolute ${activeRoom?.id === item.id ? "ring-2 ring-red-500" : ""
@@ -1185,7 +1190,7 @@ export const Canvas = forwardRef(
         {activeRoom && (
           <div
             className={cn(
-              "min-w-fit whitespace-nowrap fixed left-1/2 -translate-x-1/2 h-10 rounded-4xl bg-white shadow-lg flex items-center px-3 gap-2 md:hidden",
+              "min-w-fit whitespace-nowrap fixed  left-1/2 -translate-x-1/2 h-10 rounded-4xl bg-white shadow-lg flex items-center px-3 gap-2 md:hidden",
               showTab ? "bottom-85" : "bottom-22.5 "
             )}
           >
@@ -1228,6 +1233,7 @@ export const Canvas = forwardRef(
             <button
               className="flex-shrink-0 text-red-500 hover:text-red-600 transition-colors"
               onClick={(e) => {
+                e.stopPropagation();
                 const newItems = localItems.filter(
                   (item) => item.id !== activeRoom.id
                 );
