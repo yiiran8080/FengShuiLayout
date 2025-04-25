@@ -3,6 +3,13 @@ import { useState, useEffect } from "react";
 import { DraggableItem } from "../DraggableItem";
 import Image from "next/image";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from "@/components/ui/carousel"
 
 import { cn } from "@/lib/utils";
 
@@ -18,7 +25,7 @@ export default function DragBarMobile(props) {
             style={{
                 boxShadow: "0 -1px 5px 0px rgba(0, 0, 0, 0.2)",
             }}
-            className={cn("fixed bottom-0 left-0 z-10 w-full pb-20  pl-4 bg-white md:hidden rounded-t-2xl transition-transform duration-300 ease-in-out", showTab ? 'translate-y-0' : 'translate-y-full')}
+            className={cn("fixed bottom-0 left-0 z-10 w-full pb-20 pl-0 pr-2 bg-white md:hidden rounded-t-2xl transition-transform duration-300 ease-in-out", showTab ? 'translate-y-0' : 'translate-y-full')}
 
         >
             <Tabs value={active} className="w-full gap-4" setShowTab={setShowTab} onValueChange={(value) => setActive(value)}>
@@ -37,62 +44,161 @@ export default function DragBarMobile(props) {
                         家具
                     </TabsTrigger>
                 </TabsList>
-                <TabsContent value="room" className="w-full pb-7 overflow-auto scrolling-touch">
-
-                    <div className="grid grid-cols-6 gap-x-8 gap-y-4 min-w-110 ">
-                        {roomItems.map((item) => (
-                            <DraggableItem
-                                key={item.id}
-                                id={item.id}
-                                type={item.type}
-                                data={item.data}
-                                isOverCanvas={isOverCanvas}
-                            >
-                                <div className="flex flex-col items-center">
-                                    <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                                        <Image
-                                            className='bg-[#EFF7F4] rounded-lg'
-                                            src={item.data.icon}
-                                            alt={item.data.label}
-                                            width={draggingItemSize}
-                                            height={draggingItemSize}
-                                        />
-                                    </div>
-                                    <span className="mt-1 text-[12px] text-gray-600">{item.data.label}</span>
+                <TabsContent value="room" className="w-full pb-3 overflow-hidden">
+                    <Carousel>
+                        <CarouselContent>
+                            <CarouselItem>
+                                <div className="grid grid-cols-4 gap-x-8 gap-y-6">
+                                    {roomItems.slice(0, 8).map((item) => (
+                                        <DraggableItem
+                                            key={item.id}
+                                            id={item.id}
+                                            type={item.type}
+                                            data={item.data}
+                                            isOverCanvas={isOverCanvas}
+                                        >
+                                            <div className="flex flex-col items-center">
+                                                <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                                    <Image
+                                                        className='bg-[#EFF7F4] rounded-lg'
+                                                        src={item.data.icon}
+                                                        alt={item.data.label}
+                                                        width={draggingItemSize}
+                                                        height={draggingItemSize}
+                                                    />
+                                                </div>
+                                                <span className="mt-1 text-[12px] text-gray-600">{item.data.label}</span>
+                                            </div>
+                                        </DraggableItem>
+                                    ))}
                                 </div>
-                            </DraggableItem>
-                        ))}
-                    </div>
+
+                            </CarouselItem>
+                            <CarouselItem>
+                                <div className="grid grid-cols-4 gap-x-8 gap-y-6">
+                                    {roomItems.slice(8).map((item) => (
+                                        <DraggableItem
+                                            key={item.id}
+                                            id={item.id}
+                                            type={item.type}
+                                            data={item.data}
+                                            isOverCanvas={isOverCanvas}
+                                        >
+                                            <div className="flex flex-col items-center">
+                                                <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                                    <Image
+                                                        className='bg-[#EFF7F4] rounded-lg'
+                                                        src={item.data.icon}
+                                                        alt={item.data.label}
+                                                        width={draggingItemSize}
+                                                        height={draggingItemSize}
+                                                    />
+                                                </div>
+                                                <span className="mt-1 text-[12px] text-gray-600">{item.data.label}</span>
+                                            </div>
+                                        </DraggableItem>
+                                    ))}
+                                </div>
+
+                            </CarouselItem>
+
+                        </CarouselContent>
+                        <CarouselPrevious className="left-0 " />
+                        <CarouselNext className="right-0" />
+                    </Carousel>
+                    {/* <div className="grid grid-cols-6 gap-x-8 gap-y-4 min-w-110 ">
+                       
+                    </div> */}
 
 
 
                 </TabsContent>
-                <TabsContent value="furniture" className="w-full pb-7 overflow-auto scrolling-touch">
-
-                    <div className="grid grid-rows-2 grid-cols-9 gap-x-8 gap-y-4  min-w-150 w-auto">
-                        {furnitureItems.map((item) => (
-                            <DraggableItem
-                                key={item.id}
-                                id={item.id}
-                                type={item.type}
-                                data={item.data}
-                                isOverCanvas={isOverCanvas}
-                            >
-                                <div className="flex flex-col items-center">
-                                    <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                                        <Image
-                                            className='bg-[#EFF7F4] rounded-lg'
-                                            src={item.data.icon}
-                                            alt={item.data.label}
-                                            width={draggingItemSize}
-                                            height={draggingItemSize}
-                                        />
-                                    </div>
-                                    <span className="mt-1 text-[12px] text-gray-600">{item.data.label}</span>
+                <TabsContent value="furniture" className="w-full pb-3 overflow-hidden">
+                    <Carousel>
+                        <CarouselContent>
+                            <CarouselItem>
+                                <div className="grid grid-cols-4 gap-x-8 gap-y-6">
+                                    {furnitureItems.slice(0, 8).map((item) => (
+                                        <DraggableItem
+                                            key={item.id}
+                                            id={item.id}
+                                            type={item.type}
+                                            data={item.data}
+                                            isOverCanvas={isOverCanvas}
+                                        >
+                                            <div className="flex flex-col items-center">
+                                                <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                                    <Image
+                                                        className='bg-[#EFF7F4] rounded-lg'
+                                                        src={item.data.icon}
+                                                        alt={item.data.label}
+                                                        width={draggingItemSize}
+                                                        height={draggingItemSize}
+                                                    />
+                                                </div>
+                                                <span className="mt-1 text-[12px] text-gray-600">{item.data.label}</span>
+                                            </div>
+                                        </DraggableItem>
+                                    ))}
                                 </div>
-                            </DraggableItem>
-                        ))}
-                    </div>
+                            </CarouselItem>
+                            <CarouselItem>
+                                <div className="grid grid-cols-4 gap-x-8 gap-y-6">
+                                    {furnitureItems.slice(8, 16).map((item) => (
+                                        <DraggableItem
+                                            key={item.id}
+                                            id={item.id}
+                                            type={item.type}
+                                            data={item.data}
+                                            isOverCanvas={isOverCanvas}
+                                        >
+                                            <div className="flex flex-col items-center">
+                                                <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                                    <Image
+                                                        className='bg-[#EFF7F4] rounded-lg'
+                                                        src={item.data.icon}
+                                                        alt={item.data.label}
+                                                        width={draggingItemSize}
+                                                        height={draggingItemSize}
+                                                    />
+                                                </div>
+                                                <span className="mt-1 text-[12px] text-gray-600">{item.data.label}</span>
+                                            </div>
+                                        </DraggableItem>
+                                    ))}
+                                </div>
+                            </CarouselItem>
+                            <CarouselItem>
+                                <div className="grid grid-cols-4 gap-x-8 gap-y-6">
+                                    {furnitureItems.slice(16).map((item) => (
+                                        <DraggableItem
+                                            key={item.id}
+                                            id={item.id}
+                                            type={item.type}
+                                            data={item.data}
+                                            isOverCanvas={isOverCanvas}
+                                        >
+                                            <div className="flex flex-col items-center">
+                                                <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                                    <Image
+                                                        className='bg-[#EFF7F4] rounded-lg'
+                                                        src={item.data.icon}
+                                                        alt={item.data.label}
+                                                        width={draggingItemSize}
+                                                        height={draggingItemSize}
+                                                    />
+                                                </div>
+                                                <span className="mt-1 text-[12px] text-gray-600">{item.data.label}</span>
+                                            </div>
+                                        </DraggableItem>
+                                    ))}
+                                </div>
+                            </CarouselItem>
+                        </CarouselContent>
+                        <CarouselPrevious className="left-0 " />
+                        <CarouselNext className="right-0" />
+                    </Carousel>
+
 
 
 
