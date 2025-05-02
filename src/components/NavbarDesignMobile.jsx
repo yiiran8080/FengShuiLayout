@@ -19,7 +19,7 @@ export default function NavbarDesignMobile({ onSaveProject, history, historyInde
             <div className="flex items-center space-x-4 text-foreground  gap-3">
               <span className='flex items-center gap-1 cursor-pointer'><CircleHelp className="w-4 h-4" onClick={() => setShowTip(true)} /></span>
               <span className='flex items-center gap-1 cursor-pointer' ><UserPen className="w-4 h-4" onClick={() => onUserOpen(true)} /> </span>
-              <MenuBar className="text-foreground" />
+              {/* <MenuBar className="text-foreground" /> */}
               <Avatar />
             </div>
           </div>

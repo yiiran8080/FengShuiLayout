@@ -1,5 +1,5 @@
 "use server";
 import { signOut } from "@/auth";
 export const handleSignOut = async () => {
-  await signOut();
+  await signOut({ redirectTo: "/auth/login" });
 };

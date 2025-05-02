@@ -101,8 +101,8 @@
 
 @layer utilities {
   .bg-hero {
-    background: linear-gradient(rgba(0, 77, 64, 0.7), rgba(0, 77, 64, 0.7)),
-                url('/hero-bg.jpg') center/cover;
+    background: linear-gradient(#0F2A1E99 10%, #13382780 34%,  #73897F1A 90%),
+                url('/images/hero/heroback.png') center/cover;
   }
 
   .bg-button-primary{

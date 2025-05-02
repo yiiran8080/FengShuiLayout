@@ -32,7 +32,7 @@ export default function Features() {
               key={index}
             // className="p-6"
             >
-              <div className="relative w-16 h-16 mb-6">
+              <div className="relative w-12.5 h-12.5 mb-6">
                 <Image
                   src={feature.icon}
                   alt={feature.title}

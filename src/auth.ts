@@ -7,12 +7,12 @@ import GithubProvider from "next-auth/providers/github";
 import dbConnect from "@/lib/mongoose";
 import User from "@/models/User";
 import { ProxyAgent, fetch as undici } from "undici";
-// const dispatcher = new ProxyAgent({
-//   uri: process.env.NEXTAUTH_URL_INTERNAL as string,
-// });
-// function proxy(...args: Parameters<typeof fetch>): ReturnType<typeof fetch> {
-//   return undici(args[0], { ...(args[1] ?? {}), dispatcher });
-// }
+const dispatcher = new ProxyAgent({
+  uri: process.env.NEXTAUTH_URL_INTERNAL as string,
+});
+function proxy(...args: Parameters<typeof fetch>): ReturnType<typeof fetch> {
+  return undici(args[0], { ...(args[1] ?? {}), dispatcher });
+}
 export const { handlers, signIn, signOut, auth } = NextAuth(
   {
     trustHost: true,
@@ -24,7 +24,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth(
         clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
 
         //redirectProxyUrl: process.env.NEXTAUTH_URL_INTERNAL as string,
-        //[customFetch]: proxy,
+        [customFetch]: proxy,
       }),
       AppleProvider({
         clientId: process.env.APPLE_ID as string,

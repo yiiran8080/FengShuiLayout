@@ -9,9 +9,18 @@ import {
   pointerWithin,
   closestCorners
 } from '@dnd-kit/core';
+
 import { redirect } from "next/navigation";
-import { useState, useRef, useEffect } from 'react';
-import { ITEM_TYPES, ROOM_TYPES, FURNITURE_TYPES } from '@/types/room';
+import { use, useState, useRef, useEffect } from 'react';
+import {
+  ITEM_TYPES,
+  ROOM_TYPES,
+  FURNITURE_TYPES,
+  FURNITURE_TYPES_LABEL_CN,
+  FURNITURE_TYPES_LABEL_TW,
+  ROOM_TYPES_LABEL_CN,
+  ROOM_TYPES_LABEL_TW
+} from '@/types/room';
 import { Canvas } from '@/components/Canvas';
 import NavbarDesign from '@/components/NavbarDesign';
 import NavbarDesignMobile from '@/components/NavbarDesignMobile';
@@ -20,10 +29,12 @@ import useMobile from '../../hooks/useMobile';
 import DragBarPC from '@/components/dragBarComp/DragBarPC';
 import DragBarMobile from '@/components/dragBarComp/DragBarMobile';
 import { get, post } from "@/lib/ajax";
+
 import { useSession } from 'next-auth/react'
 import UserInfoDialog from '@/components/UserInfoDialog';
 import ClipLoader from "react-spinners/ClipLoader";
 import { ToastContainer, toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 const ROOM_COLORS = {
   [ROOM_TYPES.LIVING_ROOM]: '#F0DF9C',   // 客厅
   [ROOM_TYPES.DINING_ROOM]: '#F5D4BC',   // 饭厅
@@ -39,28 +50,34 @@ const ROOM_COLORS = {
 };
 
 
-const furnitureItems = [
-  { id: 'door-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.DOOR, label: '门', icon: '/images/fur-icon/door.png', activeIcon: '/images/fur-icon/door-gr.png', size: { width: 40, height: 40 } } },
-  { id: 'window-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.WINDOW, label: '窗', icon: '/images/fur-icon/window.png', activeIcon: '/images/fur-icon/window-gr.png', size: { width: 8, height: 56 } } },
-  { id: 'table-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.TABLE, label: '枱', icon: '/images/fur-icon/table.png', activeIcon: '/images/fur-icon/table-gr.png', size: { width: 44, height: 120 } } },
-  { id: 'chair-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.CHAIR, label: '椅子', icon: '/images/fur-icon/chair.png', activeIcon: '/images/fur-icon/chair-gr.png', size: { width: 28, height: 35 } } },
-  { id: 'sofa-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.SOFA, label: '沙发', icon: '/images/fur-icon/sofa.png', activeIcon: '/images/fur-icon/sofa-gr.png', size: { width: 67, height: 123 } } },
-  { id: 'bed-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.BED, label: '床', icon: '/images/fur-icon/bed.png', activeIcon: '/images/fur-icon/bed-gr.png', size: { width: 89, height: 128 } } },
-  { id: 'lamp-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.LAMP, label: '儿童床', icon: '/images/fur-icon/lamp.png', activeIcon: '/images/fur-icon/lamp-gr.png', size: { width: 70, height: 128 } } },
-  { id: 'tv-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.TV, label: '电视', icon: '/images/fur-icon/tv.png', activeIcon: '/images/fur-icon/tv-gr.png', size: { width: 134, height: 32 } } },
-  { id: 'bookshelf-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.BOOKSHELF, label: '茶几', icon: '/images/fur-icon/bookshelf.png', activeIcon: '/images/fur-icon/bookshelf-gr.png', size: { width: 44, height: 44 } } },
-  { id: 'wardrobe-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.WARDROBE, label: '柜', icon: '/images/fur-icon/wardrobe.png', activeIcon: '/images/fur-icon/wardrobe-gr.png', size: { width: 40, height: 129 } } },
-  { id: 'plant-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.PLANT, label: '植物', icon: '/images/fur-icon/plant.png', activeIcon: '/images/fur-icon/plant-gr.png', size: { width: 36, height: 36 } } },
-  { id: 'fridge-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.FRIDGE, label: '冰箱', icon: '/images/fur-icon/fridge.png', activeIcon: '/images/fur-icon/fridge-gr.png', size: { width: 40, height: 43 } } },
-  { id: 'stove-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.STOVE, label: '炉具', icon: '/images/fur-icon/stove.png', activeIcon: '/images/fur-icon/stove-gr.png', size: { width: 62, height: 32 } } },
-  { id: 'sink-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.SINK, label: '锌盘', icon: '/images/fur-icon/sink.png', activeIcon: '/images/fur-icon/sink-gr.png', size: { width: 60, height: 40 } } },
-  { id: 'washbasin-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.WASHBASIN, label: '洗手盘', icon: '/images/fur-icon/washbasin.png', activeIcon: '/images/fur-icon/washbasin-gr.png', size: { width: 50, height: 50 } } },
-  { id: 'toilet-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.TOILET, label: '马桶', icon: '/images/fur-icon/toilet.png', activeIcon: '/images/fur-icon/toilet-gr.png', size: { width: 40, height: 60 } } },
-  { id: 'shower-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.SHOWER, label: '淋浴', icon: '/images/fur-icon/shower.png', activeIcon: '/images/fur-icon/shower-gr.png', size: { width: 80, height: 80 } } },
-  { id: 'bathtub-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.BATHTUB, label: '浸浴', icon: '/images/fur-icon/bathtub.png', activeIcon: '/images/fur-icon/bathtub-gr.png', size: { width: 120, height: 60 } } }
-];
 
-export default function DesignPage() {
+
+export default function DesignPage({ params }) {
+  //  console.log('params', params.locale)
+  const _params = use(params);
+  const locale = _params.locale;
+  const ROOM_TYPES_LABEL = locale === 'zh-TW' ? ROOM_TYPES_LABEL_TW : ROOM_TYPES_LABEL_CN;
+  const FURNITURE_TYPES_LABEL = locale === 'zh-TW' ? FURNITURE_TYPES_LABEL_TW : FURNITURE_TYPES_LABEL_CN;
+  const furnitureItems = [
+    { id: 'door-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.DOOR, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.DOOR], icon: '/images/fur-icon/door.png', activeIcon: '/images/fur-icon/door-gr.png', size: { width: 40, height: 40 } } },
+    { id: 'window-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.WINDOW, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.WINDOW], icon: '/images/fur-icon/window.png', activeIcon: '/images/fur-icon/window-gr.png', size: { width: 8, height: 56 } } },
+    { id: 'table-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.TABLE, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.TABLE], icon: '/images/fur-icon/table.png', activeIcon: '/images/fur-icon/table-gr.png', size: { width: 44, height: 120 } } },
+    { id: 'chair-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.CHAIR, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.CHAIR], icon: '/images/fur-icon/chair.png', activeIcon: '/images/fur-icon/chair-gr.png', size: { width: 28, height: 35 } } },
+    { id: 'sofa-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.SOFA, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.SOFA], icon: '/images/fur-icon/sofa.png', activeIcon: '/images/fur-icon/sofa-gr.png', size: { width: 67, height: 123 } } },
+    { id: 'bed-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.BED, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.BED], icon: '/images/fur-icon/bed.png', activeIcon: '/images/fur-icon/bed-gr.png', size: { width: 89, height: 128 } } },
+    { id: 'lamp-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.LAMP, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.LAMP], icon: '/images/fur-icon/lamp.png', activeIcon: '/images/fur-icon/lamp-gr.png', size: { width: 70, height: 128 } } },
+    { id: 'tv-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.TV, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.TV], icon: '/images/fur-icon/tv.png', activeIcon: '/images/fur-icon/tv-gr.png', size: { width: 134, height: 32 } } },
+    { id: 'bookshelf-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.BOOKSHELF, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.BOOKSHELF], icon: '/images/fur-icon/bookshelf.png', activeIcon: '/images/fur-icon/bookshelf-gr.png', size: { width: 44, height: 44 } } },
+    { id: 'wardrobe-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.WARDROBE, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.WARDROBE], icon: '/images/fur-icon/wardrobe.png', activeIcon: '/images/fur-icon/wardrobe-gr.png', size: { width: 40, height: 129 } } },
+    { id: 'plant-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.PLANT, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.PLANT], icon: '/images/fur-icon/plant.png', activeIcon: '/images/fur-icon/plant-gr.png', size: { width: 36, height: 36 } } },
+    { id: 'fridge-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.FRIDGE, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.FRIDGE], icon: '/images/fur-icon/fridge.png', activeIcon: '/images/fur-icon/fridge-gr.png', size: { width: 40, height: 43 } } },
+    { id: 'stove-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.STOVE, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.STOVE], icon: '/images/fur-icon/stove.png', activeIcon: '/images/fur-icon/stove-gr.png', size: { width: 62, height: 32 } } },
+    { id: 'sink-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.SINK, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.SINK], icon: '/images/fur-icon/sink.png', activeIcon: '/images/fur-icon/sink-gr.png', size: { width: 60, height: 40 } } },
+    { id: 'washbasin-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.WASHBASIN, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.WASHBASIN], icon: '/images/fur-icon/washbasin.png', activeIcon: '/images/fur-icon/washbasin-gr.png', size: { width: 50, height: 50 } } },
+    { id: 'toilet-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.TOILET, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.TOILET], icon: '/images/fur-icon/toilet.png', activeIcon: '/images/fur-icon/toilet-gr.png', size: { width: 40, height: 60 } } },
+    { id: 'shower-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.SHOWER, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.SHOWER], icon: '/images/fur-icon/shower.png', activeIcon: '/images/fur-icon/shower-gr.png', size: { width: 80, height: 80 } } },
+    { id: 'bathtub-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.BATHTUB, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.BATHTUB], icon: '/images/fur-icon/bathtub.png', activeIcon: '/images/fur-icon/bathtub-gr.png', size: { width: 120, height: 60 } } }
+  ];
   const sensors = useSensors(
     useSensor(TouchSensor, {
       tolerance: 50,
@@ -73,6 +90,7 @@ export default function DesignPage() {
     }
     )
   );
+  const router = useRouter();
   const [active, setActive] = useState(null);
   const [isOverCanvas, setIsOverCanvas] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(0);
@@ -96,7 +114,7 @@ export default function DesignPage() {
       data: {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.LIVING_ROOM,
-        label: '客厅',
+        label: ROOM_TYPES_LABEL[ROOM_TYPES.LIVING_ROOM],
         icon: '/images/room-icon/living_room.png',
         size: defaultRoomSize
       }
@@ -107,7 +125,7 @@ export default function DesignPage() {
       data: {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.DINING_ROOM,
-        label: '饭厅',
+        label: ROOM_TYPES_LABEL[ROOM_TYPES.DINING_ROOM],
         icon: '/images/room-icon/dining_room.png',
         size: defaultRoomSize
       }
@@ -118,7 +136,7 @@ export default function DesignPage() {
       data: {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.STORAGE_ROOM,
-        label: '储物室',
+        label: ROOM_TYPES_LABEL[ROOM_TYPES.STORAGE_ROOM],
         icon: '/images/room-icon/storage_room.png',
         size: defaultRoomSize
       }
@@ -129,7 +147,7 @@ export default function DesignPage() {
       data: {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.STUDY_ROOM,
-        label: '书房',
+        label: ROOM_TYPES_LABEL[ROOM_TYPES.STUDY_ROOM],
         icon: '/images/room-icon/study_room.png',
         size: defaultRoomSize
       }
@@ -140,7 +158,7 @@ export default function DesignPage() {
       data: {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.BEDROOM,
-        label: '睡房',
+        label: ROOM_TYPES_LABEL[ROOM_TYPES.BEDROOM],
         icon: '/images/room-icon/bedroom.png',
         size: defaultRoomSize
       }
@@ -151,7 +169,7 @@ export default function DesignPage() {
       data: {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.BATHROOM,
-        label: '浴室',
+        label: ROOM_TYPES_LABEL[ROOM_TYPES.BATHROOM],
         icon: '/images/room-icon/bathroom.png',
         size: defaultRoomSize
       }
@@ -162,7 +180,7 @@ export default function DesignPage() {
       data: {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.KITCHEN,
-        label: '厨房',
+        label: ROOM_TYPES_LABEL[ROOM_TYPES.KITCHEN],
         icon: '/images/room-icon/kitchen.png',
         size: defaultRoomSize
       }
@@ -173,7 +191,7 @@ export default function DesignPage() {
       data: {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.BALCONY,
-        label: '阳台',
+        label: ROOM_TYPES_LABEL[ROOM_TYPES.BALCONY],
         icon: '/images/room-icon/balcony.png',
         size: defaultRoomSize
       }
@@ -184,7 +202,7 @@ export default function DesignPage() {
       data: {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.GARDEN,
-        label: '花园',
+        label: ROOM_TYPES_LABEL[ROOM_TYPES.GARDEN],
         icon: '/images/room-icon/garden.png',
         size: defaultRoomSize
       }
@@ -195,7 +213,7 @@ export default function DesignPage() {
       data: {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.GARAGE,
-        label: '车库',
+        label: ROOM_TYPES_LABEL[ROOM_TYPES.GARAGE],
         icon: '/images/room-icon/garage.png',
         size: defaultRoomSize
       }
@@ -206,7 +224,7 @@ export default function DesignPage() {
       data: {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.CORRIDOR,
-        label: '走廊',
+        label: ROOM_TYPES_LABEL[ROOM_TYPES.CORRIDOR],
         icon: '/images/room-icon/corridor.png',
         size: defaultRoomSize
       }
@@ -240,7 +258,6 @@ export default function DesignPage() {
       //const userId = 'yunyanyr@gmail.com';
       const userId = session?.user?.userId;
       if (!userId) {
-        toast.error("用户未登录");
         return
       }
 
@@ -329,8 +346,6 @@ export default function DesignPage() {
     if (isMobile) return;
     initOverCanvas(event, { x: sidebarWidth, y: draggingItemSize })
   }
-  const handleDragEnd = (event) => {
-  };
 
   // 保存设计数据 TODO
   const onSaveProject = async () => {
@@ -338,14 +353,15 @@ export default function DesignPage() {
     if (!session?.user?.userId) {
       redirect('/auth/login');
     }
+
     //const userId = 'yunyanyr@gmail.com'
     try {
       setLoading(true)
       const { status } = await post(`/api/design/${session.user.userId}`, {
         localItems: canvasRef.current.getLocalItems(),
-        canvasPosition: canvasRef.current.position,
-        compassRotation: canvasRef.current.compassRotation,
-        scale: canvasRef.current.scale,
+        canvasPosition: canvasRef.current.getPosition(),
+        compassRotation: canvasRef.current.getCompassRotation(),
+        scale: canvasRef.current.getScale(),
 
       });
       if (status == 0) {
@@ -362,7 +378,29 @@ export default function DesignPage() {
     }
   };
   const onGenReport = async () => {
+    const items = canvasRef.current.getLocalItems();
+
+    let doorFlag = false, windowFlag = false;
+    items.forEach(item => {
+      if (item.data.type === 'door') {
+        doorFlag = true
+      }
+      if (item.data.type === 'window') {
+        windowFlag = true
+      }
+    })
+    if (!doorFlag || !windowFlag) {
+      toast.error("至少需要1个房间、1扇门和1扇窗才可测算！", {
+        autoClose: false,
+        style: {
+          width: 400
+        }
+
+      });
+      return;
+    }
     await onSaveProject();
+    router.push(`/report?birthDateTime=${userInfo.birthDateTime}`);
   }
   const onShowTab = () => {
     setShowTab(true)
@@ -453,7 +491,7 @@ export default function DesignPage() {
             onUserOpen={setShowUserInfoDialog}
           />
         ) : (
-          <NavbarDesign onSaveProject={onSaveProject} onUserOpen={setShowUserInfoDialog} />
+          <NavbarDesign onSaveProject={onSaveProject} onGenReport={onGenReport} onUserOpen={setShowUserInfoDialog} />
         )
       }
       <div className="pt-16">
@@ -477,7 +515,7 @@ export default function DesignPage() {
                 {/* Canvas */}
                 <div className="flex-1 overflow-auto" id="canvas-drop-area" >
                   <Canvas ref={canvasRef}
-
+                    locale={locale}
                     history={history}
                     historyIndex={historyIndex}
                     setHistory={setHistory}

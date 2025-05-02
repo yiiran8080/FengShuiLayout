@@ -29,7 +29,7 @@ export default function LoginPage() {
             <Navbar />
 
             <div className="flex flex-col items-center bg-secondary md:bg-gray-50 justify-center px-6 py-12  mx-auto">
-                <div className="w-full p-10 space-y-8 bg-secondary md:w-100 md:shadow-lg">
+                <div className="w-full p-10 space-y-8 bg-secondary md:w-100 md:shadow-lg md:h-auto h-screen">
                     <div className="flex flex-col items-center ">
                         <h1 className="text-5xl font-bold text-primary">HarmoniQ</h1>
                         <p className="mt-16 text-[#086E56] text-sm text-center">

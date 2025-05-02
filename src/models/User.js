@@ -10,10 +10,12 @@ const UserSchema = new mongoose.Schema({
         type: String,
         enum: ['female', 'male'],
         required: true,
+        default: 'female'
     },
     birthDateTime: {
         type: Date,
         required: true,
+        default: new Date(1996, 2, 12, 22)
     },
     email: {
         type: String,

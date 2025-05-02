@@ -1,10 +1,12 @@
 import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
-import Features from "@/components/Features";
-import Share from "@/components/Share";
-import BeforeAfter from "@/components/BeforeAfter";
-import FAQ from "@/components/FAQ";
-import Footer from "@/components/Footer";
+import Hero from "@/components/home/Hero";
+import Features from "@/components/home/Features";
+import Share from "@/components/home/Share";
+import BeforeAfter from "@/components/home/BeforeAfter";
+import Comments from "@/components/home/Comments";
+import Tips from "@/components/home/Tips";
+import FAQ from "@/components/home/FAQ";
+import Footer from "@/components/home/Footer";
 
 export default function Home() {
   return (
@@ -15,6 +17,9 @@ export default function Home() {
         <Features />
         <Share />
         <BeforeAfter />
+
+        <Tips />
+        <Comments />
         <FAQ />
       </main>
       <Footer />

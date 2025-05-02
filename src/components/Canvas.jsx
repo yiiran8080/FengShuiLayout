@@ -11,8 +11,9 @@ import {
 } from "react";
 import {
   ITEM_TYPES,
-  ROOM_TYPES,
-  FURNITURE_TYPES_LABEL,
+  ROOM_COLORS,
+  FURNITURE_TYPES_LABEL_CN,
+  FURNITURE_TYPES_LABEL_TW,
   FURNITURE_TYPES,
 } from "@/types/room";
 import { Trash2, Save, Minus, Plus, RotateCcwSquare } from "lucide-react";
@@ -21,26 +22,21 @@ import Undo from "./canvasComp/Undo";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 // import InfiniteCanvas from 'infinite-canvas';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 import useMobile from "@/app/hooks/useMobile";
 import { ToastContainer, toast } from 'react-toastify';
-const ROOM_COLORS = {
-  [ROOM_TYPES.LIVING_ROOM]: "#F0DF9C", // 客厅
-  [ROOM_TYPES.DINING_ROOM]: "#F5D4BC", // 饭厅
-  [ROOM_TYPES.STORAGE_ROOM]: "#ADC0BC", // 储物室
-  [ROOM_TYPES.STUDY_ROOM]: "#B0B8C9", // 书房
-  [ROOM_TYPES.BEDROOM]: "#F5B8B8", // 睡房
-  [ROOM_TYPES.BATHROOM]: "#C1D7E2", // 浴室
-  [ROOM_TYPES.KITCHEN]: "#EDE0C6", // 厨房
-  [ROOM_TYPES.BALCONY]: "#D0DCAA", // 阳台
-  [ROOM_TYPES.GARDEN]: "#AACDBC", // 花园
-  [ROOM_TYPES.GARAGE]: "#C7C7DD", // 车库
-  [ROOM_TYPES.CORRIDOR]: "#CDCDCD", // 走廊
 
-}; // 引入缩放步长系数
-const scaleStepFactor = 0.1;
-
-const CANVAS_PADDING = 500; // 画布边缘预留空间
 const MAX_SCALE = 120;
 const MIN_SCALE = 50;
 let containerRect;
@@ -57,11 +53,12 @@ export const Canvas = forwardRef(
       handleUndo,
       handleRedo,
       onGenReport,
+      locale
     },
     ref
   ) => {
 
-
+    const FURNITURE_TYPES_LABEL = locale === 'zh-TW' ? FURNITURE_TYPES_LABEL_TW : FURNITURE_TYPES_LABEL_CN;
     const t = useTranslations("design");
     const isMobile = useMobile();
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -99,12 +96,12 @@ export const Canvas = forwardRef(
         setRoomDragStart,
         setPosition,
         setCompassRotation,
-        position,
-        compassRotation,
-        scale,
+        getPosition: () => position,
+        getCompassRotation: () => compassRotation,
+        getScale: () => scale,
         setScale
       }),
-      [localItems]
+      [localItems, position, compassRotation, scale]
     );
 
     const containerRef = useRef(null);
@@ -205,15 +202,21 @@ export const Canvas = forwardRef(
 
     const furnitureInroom = (furniture, parentRoom) => {
       if (!furniture.position || !parentRoom.position) return false;
+      let t = 20;
+      console.log('家具在里面', furniture.rotation);
+      if (furniture.rotation === -90 || furniture.rotation === -270) {
+        console.log('ss', furniture.size.width, furniture.size.height);
+        t = Math.abs(furniture.size.width - furniture.size.height) / 2 + t;
+      }
       return (
-        furniture.position.x >= parentRoom.position.x &&
+        furniture.position.x + t >= parentRoom.position.x &&
         furniture.position.x <= parentRoom.position.x + parentRoom.size.width &&
-        furniture.position.x + furniture.size.width <=
+        furniture.position.x - t + furniture.size.width <=
         parentRoom.position.x + parentRoom.size.width &&
-        furniture.position.y + 20 >= parentRoom.position.y &&
+        furniture.position.y + t >= parentRoom.position.y &&
         furniture.position.y <=
         parentRoom.position.y + parentRoom.size.height &&
-        furniture.position.y - 20 + furniture.size.height <=
+        furniture.position.y - t + furniture.size.height <=
         parentRoom.position.y + parentRoom.size.height
       );
     };
@@ -1010,7 +1013,7 @@ export const Canvas = forwardRef(
                           top: "-64px",
                           transform: "translateX(-50%)",
                         }}
-                        className="min-w-fit whitespace-nowrap  absolute h-[40px] rounded-4xl bg-white shadow-lg  items-center px-3 gap-2 md:flex hidden"
+                        className="min-w-fit whitespace-nowrap  absolute z-1 h-[40px] rounded-4xl bg-white shadow-lg  items-center px-3 gap-2 md:flex hidden"
                       >
                         <span className="text-sm text-gray-600">已选中：</span>
                         <div className="flex flex-grow items-center gap-1">
@@ -1111,7 +1114,7 @@ export const Canvas = forwardRef(
                           top: "-64px",
                           transform: "translateX(-50%)",
                         }}
-                        className="min-w-fit whitespace-nowrap absolute h-[40px] rounded-4xl bg-white shadow-lg  items-center px-3 gap-2 md:flex hidden"
+                        className="min-w-fit whitespace-nowrap absolute z-1 h-[40px] rounded-4xl bg-white shadow-lg  items-center px-3 gap-2 md:flex hidden"
                       >
                         <span className="text-sm text-gray-600">已选中：</span>
                         <div className="flex flex-grow items-center gap-1">
@@ -1256,21 +1259,34 @@ export const Canvas = forwardRef(
             </button>
           )}
 
-          <button
-            onClick={onGenReport}
-            className={cn(
+          <AlertDialog>
+            <AlertDialogTrigger className={cn(
               "inline-flex font-bold py-3 bg-button-gradient text-white rounded-[100px] text-sm items-center justify-center gap-0",
               showTab ? "w-full " : "w-4/5"
-            )}
-          >
-            {t("cta")}
-            <Image
-              src="/images/hero/star.png"
-              alt="arrow"
-              width={15}
-              height={16}
-            />
-          </button>
+            )}>
+              {t("cta")}
+              <Image
+                src="/images/hero/star.png"
+                alt="arrow"
+                width={15}
+                height={16}
+              />
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t("alert")}</AlertDialogTitle>
+                {/* <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete your account
+                  and remove your data from our servers.
+                </AlertDialogDescription> */}
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
+                <AlertDialogAction onClick={onGenReport}>{t("ok")}</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
         </div>
       </div>
     );
