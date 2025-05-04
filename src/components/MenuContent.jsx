@@ -13,6 +13,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { toast } from 'react-toastify';
 export default function MenuBar({ className, isOpen, setIsOpen }) {
     const t = useTranslations("home.hero");
     const pathname = usePathname();
@@ -20,7 +21,8 @@ export default function MenuBar({ className, isOpen, setIsOpen }) {
     const { data: session } = useSession();
     const isLogined = session?.user?.userId;
     const onLoginClick = async () => {
-
+        setIsOpen(false);
+        toast.info('正在跳转，请稍候...', { autoClose: 2000 });
         if (isLogined) {
             await handleSignOut()
         }

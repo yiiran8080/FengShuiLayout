@@ -1,14 +1,16 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, use } from 'react';
 import { signIn } from 'next-auth/react';
 //import { signIn } from "@/auth";
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import ClipLoader from "react-spinners/ClipLoader";
 import { ToastContainer, toast } from 'react-toastify';
-export default function LoginPage() {
+export default function LoginPage({ searchParams }) {
     const router = useRouter();
+    const params = use(searchParams);
+    console.log('searchParams', params);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSignIn = async (provider) => {
@@ -16,7 +18,7 @@ export default function LoginPage() {
         toast.info('正在跳转，请稍候...', { autoClose: 5000 });
         try {
             // provider, { callbackUrl: '/' }
-            await signIn(provider, { callbackUrl: '/' });
+            await signIn(provider, { callbackUrl: searchParams?.callbackUrl || '/' });
             setIsLoading(false);
 
         } catch (error) {

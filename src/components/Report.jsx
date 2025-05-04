@@ -129,7 +129,7 @@ export default function ReportPage({ locale, result, nayin, designJsonData }) {
         // setShowMenu(false);
     };
     if (!result?.bazi || !designJsonData || !nayin) return "数据错误，请重新生成报告。"
-    if (loading || !reportDocData) {
+    if (loading || !reportDocData.nianzhuData) {
         return <div className="space-y-8 mt-25">
             <Skeleton className="h-4 w-[80%]" />
             <Skeleton className="h-4 w-[70%]" />
@@ -137,7 +137,7 @@ export default function ReportPage({ locale, result, nayin, designJsonData }) {
             <Skeleton className="h-4 w-[70%]" />
         </div>
     }
-    console.log('reportDocData:', reportDocData);
+    //console.log('reportDocData:', reportDocData);
     const random = Math.floor(Math.random() * 3);
     return (
         <div className="relative min-h-screen bg-white">

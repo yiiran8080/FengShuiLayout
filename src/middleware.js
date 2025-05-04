@@ -35,18 +35,18 @@ export default async function middleware(request) {
 
         //console.log('pathname', request.nextUrl.pathname);
         const referer = request.headers.get('referer') || '';
-        // console.log('referer', referer);
+        //console.log('request.url', request.nextUrl, referer);
         // // 检查来源是否已经是登录页，避免循环重定向
         if (referer.includes('/auth/login')) {
             return response;
         }
-        //允许目标页面是首页
-        if (request.nextUrl.pathname === '/zh-CN' || request.nextUrl.pathname === '/zh-TW') {
+        //允许目标页面是首页、隐私条款等页面
+        if (!request.nextUrl.pathname.includes('/design') && !request.nextUrl.pathname.includes('/report')) {
             return response;
         }
 
         const locale = referer.indexOf('zh-CN') >= 0 ? 'zh-CN' : 'zh-TW';
-        return NextResponse.redirect(new URL(`/${locale}/auth/login`, request.url));
+        return NextResponse.redirect(new URL(`/${locale}/auth/login?callbackUrl=${request.nextUrl.pathname}`, request.url));
     }
 
     return response;

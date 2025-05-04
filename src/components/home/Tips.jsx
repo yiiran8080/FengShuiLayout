@@ -16,7 +16,7 @@ export default function () {
         e.stopPropagation();
         setActive(index)
     }
-    return <section className="md:py-20 py-15 pl-5 overflow-auto relative flex flex-col items-center"
+    return <section className="md:py-20 py-15 pl-10 overflow-auto relative flex flex-col items-center"
         onClick={() => setActive(null)}
     >
         <h3 className="text-hero md:text-5xl text-[28px] font-bold md:mb-30 mb-5">

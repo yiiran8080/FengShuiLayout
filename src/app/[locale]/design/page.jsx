@@ -399,8 +399,13 @@ export default function DesignPage({ params }) {
       });
       return;
     }
-    await onSaveProject();
-    router.push(`/report?birthDateTime=${userInfo.birthDateTime}`);
+    try {
+      await onSaveProject();
+      router.push(`/report?birthDateTime=${userInfo.birthDateTime}`);
+    } catch (e) {
+
+    }
+
   }
   const onShowTab = () => {
     setShowTab(true)
