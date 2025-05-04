@@ -1,5 +1,4 @@
 "use client";
-import { useDroppable } from "@dnd-kit/core";
 import _ from "lodash";
 import {
     useState,
@@ -16,32 +15,22 @@ import {
     FURNITURE_TYPES,
 } from "@/types/room";
 import { Trash2, Save, Minus, Plus, RotateCcwSquare } from "lucide-react";
+import useReportDoc from '@/app/hooks/useReportDoc';
 import Image from "next/image";
 import Undo from "./canvasComp/Undo";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-// import InfiniteCanvas from 'infinite-canvas';
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
 
 import useMobile from "@/app/hooks/useMobile";
 import { ToastContainer, toast } from 'react-toastify';
-
-
+// import { jiajuData } from "@/lib/json/jiaju_tw";
+import UnlockButton from './UnlockButton';
 const CANVAS_PADDING = 200; // 画布边缘预留空间
 const MAX_SCALE = 120;
 const MIN_SCALE = 50;
 let containerRect;
-export default function ({ designJsonData }) {
+export default function ({ locale, designJsonData }) {
+    const { loading, reportDocData } = useReportDoc(locale);
     const [designData, setDesignData] = useState({})
     //const [position, setPosition] = useState({ x: 0, y: 0 });
     const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
@@ -121,6 +110,8 @@ export default function ({ designJsonData }) {
     const onRoomClick = room => {
         setActiveRoom(room);
     }
+
+    let random = Math.floor(Math.random() * 5);
     // translate(${position.x}px, ${position.y}px)  
     return <section className="relative">
         <div className="relative border-1 border-[#E6E6E6] rounded-t-3xl py-[2px] mt-8 overflow-scroll">
@@ -316,11 +307,11 @@ export default function ({ designJsonData }) {
             )}
             <span>目录</span>
         </div>
-        <div className="w-full rounded-b-3xl bg-[#fafafa] p-8 border-1 border-[#E6E6E6]">
+        <div className="w-full md:rounded-b-3xl bg-[#fafafa] md:p-8 p-5 border-1 border-[#E6E6E6]">
             <div className="flex items-center gap-2">
                 <Image
-                    width={32}
-                    height={32}
+                    width={activeRoom?.data._type === 'dining_room' ? 28 : 32}
+                    height={activeRoom?.data._type === 'dining_room' ? 28 : 32}
                     style={{ color: 'red' }}
                     alt=""
                     src={`/images/report/${activeRoom?.data._type}.svg`} />
@@ -328,7 +319,20 @@ export default function ({ designJsonData }) {
                     {activeRoom?.data.label}
                 </h2>
             </div>
-
+            <div className="mt-3">
+                {
+                    reportDocData?.jiajuData[activeRoom?.data._type] &&
+                    Object.entries(reportDocData.jiajuData[activeRoom?.data._type][activeRoom?.direction][random]).map(([key, value]) => {
+                        return <p className="leading-8 flex" > <span className="font-bold whitespace-nowrap min-w-22.5">{key}：</span>
+                            <span className="whitespace-pre-wrap">{value} </span>
+                        </p>
+                    })
+                }
+            </div>
+        </div>
+        <div className='md:flex mt-10 items-center px-6 md:p-0'>
+            <p><span className='text-[#FF531A]'>*</span>第七及第八章的进阶分析，会 <span className='font-bold'>对照用户命格比对，提供相应优化建议。</span></p>
+            <UnlockButton className='bg-[#096E56] text-white md:ml-2 w-full md:w-auto mt-5 md:mt-0 block md:inline text-center' />
         </div>
     </section>
 

@@ -37,10 +37,13 @@ export default function Hero() {
           </p>
           <Link
             href="/design"
-            className="inline-flex font-bold pl-10 pr-6 py-3 bg-button-gradient text-white rounded-full md:text-2xl text-xl hover:bg-primary/90 transition-colors items-center gap-2"
+            className="inline-flex font-bold md:pl-16 pl-20 md:pr-10 pr-15 py-3 bg-button-gradient text-white rounded-full md:text-2xl text-xl hover:bg-primary/90 transition-colors items-center gap-2"
           >
             {t("cta")}
-            <Image src="/images/hero/star.png" alt="arrow" width={24} height={24} />
+            <div className='w-5 h-5 md:w-6 md:h-6 relative'>
+              <Image src="/images/hero/star.png" alt="arrow" fill />
+            </div>
+
           </Link>
         </div>
       </div>

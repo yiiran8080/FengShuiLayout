@@ -16,13 +16,13 @@ export default function () {
         e.stopPropagation();
         setActive(index)
     }
-    return <section className="md:py-20 py-15 relative overflow-hidden flex flex-col items-center"
+    return <section className="md:py-20 py-15 pl-5 overflow-auto relative flex flex-col items-center"
         onClick={() => setActive(null)}
     >
         <h3 className="text-hero md:text-5xl text-[28px] font-bold md:mb-30 mb-5">
             {t("title")}
         </h3>
-        <div className="w-full overflow-auto">
+        <div>
             <div className="flex items-end justify-center border-b-8 border-[#7EAAAB] rounded-sm pb-3 px-5">
                 {
                     active == 0 ? <Image className="md:mr-2 mr-1" width='224' height='400' src='/images/tips/1.png' alt='' /> :

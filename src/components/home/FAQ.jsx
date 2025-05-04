@@ -13,7 +13,7 @@ export default function FAQ() {
   const t = useTranslations("home.FAQ");
   const [showMore, setShowMore] = useState(false);
   return (
-    <section className="py-20 bg-white">
+    <section className="md:py-20 py-15 bg-white">
       <div className="container mx-auto px-4">
 
         <h3 className="text-center  text-hero md:text-5xl text-[28px] font-bold md:mb-9 mb-5">
@@ -79,7 +79,7 @@ export default function FAQ() {
           {
             !showMore && <button
               onClick={() => { setShowMore(true) }}
-              className="rounded-[100px] bg-[#F2FAF7] text-[#25826C] border-1 border-[#25826C] text-center text-xl py-2 px-4.5"
+              className="cursor-pointer rounded-[100px] bg-[#F2FAF7] text-[#25826C] border-1 border-[#25826C] text-center text-xl py-2 px-4.5"
             > {t('showMore')}</button>
           }
 

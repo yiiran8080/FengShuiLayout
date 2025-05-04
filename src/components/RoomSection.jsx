@@ -4,16 +4,16 @@ import RoomCanvas from './RoomCanvas';
 
 // 根据角度确定方位
 const directions = [
-    { name: '正北', range: [337.5, 22.5], baseAngle: 0 },
-    { name: '东北', range: [22.5, 67.5], baseAngle: 45 },
-    { name: '正东', range: [67.5, 112.5], baseAngle: 90 },
-    { name: '东南', range: [112.5, 157.5], baseAngle: 135 },
-    { name: '正南', range: [157.5, 202.5], baseAngle: 180 },
-    { name: '西南', range: [202.5, 247.5], baseAngle: 225 },
-    { name: '正西', range: [247.5, 292.5], baseAngle: 270 },
-    { name: '西北', range: [292.5, 337.5], baseAngle: 315 }
+    { name: 'north', range: [337.5, 22.5], baseAngle: 0 },
+    { name: 'northEast', range: [22.5, 67.5], baseAngle: 45 },
+    { name: 'east', range: [67.5, 112.5], baseAngle: 90 },
+    { name: 'southEast', range: [112.5, 157.5], baseAngle: 135 },
+    { name: 'south', range: [157.5, 202.5], baseAngle: 180 },
+    { name: 'southWest', range: [202.5, 247.5], baseAngle: 225 },
+    { name: 'west', range: [247.5, 292.5], baseAngle: 270 },
+    { name: 'northWest', range: [292.5, 337.5], baseAngle: 315 }
 ];
-export default function ({ designJsonData }) {
+export default function ({ designJsonData, locale }) {
     const [newDesignData, setNewDesignData] = useState({});
     //console.log(designData);
     useEffect(() => {
@@ -79,7 +79,7 @@ export default function ({ designJsonData }) {
         const calculateDirection = (room, centerRoom, centerX, centerY, newDirections) => {
             // 如果房间就是中宫
             if (room === centerRoom) {
-                return '中宫';
+                return 'center';
             }
             const roomCenterX = room.position.x + room.size.width / 2;
             const roomCenterY = room.position.y + room.size.height / 2;
@@ -142,6 +142,6 @@ export default function ({ designJsonData }) {
     }
 
     return <div>
-        <RoomCanvas designJsonData={JSON.stringify(newDesignData)} />
+        <RoomCanvas locale={locale} designJsonData={JSON.stringify(newDesignData)} />
     </div>
 }

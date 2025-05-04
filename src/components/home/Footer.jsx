@@ -1,15 +1,17 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Separator } from '@/components/ui/separator';
+import { useTranslations } from "next-intl";
 export default function Footer() {
+  const t = useTranslations("home.footer");
   const links = {
     contact: [
-      { name: '联系我们', href: '#' },
+      { name: t('contact'), href: '/contact' },
     ],
     law: [
 
-      { name: '隐私政策', href: '#' },
-      { name: '用户条款', href: '#' }
+      { name: t('privacy'), href: '/privacy' },
+      { name: t('terms'), href: '/terms' }
     ],
     social: [
       { icon: '/images/footer/Facebook.png' },
@@ -25,7 +27,7 @@ export default function Footer() {
 
           {/* Product links */}
           <div>
-            <h3 className="text-white font-semibold mb-4 text-xl">咨询</h3>
+            <h3 className="text-white font-semibold mb-4 text-xl">{t('consult')}</h3>
             <ul className="space-y-2">
               {links.contact.map((link) => (
                 <li key={link.name}>
@@ -38,12 +40,12 @@ export default function Footer() {
           </div>
           {/* Social links */}
           <div>
-            <h3 className="text-white font-semibold mb-4 text-xl min-w-30">关注我们</h3>
+            <h3 className="text-white font-semibold mb-4 text-xl min-w-30">{t('focus')}</h3>
             <div className="flex space-x-4">
               {links.social.map((social) => (
                 <Image
                   src={social.icon}
-                  alt={social.name}
+                  alt=''
                   width={40}
                   height={40}
                 />
@@ -52,7 +54,7 @@ export default function Footer() {
           </div>
           {/* Company links */}
           <div>
-            <h3 className="text-white font-semibold mb-4 text-xl">法律信息</h3>
+            <h3 className="text-white font-semibold mb-4 text-xl">{t('law')}</h3>
             <ul className="space-y-2">
               {links.law.map((link) => (
                 <li key={link.name}>
@@ -68,7 +70,7 @@ export default function Footer() {
         </div>
         <Separator className='mt-7.5 mb-2.5 md:mb-5' />
         <div className="border-t border-gray-800  text-sm text-center">
-          <p>© 2025 HarmoniQ. 保留所有权利。</p>
+          <p>© 2025 HarmoniQ. {t('copyright')}</p>
         </div>
       </div>
     </footer>

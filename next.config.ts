@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true, // 忽略 TypeScript 检查
   },
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
 };
 
 const withNextIntl = createNextIntlPlugin();

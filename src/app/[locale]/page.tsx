@@ -6,6 +6,7 @@ import BeforeAfter from "@/components/home/BeforeAfter";
 import Comments from "@/components/home/Comments";
 import Tips from "@/components/home/Tips";
 import FAQ from "@/components/home/FAQ";
+import Message from "@/components/home/Message";
 import Footer from "@/components/home/Footer";
 
 export default function Home() {
@@ -20,6 +21,7 @@ export default function Home() {
 
         <Tips />
         <Comments />
+        <Message />
         <FAQ />
       </main>
       <Footer />

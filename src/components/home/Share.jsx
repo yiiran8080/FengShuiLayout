@@ -16,18 +16,20 @@ export default function Share() {
         }
 
         <div className="flex flex-col-reverse md:flex-row items-center gap-12 md:gap-24 max-w-6xl mx-auto">
+          <div className='relative'>
+            <Image
+              src='/images/hero/empty.png'
+              alt='分享您的平面图'
+              width={588}
+              height={331}
+              className="object-contain z-10"
+            />
 
-          <Image
-            src='/images/hero/empty.png'
-            alt='分享您的平面图'
-            width={588}
-            height={331}
-            className="object-contain z-10"
-          />
+          </div>
 
 
-          <div className='flex-grow flex flex-col gap-6 items-center md:items-end'>
-            <h3 className="text-hero md:text-5xl text-[28px] font-bold">
+          <div className='flex-grow flex flex-col gap-6 items-center md:items-end '>
+            <h3 className="text-hero md:text-5xl text-[28px] md:text-right font-bold">
               {t("title")}
             </h3>
             <p className="text-secondary-foreground md:text-xl  md:text-right text-center max-w-90">
