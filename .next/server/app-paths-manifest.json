@@ -7,12 +7,12 @@
   "/api/users/route": "app/api/users/route.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/[locale]/auth/login/page": "app/[locale]/auth/login/page.js",
   "/[locale]/auth/complete-profile/page": "app/[locale]/auth/complete-profile/page.js",
   "/[locale]/contact/page": "app/[locale]/contact/page.js",
-  "/[locale]/design/page": "app/[locale]/design/page.js",
-  "/[locale]/privacy/page": "app/[locale]/privacy/page.js",
+  "/[locale]/auth/login/page": "app/[locale]/auth/login/page.js",
   "/[locale]/page": "app/[locale]/page.js",
+  "/[locale]/design/page": "app/[locale]/design/page.js",
+  "/[locale]/terms/page": "app/[locale]/terms/page.js",
   "/[locale]/report/page": "app/[locale]/report/page.js",
-  "/[locale]/terms/page": "app/[locale]/terms/page.js"
+  "/[locale]/privacy/page": "app/[locale]/privacy/page.js"
 }

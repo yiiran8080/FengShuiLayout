@@ -30,7 +30,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/zh-CN/auth/login": {
+    "/zh-CN/auth/complete-profile": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -43,8 +43,8 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/[locale]/auth/login",
-      "dataRoute": "/zh-CN/auth/login.rsc",
+      "srcRoute": "/[locale]/auth/complete-profile",
+      "dataRoute": "/zh-CN/auth/complete-profile.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -54,7 +54,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/zh-TW/auth/login": {
+    "/zh-TW/auth/complete-profile": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -67,8 +67,8 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/[locale]/auth/login",
-      "dataRoute": "/zh-TW/auth/login.rsc",
+      "srcRoute": "/[locale]/auth/complete-profile",
+      "dataRoute": "/zh-TW/auth/complete-profile.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -126,7 +126,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/zh-CN/auth/complete-profile": {
+    "/zh-CN/auth/login": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -139,8 +139,8 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/[locale]/auth/complete-profile",
-      "dataRoute": "/zh-CN/auth/complete-profile.rsc",
+      "srcRoute": "/[locale]/auth/login",
+      "dataRoute": "/zh-CN/auth/login.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -150,7 +150,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/zh-TW/auth/complete-profile": {
+    "/zh-TW/auth/login": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -163,8 +163,8 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/[locale]/auth/complete-profile",
-      "dataRoute": "/zh-TW/auth/complete-profile.rsc",
+      "srcRoute": "/[locale]/auth/login",
+      "dataRoute": "/zh-TW/auth/login.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -176,7 +176,7 @@
     }
   },
   "dynamicRoutes": {
-    "/[locale]/auth/login": {
+    "/[locale]/auth/complete-profile": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -188,10 +188,10 @@
           "value": "multipart/form-data;.*"
         }
       ],
-      "routeRegex": "^/([^/]+?)/auth/login(?:/)?$",
-      "dataRoute": "/[locale]/auth/login.rsc",
+      "routeRegex": "^/([^/]+?)/auth/complete\\-profile(?:/)?$",
+      "dataRoute": "/[locale]/auth/complete-profile.rsc",
       "fallback": null,
-      "dataRouteRegex": "^/([^/]+?)/auth/login\\.rsc$",
+      "dataRouteRegex": "^/([^/]+?)/auth/complete\\-profile\\.rsc$",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -226,7 +226,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/[locale]/auth/complete-profile": {
+    "/[locale]/auth/login": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -238,10 +238,10 @@
           "value": "multipart/form-data;.*"
         }
       ],
-      "routeRegex": "^/([^/]+?)/auth/complete\\-profile(?:/)?$",
-      "dataRoute": "/[locale]/auth/complete-profile.rsc",
+      "routeRegex": "^/([^/]+?)/auth/login(?:/)?$",
+      "dataRoute": "/[locale]/auth/login.rsc",
       "fallback": null,
-      "dataRouteRegex": "^/([^/]+?)/auth/complete\\-profile\\.rsc$",
+      "dataRouteRegex": "^/([^/]+?)/auth/login\\.rsc$",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -254,8 +254,8 @@
   },
   "notFoundRoutes": [],
   "preview": {
-    "previewModeId": "51031705c51fa2e961689d1b1fb4cf69",
-    "previewModeSigningKey": "2ca050bc83ae5edf9d432e67ccaebac1e594e3ddc5e2558bea5fd516aa5fb5ed",
-    "previewModeEncryptionKey": "8de3c6b3384ff9214c61de912b36ea16b1be193ff74859ed79490eb4a1ccf44e"
+    "previewModeId": "d0f32d38e5130ede8a2df2feb6f1d59c",
+    "previewModeSigningKey": "60572d6603f43b9a1cb7d9305397fa4618e9ba8834c29da358c16b46e1ab0b23",
+    "previewModeEncryptionKey": "cb12fc08dadb47a969bceda12ed9e3fd26c5be0bb14d10cb85af077d1f71425a"
   }
 }
