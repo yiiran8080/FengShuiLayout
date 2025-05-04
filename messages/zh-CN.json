@@ -108,17 +108,6 @@
     }
   },
   "design": {
-    "rooms": "房间",
-    "furniture": "家具",
-    "items": {
-      "livingRoom": "客厅",
-      "bedroom": "卧室",
-      "door": "门",
-      "window": "窗",
-      "bed": "床",
-      "sofa": "沙发",
-      "table": "桌子"
-    },
     "showTab": "选择房间或家具",
     "cta": "开始测算",
     "alert": "请确认个人资料和房间布局是否准确？",
