@@ -30,54 +30,6 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/zh-CN/auth/complete-profile": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "Next-Action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/[locale]/auth/complete-profile",
-      "dataRoute": "/zh-CN/auth/complete-profile.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
-    "/zh-TW/auth/complete-profile": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "Next-Action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/[locale]/auth/complete-profile",
-      "dataRoute": "/zh-TW/auth/complete-profile.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
     "/zh-CN/design": {
       "experimentalBypassFor": [
         {
@@ -125,10 +77,8 @@
         "x-next-revalidated-tags",
         "x-next-revalidate-tag-token"
       ]
-    }
-  },
-  "dynamicRoutes": {
-    "/[locale]/auth/complete-profile": {
+    },
+    "/zh-CN/auth/complete-profile": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -140,10 +90,9 @@
           "value": "multipart/form-data;.*"
         }
       ],
-      "routeRegex": "^/([^/]+?)/auth/complete\\-profile(?:/)?$",
-      "dataRoute": "/[locale]/auth/complete-profile.rsc",
-      "fallback": null,
-      "dataRouteRegex": "^/([^/]+?)/auth/complete\\-profile\\.rsc$",
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/[locale]/auth/complete-profile",
+      "dataRoute": "/zh-CN/auth/complete-profile.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -153,6 +102,32 @@
         "x-next-revalidate-tag-token"
       ]
     },
+    "/zh-TW/auth/complete-profile": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "Next-Action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/[locale]/auth/complete-profile",
+      "dataRoute": "/zh-TW/auth/complete-profile.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    }
+  },
+  "dynamicRoutes": {
     "/[locale]/design": {
       "experimentalBypassFor": [
         {
@@ -177,12 +152,37 @@
         "x-next-revalidated-tags",
         "x-next-revalidate-tag-token"
       ]
+    },
+    "/[locale]/auth/complete-profile": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "Next-Action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "routeRegex": "^/([^/]+?)/auth/complete\\-profile(?:/)?$",
+      "dataRoute": "/[locale]/auth/complete-profile.rsc",
+      "fallback": null,
+      "dataRouteRegex": "^/([^/]+?)/auth/complete\\-profile\\.rsc$",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
     }
   },
   "notFoundRoutes": [],
   "preview": {
-    "previewModeId": "ff088ce3ac9831efd51b59d3a7b9c637",
-    "previewModeSigningKey": "f3bbb104c7de222b28081652c4a2a47950d35db39a94829713465a6b070e62fb",
-    "previewModeEncryptionKey": "da89bfe56a66a958c018f334f3b044c0d41656599054dcdec2d96effa011c49f"
+    "previewModeId": "136dbed78ffab38fd681e5bef361133c",
+    "previewModeSigningKey": "037b3134e2e6d85ed3838ea8aba52d12493687a47935a14be062d0b9ac9de41a",
+    "previewModeEncryptionKey": "6cefcf37f58c41d493f3e9767c575f6f9922d6cb2548d4cdd2f181e564dc43d1"
   }
 }

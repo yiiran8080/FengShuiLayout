@@ -6,7 +6,7 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import ClipLoader from "react-spinners/ClipLoader";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 export default function LoginPage({ searchParams }) {
     const router = useRouter();
     const params = use(searchParams);
