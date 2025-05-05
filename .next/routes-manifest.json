@@ -39,6 +39,23 @@
       "namedRegex": "^/api/reportDoc/(?<nxtPlanguage>[^/]+?)(?:/)?$"
     },
     {
+      "page": "/api/reportUserDoc/[userId]",
+      "regex": "^/api/reportUserDoc/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPuserId": "nxtPuserId"
+      },
+      "namedRegex": "^/api/reportUserDoc/(?<nxtPuserId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/reportUserDoc/[userId]/[language]",
+      "regex": "^/api/reportUserDoc/([^/]+?)/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPuserId": "nxtPuserId",
+        "nxtPlanguage": "nxtPlanguage"
+      },
+      "namedRegex": "^/api/reportUserDoc/(?<nxtPuserId>[^/]+?)/(?<nxtPlanguage>[^/]+?)(?:/)?$"
+    },
+    {
       "page": "/api/users/[userId]",
       "regex": "^/api/users/([^/]+?)(?:/)?$",
       "routeKeys": {
@@ -53,14 +70,6 @@
         "nxtPlocale": "nxtPlocale"
       },
       "namedRegex": "^/(?<nxtPlocale>[^/]+?)(?:/)?$"
-    },
-    {
-      "page": "/[locale]/auth/complete-profile",
-      "regex": "^/([^/]+?)/auth/complete\\-profile(?:/)?$",
-      "routeKeys": {
-        "nxtPlocale": "nxtPlocale"
-      },
-      "namedRegex": "^/(?<nxtPlocale>[^/]+?)/auth/complete\\-profile(?:/)?$"
     },
     {
       "page": "/[locale]/auth/login",

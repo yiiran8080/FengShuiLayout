@@ -1,7 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import RoomCanvas from './RoomCanvas';
-
+import { useSession } from 'next-auth/react'
+import { get } from "@/lib/ajax";
 // 根据角度确定方位
 const directions = [
     { name: 'north', range: [337.5, 22.5], baseAngle: 0 },
@@ -13,23 +14,28 @@ const directions = [
     { name: 'west', range: [247.5, 292.5], baseAngle: 270 },
     { name: 'northWest', range: [292.5, 337.5], baseAngle: 315 }
 ];
-export default function ({ designJsonData, locale }) {
+export default function ({ jiajuDataString }) {
+    const { data: session } = useSession();
     const [newDesignData, setNewDesignData] = useState({});
     //console.log(designData);
     useEffect(() => {
-        if (designJsonData) {
-            let designData = JSON.parse(designJsonData);
-
-            let roomList = handleDesignData(designData);
-            let furnitureList = designData.localItems.filter(item => item._type === 'furniture');
-            setNewDesignData({
-                ...designData,
-                localItems: [...roomList, ...furnitureList]
-            })
-            console.log('new designData', roomList);
+        const userId = session?.user?.userId;
+        if (!userId) return;
+        const loadData = async () => {
+            const { data: designData } = await get(`/api/design/${userId}`);
+            if (designData) {
+                let roomList = handleDesignData(designData);
+                let furnitureList = designData.localItems.filter(item => item._type === 'furniture');
+                setNewDesignData({
+                    ...designData,
+                    localItems: [...roomList, ...furnitureList]
+                })
+                console.log('new designData', roomList);
+            }
         }
 
-    }, [designJsonData])
+        loadData()
+    }, [session?.user?.userId])
 
     /**
      * 把房间分配九宫方位
@@ -142,6 +148,6 @@ export default function ({ designJsonData, locale }) {
     }
 
     return <div>
-        <RoomCanvas locale={locale} designJsonData={JSON.stringify(newDesignData)} />
+        <RoomCanvas jiajuDataString={jiajuDataString} designJsonData={JSON.stringify(newDesignData)} />
     </div>
 }

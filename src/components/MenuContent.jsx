@@ -43,6 +43,16 @@ export default function MenuBar({ className, isOpen, setIsOpen }) {
         >
             {pathname.indexOf("/design") < 0 && pathname.indexOf("/login") < 0 ? t("cta") : t("home")}
         </Link>
+        {
+            isLogined && <Link
+                className='block text-base focus:bg-secondary focus:text-primary py-3.5 px-4'
+                href="/report"
+
+            >
+                {t("readReport")}
+            </Link>
+        }
+
         <Select>
             <SelectTrigger className="w-full text-base border-none py-4 mt-1 data-[state=open]:mb-22 px-4 shadow-none data-[state=open]:bg-secondary data-[state=open]:text-primary">
                 {t('locale')}

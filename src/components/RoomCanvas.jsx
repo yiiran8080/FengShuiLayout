@@ -29,8 +29,8 @@ const CANVAS_PADDING = 200; // 画布边缘预留空间
 const MAX_SCALE = 120;
 const MIN_SCALE = 50;
 let containerRect;
-export default function ({ locale, designJsonData }) {
-    const { loading, reportDocData } = useReportDoc(locale);
+export default function ({ jiajuDataString, designJsonData }) {
+    const jiajuData = JSON.parse(jiajuDataString);
     const [designData, setDesignData] = useState({})
     //const [position, setPosition] = useState({ x: 0, y: 0 });
     const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
@@ -111,7 +111,7 @@ export default function ({ locale, designJsonData }) {
         setActiveRoom(room);
     }
 
-    let random = Math.floor(Math.random() * 5);
+
     // translate(${position.x}px, ${position.y}px)  
     return <section className="relative">
         <div className="relative border-1 border-[#E6E6E6] rounded-t-3xl py-[2px] mt-8 overflow-scroll">
@@ -321,8 +321,8 @@ export default function ({ locale, designJsonData }) {
             </div>
             <div className="mt-3">
                 {
-                    reportDocData?.jiajuData[activeRoom?.data._type] &&
-                    Object.entries(reportDocData.jiajuData[activeRoom?.data._type][activeRoom?.direction][random]).map(([key, value]) => {
+                    jiajuData && jiajuData[activeRoom?.data._type] &&
+                    Object.entries(jiajuData[activeRoom?.data._type][activeRoom?.direction]).map(([key, value]) => {
                         return <p className="leading-8 flex" > <span className="font-bold whitespace-nowrap min-w-22.5">{key}：</span>
                             <span className="whitespace-pre-wrap">{value} </span>
                         </p>

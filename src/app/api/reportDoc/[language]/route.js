@@ -11,7 +11,7 @@ export async function GET(request, { params }) {
         const docData = await ReportDoc.findOne({ language }).select('-__v');
         // console.log('xx', docData, language)
 
-        return NextResponse.json(genSuccessData(docData || {}));
+        return NextResponse.json(genSuccessData(docData));
     } catch (error) {
         console.error('Error fetching doc:', error);
         return NextResponse.json(

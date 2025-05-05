@@ -9,9 +9,19 @@ import {
   pointerWithin,
   closestCorners
 } from '@dnd-kit/core';
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { redirect } from "next/navigation";
-import { use, useState, useRef, useEffect } from 'react';
+import { use, useState, useRef, useEffect, Suspense } from 'react';
 import {
   ITEM_TYPES,
   ROOM_TYPES,
@@ -28,13 +38,14 @@ import Image from 'next/image';
 import useMobile from '../../hooks/useMobile';
 import DragBarPC from '@/components/dragBarComp/DragBarPC';
 import DragBarMobile from '@/components/dragBarComp/DragBarMobile';
-import { get, post } from "@/lib/ajax";
+import { get, post, patch } from "@/lib/ajax";
 
 import { useSession } from 'next-auth/react'
 import UserInfoDialog from '@/components/UserInfoDialog';
 import ClipLoader from "react-spinners/ClipLoader";
 import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from "next-intl";
 const ROOM_COLORS = {
   [ROOM_TYPES.LIVING_ROOM]: '#F0DF9C',   // 客厅
   [ROOM_TYPES.DINING_ROOM]: '#F5D4BC',   // 饭厅
@@ -56,6 +67,7 @@ export default function DesignPage({ params }) {
   //  console.log('params', params.locale)
   const _params = use(params);
   const locale = _params.locale;
+  const t = useTranslations('design');
   const ROOM_TYPES_LABEL = locale === 'zh-TW' ? ROOM_TYPES_LABEL_TW : ROOM_TYPES_LABEL_CN;
   const FURNITURE_TYPES_LABEL = locale === 'zh-TW' ? FURNITURE_TYPES_LABEL_TW : FURNITURE_TYPES_LABEL_CN;
   const furnitureItems = [
@@ -105,6 +117,8 @@ export default function DesignPage({ params }) {
   const isMobile = useMobile();
   const draggingItemSize = isMobile ? 48 : 56;
   const defaultRoomSize = isMobile ? { width: 200, height: 200 } : { width: 300, height: 300 }
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('')
   // const defaultFurSize = { width: draggingItemSize, height: 32 }
 
   const roomItems = [
@@ -378,6 +392,10 @@ export default function DesignPage({ params }) {
     }
   };
   const onGenReport = async () => {
+    if (!session?.user?.userId) {
+      redirect('/auth/login');
+    }
+    let userId = session.user.userId;
     const items = canvasRef.current.getLocalItems();
 
     let doorFlag = false, windowFlag = false;
@@ -400,12 +418,43 @@ export default function DesignPage({ params }) {
       return;
     }
     try {
-      await onSaveProject();
-      router.push(`/report?birthDateTime=${userInfo.birthDateTime}`);
+      const { status, data } = await get(`/api/reportUserDoc/${userId}/${locale == 'zh-CN' ? 'zh' : 'tw'}`)
+      if (data) {
+        setAlertOpen(true);
+      } else {
+        await onSaveProject();
+        router.push(`/report?birthDateTime=${userInfo.birthDateTime}`);
+      }
+
     } catch (e) {
 
     }
 
+  }
+  const onCoverReport = async () => {
+    if (!session?.user?.userId) {
+      redirect('/auth/login');
+    }
+    let userId = session.user.userId;
+    await onSaveProject();
+    //删除原报告
+    try {
+      setAlertOpen(false);
+      setLoading(true);
+      const { status } = await patch(`/api/reportUserDoc/${userId}`, { isDelete: 1 });
+      setLoading(false);
+      if (status == 0) {
+        router.push(`/report?birthDateTime=${userInfo.birthDateTime}`);
+      }
+    } catch (e) {
+
+    }
+
+
+  }
+  const onReadReport = () => {
+    setAlertOpen(false);
+    router.push(`/report`);
   }
   const onShowTab = () => {
     setShowTab(true)
@@ -469,121 +518,139 @@ export default function DesignPage({ params }) {
   //   );
   // }
   return (
-    <>
-      <ClipLoader
-        color={'#666'}
-        loading={loading}
-        cssOverride={{ position: 'fixed', left: '50%', top: '50%', zIndex: 60 }}
-        size={30}
-        aria-label="loading..."
-        data-testid="loader"
-      />
+    <Suspense fallback={<div>loading...</div>}>
+      <>
+        <ClipLoader
+          color={'#666'}
+          loading={loading}
+          cssOverride={{ position: 'fixed', left: '50%', top: '50%', zIndex: 60 }}
+          size={30}
+          aria-label="loading..."
+          data-testid="loader"
+        />
 
-      <UserInfoDialog
-        open={showUserInfoDialog}
-        onUserOpen={setShowUserInfoDialog}
-        onSubmit={handleUserInfoSubmit}
-        userInfo={userInfo}
-      />
-      {
-        isMobile ? (
-          <NavbarDesignMobile
-            onSaveProject={onSaveProject}
-            history={history}
-            historyIndex={historyIndex}
-            handleUndo={handleUndo}
-            handleRedo={handleRedo}
-            onUserOpen={setShowUserInfoDialog}
-          />
-        ) : (
-          <NavbarDesign onSaveProject={onSaveProject} onGenReport={onGenReport} onUserOpen={setShowUserInfoDialog} />
-        )
-      }
-      <div className="pt-16">
-        <DndContext
-          sensors={sensors}
-          onDragStart={handleDragStart}
-          onDragOver={handleDragOver}
-          onDragMove={handleDragMove}
-        // collisionDetection={pointerWithin}
-        >
-          <div className="min-h-[calc(100vh-64px)] bg-gray-50">
-            <div className="container p-0" style={{ maxWidth: '100%' }}>
-              <div className="flex h-[calc(100vh-64px)]">
-                {
-                  isMobile ? (
-                    <DragBarMobile showTab={showTab} setShowTab={setShowTab} roomItems={roomItems} furnitureItems={furnitureItems} isOverCanvas={isOverCanvas} draggingItemSize={draggingItemSize} />
-                  ) : (
-                    <DragBarPC sidebarRef={sidebarRef} roomItems={roomItems} furnitureItems={furnitureItems} isOverCanvas={isOverCanvas} draggingItemSize={draggingItemSize} />
-                  )
-                }
-                {/* Canvas */}
-                <div className="flex-1 overflow-auto" id="canvas-drop-area" >
-                  <Canvas ref={canvasRef}
-                    locale={locale}
-                    history={history}
-                    historyIndex={historyIndex}
-                    setHistory={setHistory}
-                    setHistoryIndex={setHistoryIndex}
-                    handleUndo={handleUndo}
-                    handleRedo={handleRedo}
-                    onGenReport={onGenReport}
-                    showTab={showTab}
-                    onShowTab={onShowTab} />
-                </div>
-              </div>
-
-
-            </div>
-          </div>
-          <DragOverlay>
-            {
-              active?.id && isOverCanvas && (
-                active.data.current.cateType === ITEM_TYPES.ROOM ? (
-                  // 房间在画布上的样式
-                  <div
-                    className="flex flex-col items-center justify-center bg-white/80 rounded-lg"
-                    style={{
-                      transform: isMobile ? 'translateY(78px)' : 'translateY(0)',
-                      width: defaultRoomSize.width,
-                      height: defaultRoomSize.height,
-                      border: '8px solid',
-                      borderColor: ROOM_COLORS[roomItems.find(item => item.id === active.id)?.data.type],
-                      borderRadius: '8px',
-                    }}
-                  >
-                    <div className="flex flex-col items-center">
-                      <Image
-                        className='bg-[#EFF7F4] rounded-lg'
-                        src={active.data.current.icon}
-                        alt="Room"
-                        width={draggingItemSize}
-                        height={draggingItemSize}
-                      />
-
-                      <span className="mt-1 text-sm text-gray-600">
-                        {active.data.current.label + (canvasRef.current.getLocalItems().filter(item => item.data.type === active.data.current.type).length + 1)}
-                      </span>
-                    </div>
+        <UserInfoDialog
+          open={showUserInfoDialog}
+          onUserOpen={setShowUserInfoDialog}
+          onSubmit={handleUserInfoSubmit}
+          userInfo={userInfo}
+        />
+        {
+          isMobile ? (
+            <NavbarDesignMobile
+              onSaveProject={onSaveProject}
+              history={history}
+              historyIndex={historyIndex}
+              handleUndo={handleUndo}
+              handleRedo={handleRedo}
+              onUserOpen={setShowUserInfoDialog}
+            />
+          ) : (
+            <NavbarDesign onSaveProject={onSaveProject} onGenReport={onGenReport} onUserOpen={setShowUserInfoDialog} />
+          )
+        }
+        <div className="pt-16">
+          <DndContext
+            sensors={sensors}
+            onDragStart={handleDragStart}
+            onDragOver={handleDragOver}
+            onDragMove={handleDragMove}
+          // collisionDetection={pointerWithin}
+          >
+            <div className="min-h-[calc(100vh-64px)] bg-gray-50">
+              <div className="container p-0" style={{ maxWidth: '100%' }}>
+                <div className="flex h-[calc(100vh-64px)]">
+                  {
+                    isMobile ? (
+                      <DragBarMobile showTab={showTab} setShowTab={setShowTab} roomItems={roomItems} furnitureItems={furnitureItems} isOverCanvas={isOverCanvas} draggingItemSize={draggingItemSize} />
+                    ) : (
+                      <DragBarPC sidebarRef={sidebarRef} roomItems={roomItems} furnitureItems={furnitureItems} isOverCanvas={isOverCanvas} draggingItemSize={draggingItemSize} />
+                    )
+                  }
+                  {/* Canvas */}
+                  <div className="flex-1 overflow-auto" id="canvas-drop-area" >
+                    <Canvas ref={canvasRef}
+                      locale={locale}
+                      history={history}
+                      historyIndex={historyIndex}
+                      setHistory={setHistory}
+                      setHistoryIndex={setHistoryIndex}
+                      handleUndo={handleUndo}
+                      handleRedo={handleRedo}
+                      onGenReport={onGenReport}
+                      showTab={showTab}
+                      onShowTab={onShowTab} />
                   </div>
-                ) : (
-                  // 家具在画布上的样式
-                  <Image
-                    // className='bg-[#EFF7F4] rounded-lg'
-                    src={active.data.current.activeIcon}
-                    alt="Furniture"
-                    width={active.data.current.size.width}
-                    height={active.data.current.size.height}
-                  />
+                </div>
+
+
+              </div>
+            </div>
+            <DragOverlay>
+              {
+                active?.id && isOverCanvas && (
+                  active.data.current.cateType === ITEM_TYPES.ROOM ? (
+                    // 房间在画布上的样式
+                    <div
+                      className="flex flex-col items-center justify-center bg-white/80 rounded-lg"
+                      style={{
+                        transform: isMobile ? 'translateY(78px)' : 'translateY(0)',
+                        width: defaultRoomSize.width,
+                        height: defaultRoomSize.height,
+                        border: '8px solid',
+                        borderColor: ROOM_COLORS[roomItems.find(item => item.id === active.id)?.data.type],
+                        borderRadius: '8px',
+                      }}
+                    >
+                      <div className="flex flex-col items-center">
+                        <Image
+                          className='bg-[#EFF7F4] rounded-lg'
+                          src={active.data.current.icon}
+                          alt="Room"
+                          width={draggingItemSize}
+                          height={draggingItemSize}
+                        />
+
+                        <span className="mt-1 text-sm text-gray-600">
+                          {active.data.current.label + (canvasRef.current.getLocalItems().filter(item => item.data.type === active.data.current.type).length + 1)}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    // 家具在画布上的样式
+                    <Image
+                      // className='bg-[#EFF7F4] rounded-lg'
+                      src={active.data.current.activeIcon}
+                      alt="Furniture"
+                      width={active.data.current.size.width}
+                      height={active.data.current.size.height}
+                    />
+                  )
+
                 )
+              }
 
-              )
-            }
+            </DragOverlay>
+          </DndContext>
+        </div>
+        <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
 
-          </DragOverlay>
-        </DndContext>
-      </div>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t("hasReportAlert")}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {t("description")}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
+              <AlertDialogAction onClick={onReadReport}>{t("readReport")}</AlertDialogAction>
+              <AlertDialogAction onClick={onCoverReport}>{t("coverReport")}</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </>
+    </Suspense>
 
-    </>
   );
 }

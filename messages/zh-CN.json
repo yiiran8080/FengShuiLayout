@@ -18,7 +18,8 @@
       "login": "登录",
       "logout": "登出",
       "locale": "语言切换",
-      "home": "首页"
+      "home": "首页",
+      "readReport": "查看报告"
     },
     "features": {
       "title1": "准确度高 用户称心满意",
@@ -112,9 +113,14 @@
     "cta": "开始测算",
     "alert": "请确认个人资料和房间布局是否准确？",
     "cancel": "取消",
-    "ok": "确认"
+    "ok": "确认",
+    "readReport": "查看已有报告",
+    "description": "您可以点击“查看已有报告”，前往报告页下载。",
+    "hasReportAlert": "您已生成过报告，如重新生成，会覆盖原有报告。请确认是否继续？",
+    "coverReport": "重新生成"
   },
   "report": {
+    "error": "未查询到报告记录，正在跳转至设计页面，请重新生成...",
     "chat1": {
       "shizhu": "时柱"
     }

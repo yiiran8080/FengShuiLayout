@@ -1,6 +1,6 @@
 'use client';
 import { Link } from '@/i18n/navigation';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +13,10 @@ import { cn } from '@/lib/utils';
 import { useTranslations } from "next-intl";
 export default function LanguageToggle({ className, trigger }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams().get('birthDateTime');
+  let href = `/${pathname.split('/').slice(2).join('/')}`;
+  let newHref = searchParams ? `${href}?birthDateTime=${searchParams}` : href;
+  // console.log(pathname, useSearchParams().get('birthDateTime'));
   // const t = useTranslations("Navigation");
   return (
     <DropdownMenu>
@@ -25,7 +29,7 @@ export default function LanguageToggle({ className, trigger }) {
       <DropdownMenuContent className="bg-white rounded-lg shadow-lg p-1 min-w-[120px]">
         <DropdownMenuItem className="focus:bg-inherit">
           <Link
-            href={`/${pathname.split('/').slice(2).join('/')}`}
+            href={newHref}
             locale="zh-CN"
             className="px-4 py-2 text-sm  hover:text-primary rounded text-foreground"
           >
@@ -34,7 +38,7 @@ export default function LanguageToggle({ className, trigger }) {
         </DropdownMenuItem>
         <DropdownMenuItem className="focus:bg-inherit">
           <Link
-            href={`/${pathname.split('/').slice(2).join('/')}`}
+            href={newHref}
             locale="zh-TW"
             className="px-4 py-2 text-sm hover:text-primary rounded text-foreground"
           >

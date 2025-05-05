@@ -18,7 +18,7 @@ export default function LoginPage({ searchParams }) {
         toast.info('正在跳转，请稍候...', { autoClose: 5000 });
         try {
             // provider, { callbackUrl: '/' }
-            await signIn(provider, { callbackUrl: searchParams?.callbackUrl || '/' });
+            await signIn(provider, { callbackUrl: params?.callbackUrl || '/' });
             setIsLoading(false);
 
         } catch (error) {
