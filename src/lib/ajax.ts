@@ -13,7 +13,6 @@ export interface IAjaxRes {
 }
 
 async function ajax(opt: IOption): Promise<IAjaxRes> {
-  console.log("ajax", opt);
   const { url, method, headers = {}, body, isCached } = opt;
   try {
     const res = await fetch(url, {

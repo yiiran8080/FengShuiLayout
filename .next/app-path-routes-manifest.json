@@ -1,19 +1,19 @@
 {
   "/_not-found/page": "/_not-found",
-  "/api/design/[userId]/route": "/api/design/[userId]",
   "/api/auth/complete-profile/route": "/api/auth/complete-profile",
-  "/api/reportUserDoc/[userId]/[language]/route": "/api/reportUserDoc/[userId]/[language]",
+  "/api/design/[userId]/route": "/api/design/[userId]",
   "/api/reportDoc/[language]/route": "/api/reportDoc/[language]",
+  "/api/reportUserDoc/[userId]/[language]/route": "/api/reportUserDoc/[userId]/[language]",
   "/api/reportUserDoc/[userId]/route": "/api/reportUserDoc/[userId]",
   "/api/users/[userId]/route": "/api/users/[userId]",
   "/api/users/route": "/api/users",
   "/favicon.ico/route": "/favicon.ico",
   "/api/auth/[...nextauth]/route": "/api/auth/[...nextauth]",
   "/[locale]/auth/login/page": "/[locale]/auth/login",
-  "/[locale]/page": "/[locale]",
-  "/[locale]/report/page": "/[locale]/report",
   "/[locale]/privacy/page": "/[locale]/privacy",
-  "/[locale]/design/page": "/[locale]/design",
   "/[locale]/contact/page": "/[locale]/contact",
-  "/[locale]/terms/page": "/[locale]/terms"
+  "/[locale]/terms/page": "/[locale]/terms",
+  "/[locale]/report/page": "/[locale]/report",
+  "/[locale]/design/page": "/[locale]/design",
+  "/[locale]/page": "/[locale]"
 }

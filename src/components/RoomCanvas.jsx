@@ -307,7 +307,7 @@ export default function ({ jiajuDataString, designJsonData }) {
             )}
             <span>目录</span>
         </div>
-        <div className="w-full md:rounded-b-3xl bg-[#fafafa] md:p-8 p-5 border-1 border-[#E6E6E6]">
+        <div className="hidden-on-print w-full md:rounded-b-3xl bg-[#fafafa] md:p-8 p-5 border-1 border-[#E6E6E6]">
             <div className="flex items-center gap-2">
                 <Image
                     width={activeRoom?.data._type === 'dining_room' ? 28 : 32}
@@ -327,6 +327,33 @@ export default function ({ jiajuDataString, designJsonData }) {
                             <span className="whitespace-pre-wrap">{value} </span>
                         </p>
                     })
+                }
+            </div>
+
+
+        </div>
+        {/* 在页面上隐藏，打印时展示 */}
+        <div className="show-on-print hidden w-full md:rounded-b-3xl bg-[#fafafa] md:p-8 p-5 border-1 border-[#E6E6E6]">
+            <div className="mt-3">
+                {
+
+                    roomList.map((room, i) => (
+                        <>
+                            <h2 className="text-xl font-bold text-[#073E31]">
+                                {room.data.label}
+                            </h2>
+                            {jiajuData && jiajuData[room.data._type] &&
+                                Object.entries(jiajuData[room.data._type][room.direction]).map(([key, value]) => {
+                                    return <p className="leading-8 flex" > <span className="font-bold whitespace-nowrap min-w-22.5">{key}：</span>
+                                        <span className="whitespace-pre-wrap">{value} </span>
+                                    </p>
+                                })}
+                        </>
+
+
+
+                    ))
+
                 }
             </div>
         </div>
