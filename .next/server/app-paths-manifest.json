@@ -1,7 +1,7 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/api/auth/complete-profile/route": "app/api/auth/complete-profile/route.js",
   "/api/design/[userId]/route": "app/api/design/[userId]/route.js",
+  "/api/auth/complete-profile/route": "app/api/auth/complete-profile/route.js",
   "/api/reportDoc/[language]/route": "app/api/reportDoc/[language]/route.js",
   "/api/reportUserDoc/[userId]/[language]/route": "app/api/reportUserDoc/[userId]/[language]/route.js",
   "/api/reportUserDoc/[userId]/route": "app/api/reportUserDoc/[userId]/route.js",
@@ -9,11 +9,11 @@
   "/api/users/route": "app/api/users/route.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/[locale]/contact/page": "app/[locale]/contact/page.js",
-  "/[locale]/privacy/page": "app/[locale]/privacy/page.js",
   "/[locale]/auth/login/page": "app/[locale]/auth/login/page.js",
-  "/[locale]/page": "app/[locale]/page.js",
-  "/[locale]/terms/page": "app/[locale]/terms/page.js",
+  "/[locale]/contact/page": "app/[locale]/contact/page.js",
+  "/[locale]/design/page": "app/[locale]/design/page.js",
   "/[locale]/report/page": "app/[locale]/report/page.js",
-  "/[locale]/design/page": "app/[locale]/design/page.js"
+  "/[locale]/page": "app/[locale]/page.js",
+  "/[locale]/privacy/page": "app/[locale]/privacy/page.js",
+  "/[locale]/terms/page": "app/[locale]/terms/page.js"
 }

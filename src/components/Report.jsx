@@ -93,10 +93,10 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
 
 
     //const userData = use(userDataPromise);
-    const { twData, zhData } = use(dataPromise);
+    // const { twData, zhData } = use(dataPromise);
 
     // const twData = use(twDataPromise);
-    const { loading, reportDocData } = useReportDoc(zhData, twData, locale, birthDateTime);
+    const { loading, reportDocData } = useReportDoc(locale, birthDateTime);
 
 
     // 滚动监听，高亮当前章节
