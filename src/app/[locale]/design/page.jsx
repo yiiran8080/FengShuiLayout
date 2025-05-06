@@ -423,6 +423,7 @@ export default function DesignPage({ params }) {
         setAlertOpen(true);
       } else {
         await onSaveProject();
+        await getDocReport();
         router.push(`/report?birthDateTime=${userInfo.birthDateTime}`);
       }
 
@@ -430,6 +431,16 @@ export default function DesignPage({ params }) {
 
     }
 
+  }
+  const getDocReport = async () => {
+    setLoading(true);
+    await get(`/api/reportDoc/zh`, {
+      isCached: true,
+    });
+    await get(`/api/reportDoc/tw`, {
+      isCached: true,
+    });
+    setLoading(false);
   }
   const onCoverReport = async () => {
     if (!session?.user?.userId) {
@@ -444,6 +455,7 @@ export default function DesignPage({ params }) {
       const { status } = await patch(`/api/reportUserDoc/${userId}`, { isDelete: 1 });
       setLoading(false);
       if (status == 0) {
+        await getDocReport();
         router.push(`/report?birthDateTime=${userInfo.birthDateTime}`);
       }
     } catch (e) {

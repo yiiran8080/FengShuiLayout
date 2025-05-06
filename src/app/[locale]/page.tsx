@@ -8,7 +8,7 @@ import Tips from "@/components/home/Tips";
 import FAQ from "@/components/home/FAQ";
 import Message from "@/components/home/Message";
 import Footer from "@/components/home/Footer";
-
+import { get } from "@/lib/ajax";
 export default function Home() {
   return (
     <>

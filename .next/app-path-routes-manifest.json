@@ -1,7 +1,7 @@
 {
   "/_not-found/page": "/_not-found",
-  "/api/design/[userId]/route": "/api/design/[userId]",
   "/api/auth/complete-profile/route": "/api/auth/complete-profile",
+  "/api/design/[userId]/route": "/api/design/[userId]",
   "/api/reportDoc/[language]/route": "/api/reportDoc/[language]",
   "/api/reportUserDoc/[userId]/[language]/route": "/api/reportUserDoc/[userId]/[language]",
   "/api/reportUserDoc/[userId]/route": "/api/reportUserDoc/[userId]",
@@ -9,11 +9,11 @@
   "/api/users/route": "/api/users",
   "/favicon.ico/route": "/favicon.ico",
   "/api/auth/[...nextauth]/route": "/api/auth/[...nextauth]",
+  "/[locale]/privacy/page": "/[locale]/privacy",
   "/[locale]/auth/login/page": "/[locale]/auth/login",
   "/[locale]/contact/page": "/[locale]/contact",
-  "/[locale]/design/page": "/[locale]/design",
-  "/[locale]/report/page": "/[locale]/report",
   "/[locale]/page": "/[locale]",
-  "/[locale]/privacy/page": "/[locale]/privacy",
-  "/[locale]/terms/page": "/[locale]/terms"
+  "/[locale]/design/page": "/[locale]/design",
+  "/[locale]/terms/page": "/[locale]/terms",
+  "/[locale]/report/page": "/[locale]/report"
 }
