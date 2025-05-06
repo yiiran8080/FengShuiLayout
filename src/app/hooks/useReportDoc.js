@@ -21,8 +21,10 @@ export default function useReportDoc(zhData, twData, locale, birthDateTime) {
             return
         }
         const loadDesign = async () => {
+            console.log('loadDesign', session?.user?.userId, locale)
             const userId = session?.user?.userId;
             if (userId && locale) {
+                console.log('查询用户已有报告')
                 setLoading(true);
                 const { status, data } = await get(`/api/reportUserDoc/${userId}/${locale == 'zh-CN' ? 'zh' : 'tw'}`)
                 if (data) {
@@ -61,8 +63,8 @@ export default function useReportDoc(zhData, twData, locale, birthDateTime) {
                         const data = locale == 'zh-CN' ? zhReportData : twReportData;
                         setReportDocData(data);
                         //存储这个用户生成的免费报告，同时存储简体和繁体。
-                        await post(`/api/reportUserDoc/${userId}/zh`, zhReportData);
-                        await post(`/api/reportUserDoc/${userId}/tw`, twReportData);
+                        post(`/api/reportUserDoc/${userId}/zh`, zhReportData);
+                        post(`/api/reportUserDoc/${userId}/tw`, twReportData);
                     }
                 }
                 setLoading(false);
