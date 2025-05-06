@@ -38,13 +38,13 @@ export default function MenuBar({ className, isOpen, setIsOpen }) {
 
         <Link
             className='block text-base focus:bg-secondary focus:text-primary py-3.5 px-4'
-            href={pathname.indexOf("/design") < 0 && pathname.indexOf("/login") < 0 ? "/design" : "/"}
+            href={pathname.indexOf("/design") < 0 && pathname.indexOf("/report") < 0 && pathname.indexOf("/login") < 0 ? "/design" : "/"}
 
         >
-            {pathname.indexOf("/design") < 0 && pathname.indexOf("/login") < 0 ? t("cta") : t("home")}
+            {pathname.indexOf("/design") < 0 && pathname.indexOf("/report") < 0 && pathname.indexOf("/login") < 0 ? t("cta") : t("home")}
         </Link>
         {
-            isLogined && <Link
+            isLogined && pathname.indexOf("/report") < 0 && <Link
                 className='block text-base focus:bg-secondary focus:text-primary py-3.5 px-4'
                 href="/report"
 

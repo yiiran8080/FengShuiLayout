@@ -9,7 +9,7 @@ import { WanNianLi } from '@/lib/wuxing';
 import getLunisolar from '@/lib/nayin';
 // 根据userId查询，如果查询到了，拿数据。否则生成随机数后，把结果存储到该userId下。
 
-export default function useReportDoc(locale, birthDateTime) {
+export default function useReportDoc(zhData, twData, locale, birthDateTime) {
     const renderRef = useRef(true)
     const [loading, setLoading] = useState(true);
     const [reportDocData, setReportDocData] = useState(null);
@@ -26,6 +26,7 @@ export default function useReportDoc(locale, birthDateTime) {
                 setLoading(true);
                 const { status, data } = await get(`/api/reportUserDoc/${userId}/${locale == 'zh-CN' ? 'zh' : 'tw'}`)
                 if (data) {
+                    console.log('已有报告')
                     //找到了用户已有报告
                     setReportDocData(data);
                 } else {
@@ -33,9 +34,10 @@ export default function useReportDoc(locale, birthDateTime) {
                         setLoading(false);
                         return;
                     }
+                    console.log('生成随机报告')
                     //找原始数据集
-                    const { data: zhData } = await get(`/api/reportDoc/zh`)
-                    const { data: twData } = await get(`/api/reportDoc/tw`)
+                    // const { data: zhData } = await get(`/api/reportDoc/zh`)
+                    // const { data: twData } = await get(`/api/reportDoc/tw`)
                     if (zhData && twData) {
                         const { wuxingResult, nayin } = getWuxingData(birthDateTime);
                         const random = Math.floor(Math.random() * 3);
@@ -69,9 +71,7 @@ export default function useReportDoc(locale, birthDateTime) {
         loadDesign();
 
     }, [locale, session?.user?.userId, birthDateTime])
-    useEffect(() => {
-        console.log('reportDocData', reportDocData)
-    }, [reportDocData])
+
     const getWuxingData = (birthDateTime) => {
         const { year, month, day, hour } = getBirthDate(birthDateTime);
 

@@ -3,6 +3,7 @@ interface IOption {
   method: string;
   headers?: { [key: string]: string };
   body?: any;
+  isCached?: boolean;
 }
 
 export interface IAjaxRes {
@@ -12,7 +13,7 @@ export interface IAjaxRes {
 }
 
 async function ajax(opt: IOption): Promise<IAjaxRes> {
-  const { url, method, headers = {}, body } = opt;
+  const { url, method, headers = {}, body, isCached } = opt;
   try {
     const res = await fetch(url, {
       method: method.toUpperCase(),
@@ -21,6 +22,7 @@ async function ajax(opt: IOption): Promise<IAjaxRes> {
         ...headers,
       },
       body: body ? JSON.stringify(body) : undefined,
+      cache: isCached ? "force-cache" : "no-store",
     });
     const resData = await res.json();
     return resData;
@@ -29,8 +31,8 @@ async function ajax(opt: IOption): Promise<IAjaxRes> {
   }
 }
 
-export async function get(url: string) {
-  return await ajax({ url, method: "GET" });
+export async function get(url: string, options: any) {
+  return await ajax({ url, method: "GET", ...options });
 }
 
 export async function post(url: string, data: any) {
