@@ -423,8 +423,8 @@ export default function DesignPage({ params }) {
         setAlertOpen(true);
       } else {
         await onSaveProject();
-        await getDocReport();
-        router.push(`/report?birthDateTime=${userInfo.birthDateTime}`);
+        //window.location.herf = `/report?birthDateTime=${userInfo.birthDateTime}`
+        router.push(`/report?birthDateTime=${userInfo.birthDateTime}`)
       }
 
     } catch (e) {
@@ -432,16 +432,7 @@ export default function DesignPage({ params }) {
     }
 
   }
-  const getDocReport = async () => {
-    setLoading(true);
-    await get(`/api/reportDoc/zh`, {
-      isCached: true,
-    });
-    await get(`/api/reportDoc/tw`, {
-      isCached: true,
-    });
-    setLoading(false);
-  }
+
   const onCoverReport = async () => {
     if (!session?.user?.userId) {
       redirect('/auth/login');
@@ -455,7 +446,7 @@ export default function DesignPage({ params }) {
       const { status } = await patch(`/api/reportUserDoc/${userId}`, { isDelete: 1 });
       setLoading(false);
       if (status == 0) {
-        await getDocReport();
+        //window.location.herf = `/report?birthDateTime=${userInfo.birthDateTime}`
         router.push(`/report?birthDateTime=${userInfo.birthDateTime}`);
       }
     } catch (e) {
@@ -467,6 +458,7 @@ export default function DesignPage({ params }) {
   const onReadReport = () => {
     setAlertOpen(false);
     router.push(`/report`);
+    //window.location.herf = `/report`
   }
   const onShowTab = () => {
     setShowTab(true)

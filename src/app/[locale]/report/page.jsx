@@ -12,7 +12,6 @@ export default async function ReportPage({ params, searchParams }) {
     // const userData = await getUserReportDocData(locale);
     // let dataPromise;
     // if(userData){
-
     // }
     // const dataPromise = getReportDocData();
     //

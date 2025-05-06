@@ -98,7 +98,6 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
     // const twData = use(twDataPromise);
     const { loading, reportDocData } = useReportDoc(locale, birthDateTime);
 
-
     // 滚动监听，高亮当前章节
     useEffect(() => {
         const handleScroll = () => {

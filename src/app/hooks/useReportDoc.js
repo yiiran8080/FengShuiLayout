@@ -16,10 +16,11 @@ export default function useReportDoc(locale, birthDateTime) {
     const { data: session } = useSession();
 
     useEffect(() => {
-        if (renderRef.current) {
-            renderRef.current = false
-            return
-        }
+        console.log('renderRef.current', renderRef.current)
+        // if (renderRef.current) {
+        //     renderRef.current = false
+        //     return
+        // }
         const loadDesign = async () => {
             console.log('loadDesign', session?.user?.userId, locale)
             const userId = session?.user?.userId;
