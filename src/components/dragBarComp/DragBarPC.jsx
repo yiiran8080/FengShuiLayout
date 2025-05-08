@@ -2,13 +2,14 @@ import { DraggableItem } from "../DraggableItem"
 import { Canvas } from "../Canvas"
 import Image from "next/image"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-
+import { useTranslations } from "next-intl";
 export default function DragBarPC(props) {
     const { sidebarRef, roomItems, furnitureItems, isOverCanvas, draggingItemSize } = props
+    const t = useTranslations('design')
     return <ScrollArea className="h-[calc(100vh-64px)] w-1/6">
         <div ref={sidebarRef} className="md:block hidden  bg-white p-4 shadow border-r-gray-100 border-r-2">
             <div className="mb-8">
-                <h3 className="text-2xl font-semibold mb-4">房间</h3>
+                <h3 className="text-2xl font-semibold mb-4">{t('room')}</h3>
                 <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-2">
 
                     {roomItems.map((item) => (
@@ -37,7 +38,7 @@ export default function DragBarPC(props) {
             </div>
 
             <div>
-                <h3 className="text-2xl font-semibold mb-4">家具</h3>
+                <h3 className="text-2xl font-semibold mb-4">{t('furniture')}</h3>
                 <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-2">
                     {furnitureItems.map((item) => (
                         <DraggableItem

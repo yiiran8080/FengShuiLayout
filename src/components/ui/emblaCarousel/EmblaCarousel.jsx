@@ -1,19 +1,21 @@
 'use client'
 import React from 'react'
 import { DotButton, useDotButton } from './EmblaCarouselDotButton'
-// import {
-//     PrevButton,
-//     NextButton,
-//     usePrevNextButtons
-// } from './EmblaCarouselArrowButtons'
-import useEmblaCarousel from 'embla-carousel-react'
 
+import useEmblaCarousel from 'embla-carousel-react'
+import Autoplay from '@/lib/embla-carousel-autoplay/src'
+import { useAutoplay } from './EmblaCarouselAutoplay'
 const EmblaCarousel = (props) => {
     const { slides, options } = props
-    const [emblaRef, emblaApi] = useEmblaCarousel(options)
+    const [emblaRef, emblaApi] = useEmblaCarousel(options, [
+        Autoplay({ playOnInit: true, delay: 5000 })
+    ])
 
     const { selectedIndex, scrollSnaps, onDotButtonClick } =
         useDotButton(emblaApi)
+
+    // const { autoplayIsPlaying, toggleAutoplay, onAutoplayButtonClick } =
+    //     useAutoplay(emblaApi)
 
     // const {
     //     prevBtnDisabled,

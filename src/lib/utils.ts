@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function getBirthDate(birthDateTime: Date) {
+export function getBirthDate(birthDateTime: string) {
   const date = new Date(birthDateTime);
   return {
     year: date.getFullYear().toString(),
@@ -14,3 +14,5 @@ export function getBirthDate(birthDateTime: Date) {
     hour: date.getHours().toString().padStart(2, "0"),
   };
 }
+
+//console.log(getBirthDate(new Date("1989-10-06T18:00:00.000+00:00")));

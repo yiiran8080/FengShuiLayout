@@ -408,7 +408,7 @@ export default function DesignPage({ params }) {
       }
     })
     if (!doorFlag || !windowFlag) {
-      toast.error("至少需要1个房间、1扇门和1扇窗才可测算！", {
+      toast.error(t('warning'), {
         autoClose: false,
         style: {
           width: 400
@@ -423,8 +423,10 @@ export default function DesignPage({ params }) {
         setAlertOpen(true);
       } else {
         await onSaveProject();
+        //console.log(new Date(userInfo.birthDateTime).toISOString())
+
         //window.location.herf = `/report?birthDateTime=${userInfo.birthDateTime}`
-        router.push(`/report?birthDateTime=${userInfo.birthDateTime}`)
+        router.push(`/report?birthDateTime=${new Date(userInfo.birthDateTime).toISOString()}`)
       }
 
     } catch (e) {
@@ -447,7 +449,7 @@ export default function DesignPage({ params }) {
       setLoading(false);
       if (status == 0) {
         //window.location.herf = `/report?birthDateTime=${userInfo.birthDateTime}`
-        router.push(`/report?birthDateTime=${userInfo.birthDateTime}`);
+        router.push(`/report?birthDateTime=${new Date(userInfo.birthDateTime).toISOString()}`);
       }
     } catch (e) {
 

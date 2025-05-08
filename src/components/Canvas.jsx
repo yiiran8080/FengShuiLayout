@@ -16,6 +16,7 @@ import {
   FURNITURE_TYPES_LABEL_TW,
   FURNITURE_TYPES,
 } from "@/types/room";
+
 import { Trash2, Save, Minus, Plus, RotateCcwSquare } from "lucide-react";
 import Image from "next/image";
 import Undo from "./canvasComp/Undo";
@@ -1015,7 +1016,7 @@ export const Canvas = forwardRef(
                         }}
                         className="min-w-fit whitespace-nowrap  absolute z-1 h-[40px] rounded-4xl bg-white shadow-lg  items-center px-3 gap-2 md:flex hidden"
                       >
-                        <span className="text-sm text-gray-600">已选中：</span>
+                        <span className="text-sm text-gray-600">{t('chosed')}：</span>
                         <div className="flex flex-grow items-center gap-1">
                           {/* 颜色方块 */}
                           <div
@@ -1116,7 +1117,7 @@ export const Canvas = forwardRef(
                         }}
                         className="min-w-fit whitespace-nowrap absolute z-1 h-[40px] rounded-4xl bg-white shadow-lg  items-center px-3 gap-2 md:flex hidden"
                       >
-                        <span className="text-sm text-gray-600">已选中：</span>
+                        <span className="text-sm text-gray-600">{t('chosed')}：</span>
                         <div className="flex flex-grow items-center gap-1">
                           {/* 颜色方块 */}
                           {activeRoom.data.parentRoom && (
@@ -1197,7 +1198,7 @@ export const Canvas = forwardRef(
               showTab ? "bottom-85" : "bottom-22.5 "
             )}
           >
-            <span className="text-sm text-gray-600">已选中：</span>
+            <span className="text-sm text-gray-600">{t('chosed')}：</span>
             <div className="flex flex-grow items-center gap-1">
               {/* 颜色方块 */}
               <div

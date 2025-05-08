@@ -2,27 +2,20 @@
 import _ from "lodash";
 import {
     useState,
-    useCallback,
-    useRef,
+
     useEffect,
-    forwardRef,
-    useImperativeHandle,
+
 } from "react";
 import {
     ITEM_TYPES,
     ROOM_COLORS,
-    FURNITURE_TYPES_LABEL,
-    FURNITURE_TYPES,
+
 } from "@/types/room";
 import { Trash2, Save, Minus, Plus, RotateCcwSquare } from "lucide-react";
-import useReportDoc from '@/app/hooks/useReportDoc';
-import Image from "next/image";
-import Undo from "./canvasComp/Undo";
-import { useTranslations } from "next-intl";
-import { cn } from "@/lib/utils";
 
-import useMobile from "@/app/hooks/useMobile";
-import { ToastContainer, toast } from 'react-toastify';
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+
 // import { jiajuData } from "@/lib/json/jiaju_tw";
 import UnlockButton from './UnlockButton';
 const CANVAS_PADDING = 200; // 画布边缘预留空间
@@ -30,6 +23,7 @@ const MAX_SCALE = 120;
 const MIN_SCALE = 50;
 let containerRect;
 export default function ({ jiajuDataString, designJsonData }) {
+    const t = useTranslations('report');
     const jiajuData = JSON.parse(jiajuDataString);
     const [designData, setDesignData] = useState({})
     //const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -305,7 +299,7 @@ export default function ({ jiajuDataString, designJsonData }) {
                     ))}
                 </div>
             )}
-            <span>目录</span>
+            <span>{t('catelog')}</span>
         </div>
         <div className="hidden-on-print w-full md:rounded-b-3xl bg-[#fafafa] md:p-8 p-5 border-1 border-[#E6E6E6]">
             <div className="flex items-center gap-2">
@@ -358,7 +352,7 @@ export default function ({ jiajuDataString, designJsonData }) {
             </div>
         </div>
         <div className='md:flex mt-10 items-center px-6 md:p-0'>
-            <p><span className='text-[#FF531A]'>*</span>第七及第八章的进阶分析，会 <span className='font-bold'>对照用户命格比对，提供相应优化建议。</span></p>
+            <p><span className='text-[#FF531A]'>*</span>{t('p3-6')}<span className='font-bold'>{t('p3-7')}</span></p>
             <UnlockButton className='bg-[#096E56] text-white md:ml-2 w-full md:w-auto mt-5 md:mt-0 block md:inline text-center' />
         </div>
     </section>

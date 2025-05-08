@@ -4,8 +4,10 @@ import Undo from './canvasComp/Undo';
 import { useState } from 'react';
 import MenuBar from './MenuBar';
 import Avatar from "@/components/Avatar";
+import { useTranslations } from "next-intl";
 export default function NavbarDesignMobile({ onSaveProject, history, historyIndex, handleUndo, handleRedo, onUserOpen }) {
   const [showTip, setShowTip] = useState(false);
+  const t = useTranslations('design');
   return (
     <div className='fixed top-0 left-0 right-0 z-50'>
       <nav className="bg-white h-16 border-b-gray-100 border-b-2 ">
@@ -30,7 +32,7 @@ export default function NavbarDesignMobile({ onSaveProject, history, historyInde
           <div className='h-8 w-full bg-[#E5F4FF] px-6 py-3 flex justify-between items-center'>
             <span className='text-[12px] text-foreground flex items-center gap-1'>
               <CircleHelp className="w-4 h-4 text-[#888]" />
-              至少需要设置1个房间、1扇门和1扇窗才可测算
+              {t('warning')}
             </span>
             <X className='w-4 h-4 text-[#888]' onClick={() => setShowTip(false)} />
           </div>

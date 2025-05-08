@@ -17,6 +17,7 @@ import {
     SelectLabel,
     SelectGroup,
 } from "@/components/ui/select"
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
@@ -27,6 +28,7 @@ import { years, months, days, hours } from './DatePicker'
 
 
 export default function UserInfoDialog({ open, onUserOpen, onSubmit, userInfo }) {
+    const t = useTranslations('design')
     const isMobile = useMobile()
     const [gender, setGender] = useState('男')
     const [birthYear, setBirthYear] = useState('1996')
@@ -79,7 +81,7 @@ export default function UserInfoDialog({ open, onUserOpen, onSubmit, userInfo })
             <div >
                 <div className="flex justify-between pb-4">
                     <Label className="text-base">出生日期</Label>
-                    <span>{`${birthYear}年${birthMonth}月${birthDay}日${birthHour}时`}</span>
+                    <span>{`${birthYear}年${birthMonth}月${birthDay}日${birthHour}${t('hour')}`}</span>
 
                 </div>
                 <Separator />
@@ -143,15 +145,15 @@ export default function UserInfoDialog({ open, onUserOpen, onSubmit, userInfo })
 
                 </Select></div>
 
-            <div><Label className="font-bold pb-4 text-base">小时</Label>
+            <div><Label className="font-bold pb-4 text-base">小{t('hour')}</Label>
                 <Select value={birthHour} onValueChange={setBirthHour}>
                     <SelectTrigger className='w-20' >
-                        <SelectValue placeholder="时" />
+                        <SelectValue placeholder={t('hour')} />
                     </SelectTrigger>
                     <SelectContent >
                         {hours.map(hour => (
                             <SelectItem key={hour} value={hour}>
-                                {hour}时
+                                {hour}{t('hour')}
                             </SelectItem>
                         ))}
                     </SelectContent>
@@ -206,9 +208,9 @@ export default function UserInfoDialog({ open, onUserOpen, onSubmit, userInfo })
         <Dialog open={open} onOpenChange={onUserOpen}>
             <DialogContent className="sm:max-w-[432px]">
                 <DialogHeader>
-                    <DialogTitle className="text-lg md:text-xl font-bold md:text-left text-center">个人资料</DialogTitle>
+                    <DialogTitle className="text-lg md:text-xl font-bold md:text-left text-center"> {t('profile')} </DialogTitle>
                     <div className="py-4 text-sm md:text-base  text-left">
-                        您的个人资料仅用于此次测算
+                        {t('tip')}
                     </div>
                 </DialogHeader>
                 <Separator className='md:hidden' />

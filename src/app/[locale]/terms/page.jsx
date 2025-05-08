@@ -1,11 +1,12 @@
-import { useTranslations } from "next-intl";
+import TermsHeader from "./TermsHeader";
+import TermsContent from "./TermsContent";
+
 export default function () {
-    const t = useTranslations("home.terms");
-    return <div className="md:px-4 px-8 pt-10 bg-secondary min-h-screen">
-        <h1 className="text-2xl font-bold text-primary mb-5 text-center">HarmoniQ</h1>
-        <p className="max-w-4xl mx-auto whitespace-pre-wrap">
-            {t('content')}
-        </p>
+    return <div className="py-10 bg-secondary min-h-screen">
+        <div className="max-w-4xl mx-auto px-6">
+            <TermsHeader />
+            <TermsContent />
+        </div>
 
     </div>
 }

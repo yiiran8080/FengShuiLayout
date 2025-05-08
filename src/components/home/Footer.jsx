@@ -21,7 +21,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-[#073228] text-gray-300 px-5 md:px-0">
-      <div className="container mx-auto px-4 pt-12 pb-5">
+      <div className="container mx-auto px-4 py-12">
         <div className="flex items-start justify-between flex-wrap gap-5">
 
 
@@ -31,7 +31,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {links.contact.map((link) => (
                 <li key={link.name}>
-                  <Link href={link.href} className="hover:text-white transition-colors">
+                  <Link href={link.href} className="hover:text-white transition-colors text-xl">
                     {link.name}
                   </Link>
                 </li>
@@ -46,8 +46,8 @@ export default function Footer() {
                 <Image
                   src={social.icon}
                   alt=''
-                  width={40}
-                  height={40}
+                  width={30}
+                  height={30}
                 />
               ))}
             </div>
@@ -58,7 +58,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {links.law.map((link) => (
                 <li key={link.name}>
-                  <Link href={link.href} className="hover:text-white transition-colors">
+                  <Link href={link.href} className="hover:text-white transition-colors text-xl">
                     {link.name}
                   </Link>
                 </li>
@@ -68,8 +68,8 @@ export default function Footer() {
 
 
         </div>
-        <Separator className='mt-7.5 mb-2.5 md:mb-5' />
-        <div className="border-t border-gray-800  text-sm text-center">
+        <Separator className='mt-7.5' />
+        <div className="border-t border-gray-800  font-semibold text-center md:mt-10 mt-5">
           <p>© 2025 HarmoniQ. {t('copyright')}</p>
         </div>
       </div>

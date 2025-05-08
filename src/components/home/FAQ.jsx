@@ -5,6 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { ChevronDown } from 'lucide-react';
 import { useTranslations } from "next-intl";
 import { useState } from 'react'
 
@@ -76,12 +77,20 @@ export default function FAQ() {
               </>
             }
           </Accordion>
-          {
-            !showMore && <button
-              onClick={() => { setShowMore(true) }}
-              className="cursor-pointer rounded-[100px] bg-[#F2FAF7] text-[#25826C] border-1 border-[#25826C] text-center text-xl py-2 px-4.5"
-            > {t('showMore')}</button>
-          }
+
+          <button
+            onClick={() => { setShowMore(!showMore) }}
+            className="cursor-pointer rounded-[100px] bg-[#F2FAF7] text-[#25826C] border-1 border-[#25826C] text-center text-xl py-2 px-4.5"
+          > {
+              showMore ? t('closeMore') :
+                <span className="flex items-center">
+                  <ChevronDown />
+                  {
+                    t('showMore')
+                  }
+                </span>
+            }</button>
+
 
         </div>
       </div>

@@ -12,10 +12,11 @@ import {
 } from "@/components/ui/carousel"
 
 import { cn } from "@/lib/utils";
-
+import { useTranslations } from "next-intl";
 export default function DragBarMobile(props) {
     const { showTab, setShowTab, roomItems, furnitureItems, isOverCanvas, draggingItemSize } = props
     const [active, setActive] = useState('')
+    const t = useTranslations('design')
     useEffect(() => {
         setActive('room')
     }, [])
@@ -35,13 +36,14 @@ export default function DragBarMobile(props) {
                         value="room"
                         className="rounded-[3px] text-[12px] font-bold data-[state=active]:shadow-none data-[state=active]:border-b-4 data-[state=active]:border-b-primary"
                     >
-                        房间
+                        {t('room')}
+
                     </TabsTrigger>
                     <TabsTrigger
                         value="furniture"
                         className="rounded-[3px] text-[12px] font-bold data-[state=active]:shadow-none data-[state=active]:border-b-4 data-[state=active]:border-b-primary"
                     >
-                        家具
+                        {t('furniture')}
                     </TabsTrigger>
                 </TabsList>
                 <TabsContent value="room" className="w-full pb-3 overflow-hidden">

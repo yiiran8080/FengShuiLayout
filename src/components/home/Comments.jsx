@@ -27,7 +27,7 @@ export default function () {
                         <Carousel />
                         <img
                             src='/images/hero/comments-back.png'
-                            alt='对比'
+                            alt=''
 
                             className='absolute object-cover left-0 top-0 lg:w-120 lg:h-165 w-full h-62'
                         />

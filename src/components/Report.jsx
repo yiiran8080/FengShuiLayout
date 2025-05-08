@@ -135,7 +135,7 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
                 { title: '年柱', },
                 { title: '月柱', },
                 { title: '日柱', },
-                { title: '时柱', },
+                { title: t('shizhu'), },
             ],
         },
         {

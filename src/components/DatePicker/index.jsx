@@ -4,10 +4,12 @@ import './index.css'
 import MultiPicker from 'rmc-picker/lib/MultiPicker';
 import Picker from 'rmc-picker/lib/Picker';
 import React from 'react';
+
 export const years = Array.from({ length: 100 }, (_, i) => (2025 - i).toString())
 export const months = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, '0'))
 export const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0'))
 export const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'))
+
 export default class DatePicker extends React.Component {
     state = {
         value: [],
@@ -40,6 +42,7 @@ export default class DatePicker extends React.Component {
     // onScrollChange = (value) => {
     //     console.log('onScrollChange', value);
     // }
+
     renderItems = (items, text) => items.map(
         item => <Picker.Item className="my-picker-view-item" value={item}>{item + text}</Picker.Item>
     )
@@ -67,7 +70,7 @@ export default class DatePicker extends React.Component {
                         {this.renderItems(days, '日')}
                     </Picker>
                     <Picker indicatorClassName="my-picker-indicator">
-                        {this.renderItems(hours, '时')}
+                        {this.renderItems(hours, '時')}
                     </Picker>
 
                 </MultiPicker>

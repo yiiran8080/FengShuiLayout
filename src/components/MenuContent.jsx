@@ -16,13 +16,14 @@ import {
 import { toast } from 'react-toastify';
 export default function MenuBar({ className, isOpen, setIsOpen }) {
     const t = useTranslations("home.hero");
+    const t2 = useTranslations("toast");
     const pathname = usePathname();
 
     const { data: session } = useSession();
     const isLogined = session?.user?.userId;
     const onLoginClick = async () => {
         setIsOpen(false);
-        toast.info('正在跳转，请稍候...', { autoClose: 2000 });
+        toast.info(t2('loading'), { autoClose: 2000 });
         if (isLogined) {
             await handleSignOut()
         }
