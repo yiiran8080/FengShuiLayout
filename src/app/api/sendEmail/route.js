@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { genSuccessData, genUnAuthData, genErrorData } from "../utils/gen-res-data";
-const resend = new Resend(process.env.RESEND_API_KE);
+//const resend = new Resend(process.env.RESEND_API_KE);
 
 export async function POST(request) {
+    const resend = new Resend(process.env.RESEND_API_KE);
     try {
         const body = await request.json();
         const res = await resend.emails.send({
