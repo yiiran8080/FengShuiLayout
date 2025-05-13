@@ -15,7 +15,6 @@ export interface IAjaxRes {
 async function ajax(opt: IOption): Promise<IAjaxRes> {
   const { url, method, headers = {}, body, isCached } = opt;
   try {
-    throw new Error("ajax error ");
     const res = await fetch(url, {
       method: method.toUpperCase(),
       headers: {
