@@ -8,7 +8,7 @@ export async function POST(request) {
         const body = await request.json();
         console.log('body', body.content);
         const res = await resend.emails.send({
-            from: 'onboarding@resend.dev',
+            from: 'mr.jon@harmoniqfengshui.com',
             to: 'mr.jon@harmoniqfengshui.com',
             subject: 'harmoniqfengshui 用户留言',
             html: body.content

@@ -36,22 +36,29 @@ const EnquiryForm = () => {
     })
     let body = { content: `<div>${arr.join("")}</div>` }
     setLoading(true);
-    const res = await post("/api/send-email", body);
-    if (res.data) {
-      toast.success("发送成功，" + t2("loading"));
+    try {
+      const res = await post("/api/send-email", body);
+      if (res.data) {
+        toast.success("发送成功，" + t2("loading"));
+        setLoading(false);
+        setFormData({
+          name: "",
+          email: "",
+          category: "",
+          otherCategory: "",
+          message: "",
+        })
+        router.push("/");
+      } else {
+        toast.error("发送失败");
+        setLoading(false);
+      }
+    } catch (e) {
+      toast.error("发送失败" + e.message);
       setLoading(false);
-      setFormData({
-        name: "",
-        email: "",
-        category: "",
-        otherCategory: "",
-        message: "",
-      })
-      router.push("/");
-    } else {
-      toast.error("发送失败");
-      setLoading(false);
+      console.log('submit error', e)
     }
+
 
   };
 
