@@ -32,7 +32,7 @@ export default function Share() {
 
 
                         </div>
-                        <div className='relative  w-1/2'>
+                        <div className='w-1/2'>
                             <Image
                                 src='/images/hero/jiyu3.png'
                                 alt=''
@@ -40,7 +40,7 @@ export default function Share() {
                                 height={379}
                                 className="object-contain"
                             />
-                            <div className='rounded-[50px] md:rounded-[100px]  absolute md:bottom-7.5 bottom-4 -right-7 md:py-2.5 md:px-7.5 py-1 px-3.5 bg-[#20B580] text-white md:text-3xl shadow-xl'>Andrew</div>
+
 
                         </div>
                     </div>

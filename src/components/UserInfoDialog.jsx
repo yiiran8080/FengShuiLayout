@@ -22,9 +22,9 @@ import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import useMobile from '@/app/hooks/useMobile'
-
-import DatePicker from "./DatePicker"
-import { years, months, days, hours } from './DatePicker'
+import DateCarousel from "./DateCarousel"
+// import DatePicker from "./DatePicker"
+import { years, months, days, hours } from './DateCarousel'
 
 
 export default function UserInfoDialog({ open, onUserOpen, onSubmit, userInfo }) {
@@ -85,8 +85,8 @@ export default function UserInfoDialog({ open, onUserOpen, onSubmit, userInfo })
 
                 </div>
                 <Separator />
-
-                <DatePicker onChange={onDateChange} value={[birthYear, birthMonth, birthDay, birthHour]} />
+                <DateCarousel tHour={t('hour')} onChange={onDateChange} value={[birthYear, birthMonth, birthDay, birthHour]} />
+                {/* <DatePicker onChange={onDateChange} value={[birthYear, birthMonth, birthDay, birthHour]} /> */}
                 <Separator />
 
             </div>

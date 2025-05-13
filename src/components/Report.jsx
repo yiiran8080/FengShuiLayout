@@ -78,28 +78,29 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
         contentRef,
         pageStyle: `
             @page { size: A4;margin:0  }
-                  @media print {
-        body, html {
-          height: auto;
-          overflow: initial !important;  // 重要，如果不分页需要加上
-          margin: 0;
-        }
-          .hidden-on-print { display: none; }
-          .show-on-print { display: block; }
-            .page-break {
-    margin-top: 1rem;
-    display: block;
-    page-break-before: auto;
-  }
-        body{
-          zoom: 100%;
-        }
-        img{
-          max-width: 100% !important;
-          height: auto !important;
-          page-break-inside: auto;
-          break-inside: auto;
-        }
+            @media print {
+                body, html {
+                    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
+                    height: auto;
+                    font-family: 'SimSun', 'Microsoft YaHei', sans-serif;
+                    overflow: initial !important;  // 重要，如果不分页需要加上
+                    margin: 0;
+                    zoom: 100%;
+                }
+                .hidden-on-print { display: none; }
+                .show-on-print { display: block; }
+                .page-break {
+                    margin-top: 1rem;
+                    display: block;
+                    page-break-before: auto;
+                }
+
+                img{
+                max-width: 100% !important;
+                height: auto !important;
+                page-break-inside: auto;
+                break-inside: auto;
+                }
       }
         `,
         removeAfterPrint: true,
@@ -402,7 +403,7 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
                         <h2
                             id={`section-0-4`}
                             ref={el => sectionRefs.current[4] = el}
-                            className='text-[28px] text-[#073E31] font-bold mb-3'>时柱</h2>
+                            className='text-[28px] text-[#073E31] font-bold mb-3'>{t('shizhu')}</h2>
                         <p className='leading-8 text-justify'>
                             {t('p1-8')}
                         </p>
