@@ -37,7 +37,7 @@ const EnquiryForm = () => {
     let body = { content: `<div>${arr.join("")}</div>` }
     setLoading(true);
     try {
-      const res = await post("/api/send-email", body);
+      const res = await post("/api/sendEmail", body);
       if (res.data) {
         toast.success("发送成功，" + t2("loading"));
         setLoading(false);
