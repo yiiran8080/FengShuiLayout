@@ -13,7 +13,6 @@
     }
   ],
   "headers": [],
-  "d": "d",
   "dynamicRoutes": [
     {
       "page": "/api/auth/[...nextauth]",
