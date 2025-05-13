@@ -5,16 +5,16 @@
   "/api/reportDoc/[language]/route": "/api/reportDoc/[language]",
   "/api/reportUserDoc/[userId]/[language]/route": "/api/reportUserDoc/[userId]/[language]",
   "/api/reportUserDoc/[userId]/route": "/api/reportUserDoc/[userId]",
-  "/api/users/[userId]/route": "/api/users/[userId]",
-  "/api/users/route": "/api/users",
   "/api/sendEmail/route": "/api/sendEmail",
+  "/api/users/route": "/api/users",
+  "/api/users/[userId]/route": "/api/users/[userId]",
   "/favicon.ico/route": "/favicon.ico",
   "/api/auth/[...nextauth]/route": "/api/auth/[...nextauth]",
   "/[locale]/contact/page": "/[locale]/contact",
-  "/[locale]/auth/login/page": "/[locale]/auth/login",
   "/[locale]/page": "/[locale]",
   "/[locale]/design/page": "/[locale]/design",
+  "/[locale]/report/page": "/[locale]/report",
+  "/[locale]/auth/login/page": "/[locale]/auth/login",
   "/[locale]/privacy/page": "/[locale]/privacy",
-  "/[locale]/terms/page": "/[locale]/terms",
-  "/[locale]/report/page": "/[locale]/report"
+  "/[locale]/terms/page": "/[locale]/terms"
 }
