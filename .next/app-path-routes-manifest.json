@@ -1,7 +1,7 @@
 {
   "/_not-found/page": "/_not-found",
-  "/api/auth/complete-profile/route": "/api/auth/complete-profile",
   "/api/design/[userId]/route": "/api/design/[userId]",
+  "/api/auth/complete-profile/route": "/api/auth/complete-profile",
   "/api/reportDoc/[language]/route": "/api/reportDoc/[language]",
   "/api/reportUserDoc/[userId]/[language]/route": "/api/reportUserDoc/[userId]/[language]",
   "/api/send-email/route": "/api/send-email",
@@ -12,9 +12,9 @@
   "/api/auth/[...nextauth]/route": "/api/auth/[...nextauth]",
   "/[locale]/contact/page": "/[locale]/contact",
   "/[locale]/auth/login/page": "/[locale]/auth/login",
-  "/[locale]/page": "/[locale]",
-  "/[locale]/privacy/page": "/[locale]/privacy",
   "/[locale]/design/page": "/[locale]/design",
+  "/[locale]/page": "/[locale]",
+  "/[locale]/terms/page": "/[locale]/terms",
   "/[locale]/report/page": "/[locale]/report",
-  "/[locale]/terms/page": "/[locale]/terms"
+  "/[locale]/privacy/page": "/[locale]/privacy"
 }

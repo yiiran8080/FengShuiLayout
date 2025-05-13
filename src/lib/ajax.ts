@@ -24,6 +24,7 @@ async function ajax(opt: IOption): Promise<IAjaxRes> {
       body: body ? JSON.stringify(body) : undefined,
       cache: isCached ? "force-cache" : "no-store",
     });
+    // console.log("res", res);
     const resData = await res.json();
     return resData;
   } catch (ex: any) {
