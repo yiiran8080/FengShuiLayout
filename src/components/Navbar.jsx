@@ -1,5 +1,5 @@
 'use client';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import LanguageToggle from './LanguageToggle';
 import useMobile from '../app/hooks/useMobile';
 import MenuBar from './MenuBar';

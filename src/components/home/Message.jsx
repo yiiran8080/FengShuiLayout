@@ -1,7 +1,6 @@
 'use client'
 import Image from 'next/image';
 import { useTranslations } from "next-intl";
-import Link from 'next/link';
 import useMobile from '@/app/hooks/useMobile';
 export default function Share() {
     const t = useTranslations("home.message");

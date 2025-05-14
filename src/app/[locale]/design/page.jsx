@@ -71,24 +71,24 @@ export default function DesignPage({ params }) {
   const ROOM_TYPES_LABEL = locale === 'zh-TW' ? ROOM_TYPES_LABEL_TW : ROOM_TYPES_LABEL_CN;
   const FURNITURE_TYPES_LABEL = locale === 'zh-TW' ? FURNITURE_TYPES_LABEL_TW : FURNITURE_TYPES_LABEL_CN;
   const furnitureItems = [
-    { id: 'door-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.DOOR, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.DOOR], icon: '/images/fur-icon/door.png', activeIcon: '/images/fur-icon/door-gr.png', size: { width: 40, height: 40 } } },
-    { id: 'window-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.WINDOW, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.WINDOW], icon: '/images/fur-icon/window.png', activeIcon: '/images/fur-icon/window-gr.png', size: { width: 8, height: 56 } } },
-    { id: 'table-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.TABLE, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.TABLE], icon: '/images/fur-icon/table.png', activeIcon: '/images/fur-icon/table-gr.png', size: { width: 44, height: 120 } } },
-    { id: 'chair-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.CHAIR, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.CHAIR], icon: '/images/fur-icon/chair.png', activeIcon: '/images/fur-icon/chair-gr.png', size: { width: 28, height: 35 } } },
-    { id: 'sofa-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.SOFA, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.SOFA], icon: '/images/fur-icon/sofa.png', activeIcon: '/images/fur-icon/sofa-gr.png', size: { width: 67, height: 123 } } },
-    { id: 'bed-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.BED, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.BED], icon: '/images/fur-icon/bed.png', activeIcon: '/images/fur-icon/bed-gr.png', size: { width: 89, height: 128 } } },
-    { id: 'lamp-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.LAMP, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.LAMP], icon: '/images/fur-icon/lamp.png', activeIcon: '/images/fur-icon/lamp-gr.png', size: { width: 70, height: 128 } } },
-    { id: 'tv-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.TV, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.TV], icon: '/images/fur-icon/tv.png', activeIcon: '/images/fur-icon/tv-gr.png', size: { width: 134, height: 32 } } },
-    { id: 'bookshelf-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.BOOKSHELF, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.BOOKSHELF], icon: '/images/fur-icon/bookshelf.png', activeIcon: '/images/fur-icon/bookshelf-gr.png', size: { width: 44, height: 44 } } },
-    { id: 'wardrobe-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.WARDROBE, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.WARDROBE], icon: '/images/fur-icon/wardrobe.png', activeIcon: '/images/fur-icon/wardrobe-gr.png', size: { width: 40, height: 129 } } },
-    { id: 'plant-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.PLANT, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.PLANT], icon: '/images/fur-icon/plant.png', activeIcon: '/images/fur-icon/plant-gr.png', size: { width: 36, height: 36 } } },
-    { id: 'fridge-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.FRIDGE, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.FRIDGE], icon: '/images/fur-icon/fridge.png', activeIcon: '/images/fur-icon/fridge-gr.png', size: { width: 40, height: 43 } } },
-    { id: 'stove-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.STOVE, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.STOVE], icon: '/images/fur-icon/stove.png', activeIcon: '/images/fur-icon/stove-gr.png', size: { width: 62, height: 32 } } },
-    { id: 'sink-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.SINK, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.SINK], icon: '/images/fur-icon/sink.png', activeIcon: '/images/fur-icon/sink-gr.png', size: { width: 60, height: 40 } } },
-    { id: 'washbasin-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.WASHBASIN, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.WASHBASIN], icon: '/images/fur-icon/washbasin.png', activeIcon: '/images/fur-icon/washbasin-gr.png', size: { width: 50, height: 50 } } },
-    { id: 'toilet-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.TOILET, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.TOILET], icon: '/images/fur-icon/toilet.png', activeIcon: '/images/fur-icon/toilet-gr.png', size: { width: 40, height: 60 } } },
-    { id: 'shower-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.SHOWER, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.SHOWER], icon: '/images/fur-icon/shower.png', activeIcon: '/images/fur-icon/shower-gr.png', size: { width: 80, height: 80 } } },
-    { id: 'bathtub-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.BATHTUB, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.BATHTUB], icon: '/images/fur-icon/bathtub.png', activeIcon: '/images/fur-icon/bathtub-gr.png', size: { width: 120, height: 60 } } }
+    { id: 'door-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.DOOR, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.DOOR], icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png', activeIcon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png', size: { width: 40, height: 40 } } },
+    { id: 'window-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.WINDOW, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.WINDOW], icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png', activeIcon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png', size: { width: 8, height: 56 } } },
+    { id: 'table-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.TABLE, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.TABLE], icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table.png', activeIcon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table-gr.png', size: { width: 44, height: 120 } } },
+    { id: 'chair-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.CHAIR, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.CHAIR], icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair.png', activeIcon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png', size: { width: 28, height: 35 } } },
+    { id: 'sofa-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.SOFA, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.SOFA], icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sofa.png', activeIcon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sofa-gr.png', size: { width: 67, height: 123 } } },
+    { id: 'bed-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.BED, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.BED], icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed.png', activeIcon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed-gr.png', size: { width: 89, height: 128 } } },
+    { id: 'lamp-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.LAMP, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.LAMP], icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/lamp.png', activeIcon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/lamp-gr.png', size: { width: 70, height: 128 } } },
+    { id: 'tv-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.TV, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.TV], icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/tv.png', activeIcon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/tv-gr.png', size: { width: 134, height: 32 } } },
+    { id: 'bookshelf-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.BOOKSHELF, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.BOOKSHELF], icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bookshelf.png', activeIcon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bookshelf-gr.png', size: { width: 44, height: 44 } } },
+    { id: 'wardrobe-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.WARDROBE, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.WARDROBE], icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png', activeIcon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png', size: { width: 40, height: 129 } } },
+    { id: 'plant-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.PLANT, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.PLANT], icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/plant.png', activeIcon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/plant-gr.png', size: { width: 36, height: 36 } } },
+    { id: 'fridge-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.FRIDGE, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.FRIDGE], icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/fridge.png', activeIcon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/fridge-gr.png', size: { width: 40, height: 43 } } },
+    { id: 'stove-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.STOVE, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.STOVE], icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/stove.png', activeIcon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/stove-gr.png', size: { width: 62, height: 32 } } },
+    { id: 'sink-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.SINK, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.SINK], icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink.png', activeIcon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink-gr.png', size: { width: 60, height: 40 } } },
+    { id: 'washbasin-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.WASHBASIN, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.WASHBASIN], icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/washbasin.png', activeIcon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/washbasin-gr.png', size: { width: 50, height: 50 } } },
+    { id: 'toilet-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.TOILET, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.TOILET], icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet.png', activeIcon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet-gr.png', size: { width: 40, height: 60 } } },
+    { id: 'shower-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.SHOWER, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.SHOWER], icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/shower.png', activeIcon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/shower-gr.png', size: { width: 80, height: 80 } } },
+    { id: 'bathtub-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.BATHTUB, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.BATHTUB], icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub.png', activeIcon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub-gr.png', size: { width: 120, height: 60 } } }
   ];
   const sensors = useSensors(
     useSensor(TouchSensor, {
@@ -129,7 +129,7 @@ export default function DesignPage({ params }) {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.LIVING_ROOM,
         label: ROOM_TYPES_LABEL[ROOM_TYPES.LIVING_ROOM],
-        icon: '/images/room-icon/living_room.png',
+        icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/living_room.png',
         size: defaultRoomSize
       }
     },
@@ -140,7 +140,7 @@ export default function DesignPage({ params }) {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.DINING_ROOM,
         label: ROOM_TYPES_LABEL[ROOM_TYPES.DINING_ROOM],
-        icon: '/images/room-icon/dining_room.png',
+        icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/dining_room.png',
         size: defaultRoomSize
       }
     },
@@ -151,7 +151,7 @@ export default function DesignPage({ params }) {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.STORAGE_ROOM,
         label: ROOM_TYPES_LABEL[ROOM_TYPES.STORAGE_ROOM],
-        icon: '/images/room-icon/storage_room.png',
+        icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/storage_room.png',
         size: defaultRoomSize
       }
     },
@@ -162,7 +162,7 @@ export default function DesignPage({ params }) {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.STUDY_ROOM,
         label: ROOM_TYPES_LABEL[ROOM_TYPES.STUDY_ROOM],
-        icon: '/images/room-icon/study_room.png',
+        icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/study_room.png',
         size: defaultRoomSize
       }
     },
@@ -173,7 +173,7 @@ export default function DesignPage({ params }) {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.BEDROOM,
         label: ROOM_TYPES_LABEL[ROOM_TYPES.BEDROOM],
-        icon: '/images/room-icon/bedroom.png',
+        icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png',
         size: defaultRoomSize
       }
     },
@@ -184,7 +184,7 @@ export default function DesignPage({ params }) {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.BATHROOM,
         label: ROOM_TYPES_LABEL[ROOM_TYPES.BATHROOM],
-        icon: '/images/room-icon/bathroom.png',
+        icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bathroom.png',
         size: defaultRoomSize
       }
     },
@@ -195,7 +195,7 @@ export default function DesignPage({ params }) {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.KITCHEN,
         label: ROOM_TYPES_LABEL[ROOM_TYPES.KITCHEN],
-        icon: '/images/room-icon/kitchen.png',
+        icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/kitchen.png',
         size: defaultRoomSize
       }
     },
@@ -206,7 +206,7 @@ export default function DesignPage({ params }) {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.BALCONY,
         label: ROOM_TYPES_LABEL[ROOM_TYPES.BALCONY],
-        icon: '/images/room-icon/balcony.png',
+        icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/balcony.png',
         size: defaultRoomSize
       }
     },
@@ -217,7 +217,7 @@ export default function DesignPage({ params }) {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.GARDEN,
         label: ROOM_TYPES_LABEL[ROOM_TYPES.GARDEN],
-        icon: '/images/room-icon/garden.png',
+        icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/garden.png',
         size: defaultRoomSize
       }
     },
@@ -228,7 +228,7 @@ export default function DesignPage({ params }) {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.GARAGE,
         label: ROOM_TYPES_LABEL[ROOM_TYPES.GARAGE],
-        icon: '/images/room-icon/garage.png',
+        icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/garage.png',
         size: defaultRoomSize
       }
     },
@@ -239,7 +239,7 @@ export default function DesignPage({ params }) {
         cateType: ITEM_TYPES.ROOM,
         type: ROOM_TYPES.CORRIDOR,
         label: ROOM_TYPES_LABEL[ROOM_TYPES.CORRIDOR],
-        icon: '/images/room-icon/corridor.png',
+        icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/corridor.png',
         size: defaultRoomSize
       }
     },

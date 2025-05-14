@@ -1,7 +1,6 @@
 
 import Image from 'next/image';
 import { useTranslations } from "next-intl";
-import Link from 'next/link';
 import Carousel from '@/components/ui/emblaCarousel'
 
 export default function () {

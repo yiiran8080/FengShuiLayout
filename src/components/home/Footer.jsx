@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { Separator } from '@/components/ui/separator';
 import { useTranslations } from "next-intl";

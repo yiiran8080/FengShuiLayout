@@ -1,5 +1,5 @@
 'use client'
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { useTranslations } from "next-intl";
 import useMobile from '../../app/hooks/useMobile';
@@ -12,7 +12,7 @@ export default function Hero() {
       <div className="absolute inset-0 z-2 bg-shadow" />
       <div className="absolute inset-0 z-0 w-full">
         <Image
-          src="/images/hero/heroback.png"
+          src="https://d3cbeloe0vn1bb.cloudfront.net/images/hero/heroback.png"
           alt="Hero background"
           fill
           className="object-cover"

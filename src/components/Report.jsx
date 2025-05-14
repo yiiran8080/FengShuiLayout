@@ -518,11 +518,11 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
                     >
                         {sections[2].title}
                     </h1>
-                    {/* <p className='font-bold leading-8 tracking-normal text-justify px-5 md:px-0'>
+                    <p className='font-bold leading-8 tracking-normal text-justify px-5 md:px-0'>
                         <span className='text-[#073E31]'>{t('p3-1')}</span>{t('p3-2')}
                         <br />
                         {t('p3-3')}<span className='text-[#073E31]'> {t('p3-4')}</span>{t('p3-5')}
-                    </p> */}
+                    </p>
 
                     <RoomSection jiajuDataString={JSON.stringify(reportDocData.jiajuData)} />
                 </div>

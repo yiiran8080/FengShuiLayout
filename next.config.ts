@@ -13,6 +13,9 @@ const nextConfig: NextConfig = {
       fullUrl: true,
     },
   },
+  images: {
+    domains: ["d3cbeloe0vn1bb.cloudfront.net"],
+  },
   // experimental: {
   //   turbo: {
   //     resolveAlias: {

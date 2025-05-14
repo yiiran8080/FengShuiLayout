@@ -1,7 +1,7 @@
 
 import Image from 'next/image';
 import { useTranslations } from "next-intl";
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 
 export default function BeforeAfter() {
   const t = useTranslations("home.compare");

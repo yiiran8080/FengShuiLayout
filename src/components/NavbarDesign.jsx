@@ -1,5 +1,5 @@
 'use client';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import LanguageToggle from './LanguageToggle';
 import { Save, UserPen } from 'lucide-react';
 import Undo from './canvasComp/Undo';
