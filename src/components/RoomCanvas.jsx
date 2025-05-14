@@ -108,199 +108,202 @@ export default function ({ jiajuDataString, designJsonData }) {
 
     // translate(${position.x}px, ${position.y}px)  
     return <section className="relative">
-        <div className="relative border-1 border-[#E6E6E6] rounded-t-3xl py-[2px] mt-8 overflow-scroll">
-            <div
-                onClick={() => setShowMenu(false)}
-                className="relative flex justify-center w-full h-135"
-                style={{ minWidth: canvasSize.width }}
-            >
+        <div className="relative canvasImage">
+            <div className="relative border-1 border-[#E6E6E6] rounded-t-3xl py-[2px] mt-8 overflow-scroll">
                 <div
-                    id='roomCanvas'
-                    className="absolute cursor-not-allowed"
-                    style={{
-                        width: `${canvasSize.width}px`,
-                        height: `${canvasSize.height}px`,
-                        transform: `scale(${scale / 100})`,
-                        transformOrigin: "top left",
-                        backgroundImage:
-                            "radial-gradient(circle, #ddd 1px, transparent 1px)",
-                        backgroundSize: "10px 10px",
-                    }}
+                    onClick={() => setShowMenu(false)}
+                    className="relative flex justify-center w-full h-135"
+                    style={{ minWidth: canvasSize.width }}
                 >
-                    <div className="relative" >
-                        {designData.localItems.map((item) => {
+                    <div
+                        id='roomCanvas'
+                        className="absolute cursor-not-allowed"
+                        style={{
+                            width: `${canvasSize.width}px`,
+                            height: `${canvasSize.height}px`,
+                            transform: `scale(${scale / 100})`,
+                            transformOrigin: "top left",
+                            backgroundImage:
+                                "radial-gradient(circle, #ddd 1px, transparent 1px)",
+                            backgroundSize: "10px 10px",
+                        }}
+                    >
+                        <div className="relative" >
+                            {designData.localItems.map((item) => {
 
-                            if (item._type === ITEM_TYPES.ROOM) {
-                                return (
-                                    <div
-                                        // id={item.id}
-                                        key={item.id}
-                                        data-room-element="true"
-                                        className={`absolute ${activeRoom?.id === item.id ? "ring-2 ring-red-500" : ""
-                                            } cursor-move z-100`}
-                                        style={{
-                                            left: item.position.x,
-                                            top: item.position.y,
-                                            width: item.size.width,
-                                            height: item.size.height,
-                                            // transform: `scale(${scale / 100})`,
-                                            // transformOrigin: "center",
-                                        }}
-                                    // onClick={(e) => {
-                                    //     e.stopPropagation();
-                                    //     onHandleActiveRoom(item);
-                                    // }}
-                                    // onMouseDown={(e) => handleRoomMouseDown(e, item)}
-                                    // onTouchStart={(e) => handleRoomMouseDown(e, item)}
-                                    >
-
+                                if (item._type === ITEM_TYPES.ROOM) {
+                                    return (
                                         <div
-                                            className="w-full h-full"
+                                            // id={item.id}
+                                            key={item.id}
+                                            data-room-element="true"
+                                            className={`absolute ${activeRoom?.id === item.id ? "ring-2 ring-red-500" : ""
+                                                } cursor-move z-100`}
                                             style={{
-                                                border:
-                                                    item._type === ITEM_TYPES.ROOM ? "8px solid" : "none",
-                                                borderColor:
-                                                    item._type === ITEM_TYPES.ROOM
-                                                        ? ROOM_COLORS[item.data._type]
-                                                        : "transparent",
-                                                borderRadius: "8px",
-                                                backgroundColor: ROOM_COLORS[item.data._type] + "80"
+                                                left: item.position.x,
+                                                top: item.position.y,
+                                                width: item.size.width,
+                                                height: item.size.height,
+                                                // transform: `scale(${scale / 100})`,
+                                                // transformOrigin: "center",
                                             }}
+                                        // onClick={(e) => {
+                                        //     e.stopPropagation();
+                                        //     onHandleActiveRoom(item);
+                                        // }}
+                                        // onMouseDown={(e) => handleRoomMouseDown(e, item)}
+                                        // onTouchStart={(e) => handleRoomMouseDown(e, item)}
                                         >
+
                                             <div
-                                                className="absolute top-2 left-2 text-[14px] text-[#888888]"
+                                                className="w-full h-full"
                                                 style={{
-                                                    zIndex: 1,
+                                                    border:
+                                                        item._type === ITEM_TYPES.ROOM ? "8px solid" : "none",
+                                                    borderColor:
+                                                        item._type === ITEM_TYPES.ROOM
+                                                            ? ROOM_COLORS[item.data._type]
+                                                            : "transparent",
+                                                    borderRadius: "8px",
+                                                    backgroundColor: ROOM_COLORS[item.data._type] + "80"
                                                 }}
                                             >
-                                                {item.data.label}
+                                                <div
+                                                    className="absolute top-2 left-2 text-[14px] text-[#888888]"
+                                                    style={{
+                                                        zIndex: 1,
+                                                    }}
+                                                >
+                                                    {item.data.label}
+                                                </div>
                                             </div>
+
                                         </div>
-
-                                    </div>
-                                );
-                            } else if (item._type === ITEM_TYPES.FURNITURE) {
-                                // console.log('item', item)
-                                return (
-                                    <div
-                                        key={item.id}
-                                        data-room-element="true"
-                                        className={`absolute cursor-move z-200`}
-                                        style={{
-                                            left: item.position.x,
-                                            top: item.position.y,
-                                            width: item.size.width,
-                                            height: item.size.height,
-                                            // transform: `translate(${position.x}px, ${position.y}px)`,
-                                            // transformOrigin: "center",
-                                        }}
-                                    // onClick={(e) => {
-                                    //     e.stopPropagation();
-                                    //     onHandleActiveRoom(item);
-                                    // }}
-                                    // onMouseDown={(e) => {
-                                    //     e.stopPropagation();
-                                    //     handleRoomMouseDown(e, item);
-                                    // }}
-                                    // onTouchStart={(e) => {
-                                    //     e.stopPropagation();
-                                    //     handleRoomMouseDown(e, item);
-                                    // }}
-                                    >
-
-                                        <Image
-                                            draggable="false"
-                                            className={
-                                                activeRoom?.id === item.id ? "ring-2 ring-red-500" : ""
-                                            }
+                                    );
+                                } else if (item._type === ITEM_TYPES.FURNITURE) {
+                                    // console.log('item', item)
+                                    return (
+                                        <div
+                                            key={item.id}
+                                            data-room-element="true"
+                                            className={`absolute cursor-move z-200`}
                                             style={{
-                                                transform: item.rotation
-                                                    ? `rotate(${item.rotation}deg)`
-                                                    : "none",
-                                                transformOrigin: "center",
+                                                left: item.position.x,
+                                                top: item.position.y,
+                                                width: item.size.width,
+                                                height: item.size.height,
+                                                // transform: `translate(${position.x}px, ${position.y}px)`,
+                                                // transformOrigin: "center",
                                             }}
-                                            //  objectFit= 'contain'
-                                            src={item.activeIcon}
-                                            alt="Furniture"
-                                            width={item.size.width}
-                                            height={item.size.height}
-                                        />
-                                    </div>
-                                );
-                            }
-                        })}
+                                        // onClick={(e) => {
+                                        //     e.stopPropagation();
+                                        //     onHandleActiveRoom(item);
+                                        // }}
+                                        // onMouseDown={(e) => {
+                                        //     e.stopPropagation();
+                                        //     handleRoomMouseDown(e, item);
+                                        // }}
+                                        // onTouchStart={(e) => {
+                                        //     e.stopPropagation();
+                                        //     handleRoomMouseDown(e, item);
+                                        // }}
+                                        >
+
+                                            <Image
+                                                draggable="false"
+                                                className={
+                                                    activeRoom?.id === item.id ? "ring-2 ring-red-500" : ""
+                                                }
+                                                style={{
+                                                    transform: item.rotation
+                                                        ? `rotate(${item.rotation}deg)`
+                                                        : "none",
+                                                    transformOrigin: "center",
+                                                }}
+                                                //  objectFit= 'contain'
+                                                src={item.activeIcon}
+                                                alt="Furniture"
+                                                width={item.size.width}
+                                                height={item.size.height}
+                                            />
+                                        </div>
+                                    );
+                                }
+                            })}
+                        </div>
                     </div>
+
+
                 </div>
+            </div>
+            {/* 指南针 */}
+            <div
+                style={{
+                    transform: `rotate(${compassRotation}deg)`,
+                    transition: "transform 0.3s ease-out",
+                }}
+                // onClick={onCompassClick}
+                className="absolute top-5 right-5 flex flex-col items-center"
+            >
+                <div className="text-sm text-gray-600">N</div>
+
+                <Image
+                    src="/images/compass.png"
+                    alt="方向"
+                    width={40}
+                    height={40}
+                // className="cursor-pointer"
+                />
+                {/* 显示当前角度 */}
+            </div>
+            {/* 缩放控制 */}
+            <div className="absolute flex  top-120 right-5 items-center gap-2 bg-white rounded-full shadow-lg px-3 py-2">
+                <button
+                    className="p-1 rounded hover:bg-gray-100 text-gray-600"
+                    onClick={(e) => handleZoom("out")}
+                    disabled={scale <= 50}
+                >
+                    <Minus className="w-4 h-4" />
+                </button>
+                <span className="text-sm font-medium text-gray-600 min-w-[48px] text-center">
+                    {scale}%
+                </span>
+                <button
+                    className="p-1 rounded hover:bg-gray-100 text-gray-600"
+                    onClick={(e) => handleZoom("in")}
+                    disabled={scale >= 120}
+                >
+                    <Plus className="w-4 h-4" />
+                </button>
+            </div>
+            {/* 目录结构 */}
+
+            <div
+                onClick={() => setShowMenu(true)}
+                className="z-20 absolute top-120 left-5 w-10 h-10 rounded-full shadow-lg text-xs flex justify-center items-center cursor-pointer">
+                {showMenu && (
+                    <div
+                        className="absolute bottom-10 left-0 report-menu w-20 bg-white shadow-lg rounded-lg py-4 px-4 text-sm max-h-110 overflow-y-auto"
+
+                    >
+                        {roomList.map((room, i) => (
+
+                            <div
+                                key={i}
+                                className={`text-sm mb-4 cursor-pointer ${activeRoom?.id === room.id ? 'text-[#20B580]' : ''}`}
+                                onClick={() => onRoomClick(room)}
+                            >
+                                {room.data.label}
+                            </div>
 
 
+                        ))}
+                    </div>
+                )}
+                <span>{t('catelog')}</span>
             </div>
         </div>
-        {/* 指南针 */}
-        <div
-            style={{
-                transform: `rotate(${compassRotation}deg)`,
-                transition: "transform 0.3s ease-out",
-            }}
-            // onClick={onCompassClick}
-            className="absolute top-5 right-5 flex flex-col items-center"
-        >
-            <div className="text-sm text-gray-600">N</div>
 
-            <Image
-                src="/images/compass.png"
-                alt="方向"
-                width={40}
-                height={40}
-            // className="cursor-pointer"
-            />
-            {/* 显示当前角度 */}
-        </div>
-        {/* 缩放控制 */}
-        <div className="absolute flex  top-120 right-5 items-center gap-2 bg-white rounded-full shadow-lg px-3 py-2">
-            <button
-                className="p-1 rounded hover:bg-gray-100 text-gray-600"
-                onClick={(e) => handleZoom("out")}
-                disabled={scale <= 50}
-            >
-                <Minus className="w-4 h-4" />
-            </button>
-            <span className="text-sm font-medium text-gray-600 min-w-[48px] text-center">
-                {scale}%
-            </span>
-            <button
-                className="p-1 rounded hover:bg-gray-100 text-gray-600"
-                onClick={(e) => handleZoom("in")}
-                disabled={scale >= 120}
-            >
-                <Plus className="w-4 h-4" />
-            </button>
-        </div>
-        {/* 目录结构 */}
-
-        <div
-            onClick={() => setShowMenu(true)}
-            className="z-20 absolute top-120 left-5 w-10 h-10 rounded-full shadow-lg text-xs flex justify-center items-center cursor-pointer">
-            {showMenu && (
-                <div
-                    className="absolute bottom-10 left-0 report-menu w-20 bg-white shadow-lg rounded-lg py-4 px-4 text-sm max-h-110 overflow-y-auto"
-
-                >
-                    {roomList.map((room, i) => (
-
-                        <div
-                            key={i}
-                            className={`text-sm mb-4 cursor-pointer ${activeRoom?.id === room.id ? 'text-[#20B580]' : ''}`}
-                            onClick={() => onRoomClick(room)}
-                        >
-                            {room.data.label}
-                        </div>
-
-
-                    ))}
-                </div>
-            )}
-            <span>{t('catelog')}</span>
-        </div>
         <div className="hidden-on-print w-full md:rounded-b-3xl bg-[#fafafa] md:p-8 p-5 border-1 border-[#E6E6E6]">
             <div className="flex items-center gap-2">
                 <Image

@@ -29,7 +29,7 @@ export default function MenuBar({ className, isOpen, setIsOpen }) {
         }
     }
 
-    return <div className={cn("absolute top-0 right-0 w-full md:w-80 md:shadow-lg bg-white z-20 transition-transform duration-300 ease-in-out",
+    return <div className={cn("hidden-on-print absolute top-0 right-0 w-full md:w-80 md:shadow-lg bg-white z-20 transition-transform duration-300 ease-in-out",
         isOpen ? 'translate-y-0' : '-translate-y-100'
     )}>
         <div className='flex justify-between items-center py-4.5 px-4 '>

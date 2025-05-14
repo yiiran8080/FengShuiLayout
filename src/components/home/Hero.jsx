@@ -8,18 +8,18 @@ export default function Hero() {
   const t = useTranslations("home.hero");
   const isMobile = useMobile();
   return (
-    <section className="relative min-h-screen flex items-center bg-hero">
-
-      {/* <div className="inset-0 z-0 w-full">
+    <section className="relative min-h-screen flex items-center">
+      <div className="absolute inset-0 z-2 bg-shadow" />
+      <div className="absolute inset-0 z-0 w-full">
         <Image
           src="/images/hero/heroback.png"
           alt="Hero background"
           fill
           className="object-cover"
-          priority
+          priority={true}
         />
-        <div className="absolute inset-0 bg-[learn]" />
-      </div> */}
+
+      </div>
       <div className="container mx-auto px-4 relative z-10 -top-20 md:pl-50">
         <div className="max-w-3xl text-white flex flex-col items-center md:block">
           <h1 className="md:text-[52px] text-4xl font-bold mb-16 mt-20 md:mt-0 leading-tight flex flex-col items-center md:items-start">

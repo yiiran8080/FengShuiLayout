@@ -9,8 +9,15 @@ lunisolar.extend(takeSound)
   SB对象（天干地支对象）会添加一个takeSound属性，
  */
 export default function getLunisolar(birthDateTime) {
-  const lsr = lunisolar(moment(birthDateTime).format('YYYY-MM-DD'));
-  return lsr.char8.year.takeSound;
+  const lsr = lunisolar(moment(birthDateTime).format('YYYY-MM-DD HH:mm:ss'));
+  console.log('lsr', moment(birthDateTime).format('YYYY-MM-DD HH:mm:ss'));
+  return {
+    nayin: lsr.char8.year.takeSound,
+    year: lsr.char8.year.toString(),
+    month: lsr.char8.month.toString(),
+    day: lsr.char8.day.toString(),
+    hour: lsr.char8.hour.toString(),
+  }
 }
 
 //console.log(lsr.char8.year.takeSound)  // 金箔金 （取得年干支的纳音）

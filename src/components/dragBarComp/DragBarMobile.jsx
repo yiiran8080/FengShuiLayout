@@ -67,6 +67,7 @@ export default function DragBarMobile(props) {
                                                         alt={item.data.label}
                                                         width={draggingItemSize}
                                                         height={draggingItemSize}
+                                                        priority
                                                     />
                                                 </div>
                                                 <span className="mt-1 text-[12px] text-gray-600">{item.data.label}</span>
@@ -94,6 +95,7 @@ export default function DragBarMobile(props) {
                                                         alt={item.data.label}
                                                         width={draggingItemSize}
                                                         height={draggingItemSize}
+                                                        priority
                                                     />
                                                 </div>
                                                 <span className="mt-1 text-[12px] text-gray-600">{item.data.label}</span>

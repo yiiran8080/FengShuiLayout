@@ -3,9 +3,6 @@ import { useEffect, useState, useRef } from "react";
 import { get, post } from "@/lib/ajax";
 import { useSession } from 'next-auth/react'
 import _ from 'lodash';
-import { getBirthDate } from '@/lib/utils';
-import { calendar } from '@/lib/calendar';
-import { WanNianLi } from '@/lib/wuxing';
 import getLunisolar from '@/lib/nayin';
 // 根据userId查询，如果查询到了，拿数据。否则生成随机数后，把结果存储到该userId下。
 
@@ -42,22 +39,22 @@ export default function useReportDoc(locale, birthDateTime) {
                     const { data: zhData } = await get(`/api/reportDoc/zh`, { isCached: true })
                     const { data: twData } = await get(`/api/reportDoc/tw`, { isCached: true })
                     if (zhData && twData) {
-                        const { wuxingResult, nayin } = getWuxingData(birthDateTime);
+                        const { nayin, year, month, day: date, hour } = getWuxingData(birthDateTime);
                         const random = Math.floor(Math.random() * 3);
                         const jiajuRandom = Math.floor(Math.random() * 5);
                         let zhReportData = {
-                            nianzhuData: zhData.nianzhuData[wuxingResult.bazi.year][random],
-                            yuezhuData: zhData.yuezhuData[wuxingResult.bazi.month][random],
-                            rizhuData: zhData.rizhuData[wuxingResult.bazi.date][random],
-                            shizhuData: zhData.shizhuData[wuxingResult.bazi.hour][random],
+                            nianzhuData: zhData.nianzhuData[year][random],
+                            yuezhuData: zhData.yuezhuData[month][random],
+                            rizhuData: zhData.rizhuData[date][random],
+                            shizhuData: zhData.shizhuData[hour][random],
                             yunchengData: zhData.yunchengData[nayin][random],
                             jiajuData: getJiajuData(zhData.jiajuData, jiajuRandom)
                         }
                         let twReportData = {
-                            nianzhuData: twData.nianzhuData[wuxingResult.bazi.year][random],
-                            yuezhuData: twData.yuezhuData[wuxingResult.bazi.month][random],
-                            rizhuData: twData.rizhuData[wuxingResult.bazi.date][random],
-                            shizhuData: twData.shizhuData[wuxingResult.bazi.hour][random],
+                            nianzhuData: twData.nianzhuData[year][random],
+                            yuezhuData: twData.yuezhuData[month][random],
+                            rizhuData: twData.rizhuData[date][random],
+                            shizhuData: twData.shizhuData[hour][random],
                             yunchengData: twData.yunchengData[nayin][random],
                             jiajuData: getJiajuData(twData.jiajuData, jiajuRandom)
                         }
@@ -76,15 +73,15 @@ export default function useReportDoc(locale, birthDateTime) {
     }, [locale, session?.user?.userId, birthDateTime])
 
     const getWuxingData = (birthDateTime) => {
-        const { year, month, day, hour } = getBirthDate(birthDateTime);
+        // const { year, month, day, hour } = getBirthDate(birthDateTime);
+        // console.log('getWuxingData', year, month, day, hour)
+        // let lunar = calendar.solar2lunar(Number(year), Number(month), Number(day));
+        // lunar.hour = Number(hour);
 
-        let lunar = calendar.solar2lunar(Number(year), Number(month), Number(day));
-        lunar.hour = Number(hour);
-
-        let result = WanNianLi.getResult(lunar);
-        let nayin = getLunisolar(birthDateTime);
-        console.log('WUXING result', result, nayin)
-        return { wuxingResult: result, nayin };
+        //let result = WanNianLi.getResult(lunar);
+        let { nayin, year, month, day, hour } = getLunisolar(birthDateTime);
+        console.log('WUXING result', nayin, year, month, day, hour)
+        return { nayin, year, month, day, hour };
 
     }
     const getJiajuData = (_jiajuData, random) => {

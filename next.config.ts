@@ -13,6 +13,13 @@ const nextConfig: NextConfig = {
       fullUrl: true,
     },
   },
+  // experimental: {
+  //   turbo: {
+  //     resolveAlias: {
+  //       html2canvas: "html2canvas-pro",
+  //     },
+  //   },
+  // },
 };
 
 const withNextIntl = createNextIntlPlugin();

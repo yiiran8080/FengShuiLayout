@@ -56,6 +56,9 @@ const wuxingColorMap = {
     '土': '#BF8F00',
 }
 
+
+// you can use a function to return the target element besides using React refs
+
 export default function ReportPage({ locale, birthDateTime, dataPromise }) {
     const isMobile = useMobile();
     const router = useRouter();
@@ -74,6 +77,7 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
 
     // const twData = use(twDataPromise);
     const { loading, reportDocData } = useReportDoc(locale, birthDateTime);
+    const getTargetElement = () => document.getElementById('content-id');
     const handlePrint = useReactToPrint({
         contentRef,
         pageStyle: `
@@ -94,12 +98,15 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
                     display: block;
                     page-break-before: auto;
                 }
-
+                .canvasImage{
+                    page-break-inside: avoid;
+                    break-inside: avoid;
+                }
                 img{
-                max-width: 100% !important;
-                height: auto !important;
-                page-break-inside: auto;
-                break-inside: auto;
+                    max-width: 100% !important;
+                    height: auto !important;
+                    page-break-inside: auto;
+                    break-inside: auto;
                 }
       }
         `,
@@ -191,8 +198,9 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
 
 
             {/* 右侧进度指示器+目录 */}
-            <div className="fixed right-4 top-32 z-40">
+            <div className="fixed right-4 top-32 z-10" >
                 <a href="#" className='absolute rounded-3xl text-center py-1 w-25 -top-6 right-0  bg-primary text-white' onClick={handlePrint}>{t("download")}</a>
+
                 {/* 进度指示器 */}
                 <div
                     className="progress-indicator flex flex-col items-center gap-2 cursor-pointer select-none"
@@ -286,7 +294,7 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
                                         index !== 2 && <div className={`relative ${index == 0 ? 'lg:-right-20' : 'lg:-left-20'}`}>
                                             <Image
                                                 className='w-105 h-75 object-contain'
-
+                                                priority
                                                 src={`/images/report/${key.slice(-1)}.png`}
                                                 alt={key}
                                                 width={420}
@@ -329,7 +337,7 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
                                         index !== 2 && <div className={`relative ${index == 0 ? 'lg:-right-20' : 'lg:-left-20'}`}>
                                             <Image
                                                 className='w-105 h-75 object-contain'
-
+                                                priority
                                                 src={`/images/report/${key.slice(-1)}.png`}
                                                 alt={key}
                                                 width={420}
@@ -378,7 +386,7 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
                                         index !== 2 && <div className={`relative ${index == 0 ? 'lg:-right-20' : 'lg:-left-20'}`}>
                                             <Image
                                                 className='w-105 h-75 object-contain'
-
+                                                priority
                                                 src={`/images/report/${key.slice(-1)}.png`}
                                                 alt={key}
                                                 width={420}
@@ -427,7 +435,7 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
                                         index !== 2 && <div className={`relative ${index == 0 ? 'lg:-right-20' : 'lg:-left-20'}`}>
                                             <Image
                                                 className='w-105 h-75 object-contain'
-
+                                                priority
                                                 src={`/images/report/${key.slice(-1)}.png`}
                                                 alt={key}
                                                 width={420}
@@ -510,11 +518,11 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
                     >
                         {sections[2].title}
                     </h1>
-                    <p className='font-bold leading-8 tracking-normal text-justify px-5 md:px-0'>
+                    {/* <p className='font-bold leading-8 tracking-normal text-justify px-5 md:px-0'>
                         <span className='text-[#073E31]'>{t('p3-1')}</span>{t('p3-2')}
                         <br />
                         {t('p3-3')}<span className='text-[#073E31]'> {t('p3-4')}</span>{t('p3-5')}
-                    </p>
+                    </p> */}
 
                     <RoomSection jiajuDataString={JSON.stringify(reportDocData.jiajuData)} />
                 </div>

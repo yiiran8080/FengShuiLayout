@@ -8,10 +8,6 @@ import { setRequestLocale } from "next-intl/server";
 import { ToastContainer, toast } from "react-toastify";
 const lora = Lora({ subsets: ["latin", "symbols"] });
 
-export function generateStaticParams() {
-  return [{ locale: "zh-CN" }, { locale: "zh-TW" }];
-}
-
 export default async function LocaleLayout({
   children,
   params,
@@ -24,6 +20,7 @@ export default async function LocaleLayout({
     notFound();
   }
   setRequestLocale(locale);
+  console.log("locale", locale);
   return (
     <html lang={locale}>
       <body className={lora.className}>
@@ -40,7 +37,9 @@ export default async function LocaleLayout({
           className={"text:sm"}
         />
         <AuthProvider>
-          <NextIntlClientProvider>{children}</NextIntlClientProvider>
+          <NextIntlClientProvider locale={locale}>
+            {children}
+          </NextIntlClientProvider>
         </AuthProvider>
       </body>
     </html>

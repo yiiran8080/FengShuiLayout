@@ -24,7 +24,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth(
         clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
 
         //redirectProxyUrl: process.env.NEXTAUTH_URL_INTERNAL as string,
-        //[customFetch]: proxy,
+        //  [customFetch]: proxy,
       }),
       AppleProvider({
         clientId: process.env.APPLE_ID as string,

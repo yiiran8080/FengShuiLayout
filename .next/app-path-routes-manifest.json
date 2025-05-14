@@ -10,11 +10,11 @@
   "/api/users/route": "/api/users",
   "/favicon.ico/route": "/favicon.ico",
   "/api/auth/[...nextauth]/route": "/api/auth/[...nextauth]",
-  "/[locale]/contact/page": "/[locale]/contact",
-  "/[locale]/auth/login/page": "/[locale]/auth/login",
   "/[locale]/design/page": "/[locale]/design",
+  "/[locale]/auth/login/page": "/[locale]/auth/login",
   "/[locale]/page": "/[locale]",
-  "/[locale]/privacy/page": "/[locale]/privacy",
+  "/[locale]/contact/page": "/[locale]/contact",
   "/[locale]/terms/page": "/[locale]/terms",
+  "/[locale]/privacy/page": "/[locale]/privacy",
   "/[locale]/report/page": "/[locale]/report"
 }

@@ -28,6 +28,7 @@ export default function DragBarPC(props) {
                                         alt={item.data.label}
                                         width={draggingItemSize}
                                         height={draggingItemSize}
+                                        priority
                                     />
                                 </div>
                                 <span className="mt-1 text-sm text-gray-600">{item.data.label}</span>
@@ -56,6 +57,7 @@ export default function DragBarPC(props) {
                                         alt={item.data.label}
                                         width={draggingItemSize}
                                         height={draggingItemSize}
+                                        priority
                                     />
                                 </div>
                                 <span className="mt-1 text-sm text-gray-600">{item.data.label}</span>
