@@ -41,7 +41,7 @@ export default function useReportDoc(locale, birthDateTime) {
                     if (zhData && twData) {
                         const { nayin, year, month, day: date, hour } = getWuxingData(birthDateTime);
                         const random = Math.floor(Math.random() * 3);
-                        const jiajuRandom = Math.floor(Math.random() * 5);
+                        const jiajuRandom = Math.floor(Math.random() * 3);
                         let zhReportData = {
                             nianzhuData: zhData.nianzhuData[year][random],
                             yuezhuData: zhData.yuezhuData[month][random],

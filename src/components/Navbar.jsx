@@ -11,7 +11,7 @@ export default function Navbar({ from }) {
   const t = useTranslations('Navigation');
   const isMobile = useMobile();
   return (
-    <nav className="bg-[#066952] h-16">
+    <nav className="bg-[#066952] h-16 hidden-on-print">
       <div className="px-4 h-full">
         <div className="md:max-w-[80%] mx-auto flex items-center justify-center md:justify-between h-full">
           <div className='flex items-center gap-6'>

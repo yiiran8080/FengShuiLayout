@@ -199,7 +199,7 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
 
             {/* 右侧进度指示器+目录 */}
             <div className="fixed right-4 top-32 z-10" >
-                <a href="#" className='absolute rounded-3xl text-center py-1 w-25 -top-6 right-0  bg-primary text-white' onClick={handlePrint}>{t("download")}</a>
+                <a href="#" className='hidden-on-print  absolute rounded-3xl text-center py-1 w-25 -top-6 right-0  bg-primary text-white' onClick={handlePrint}>{t("download")}</a>
 
                 {/* 进度指示器 */}
                 <div

@@ -123,9 +123,9 @@ export default function ({ jiajuDataString, designJsonData }) {
                             height: `${canvasSize.height}px`,
                             transform: `scale(${scale / 100})`,
                             transformOrigin: "top left",
-                            backgroundImage:
-                                "radial-gradient(circle, #ddd 1px, transparent 1px)",
-                            backgroundSize: "10px 10px",
+                            // backgroundImage:
+                            //     "radial-gradient(circle, #ddd 1px, transparent 1px)",
+                            // backgroundSize: "10px 10px",
                         }}
                     >
                         <div className="relative" >
