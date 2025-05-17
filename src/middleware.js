@@ -28,8 +28,7 @@ export default async function middleware(request) {
     }
 
     // Check if the user is authenticated
-    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-    console.log("token", token);
+    const token = await getToken({ secureCookie: true, req: request, secret: process.env.NEXTAUTH_SECRET });
     // If not authenticated, redirect to login page
     if (!token) {
 
