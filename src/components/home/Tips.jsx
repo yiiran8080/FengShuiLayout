@@ -2,13 +2,7 @@
 import { useTranslations } from "next-intl";
 import { useState } from 'react';
 import Image from 'next/image'
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-} from "@/components/ui/carousel"
+
 export default function () {
     const t = useTranslations("home.tips");
     const [active, setActive] = useState(null)
@@ -25,7 +19,7 @@ export default function () {
         <div>
             <div className="flex items-end justify-center border-b-8 border-[#7EAAAB] rounded-sm pb-3 px-5">
                 {
-                    active == 0 ? <Image priority={true} className="md:mr-2 mr-1" width='224' height='400' src='/images/tips/1.png' alt='' /> :
+                    active == 0 ? <Image priority={true} className="md:mr-2 mr-1" width='224' height='400' src='https://d3cbeloe0vn1bb.cloudfront.net/images/tips/1.png' alt='' /> :
                         <div
                             style={{ writingMode: 'vertical-lr' }}
                             className={`relative md:h-100 h-100 bg-[#F3A542] leading-8 tracking-widest
@@ -39,7 +33,7 @@ export default function () {
                         </div>
                 }
                 {
-                    active == 1 ? <Image priority={true} className="md:mr-2 mr-1" width='224' height='400' src='/images/tips/2.png' alt='' /> :
+                    active == 1 ? <Image priority={true} className="md:mr-2 mr-1" width='224' height='400' src='https://d3cbeloe0vn1bb.cloudfront.net/images/tips/2.png' alt='' /> :
                         <div
                             style={{ writingMode: 'vertical-lr' }}
                             className={`relative md:h-100 h-100 bg-[#B86464] leading-8 tracking-widest
@@ -53,7 +47,7 @@ export default function () {
                         </div>
                 }
                 {
-                    active == 2 ? <Image priority={true} className="md:mr-2 mr-1" width='224' height='400' src='/images/tips/3.png' alt='' /> :
+                    active == 2 ? <Image priority={true} className="md:mr-2 mr-1" width='224' height='400' src='https://d3cbeloe0vn1bb.cloudfront.net/images/tips/3.png' alt='' /> :
                         <div
                             style={{ writingMode: 'vertical-lr' }}
                             className={`relative md:h-100 h-100 bg-[#40807D] leading-8 tracking-widest
@@ -67,7 +61,7 @@ export default function () {
                         </div>
                 }
                 {
-                    active == 3 ? <Image priority={true} className="md:mr-2 mr-1" width='224' height='400' src='/images/tips/4.png' alt='' /> :
+                    active == 3 ? <Image priority={true} className="md:mr-2 mr-1" width='224' height='400' src='https://d3cbeloe0vn1bb.cloudfront.net/images/tips/4.png' alt='' /> :
                         <div
                             style={{ writingMode: 'vertical-lr' }}
                             className={`relative md:h-100 h-100 bg-[#407EA5] leading-8 tracking-widest
@@ -81,7 +75,7 @@ export default function () {
                         </div>
                 }
                 {
-                    active == 4 ? <Image priority={true} className="md:mr-2 mr-1" width='224' height='400' src='/images/tips/5.png' alt='' /> :
+                    active == 4 ? <Image priority={true} className="md:mr-2 mr-1" width='224' height='400' src='https://d3cbeloe0vn1bb.cloudfront.net/images/tips/5.png' alt='' /> :
                         <div
                             style={{ writingMode: 'vertical-lr' }}
                             className={`relative md:h-100 h-100 bg-[#7A6B9B] leading-8 tracking-widest
@@ -95,7 +89,7 @@ export default function () {
                         </div>
                 }
                 {
-                    active == 5 ? <Image priority={true} className="md:mr-2 mr-1" width='224' height='400' src='/images/tips/6.png' alt='' /> :
+                    active == 5 ? <Image priority={true} className="md:mr-2 mr-1" width='224' height='400' src='https://d3cbeloe0vn1bb.cloudfront.net/images/tips/6.png' alt='' /> :
                         <div
                             style={{ writingMode: 'vertical-lr' }}
                             className={`relative md:h-100 h-100 bg-[#D782A3] leading-8 tracking-widest

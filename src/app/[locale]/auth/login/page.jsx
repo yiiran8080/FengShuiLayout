@@ -21,7 +21,7 @@ export default function LoginPage({ searchParams }) {
         toast.info(t2('loading'), { autoClose: 5000 });
         try {
             // provider, { callbackUrl: '/' }
-            await signIn(provider, { callbackUrl: params?.callbackUrl || '/' });
+            await signIn(provider, { redirect: true, redirectTo: params?.callbackUrl || '/' });
             setIsLoading(false);
 
         } catch (error) {

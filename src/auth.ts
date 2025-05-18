@@ -42,7 +42,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth(
         }
         return token;
       },
-
+      // async redirect({ url, baseUrl }) {
+      //   console.log("redirect", url, baseUrl);
+      //   return `${baseUrl}/auth/login?callbackUrl=${url}`;
+      // },
       // async signIn({ user, account }) {
       //   //console.log("OAuth请求目标URL:", user, account);
       //   return true;

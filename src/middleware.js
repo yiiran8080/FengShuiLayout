@@ -45,6 +45,7 @@ export default async function middleware(request) {
         }
 
         const locale = referer.indexOf('zh-CN') >= 0 ? 'zh-CN' : 'zh-TW';
+        // ?callbackUrl=${request.nextUrl.pathname}
         return NextResponse.redirect(new URL(`/${locale}/auth/login?callbackUrl=${request.nextUrl.pathname}`, request.url));
     }
 

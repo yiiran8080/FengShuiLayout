@@ -91,8 +91,8 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
                     margin: 0;
                     zoom: 100%;
                 }
-                .hidden-on-print { display: none; }
-                .show-on-print { display: block; }
+                .hidden-on-print { display: none !important; }
+                .show-on-print { display: block !important; }
                 .page-break {
                     margin-top: 1rem;
                     display: block;
