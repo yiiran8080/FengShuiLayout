@@ -107,6 +107,9 @@
   .bg-shadow{
     background: linear-gradient(#0F2A1E99 10%, #13382780 34%,  #73897F1A 90%),
   }
+   .bg-lock{
+    background: linear-gradient(#ffffff00 0%, #ffffff 100%),
+  }
   .bg-button-primary{
     background-color: #096e44;
   }

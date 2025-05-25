@@ -112,6 +112,14 @@
       "namedRegex": "^/(?<nxtPlocale>[^/]+?)/report(?:/)?$"
     },
     {
+      "page": "/[locale]/success",
+      "regex": "^/([^/]+?)/success(?:/)?$",
+      "routeKeys": {
+        "nxtPlocale": "nxtPlocale"
+      },
+      "namedRegex": "^/(?<nxtPlocale>[^/]+?)/success(?:/)?$"
+    },
+    {
       "page": "/[locale]/terms",
       "regex": "^/([^/]+?)/terms(?:/)?$",
       "routeKeys": {

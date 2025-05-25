@@ -57,8 +57,14 @@ export async function POST(request, { params }) {
                 ...data
             });
         } else {
-            user.gender = data.gender;
-            user.birthDateTime = new Date(data.birthDateTime);
+            for (let key in data) {
+                if (key === "birthDateTime") {
+                    user[key] = new Date(data[key]);
+                } else {
+                    user[key] = data[key]
+                }
+
+            }
             await user.save();
         }
 

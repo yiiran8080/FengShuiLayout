@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Send, ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import ClipLoader from "react-spinners/ClipLoader";
+import { AntdSpin } from "antd-spin";
 import { post } from "@/lib/ajax";
 import { toast } from "react-toastify";
 // 示例使用：在某个API路由或页面组件中调用sendEmail函数
@@ -70,15 +70,9 @@ const EnquiryForm = () => {
   };
 
   return (
+
     <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm">
-      <ClipLoader
-        color={'#666'}
-        loading={loading}
-        cssOverride={{ position: 'fixed', left: '50%', top: '50%', zIndex: 60 }}
-        size={30}
-        aria-label="loading..."
-        data-testid="loader"
-      />
+      <AntdSpin fullscreen={true} spinning={loading} tip={t2('loading2')} className='bg-[#fff9]' />
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label

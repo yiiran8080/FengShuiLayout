@@ -42,10 +42,11 @@ import { get, post, patch } from "@/lib/ajax";
 
 import { useSession } from 'next-auth/react'
 import UserInfoDialog from '@/components/UserInfoDialog';
-import ClipLoader from "react-spinners/ClipLoader";
+import { AntdSpin } from "antd-spin";
 import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from "next-intl";
+
 const ROOM_COLORS = {
   [ROOM_TYPES.LIVING_ROOM]: '#F0DF9C',   // 客厅
   [ROOM_TYPES.DINING_ROOM]: '#F5D4BC',   // 饭厅
@@ -68,6 +69,7 @@ export default function DesignPage({ params }) {
   const _params = use(params);
   const locale = _params.locale;
   const t = useTranslations('design');
+  const t2 = useTranslations('toast');
   const ROOM_TYPES_LABEL = locale === 'zh-TW' ? ROOM_TYPES_LABEL_TW : ROOM_TYPES_LABEL_CN;
   const FURNITURE_TYPES_LABEL = locale === 'zh-TW' ? FURNITURE_TYPES_LABEL_TW : FURNITURE_TYPES_LABEL_CN;
   const furnitureItems = [
@@ -445,9 +447,13 @@ export default function DesignPage({ params }) {
     try {
       setAlertOpen(false);
       setLoading(true);
+      //将付款状态重置为未付款
+      const { status: status0 } = await post(`/api/users/${session.user.userId}`, {
+        isLock: true,
+      });
       const { status } = await patch(`/api/reportUserDoc/${userId}`, { isDelete: 1 });
       setLoading(false);
-      if (status == 0) {
+      if (status0 == 0 && status == 0) {
         //window.location.herf = `/report?birthDateTime=${userInfo.birthDateTime}`
         router.push(`/report?birthDateTime=${new Date(userInfo.birthDateTime).toISOString()}`);
       }
@@ -526,14 +532,7 @@ export default function DesignPage({ params }) {
   return (
     <Suspense fallback={<div>loading...</div>}>
       <>
-        <ClipLoader
-          color={'#666'}
-          loading={loading}
-          cssOverride={{ position: 'fixed', left: '50%', top: '50%', zIndex: 60 }}
-          size={30}
-          aria-label="loading..."
-          data-testid="loader"
-        />
+        <AntdSpin fullscreen={true} spinning={loading} tip={t2('loading2')} className='bg-[#fff9]' />
 
         <UserInfoDialog
           open={showUserInfoDialog}

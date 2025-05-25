@@ -5,7 +5,7 @@ import { signIn } from 'next-auth/react';
 //import { signIn } from "@/auth";
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
-import ClipLoader from "react-spinners/ClipLoader";
+import { AntdSpin } from "antd-spin";
 import { toast } from 'react-toastify';
 import { useTranslations } from "next-intl";
 export default function LoginPage({ searchParams }) {
@@ -32,7 +32,7 @@ export default function LoginPage({ searchParams }) {
     return (
         <div className="min-h-screen bg-gray-50">
             <Navbar />
-
+            <AntdSpin spinning={isLoading} fullscreen={true} tip={t2('loading2')} className='bg-[#fff9]' />
             <div className="flex flex-col items-center bg-secondary md:bg-gray-50 justify-center px-6 py-12  mx-auto">
                 <div className="w-full p-10 space-y-8 bg-secondary md:w-100 md:shadow-lg md:h-auto h-screen">
                     <div className="flex flex-col items-center ">
@@ -67,14 +67,6 @@ export default function LoginPage({ searchParams }) {
                                 />
                             </svg>
                             {t('Google')}
-                            <ClipLoader
-                                color={'#666'}
-                                loading={isLoading}
-                                cssOverride={{ position: 'fixed' }}
-                                size={30}
-                                aria-label="loading..."
-                                data-testid="loader"
-                            />
                         </button>
 
                         <button

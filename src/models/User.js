@@ -21,6 +21,16 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
+    isLock: {
+        type: Boolean,
+        required: true,
+        default: true
+    },
+    genStatus: {
+        type: String,
+        enum: ['waiting', 'done'],
+        required: false,
+    },
     // provider: {
     //     type: String,
     //     enum: ['google', 'apple'],

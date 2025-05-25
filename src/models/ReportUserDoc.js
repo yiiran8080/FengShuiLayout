@@ -37,6 +37,15 @@ const reportUserSchema = new mongoose.Schema({
     jiajuData: {
         type: mongoose.Schema.Types.Mixed,
         required: true
+    },
+    mingLiData: {
+        type: mongoose.Schema.Types.Mixed,
+    },
+    liuNianData: {
+        type: mongoose.Schema.Types.Mixed,
+    },
+    jiajuProData: {
+        type: mongoose.Schema.Types.Mixed,
     }
 })
 const ReportUserDoc = mongoose.models.ReportUserDoc || mongoose.model('ReportUserDoc', reportUserSchema);

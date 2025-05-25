@@ -7,7 +7,6 @@ const intlMiddleware = createMiddleware(routing);
 
 export default async function middleware(request) {
     const { pathname } = request.nextUrl;
-
     // Skip auth check for public routes
     const isPublicRoute =
         pathname === '/' ||
@@ -21,14 +20,13 @@ export default async function middleware(request) {
 
     // Handle internationalization first
     const response = intlMiddleware(request);
-
     // If it's a public route, no need to check authentication
     if (isPublicRoute) {
         return response;
     }
 
     // Check if the user is authenticated
-    const token = await getToken({ secureCookie: true, req: request, secret: process.env.NEXTAUTH_SECRET });
+    const token = await getToken({ secureCookie: process.env.NODE_ENV !== 'development', req: request, secret: process.env.NEXTAUTH_SECRET });
     // If not authenticated, redirect to login page
     if (!token) {
 
@@ -46,9 +44,9 @@ export default async function middleware(request) {
 
         const locale = referer.indexOf('zh-CN') >= 0 ? 'zh-CN' : 'zh-TW';
         // ?callbackUrl=${request.nextUrl.pathname}
+
         return NextResponse.redirect(new URL(`/${locale}/auth/login?callbackUrl=${request.nextUrl.pathname}`, request.url));
     }
-
     return response;
 }
 

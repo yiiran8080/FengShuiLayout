@@ -5,49 +5,19 @@ import { useSearchParams, useParams, useRouter, } from 'next/navigation';
 import useMobile from '@/app/hooks/useMobile';
 import useReportDoc from '@/app/hooks/useReportDoc';
 import Image from 'next/image';
-import RoomSection from '@/components/RoomSection';
+import RoomSection from '@/components/report/RoomSection';
 import { useTranslations } from 'next-intl';
 import UnlockButton from '@/components/UnlockButton';
+import MingLi from "./report/MingLi"
+import LiuNian from "./report/LiuNian"
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'react-toastify';
 import { useReactToPrint } from "react-to-print";
-
-const anchorList = [
-    {
-        id: 'section-0',
-        title: '第一章：个人命理基础分析',
-        isMain: true,
-    },
-    {
-        id: 'section-0-0',
-        title: '年柱',
-        isMain: false,
-    },
-    {
-        id: 'section-0-1',
-        title: '月柱'
-    },
-    { id: 'section-0-2', title: '日柱' },
-    { id: 'section-0-3', title: '时柱' },
-
-    {
-        id: 'section-1',
-        title: '第二章：流年运程基础分析',
-        isMain: true,
-    },
-    { id: 'section-1-0', title: '整体运势' },
-    { id: 'section-1-1', title: '健康运势' },
-    { id: 'section-1-2', title: '事业运势' },
-    { id: 'section-1-3', title: '感情运势' },
-    { id: 'section-1-4', title: '财运运势' },
-    { id: 'section-1-5', title: '总结' },
-    {
-        id: 'section-2',
-        title: '第三章：流年运程基础分析',
-        isMain: true,
-    },
-]
-
+import { useSession } from 'next-auth/react'
+import { get } from '@/lib/ajax'
+import getWuxingData from '@/lib/nayin';
+import emitter from '@/lib/emitter';
+import { EVENT_KEY_GEN_REPORT } from "@/types/constants";
 const wuxingColorMap = {
     '金': '#CCBB00',
     '木': '#00991B',
@@ -59,25 +29,26 @@ const wuxingColorMap = {
 
 // you can use a function to return the target element besides using React refs
 
-export default function ReportPage({ locale, birthDateTime, dataPromise }) {
+export default function ReportPage({ locale, birthDateTime }) {
+
     const isMobile = useMobile();
     const router = useRouter();
     const t = useTranslations('report');
+    const t2 = useTranslations("toast");
     const contentRef = useRef(null);
 
 
-    const sectionRefs = useRef(anchorList.map(() => null));
+    const sectionRefs = useRef([]);
+    const [sections, setSections] = useState([]);
+    const [anchorList, setAnchorList] = useState([])
+
     const [activeIndex, setActiveIndex] = useState(0);
     const [showMenu, setShowMenu] = useState(false);
     const hideMenuTimer = useRef(null);
-
-
-    //const userData = use(userDataPromise);
-    // const { twData, zhData } = use(dataPromise);
-
-    // const twData = use(twDataPromise);
+    const [isPrinting, setIsPrinting] = useState(false);
+    const [isLock, setIsLock] = useState(true);
+    const [userInfo, setUserInfo] = useState(null);
     const { loading, reportDocData } = useReportDoc(locale, birthDateTime);
-    const getTargetElement = () => document.getElementById('content-id');
     const handlePrint = useReactToPrint({
         contentRef,
         pageStyle: `
@@ -92,7 +63,7 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
                     zoom: 100%;
                 }
                 .hidden-on-print { display: none !important; }
-                .show-on-print { display: block !important; }
+                .show-on-print { display: block !important;}
                 .page-break {
                     margin-top: 1rem;
                     display: block;
@@ -113,6 +84,108 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
         removeAfterPrint: true,
         documentTitle: 'Harmoniq风水家居报告'
     })
+    useEffect(() => {
+
+        let sections = [
+            {
+                title: t('title1'),
+                children: [
+                    { title: '年柱', },
+                    { title: '月柱', },
+                    { title: '日柱', },
+                    { title: t('shizhu'), },
+                ],
+            },
+            {
+                title: t('title2'),
+                children: [
+                    { title: t('title2-1'), color: '#088C6E', bgColor: '#F7FAF9' },
+                    { title: t('title2-2'), color: '#00A637', bgColor: '#F5FAF7' },
+                    { title: t('title2-3'), color: '#0A58A6', bgColor: '#F5F8FA' },
+                    { title: t('title2-4'), color: '#E52E5C', bgColor: '#FAF5F6' },
+                    { title: t('title2-5'), color: '#D9B815', bgColor: '#FCFBF5' },
+                    { title: t('title2-6'), color: '#066952', bgColor: '#F7FAF9' },
+                ],
+            },
+            {
+                title: t('title3'),
+            }
+        ];
+        let anchorList = [
+            {
+                id: 'section-0',
+                title: '第一章：个人命理基础分析',
+                isMain: true,
+            },
+            {
+                id: 'section-0-0',
+                title: '年柱',
+                isMain: false,
+            },
+            {
+                id: 'section-0-1',
+                title: '月柱'
+            },
+            { id: 'section-0-2', title: '日柱' },
+            { id: 'section-0-3', title: '时柱' },
+
+            {
+                id: 'section-1',
+                title: '第二章：流年运程基础分析',
+                isMain: true,
+            },
+            { id: 'section-1-0', title: '整体运势' },
+            { id: 'section-1-1', title: '健康运势' },
+            { id: 'section-1-2', title: '事业运势' },
+            { id: 'section-1-3', title: '感情运势' },
+            { id: 'section-1-4', title: '财运运势' },
+            { id: 'section-1-5', title: '总结' },
+            {
+                id: 'section-2',
+                title: '第三章：流年运程基础分析',
+                isMain: true,
+            },
+            {
+                id: 'section-3',
+                isMain: true,
+            },
+        ]
+        if (isLock) {
+            setSections([...sections, { title: t('title4Preview'), }])
+            setAnchorList(anchorList)
+
+        } else {
+            setSections([
+                ...sections,
+                { title: t('title4'), },
+                { title: t('title5'), },
+                { title: t('title6'), }
+            ])
+
+            setAnchorList(
+                [...anchorList,
+                {
+                    id: 'section-4',
+                    isMain: true,
+                }, {
+                    id: 'section-5',
+                    isMain: true,
+                },])
+
+        }
+    }, [isLock])
+
+
+    //sectionRefs.current = anchorList.map(() => null);
+    const onPrint = () => {
+        setIsPrinting(true);
+        setTimeout(() => {
+            handlePrint();
+        }, 500)
+        setTimeout(() => {
+            setIsPrinting(false);
+        }, 3000)
+    }
     // 滚动监听，高亮当前章节
     useEffect(() => {
         const handleScroll = () => {
@@ -125,6 +198,32 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    const { data: session } = useSession();
+
+    useEffect(() => {
+        const userId = session?.user?.userId;
+        if (userId) {
+            const loadData = async () => {
+                const { status, message, data: userInfo } = await get(`/api/users/${userId}`)
+                if (status == 0) {
+                    setUserInfo(userInfo);
+                    setIsLock(userInfo.isLock);
+                    setTimeout(() => {
+                        if (!userInfo.isLock && userInfo.genStatus === 'waiting') {
+                            console.log('生成付费报告中')
+                            toast.info(t2('generating'));
+                            //生成付费报告
+                            const wuxingData = getWuxingData(userInfo.birthDateTime, userInfo.gender);
+                            emitter.emit(EVENT_KEY_GEN_REPORT, { wuxingData, userInfo });
+                        }
+                    }, 500)
+
+                }
+            }
+            loadData();
+        }
+
+    }, [session?.user?.userId]);
     // 目录失焦自动隐藏
     useEffect(() => {
         const handleClick = (e) => {
@@ -136,32 +235,8 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
         return () => window.removeEventListener('mousedown', handleClick);
     }, []);
 
-    const sections = [
-        {
-            title: t('title1'),
-            children: [
-                { title: '年柱', },
-                { title: '月柱', },
-                { title: '日柱', },
-                { title: t('shizhu'), },
-            ],
-        },
-        {
-            title: t('title2'),
-            children: [
-                { title: t('title2-1'), color: '#088C6E', bgColor: '#F7FAF9' },
-                { title: t('title2-2'), color: '#00A637', bgColor: '#F5FAF7' },
-                { title: t('title2-3'), color: '#0A58A6', bgColor: '#F5F8FA' },
-                { title: t('title2-4'), color: '#E52E5C', bgColor: '#FAF5F6' },
-                { title: t('title2-5'), color: '#D9B815', bgColor: '#FCFBF5' },
-                { title: t('title2-6'), color: '#066952', bgColor: '#F7FAF9' },
-            ],
-        },
-        {
-            title: t('title3'),
 
-        }
-    ];
+
     // 进度指示器hover/点击显示目录
     const handleProgressEnter = () => {
         clearTimeout(hideMenuTimer.current);
@@ -190,17 +265,20 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
         router.push('/design');
         return;
     }
-    //console.log('reportDocData:', reportDocData);
+    // console.log('reportDocData:', activeIndex);
 
     return (
         <div className="relative min-h-screen bg-white">
-            <Navbar from='report' />
+            {
+                !isPrinting && <Navbar from='report' />
+            }
 
 
             {/* 右侧进度指示器+目录 */}
             <div className="fixed right-4 top-32 z-10" >
-                <a href="#" className='hidden-on-print  absolute rounded-3xl text-center py-1 w-25 -top-6 right-0  bg-primary text-white' onClick={handlePrint}>{t("download")}</a>
-
+                {
+                    !isPrinting && <a href="#" className='hidden-on-print  absolute rounded-3xl text-center py-1 w-25 -top-12 right-0  bg-primary text-white' onClick={onPrint}>{t("download")}</a>
+                }
                 {/* 进度指示器 */}
                 <div
                     className="progress-indicator flex flex-col items-center gap-2 cursor-pointer select-none"
@@ -211,7 +289,7 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
                     {anchorList.map((item, idx) => (
                         <div
                             key={item.id}
-                            className={`transition-all duration-200 ${item.isMain ? 'w-5 h-5' : 'w-2 h-2'} rounded-full  bg-[#E7F2EE] ${activeIndex === idx ? 'bg-[#20B580]' : ''}`}
+                            className={`transition-all duration-200 ${item.isMain ? 'w-5 h-5' : 'w-2 h-2'} rounded-full  ${activeIndex === idx ? 'bg-[#20B580]' : 'bg-[#E7F2EE] '}`}
                             style={{ margin: item.isMain ? '8px 0' : '3px 0' }}
                         />
                     ))}
@@ -247,9 +325,9 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
             {/* 正文内容 */}
             <div
                 ref={contentRef}
-                className="max-w-250 mx-auto  md:px-5 page-break">
+            >
                 {/* 第一章 四柱*/}
-                <div key='section-0'>
+                <div key='section-0' className="max-w-250 mx-auto  md:px-5">
                     <h1
                         ref={el => sectionRefs.current[0] = el}
                         className="md:text-[40px] text-[28px] text-center font-bold my-10 md:mt-30 md:px-0 px-5 text-[#073E31]"
@@ -462,7 +540,7 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
 
                 </div>
                 {/* 第二章 流年运程解析 */}
-                <div key='section-1'>
+                <div key='section-1' className="max-w-250 mx-auto  md:px-5">
                     <h1
                         ref={el => sectionRefs.current[5] = el}
                         className="md:text-[40px] text-[28px] text-center font-bold md:mt-18 mt-10 mb-10 md:px-0 px-5 text-[#073E31]"
@@ -510,7 +588,7 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
                     </div>
                 </div>
                 {/* 第三章 家居风水解析 */}
-                <div key='section-2'>
+                <div key='section-2' className="max-w-250 mx-auto  md:px-5">
                     <h1
                         ref={el => sectionRefs.current[12] = el}
                         className="md:text-[40px] text-[28px] text-center font-bold md:mt-18 mt-10 mb-10 md:px-0 px-5 text-[#073E31]"
@@ -524,8 +602,38 @@ export default function ReportPage({ locale, birthDateTime, dataPromise }) {
                         {t('p3-3')}<span className='text-[#073E31]'> {t('p3-4')}</span>{t('p3-5')}
                     </p>
 
-                    <RoomSection jiajuDataString={JSON.stringify(reportDocData.jiajuData)} />
+                    <RoomSection jiajuDataString={JSON.stringify(reportDocData.jiajuData)} isPrinting={isPrinting} />
                 </div>
+                {/* 第四章 个人命理进阶解析 */}
+                <div key='section-3' className="relative max-w-250 mx-auto  md:px-5">
+                    <h1
+                        ref={el => sectionRefs.current[13] = el}
+                        className="md:text-[40px] text-[28px] text-center font-bold md:mt-18 mt-10 mb-10 md:px-0 px-5 text-[#073E31]"
+                        id={`section-3`}
+                    >
+                        {sections[3].title}
+                    </h1>
+                    {
+                        isLock && <div className='absolute bg-lock z-10 left-0 top-25 w-full h-70'></div>
+                    }
+                    <div className={isLock && 'h-70 overflow-hidden'}>
+                        <MingLi userInfo={userInfo} mingLiDataString={JSON.stringify(reportDocData.mingLiData || '')} />
+                    </div>
+                </div>
+
+                {/* 第四章 流年运程进阶解析 */}
+                {
+                    !isLock && <div key='section-4' >
+                        <h1
+                            ref={el => sectionRefs.current[14] = el}
+                            className="md:text-[40px] text-[28px] text-center font-bold md:mt-18 mt-10 mb-10 md:px-0 px-5 text-[#073E31]"
+                            id={`section-4`}
+                        >
+                            {sections[4]?.title}
+                        </h1>
+                        <LiuNian userInfo={userInfo} mingLiDataString={JSON.stringify(reportDocData.liuNianData || '')} />
+                    </div>
+                }
             </div>
         </div>
 

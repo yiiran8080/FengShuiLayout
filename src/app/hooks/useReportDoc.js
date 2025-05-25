@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { get, post } from "@/lib/ajax";
 import { useSession } from 'next-auth/react'
 import _ from 'lodash';
-import getLunisolar from '@/lib/nayin';
+import getWuxingData from '@/lib/nayin';
 // 根据userId查询，如果查询到了，拿数据。否则生成随机数后，把结果存储到该userId下。
 
 export default function useReportDoc(locale, birthDateTime) {
@@ -72,18 +72,7 @@ export default function useReportDoc(locale, birthDateTime) {
 
     }, [locale, session?.user?.userId, birthDateTime])
 
-    const getWuxingData = (birthDateTime) => {
-        // const { year, month, day, hour } = getBirthDate(birthDateTime);
-        // console.log('getWuxingData', year, month, day, hour)
-        // let lunar = calendar.solar2lunar(Number(year), Number(month), Number(day));
-        // lunar.hour = Number(hour);
 
-        //let result = WanNianLi.getResult(lunar);
-        let { nayin, year, month, day, hour } = getLunisolar(birthDateTime);
-        console.log('WUXING result', nayin, year, month, day, hour)
-        return { nayin, year, month, day, hour };
-
-    }
     const getJiajuData = (_jiajuData, random) => {
         if (_jiajuData) {
             let jiajuData = _.cloneDeep(_jiajuData);
