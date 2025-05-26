@@ -9,7 +9,7 @@ function Tabs({
   className,
   ...props
 }: React.ComponentProps<typeof TabsPrimitive.Root> & {
-  setShowTab: (show: boolean) => void;
+  setShowTab?: (show: boolean) => void;
 }) {
   return (
     <div className="relative">
@@ -18,10 +18,12 @@ function Tabs({
         className={cn("flex flex-col gap-2", className)}
         {...props}
       />
-      <ChevronDown
-        className="w-4 h-4 absolute top-2.5 right-5"
-        onClick={() => props.setShowTab(false)}
-      />
+      {props.setShowTab && (
+        <ChevronDown
+          className="w-4 h-4 absolute top-2.5 right-5"
+          onClick={() => props.setShowTab(false)}
+        />
+      )}
     </div>
   );
 }

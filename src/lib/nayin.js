@@ -10,16 +10,21 @@ export const currentLNGanzhi = getCurrentLNGanzhi();
 export const { LYGanzhiMap, LYzhiMap, LYStarMap, LYSihuaMap, spouseStarMap, spouseSihuaMap } = getAllLYGanzhi();
 export const currentLYGanzhi = getCurrentLYGanzhi();
 export const spousePalace = getSpousePalace();
+let wuxingCache = {};
 /**
   加载takeSound插件后，
   SB对象（天干地支对象）会添加一个takeSound属性，
  */
 
 export default function getWuxingData(birthDateTime, gender) {
-
-  const no = gender === 'female' ? 0 : 1;
+  //先从缓存中取值
   let birthStr = moment(birthDateTime).format('YYYY-MM-DD HH:mm:ss');
   console.log('birthStr', birthStr);
+  if (wuxingCache[birthStr + '-' + gender]) return wuxingCache[birthStr + '-' + gender];
+
+  //未命中缓存，重新计算
+  const no = gender === 'female' ? 0 : 1;
+
   let hour = moment(birthDateTime).hour();
   let hourIndex = Math.floor(hour / 2);
   let date = moment(birthDateTime).format('YYYY-MM-DD');
@@ -79,6 +84,7 @@ export default function getWuxingData(birthDateTime, gender) {
     dayGods: dayPillar.gods.map(item => item.name).toString(), //日柱神煞 个人的性格特征和主要运势
 
   }
+  wuxingCache[birthStr + '-' + gender] = result;
   console.log('result', result)
   return result;
 }

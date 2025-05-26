@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["d3cbeloe0vn1bb.cloudfront.net"],
   },
+  reactStrictMode: false,
   // experimental: {
   //   turbo: {
   //     resolveAlias: {

@@ -17,6 +17,7 @@ const designSchema = new mongoose.Schema({
         id: String,
         _type: String,
         activeIcon: String,
+        direction: String,
         data: {
             cateType: String,
             _type: String,

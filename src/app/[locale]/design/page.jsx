@@ -39,7 +39,7 @@ import useMobile from '../../hooks/useMobile';
 import DragBarPC from '@/components/dragBarComp/DragBarPC';
 import DragBarMobile from '@/components/dragBarComp/DragBarMobile';
 import { get, post, patch } from "@/lib/ajax";
-
+import getRoomDirection from "./getRoomDirection";
 import { useSession } from 'next-auth/react'
 import UserInfoDialog from '@/components/UserInfoDialog';
 import { AntdSpin } from "antd-spin";
@@ -373,13 +373,13 @@ export default function DesignPage({ params }) {
     //const userId = 'yunyanyr@gmail.com'
     try {
       setLoading(true)
-      const { status } = await post(`/api/design/${session.user.userId}`, {
+      const designData = getRoomDirection({
         localItems: canvasRef.current.getLocalItems(),
         canvasPosition: canvasRef.current.getPosition(),
         compassRotation: canvasRef.current.getCompassRotation(),
         scale: canvasRef.current.getScale(),
-
-      });
+      })
+      const { status } = await post(`/api/design/${session.user.userId}`, designData);
       if (status == 0) {
         toast.success("保存成功！");
       }

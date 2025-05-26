@@ -1,0 +1,249 @@
+"use client";
+import _ from "lodash";
+import {
+    useState,
+
+    useEffect,
+
+} from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTranslations } from "next-intl";
+import Image from "next/image";
+import UnlockButton from '../UnlockButton';
+import RoomCanvas from "./RoomCanvas";
+import getWuxingData from '@/lib/nayin';
+import { post } from '@/lib/ajax';
+import { AntdSpin } from "antd-spin";
+import { toast } from 'react-toastify';
+import { Separator } from "@/components/ui/separator";
+import { getJiajuPrompt, getJiajuUserData } from "./utils"
+import { Line } from '@rc-component/progress';
+export default function ({ userInfo, jiajuProDataString, onSaveData, isPrinting }) {
+    const t = useTranslations('report.pro');
+    const t2 = useTranslations("toast");
+    const [activeRoom, setActiveRoom] = useState(null); // 当前激活的房间
+    const [activeTab, setActiveTab] = useState('tab1')
+    const [designData, setDesignData] = useState(null); //房间布局数据
+
+    const [jiajuProData, setJiajuProData] = useState({});
+    const [loading, setLoading] = useState(false);
+    const [wuxingData, setWuxingData] = useState({})
+    const [progress, setProgress] = useState(5);
+
+
+
+    useEffect(() => {
+        if (jiajuProDataString) {
+            const jiajuProData = JSON.parse(jiajuProDataString);
+            setJiajuProData(jiajuProData);
+        }
+    }, [jiajuProDataString])
+
+    useEffect(() => {
+        if (userInfo && designData) {
+            if (!userInfo.isLock && userInfo.genStatus === 'waiting') {
+                //toast.info(t2('generating'));
+                //生成付费报告
+                const wuxingData = getWuxingData(userInfo.birthDateTime, userInfo.gender);
+                setWuxingData(wuxingData);
+                onGenerate(userInfo, wuxingData)
+
+            }
+        }
+    }, [userInfo, designData])
+    const fetchDesignData = (designData) => {
+        setDesignData(designData);
+    }
+    const onSetActiveRoom = (room) => {
+        setActiveRoom(room);
+        setActiveTab('tab1');
+    }
+
+    const onGenerate = (userInfo, _wuxingData) => {
+        console.log('jiaju gen')
+        setProgress(0)
+        const systemPrompt = getJiajuPrompt();
+        const rooms = designData.localItems.filter(item => item._type === 'room');
+        const furnitures = designData.localItems.filter(item => item._type === 'furniture');
+        const newRooms = rooms.map(room => {
+            let furList = furnitures.filter(furniture => furniture.data.parentRoom?.id === room.id).map(item => (
+                `{家具类型: ${item.data.label.split('-')[1]} ，家具坐标：x-${item.position.x},y-${item.position.y}}`
+            ))
+
+            return {
+                ...room,
+                furListStr: furList.toString()
+            }
+        })
+
+        const roomIndexIdArr = rooms.map((item) => item.id);
+
+        const promises = newRooms.map((room) => post('/api/generateCode',
+            {
+                user: getJiajuUserData(room, userInfo, _wuxingData || wuxingData),
+                system: systemPrompt,
+                jsonResult: true
+            }))
+
+
+        setLoading(true);
+        createProgressivePromiseAll(promises).then(results => {
+            setLoading(false);
+            let newResults = {};
+            results.map((item, index) => {
+                let obj = JSON.parse(item.data);
+                let newObj = {};
+                Object.keys(obj).forEach((key, index) => {
+                    newObj[`tab${index + 1}`] = obj[key];
+                })
+
+                newResults[roomIndexIdArr[index]] = newObj
+            });
+            setJiajuProData(newResults);
+            console.log('res 家居进阶', newResults)
+            //onSaveData({liuNianData});
+        }).catch(e => {
+            setLoading(false);
+            toast.error('家居风水进阶分析生成错误，请稍后刷新此页面重试。' + e.message, { autoClose: false })
+        });
+    }
+    function createProgressivePromiseAll(promises) {
+        const results = [];
+        let completed = 0;
+        const total = promises.length;
+
+        return new Promise((resolve, reject) => {
+            promises.forEach((promise, index) => {
+                promise.then(result => {
+                    if (result.status !== 0) {
+                        throw new Error(result.message);
+                    }
+                    results[index] = result;
+                    completed++;
+                    const progress = completed / total;
+                    setProgress(progress * 100);
+                    //console.log(`Progress: ${progress * 100}%`); // 更新进度条
+                    if (completed === total) {
+                        resolve(results);
+                    }
+                }).catch(reject); // 如果任何一个promise失败，则立即拒绝主promise
+            });
+        });
+    }
+    return <section className="relative">
+        {loading && <div className="absolute z-12 w-[500px] top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 "><Line percent={progress} strokeWidth={2} strokeColor='#2db7f5' railWidth={2} /> </div>}
+        <AntdSpin size={'large'} spinning={loading} tip={t2('generating')} className='bg-[#fff9]' >
+            <button onClick={() => { onGenerate(userInfo) }}>重新生成</button>
+            <p className='max-w-250 mx-auto md:mb-20 mb-10 md:px-0 px-5 font-bold leading-8 tracking-normal text-justify'>
+                <span className='text-sm leading-8'>命主八字</span>
+                <br />
+                <span className='text-[#073E31] font-bold'> {`${wuxingData.year}年、${wuxingData.month}月、${wuxingData.day}日、${wuxingData.hour}${t('hour')}`}</span>
+            </p>
+            <RoomCanvas activeRoom={activeRoom} setActiveRoom={onSetActiveRoom} onChangeDesignData={fetchDesignData} />
+            {
+                activeRoom && !isPrinting && <div className="w-full md:rounded-b-3xl bg-[#fafafa] md:p-8 p-5 border-1 border-[#E6E6E6]">
+                    <div className="flex items-center gap-2">
+                        <Image
+                            width={activeRoom?.data._type === 'dining_room' ? 28 : 32}
+                            height={activeRoom?.data._type === 'dining_room' ? 28 : 32}
+                            style={{ color: 'red' }}
+                            alt=""
+                            src={`/images/report/${activeRoom?.data._type}.svg`} />
+                        <h2 className="text-xl font-bold">
+                            {activeRoom?.data.label}
+                        </h2>
+                    </div>
+                    <div className="mt-8">
+                        {
+                            jiajuProData &&
+                            <Tabs value={activeTab} className="w-full gap-0" onValueChange={(value) => setActiveTab(value)}>
+                                <TabsList className="gap-8 justify-start bg-transparent p-0">
+
+                                    <TabsTrigger
+                                        defaultValue
+                                        value="tab1"
+                                        className="cursor-pointer pb-3 rounded-none bg-transparent text-sm md:text-base data-[state=active]:font-bold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
+                                    >
+                                        {t('tab1')}
+
+                                    </TabsTrigger>
+                                    <TabsTrigger
+                                        value="tab2"
+                                        className="cursor-pointer pb-3 rounded-none bg-transparent text-sm md:text-base data-[state=active]:font-bold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
+                                    >
+                                        {t('tab2')}
+
+                                    </TabsTrigger>
+                                    <TabsTrigger
+                                        value="tab3"
+                                        className="cursor-pointer pb-3 rounded-none bg-transparent text-sm md:text-base data-[state=active]:font-bold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
+                                    >
+                                        {t('tab3')}
+
+                                    </TabsTrigger>
+                                    <TabsTrigger
+                                        value="tab4"
+                                        className="cursor-pointer pb-3 rounded-none bg-transparent text-sm md:text-base data-[state=active]:font-bold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
+                                    >
+                                        {t('tab4')}
+
+                                    </TabsTrigger>
+                                </TabsList>
+                                <Separator className="mb-5" />
+                                <TabsContent value="tab1" className="w-full leading-8">
+                                    {jiajuProData[activeRoom.id]?.tab1}
+                                </TabsContent>
+                                <TabsContent value="tab2" className="w-full leading-8">
+                                    {jiajuProData[activeRoom.id]?.tab2}
+                                </TabsContent>
+                                <TabsContent value="tab3" className="w-full leading-8">
+                                    {jiajuProData[activeRoom.id]?.tab3}
+                                </TabsContent>
+                                <TabsContent value="tab4" className="w-full leading-8">
+                                    {jiajuProData[activeRoom.id]?.tab4}
+                                </TabsContent>
+                            </Tabs>
+
+                        }
+                    </div>
+
+
+                </div>
+            }
+        </AntdSpin>
+
+
+
+        {/* 在页面上隐藏，打印时展示 */}
+        {
+            isPrinting && <div className="w-full md:rounded-b-3xl bg-[#fafafa] md:p-8 p-5 border-1 border-[#E6E6E6]">
+                <div className="mt-3">
+                    {
+
+                        roomList.map((room, i) => (
+                            <>
+                                <h2 className="text-xl font-bold text-[#073E31]">
+                                    {room.data.label}
+                                </h2>
+                                {jiajuData && jiajuData[room.data._type] &&
+                                    Object.entries(jiajuData[room.data._type][room.direction]).map(([key, value]) => {
+                                        return <p className="leading-8 flex" > <span className="font-bold whitespace-nowrap min-w-22.5">{key}：</span>
+                                            <span className="whitespace-pre-wrap">{value} </span>
+                                        </p>
+                                    })}
+                            </>
+
+
+
+                        ))
+
+                    }
+                </div>
+            </div>
+        }
+
+        <div className='mt-10 px-6 md:p-0'>
+            <p><span className='text-[#FF531A]'>*</span>{t('p6-1')}</p>
+        </div>
+    </section>
+}

@@ -5,19 +5,19 @@ import { useSearchParams, useParams, useRouter, } from 'next/navigation';
 import useMobile from '@/app/hooks/useMobile';
 import useReportDoc from '@/app/hooks/useReportDoc';
 import Image from 'next/image';
-import RoomSection from '@/components/report/RoomSection';
+
 import { useTranslations } from 'next-intl';
 import UnlockButton from '@/components/UnlockButton';
+import Chapter3 from './report/Chapter3';
 import MingLi from "./report/MingLi"
 import LiuNian from "./report/LiuNian"
+import Chapter6 from "./report/Chapter6"
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'react-toastify';
 import { useReactToPrint } from "react-to-print";
 import { useSession } from 'next-auth/react'
 import { get } from '@/lib/ajax'
-import getWuxingData from '@/lib/nayin';
-import emitter from '@/lib/emitter';
-import { EVENT_KEY_GEN_REPORT } from "@/types/constants";
+
 const wuxingColorMap = {
     '金': '#CCBB00',
     '木': '#00991B',
@@ -208,15 +208,6 @@ export default function ReportPage({ locale, birthDateTime }) {
                 if (status == 0) {
                     setUserInfo(userInfo);
                     setIsLock(userInfo.isLock);
-                    setTimeout(() => {
-                        if (!userInfo.isLock && userInfo.genStatus === 'waiting') {
-                            console.log('生成付费报告中')
-                            toast.info(t2('generating'));
-                            //生成付费报告
-                            const wuxingData = getWuxingData(userInfo.birthDateTime, userInfo.gender);
-                            emitter.emit(EVENT_KEY_GEN_REPORT, { wuxingData, userInfo });
-                        }
-                    }, 500)
 
                 }
             }
@@ -602,7 +593,7 @@ export default function ReportPage({ locale, birthDateTime }) {
                         {t('p3-3')}<span className='text-[#073E31]'> {t('p3-4')}</span>{t('p3-5')}
                     </p>
 
-                    <RoomSection jiajuDataString={JSON.stringify(reportDocData.jiajuData)} isPrinting={isPrinting} />
+                    <Chapter3 jiajuDataString={JSON.stringify(reportDocData.jiajuData)} isPrinting={isPrinting} />
                 </div>
                 {/* 第四章 个人命理进阶解析 */}
                 <div key='section-3' className="relative max-w-250 mx-auto  md:px-5">
@@ -617,11 +608,11 @@ export default function ReportPage({ locale, birthDateTime }) {
                         isLock && <div className='absolute bg-lock z-10 left-0 top-25 w-full h-70'></div>
                     }
                     <div className={isLock && 'h-70 overflow-hidden'}>
-                        <MingLi userInfo={userInfo} mingLiDataString={JSON.stringify(reportDocData.mingLiData || '')} />
+                        <MingLi userInfo={userInfo} mingLiDataString={JSON.stringify(reportDocData.mingLiData || '')} isPrinting={isPrinting} />
                     </div>
                 </div>
 
-                {/* 第四章 流年运程进阶解析 */}
+                {/* 第五章 流年运程进阶解析 */}
                 {
                     !isLock && <div key='section-4' >
                         <h1
@@ -631,7 +622,21 @@ export default function ReportPage({ locale, birthDateTime }) {
                         >
                             {sections[4]?.title}
                         </h1>
-                        <LiuNian userInfo={userInfo} mingLiDataString={JSON.stringify(reportDocData.liuNianData || '')} />
+                        <LiuNian userInfo={userInfo} mingLiDataString={JSON.stringify(reportDocData.liuNianData || '')} isPrinting={isPrinting} />
+                    </div>
+                }
+                {/* 第六章 家居进阶解析 */}
+                {
+                    !isLock && <div key='section-5' className="max-w-250 mx-auto  md:px-5">
+                        <h1
+                            ref={el => sectionRefs.current[15] = el}
+                            className="md:text-[40px] text-[28px] text-center font-bold md:mt-18 mt-10 mb-10 md:px-0 px-5 text-[#073E31]"
+                            id={`section-5`}
+                        >
+                            {sections[5]?.title}
+                        </h1>
+                        <Chapter6 userInfo={userInfo} jiajuProDataString={JSON.stringify(reportDocData.jiajuProData || '')} isPrinting={isPrinting} />
+
                     </div>
                 }
             </div>

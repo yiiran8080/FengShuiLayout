@@ -8,8 +8,9 @@ import { toast } from 'react-toastify';
 import { AntdSpin } from "antd-spin";
 import { getSystemPrompt, getUserData } from "./utils"
 import { Line } from '@rc-component/progress';
+import getWuxingData from '@/lib/nayin';
 export default function ({ userInfo, mingLiDataString, onSaveData }) {
-    const t = useTranslations('report.mingli');
+    const t = useTranslations('report.pro');
     const t2 = useTranslations("toast");
     const [mingLiData, setMingLiData] = useState({ mingpan: '' });
     const [activeKey, setActiveKey] = useState('mingpan');
@@ -18,16 +19,12 @@ export default function ({ userInfo, mingLiDataString, onSaveData }) {
     const [progress, setProgress] = useState(5);
 
     useEffect(() => {
-        function handler({ wuxingData, userInfo }) {
+        if (userInfo && !userInfo.isLock && userInfo.genStatus === 'waiting') {
+            const wuxingData = getWuxingData(userInfo.birthDateTime, userInfo.gender);
             setWuxingData(wuxingData);
-            onGenerate(userInfo, wuxingData);
+            onGenerate(userInfo, wuxingData)
         }
-
-        emitter.on(EVENT_KEY_GEN_REPORT, handler);
-        return () => {
-            emitter.off(EVENT_KEY_GEN_REPORT, handler); // 及时销毁自定义事件
-        };
-    }, []);
+    }, [userInfo]);
 
     useEffect(() => {
         if (mingLiDataString) {
@@ -40,6 +37,7 @@ export default function ({ userInfo, mingLiDataString, onSaveData }) {
         setActiveKey(key);
     }
     const onGenerate = (userInfo, _wuxingData) => {
+        toast.info(t2('generating'));
         console.log('mingli gen')
         setProgress(0)
         let userData = getUserData(userInfo, _wuxingData || wuxingData);

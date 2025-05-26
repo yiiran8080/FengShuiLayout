@@ -17,7 +17,7 @@ import {
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import Image from 'next/image'
 import { Separator } from "@/components/ui/separator";
-
+import getWuxingData from '@/lib/nayin';
 const monthMap = {
     1: '正月',
     2: '二月',
@@ -32,8 +32,8 @@ const monthMap = {
     11: '十一月',
     12: '十二月'
 }
-export default function ({ userInfo, liuNianDataString, onSaveData }) {
-    const t = useTranslations('report.mingli');
+export default function ({ userInfo = {}, liuNianDataString, onSaveData }) {
+    const t = useTranslations('report.pro');
     const t2 = useTranslations("toast");
     const [liuNianData, setLiuNianData] = useState([]);
     // {
@@ -49,15 +49,12 @@ export default function ({ userInfo, liuNianDataString, onSaveData }) {
     const [progress, setProgress] = useState(5);
 
     useEffect(() => {
-        function handler({ wuxingData, userInfo }) {
+        if (userInfo && !userInfo.isLock && userInfo.genStatus === 'waiting') {
+            const wuxingData = getWuxingData(userInfo.birthDateTime, userInfo.gender);
             setWuxingData(wuxingData);
-            onGenerate(userInfo, wuxingData);
+            onGenerate(userInfo, wuxingData)
         }
-        emitter.on(EVENT_KEY_GEN_REPORT, handler);
-        return () => {
-            emitter.off(EVENT_KEY_GEN_REPORT, handler); // 及时销毁自定义事件
-        };
-    }, []);
+    }, [userInfo]);
 
     useEffect(() => {
         if (liuNianDataString) {
@@ -81,9 +78,9 @@ export default function ({ userInfo, liuNianDataString, onSaveData }) {
                 assistant,
                 jsonResult: true
             }))
-
-
         setLoading(true);
+
+
         createProgressivePromiseAll(promises).then(results => {
             setLoading(false);
             let newResults = results.map((item) => (JSON.parse(item.data)));
