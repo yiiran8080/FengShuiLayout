@@ -32,7 +32,8 @@ export default function useReportDoc(locale, userInfo) {
                     //找到了用户已有报告
                     if (userInfo.genStatus == 'done') {
                         if (!data.mingLiData || !data.liuNianData || !data.jiajuProData) {
-                            //没有翻译
+                            //这个用户已经是生成过报告了，但是没有进阶数据，说明上次生成的是另外一种语言，这次需要翻译
+                            //获取另一种语言的进阶数据，作为assistantData传给deepseek接口，来提高两种语言文案的一致程度
                             const { status, data } = await get(`/api/reportUserDoc/${userId}/${locale == 'zh-CN' ? 'tw' : 'zh'}`)
                             if (status == 0 && data) {
                                 setAssistantData(data)

@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-
+import { ROOM_TYPES_LABEL_CN, ROOM_TYPES_LABEL_TW } from "@/types/room";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -30,4 +30,13 @@ export function splitLongString(longString: string, maxLength: number) {
   }
 
   return result;
+}
+
+export function getRoomLabel(roomId: string, locale: string) {
+  const roomType = roomId.split("-")[0];
+  const no = roomId.split("-")[1];
+  if (locale === "zh-CN") {
+    return ROOM_TYPES_LABEL_CN[roomType] + "-" + no;
+  }
+  return ROOM_TYPES_LABEL_TW[roomType] + "-" + no;
 }

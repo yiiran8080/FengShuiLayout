@@ -21,7 +21,7 @@ const CANVAS_PADDING = 200; // 画布边缘预留空间
 const MAX_SCALE = 120;
 const MIN_SCALE = 50;
 
-export default function ({ activeRoom, setActiveRoom, onChangeDesignData }) {
+export default function ({ activeRoom, setActiveRoom, onChangeDesignData, onChangeRoomList }) {
     const t = useTranslations('report');
 
     const [designData, setDesignData] = useState({})
@@ -79,6 +79,9 @@ export default function ({ activeRoom, setActiveRoom, onChangeDesignData }) {
             setDesignData(newDesignData);
             if (onChangeDesignData) {
                 onChangeDesignData(newDesignData)
+            }
+            if (onChangeRoomList) {
+                onChangeRoomList(roomList)
             }
             setCanvasSize({ width: maxX - minX + CANVAS_PADDING, height: maxY - minY + CANVAS_PADDING });
         }

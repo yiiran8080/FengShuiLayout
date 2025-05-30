@@ -665,7 +665,7 @@ export default function ReportPage({ locale }) {
                         >
                             {sections[4]?.title}
                         </h1>
-                        <LiuNian locale={locale} onSaveData={setLiuNianData} userInfo={userInfo} mingLiDataString={JSON.stringify(reportDocData.liuNianData || undefined)} assistantDataString={JSON.stringify(assistantData.liuNianData)} isPrinting={isPrinting} />
+                        <LiuNian locale={locale} onSaveData={setLiuNianData} userInfo={userInfo} liuNianDataString={JSON.stringify(reportDocData.liuNianData || undefined)} assistantDataString={JSON.stringify(assistantData.liuNianData)} isPrinting={isPrinting} />
                     </div>
                 }
                 {/* 第六章 家居进阶解析 */}

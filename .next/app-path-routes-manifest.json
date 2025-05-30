@@ -9,16 +9,16 @@
   "/api/reportUserDoc/[userId]/route": "/api/reportUserDoc/[userId]",
   "/api/sendEmail/route": "/api/sendEmail",
   "/api/users/[userId]/route": "/api/users/[userId]",
-  "/api/users/route": "/api/users",
   "/api/webhook/route": "/api/webhook",
+  "/api/users/route": "/api/users",
   "/favicon.ico/route": "/favicon.ico",
   "/api/auth/[...nextauth]/route": "/api/auth/[...nextauth]",
-  "/[locale]/page": "/[locale]",
   "/[locale]/auth/login/page": "/[locale]/auth/login",
-  "/[locale]/design/page": "/[locale]/design",
   "/[locale]/report/page": "/[locale]/report",
+  "/[locale]/page": "/[locale]",
+  "/[locale]/design/page": "/[locale]/design",
   "/[locale]/success/page": "/[locale]/success",
   "/[locale]/customer/contact/page": "/[locale]/customer/contact",
-  "/[locale]/customer/terms/page": "/[locale]/customer/terms",
-  "/[locale]/customer/privacy/page": "/[locale]/customer/privacy"
+  "/[locale]/customer/privacy/page": "/[locale]/customer/privacy",
+  "/[locale]/customer/terms/page": "/[locale]/customer/terms"
 }

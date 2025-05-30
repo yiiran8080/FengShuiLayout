@@ -8,6 +8,14 @@ const checkoutSessionSchema = new mongoose.Schema({
     isFullfilled: {
         type: Boolean,
         default: false
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
     }
 })
 const CheckoutSession = mongoose.models.CheckoutSession || mongoose.model('CheckoutSession', checkoutSessionSchema);

@@ -9,7 +9,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import UnlockButton from '../UnlockButton';
 import RoomCanvas from "./RoomCanvas";
 import getWuxingData from '@/lib/nayin';
 import { post } from '@/lib/ajax';
@@ -18,7 +17,7 @@ import { toast } from 'react-toastify';
 import { Separator } from "@/components/ui/separator";
 import { getJiajuPrompt as getJiajuPromptZh, getJiajuUserData as getJiajuUserDataZh } from "./utilsZh"
 import { getJiajuPrompt as getJiajuPromptTw, getJiajuUserData as getJiajuUserDataTw } from "./utilsTw"
-import translate from './translate';
+import { getRoomLabel } from "@/lib/utils";
 import { Line } from '@rc-component/progress';
 export default function ({ locale, userInfo, jiajuProDataString, onSaveData, assistantDataString, isPrinting }) {
     const t = useTranslations('report.pro');
@@ -107,7 +106,7 @@ export default function ({ locale, userInfo, jiajuProDataString, onSaveData, ass
                     newObj[`tab${index + 1}`] = obj[key];
                 })
 
-                newResults[roomIndexIdArr[index]] = newObj
+                newResults[roomIndexIdArr[index]] = newObj  //newResults: {bedroom-1:{tab1:xxx,tab2:yyy}}
             });
             setJiajuProData(newResults);
             console.log('res 家居进阶', newResults)
@@ -140,6 +139,7 @@ export default function ({ locale, userInfo, jiajuProDataString, onSaveData, ass
             });
         });
     }
+
     return <section className="relative">
         {loading && <div className="absolute z-12 w-[80%] max-w-125 top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 "><Line percent={progress} strokeWidth={2} strokeColor='#2db7f5' railWidth={2} /> </div>}
         <AntdSpin size={'large'} spinning={loading} tip={t2(userInfo?.genStatus == 'done' ? 'translating2' : 'generating')} className='bg-[#fff9]' >
@@ -227,33 +227,34 @@ export default function ({ locale, userInfo, jiajuProDataString, onSaveData, ass
 
         {/* 在页面上隐藏，打印时展示 */}
         {
-            // isPrinting && <div className="w-full md:rounded-b-3xl bg-[#fafafa] md:p-8 p-5 border-1 border-[#E6E6E6]">
-            //     <div className="mt-3">
-            //         {
+            isPrinting && <div className="w-full  bg-[#fafafa] md:p-8 p-5 border-1 border-[#E6E6E6]">
 
-            //             roomList.map((room, i) => (
-            //                 <>
-            //                     <h2 className="text-xl font-bold text-[#073E31]">
-            //                         {room.data.label}
-            //                     </h2>
-            //                     {jiajuData && jiajuData[room.data._type] &&
-            //                         Object.entries(jiajuData[room.data._type][room.direction]).map(([key, value]) => {
-            //                             return <p className="leading-8 flex" > <span className="font-bold whitespace-nowrap min-w-22.5">{key}：</span>
-            //                                 <span className="whitespace-pre-wrap">{value} </span>
-            //                             </p>
-            //                         })}
-            //                 </>
+                {jiajuProData &&
+                    Object.entries(jiajuProData).map(([roomId, roomTabObj]) => {
+                        const roomlabel = getRoomLabel(roomId, locale);
+
+                        return <div className="text-sm" key={roomId}>
+                            <p className="font-bold whitespace-nowrap mb-2 mt-3 text-primary">{roomlabel}：</p>
+
+                            {Object.entries(roomTabObj).map(([tabKey, tabValue]) => {
+                                return <div key={roomId + tabKey}>
+                                    <p className="font-bold whitespace-nowrap">{t(tabKey)}：</p>
+                                    <span className="whitespace-pre-wrap"> {tabValue}</span>
+                                </div>
+
+                            })}
 
 
 
-            //             ))
+                        </div>
+                    })}
 
-            //         }
-            //     </div>
-            // </div>
+
+
+            </div>
         }
 
-        <div className='mt-10 px-6 md:p-0'>
+        <div className='my-5 px-6 md:p-0'>
             <p><span className='text-[#FF531A]'>*</span>{t('p6-1')}</p>
         </div>
     </section>

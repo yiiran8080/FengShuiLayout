@@ -13,9 +13,14 @@ import RoomCanvas from "./RoomCanvas";
 export default function ({ jiajuDataString, isPrinting }) {
     const t = useTranslations('report');
     const [activeRoom, setActiveRoom] = useState(null); // 当前激活的房间
+    const [roomList, setRoomList] = useState([]); // 所有房间列表
+
     const jiajuData = JSON.parse(jiajuDataString);
+    const fetchRoomList = roomList => {
+        setRoomList(roomList);
+    }
     return <section>
-        <RoomCanvas activeRoom={activeRoom} setActiveRoom={setActiveRoom} />
+        <RoomCanvas activeRoom={activeRoom} setActiveRoom={setActiveRoom} onChangeRoomList={fetchRoomList} />
         {
             activeRoom && !isPrinting && <div className="w-full md:rounded-b-3xl bg-[#fafafa] md:p-8 p-5 border-1 border-[#E6E6E6]">
                 <div className="flex items-center gap-2">
@@ -49,7 +54,6 @@ export default function ({ jiajuDataString, isPrinting }) {
             isPrinting && <div className="w-full md:rounded-b-3xl bg-[#fafafa] md:p-8 p-5 border-1 border-[#E6E6E6]">
                 <div className="mt-3">
                     {
-
                         roomList.map((room, i) => (
                             <>
                                 <h2 className="text-xl font-bold text-[#073E31]">
@@ -68,6 +72,7 @@ export default function ({ jiajuDataString, isPrinting }) {
                         ))
 
                     }
+
                 </div>
             </div>
         }

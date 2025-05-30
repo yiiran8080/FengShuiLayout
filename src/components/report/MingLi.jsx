@@ -243,110 +243,128 @@ export default function ({ locale, userInfo, mingLiDataString, assistantDataStri
         <AntdSpin size={'large'} spinning={loading} tip={t2(userInfo?.genStatus == 'done' ? 'translating2' : 'generating')} className='bg-[#fff9]' >
             <button onClick={() => { onGenerate(userInfo) }}>重新生成</button>
             {
-                isMobile ? <div className="mx-auto p-4">
-                    <div className="grid grid-cols-4 grid-rows-3 h-full border-4 border-[#6CA698] rounded-t-xl ">
-                        {/* 第一行 */}
-                        {RowFirst}
-                        {/* 第二行 */}
-                        <div className="p-1 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
+                !isPrinting ? <div>
+                    {
+                        isMobile ? <div className="mx-auto p-4">
+                            <div className="grid grid-cols-4 grid-rows-3 h-full border-4 border-[#6CA698] rounded-t-xl ">
+                                {/* 第一行 */}
+                                {RowFirst}
+                                {/* 第二行 */}
+                                <div className="p-1 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
+                                    <div
+                                        style={activeKey === 'liuqin' ? { backgroundColor: '#066952CC', color: '#fff' } : { backgroundColor: '#F7FAF9' }}
+                                        className="text-center font-bold md:text-xl text-xs min-h-12 w-full h-full cursor-pointer hover:bg-gray-100 flex items-center justify-center"
+                                        onClick={() => handleClick('liuqin')}
+                                    >
+                                        {t('liuqin')}
+                                    </div>
+
+                                </div>
+                                <div className="p-1 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
+                                    <div
+                                        style={activeKey === 'shiye' ? { backgroundColor: '#066952CC', color: '#fff' } : { backgroundColor: '#F7FAF9' }}
+                                        className="text-center font-bold md:text-xl text-xs min-h-12 w-full h-full cursor-pointer hover:bg-gray-100 flex items-center justify-center"
+                                        onClick={() => handleClick('shiye')}
+                                    >
+                                        {t('shiye')}
+                                    </div>
+                                </div>
+                                <div className="p-1 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
+                                    <div
+                                        style={activeKey === 'ganqing' ? { backgroundColor: '#066952CC', color: '#fff' } : { backgroundColor: '#F7FAF9' }}
+                                        className="text-center font-bold md:text-xl text-xs min-h-12 w-full h-full cursor-pointer hover:bg-gray-100 flex items-center justify-center"
+                                        onClick={() => handleClick('ganqing')}
+                                    >
+                                        {t('ganqing')}
+                                    </div>
+                                </div>
+                                <div className="p-1  bg-[#F7FAF9]   border-2 border-[#6CA698] flex items-center justify-center">
+                                    <div
+                                        style={activeKey === 'jiankang' ? { backgroundColor: '#066952CC', color: '#fff' } : { backgroundColor: '#F7FAF9' }}
+                                        className="text-center font-bold md:text-xl text-xs min-h-12 w-full h-full cursor-pointer hover:bg-gray-100 flex items-center justify-center"
+                                        onClick={() => handleClick('jiankang')}
+                                    >
+                                        {t('jiankang')}
+                                    </div>
+                                </div>
+                                {/* 第三行 */}
+                                {RowLast}
+                            </div>
                             <div
-                                style={activeKey === 'liuqin' ? { backgroundColor: '#066952CC', color: '#fff' } : { backgroundColor: '#F7FAF9' }}
-                                className="text-center font-bold md:text-xl text-xs min-h-12 w-full h-full cursor-pointer hover:bg-gray-100 flex items-center justify-center"
-                                onClick={() => handleClick('liuqin')}
+                                className="text-sm whitespace-pre-wrap text-white overflow-y-auto rounded-b-xl  border-4 border-t-0  border-[#6CA698]   p-8  bg-[#066952CC]"
                             >
-                                {t('liuqin')}
+                                {mingLiData[activeKey]}
+                            </div>
+                        </div> : <div className="mx-auto p-4 w-[952px] h-[608px]">
+
+
+                            <div className="grid grid-cols-4 grid-rows-4 h-full border-4 border-[#6CA698] rounded-2xl">
+                                {RowFirst}
+                                {/* 第二行 */}
+                                <div className="p-2 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
+                                    <div
+                                        style={activeKey === 'liuqin' ? { backgroundColor: '#066952CC', color: '#fff' } : { backgroundColor: '#F7FAF9' }}
+                                        className="text-center font-bold text-xl w-full h-full cursor-pointer hover:bg-gray-100 flex items-center justify-center"
+                                        onClick={() => handleClick('liuqin')}
+                                    >
+                                        {t('liuqin')}
+                                    </div>
+                                </div>
+                                {/* 中间合并区域 */}
+                                <div
+                                    className="text-xs min-h-12 whitespace-pre-wrap text-white overflow-y-auto col-span-2 row-span-2 border border-gray-300  p-4 flex justify-center bg-[#066952CC]"
+                                >
+                                    {mingLiData[activeKey]}
+                                </div>
+                                <div className="p-2 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
+                                    <div
+                                        style={activeKey === 'shiye' ? { backgroundColor: '#066952CC', color: '#fff' } : { backgroundColor: '#F7FAF9' }}
+                                        className="font-bold text-sm w-full h-full cursor-pointer hover:bg-gray-100 flex items-center justify-center"
+                                        onClick={() => handleClick('shiye')}
+                                    >
+                                        {t('shiye')}
+                                    </div>
+                                </div>
+                                {/* 第三行 */}
+                                <div className="p-2 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
+                                    <div
+                                        style={activeKey === 'ganqing' ? { backgroundColor: '#066952CC', color: '#fff' } : { backgroundColor: '#F7FAF9' }}
+                                        className="text-center font-bold text-xl w-full h-full cursor-pointer hover:bg-gray-100 flex items-center justify-center"
+                                        onClick={() => handleClick('ganqing')}
+                                    >
+                                        {t('ganqing')}
+                                    </div>
+                                </div>
+                                {/* 中间区域已在上方定义 */}
+                                <div className="p-2  bg-[#F7FAF9]   border-2 border-[#6CA698] flex items-center justify-center">
+                                    <div
+                                        style={activeKey === 'jiankang' ? { backgroundColor: '#066952CC', color: '#fff' } : { backgroundColor: '#F7FAF9' }}
+                                        className="text-center font-bold text-xl w-full h-full cursor-pointer hover:bg-gray-100 flex items-center justify-center"
+                                        onClick={() => handleClick('jiankang')}
+                                    >
+                                        {t('jiankang')}
+                                    </div>
+                                </div>
+                                {/* 第四行 */}
+                                {RowLast}
+                            </div>
+                        </div>
+                    }
+
+                </div> : (
+
+                    //以下是打印模式。全部展示。
+                    <div className="mx-auto p-4 bg-secondary rounded-2xl">
+                        {Object.entries(mingLiData).map(([tabKey, tabValue]) => {
+                            return <div key={tabKey} className="mb-5">
+                                <p className="font-bold whitespace-nowrap text-primary">{t(tabKey)}：</p>
+                                <span className="whitespace-pre-wrap">{tabValue}</span>
                             </div>
 
-                        </div>
-                        <div className="p-1 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
-                            <div
-                                style={activeKey === 'shiye' ? { backgroundColor: '#066952CC', color: '#fff' } : { backgroundColor: '#F7FAF9' }}
-                                className="text-center font-bold md:text-xl text-xs min-h-12 w-full h-full cursor-pointer hover:bg-gray-100 flex items-center justify-center"
-                                onClick={() => handleClick('shiye')}
-                            >
-                                {t('shiye')}
-                            </div>
-                        </div>
-                        <div className="p-1 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
-                            <div
-                                style={activeKey === 'ganqing' ? { backgroundColor: '#066952CC', color: '#fff' } : { backgroundColor: '#F7FAF9' }}
-                                className="text-center font-bold md:text-xl text-xs min-h-12 w-full h-full cursor-pointer hover:bg-gray-100 flex items-center justify-center"
-                                onClick={() => handleClick('ganqing')}
-                            >
-                                {t('ganqing')}
-                            </div>
-                        </div>
-                        <div className="p-1  bg-[#F7FAF9]   border-2 border-[#6CA698] flex items-center justify-center">
-                            <div
-                                style={activeKey === 'jiankang' ? { backgroundColor: '#066952CC', color: '#fff' } : { backgroundColor: '#F7FAF9' }}
-                                className="text-center font-bold md:text-xl text-xs min-h-12 w-full h-full cursor-pointer hover:bg-gray-100 flex items-center justify-center"
-                                onClick={() => handleClick('jiankang')}
-                            >
-                                {t('jiankang')}
-                            </div>
-                        </div>
-                        {/* 第三行 */}
-                        {RowLast}
+                        })}
                     </div>
-                    <div
-                        className="text-sm whitespace-pre-wrap text-white overflow-y-auto rounded-b-xl  border-4 border-t-0  border-[#6CA698]   p-8  bg-[#066952CC]"
-                    >
-                        {mingLiData[activeKey]}
-                    </div>
-                </div> : <div className="mx-auto p-4 w-[952px] h-[608px]">
+                )
 
-
-                    <div className="grid grid-cols-4 grid-rows-4 h-full border-4 border-[#6CA698] rounded-2xl">
-                        {RowFirst}
-                        {/* 第二行 */}
-                        <div className="p-2 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
-                            <div
-                                style={activeKey === 'liuqin' ? { backgroundColor: '#066952CC', color: '#fff' } : { backgroundColor: '#F7FAF9' }}
-                                className="text-center font-bold text-xl w-full h-full cursor-pointer hover:bg-gray-100 flex items-center justify-center"
-                                onClick={() => handleClick('liuqin')}
-                            >
-                                {t('liuqin')}
-                            </div>
-                        </div>
-                        {/* 中间合并区域 */}
-                        <div
-                            className="text-xs min-h-12 whitespace-pre-wrap text-white overflow-y-auto col-span-2 row-span-2 border border-gray-300  p-4 flex justify-center bg-[#066952CC]"
-                        >
-                            {mingLiData[activeKey]}
-                        </div>
-                        <div className="p-2 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
-                            <div
-                                style={activeKey === 'shiye' ? { backgroundColor: '#066952CC', color: '#fff' } : { backgroundColor: '#F7FAF9' }}
-                                className="font-bold text-sm w-full h-full cursor-pointer hover:bg-gray-100 flex items-center justify-center"
-                                onClick={() => handleClick('shiye')}
-                            >
-                                {t('shiye')}
-                            </div>
-                        </div>
-                        {/* 第三行 */}
-                        <div className="p-2 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
-                            <div
-                                style={activeKey === 'ganqing' ? { backgroundColor: '#066952CC', color: '#fff' } : { backgroundColor: '#F7FAF9' }}
-                                className="text-center font-bold text-xl w-full h-full cursor-pointer hover:bg-gray-100 flex items-center justify-center"
-                                onClick={() => handleClick('ganqing')}
-                            >
-                                {t('ganqing')}
-                            </div>
-                        </div>
-                        {/* 中间区域已在上方定义 */}
-                        <div className="p-2  bg-[#F7FAF9]   border-2 border-[#6CA698] flex items-center justify-center">
-                            <div
-                                style={activeKey === 'jiankang' ? { backgroundColor: '#066952CC', color: '#fff' } : { backgroundColor: '#F7FAF9' }}
-                                className="text-center font-bold text-xl w-full h-full cursor-pointer hover:bg-gray-100 flex items-center justify-center"
-                                onClick={() => handleClick('jiankang')}
-                            >
-                                {t('jiankang')}
-                            </div>
-                        </div>
-                        {/* 第四行 */}
-                        {RowLast}
-                    </div>
-                </div>
             }
 
         </AntdSpin>
