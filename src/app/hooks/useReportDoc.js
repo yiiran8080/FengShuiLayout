@@ -1,16 +1,16 @@
 'use client'
 import { useEffect, useState, useRef } from "react";
 import { get, post } from "@/lib/ajax";
-import { useSession } from 'next-auth/react'
 import _ from 'lodash';
 import getWuxingData from '@/lib/nayin';
 // 根据userId查询，如果查询到了，拿数据。否则生成随机数后，把结果存储到该userId下。
 
-export default function useReportDoc(locale, birthDateTime) {
+export default function useReportDoc(locale, userInfo) {
     const renderRef = useRef(true)
     const [loading, setLoading] = useState(true);
     const [reportDocData, setReportDocData] = useState(null);
-    const { data: session } = useSession();
+    const [assistantData, setAssistantData] = useState({});
+    // const { data: session } = useSession();
 
     useEffect(() => {
         console.log('renderRef.current', renderRef.current)
@@ -19,21 +19,29 @@ export default function useReportDoc(locale, birthDateTime) {
         //     return
         // }
         const loadDesign = async () => {
-            console.log('loadDesign', session?.user?.userId, locale)
-            const userId = session?.user?.userId;
+            // console.log('loadDesign', session?.user?.userId, locale)
+            const userId = userInfo?.userId;
             if (userId && locale) {
+                const birthDateTime = userInfo.birthDateTime;
                 console.log('查询用户已有报告')
                 setLoading(true);
+
                 const { status, data } = await get(`/api/reportUserDoc/${userId}/${locale == 'zh-CN' ? 'zh' : 'tw'}`)
-                if (data) {
+                if (status == 0 && data) {
                     console.log('已有报告')
                     //找到了用户已有报告
-                    setReportDocData(data);
-                } else {
-                    if (!birthDateTime) {
-                        setLoading(false);
-                        return;
+                    if (userInfo.genStatus == 'done') {
+                        if (!data.mingLiData || !data.liuNianData || !data.jiajuProData) {
+                            //没有翻译
+                            const { status, data } = await get(`/api/reportUserDoc/${userId}/${locale == 'zh-CN' ? 'tw' : 'zh'}`)
+                            if (status == 0 && data) {
+                                setAssistantData(data)
+                            }
+                        }
                     }
+                    setReportDocData(data);
+
+                } else {
                     console.log('生成随机报告')
                     //找原始数据集
                     const { data: zhData } = await get(`/api/reportDoc/zh`, { isCached: true })
@@ -70,7 +78,7 @@ export default function useReportDoc(locale, birthDateTime) {
         }
         loadDesign();
 
-    }, [locale, session?.user?.userId, birthDateTime])
+    }, [locale, userInfo])
 
 
     const getJiajuData = (_jiajuData, random) => {
@@ -85,5 +93,5 @@ export default function useReportDoc(locale, birthDateTime) {
             return jiajuData;
         }
     }
-    return { loading, reportDocData, };
+    return { loading, reportDocData, assistantData };
 }

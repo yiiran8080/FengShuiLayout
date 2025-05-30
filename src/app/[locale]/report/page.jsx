@@ -6,12 +6,12 @@ export default async function ReportPage({ params, searchParams }) {
 
 
     const { locale } = await params;
-    const { birthDateTime } = await searchParams;
+    // const { birthDateTime } = await searchParams;
     return (
         <Report
             //dataPromise={dataPromise}
             //userDataPromise={userDataPromise}
-            birthDateTime={birthDateTime}
+            // birthDateTime={birthDateTime}
             locale={locale}
         />
     )

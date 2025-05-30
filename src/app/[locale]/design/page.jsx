@@ -425,10 +425,7 @@ export default function DesignPage({ params }) {
         setAlertOpen(true);
       } else {
         await onSaveProject();
-        //console.log(new Date(userInfo.birthDateTime).toISOString())
-
-        //window.location.herf = `/report?birthDateTime=${userInfo.birthDateTime}`
-        router.push(`/report?birthDateTime=${new Date(userInfo.birthDateTime).toISOString()}`)
+        router.push(`/report`)
       }
 
     } catch (e) {
@@ -447,15 +444,15 @@ export default function DesignPage({ params }) {
     try {
       setAlertOpen(false);
       setLoading(true);
-      //将付款状态重置为未付款
+      //将付款状态重置为未付款,进阶报告生成状态重置为未生成
       const { status: status0 } = await post(`/api/users/${session.user.userId}`, {
         isLock: true,
+        genStatus: 'none'
       });
       const { status } = await patch(`/api/reportUserDoc/${userId}`, { isDelete: 1 });
       setLoading(false);
       if (status0 == 0 && status == 0) {
-        //window.location.herf = `/report?birthDateTime=${userInfo.birthDateTime}`
-        router.push(`/report?birthDateTime=${new Date(userInfo.birthDateTime).toISOString()}`);
+        router.push(`/report`);
       }
     } catch (e) {
 

@@ -10,14 +10,32 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronDownIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import emitter from '@/lib/emitter';
+import { EVENT_TRANSLATE_STATUS } from '@/types/constants'
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 export default function LanguageToggle({ className, trigger }) {
   const pathname = usePathname();
-  const searchParams = useSearchParams().get('birthDateTime');
   let href = `/${pathname.split('/').slice(2).join('/')}`;
-  let newHref = searchParams ? `${href}?birthDateTime=${searchParams}` : href;
-  // console.log(pathname, useSearchParams().get('birthDateTime'));
-  // const t = useTranslations("Navigation");
+  // const [transStatus, setTransStatus] = useState(false)
+  const t = useTranslations('toast');
+  // useEffect(() => {
+  //   function load(transStatus) {
+  //     console.log('翻译状态', transStatus)
+  //     setTransStatus(transStatus)
+  //   }
+  //   emitter.on(EVENT_TRANSLATE_STATUS, load)
+  //   return () => {
+  //     emitter.off(EVENT_TRANSLATE_STATUS, load)
+  //   }
+  // }, [])
+  // const onToggle = e => {
+  //   if (pathname.indexOf('report') > -1 && transStatus) {
+  //     e.preventDefault();
+  //     toast.info(t('translating'));
+  //   }
+  // }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className={cn("cursor-pointer flex items-center space-x-1 text-white hover:opacity-80", className)}>
@@ -29,7 +47,8 @@ export default function LanguageToggle({ className, trigger }) {
       <DropdownMenuContent className="bg-white rounded-lg shadow-lg p-1 min-w-[120px]">
         <DropdownMenuItem className="focus:bg-inherit">
           <Link
-            href={newHref}
+            // onClick={onToggle}
+            href={href}
             locale="zh-CN"
             className="px-4 py-2 text-sm  hover:text-primary rounded text-foreground"
           >
@@ -38,7 +57,9 @@ export default function LanguageToggle({ className, trigger }) {
         </DropdownMenuItem>
         <DropdownMenuItem className="focus:bg-inherit">
           <Link
-            href={newHref}
+
+            // onClick={onToggle}
+            href={href}
             locale="zh-TW"
             className="px-4 py-2 text-sm hover:text-primary rounded text-foreground"
           >

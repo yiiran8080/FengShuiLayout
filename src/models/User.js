@@ -28,7 +28,7 @@ const UserSchema = new mongoose.Schema({
     },
     genStatus: {
         type: String,
-        enum: ['waiting', 'done'],
+        enum: ['none', 'waiting', 'done'],
         required: false,
     },
     // provider: {

@@ -6,12 +6,12 @@ export default function Footer() {
   const t = useTranslations("home.footer");
   const links = {
     contact: [
-      { name: t('contact'), href: '/contact' },
+      { name: t('contact'), href: '/customer/contact' },
     ],
     law: [
 
-      { name: t('privacy'), href: '/privacy' },
-      { name: t('terms'), href: '/terms' }
+      { name: t('privacy'), href: '/customer/privacy' },
+      { name: t('terms'), href: '/customer/terms' }
     ],
     social: [
       { icon: '/images/footer/Facebook.png' },

@@ -80,12 +80,28 @@
       "namedRegex": "^/(?<nxtPlocale>[^/]+?)/auth/login(?:/)?$"
     },
     {
-      "page": "/[locale]/contact",
-      "regex": "^/([^/]+?)/contact(?:/)?$",
+      "page": "/[locale]/customer/contact",
+      "regex": "^/([^/]+?)/customer/contact(?:/)?$",
       "routeKeys": {
         "nxtPlocale": "nxtPlocale"
       },
-      "namedRegex": "^/(?<nxtPlocale>[^/]+?)/contact(?:/)?$"
+      "namedRegex": "^/(?<nxtPlocale>[^/]+?)/customer/contact(?:/)?$"
+    },
+    {
+      "page": "/[locale]/customer/privacy",
+      "regex": "^/([^/]+?)/customer/privacy(?:/)?$",
+      "routeKeys": {
+        "nxtPlocale": "nxtPlocale"
+      },
+      "namedRegex": "^/(?<nxtPlocale>[^/]+?)/customer/privacy(?:/)?$"
+    },
+    {
+      "page": "/[locale]/customer/terms",
+      "regex": "^/([^/]+?)/customer/terms(?:/)?$",
+      "routeKeys": {
+        "nxtPlocale": "nxtPlocale"
+      },
+      "namedRegex": "^/(?<nxtPlocale>[^/]+?)/customer/terms(?:/)?$"
     },
     {
       "page": "/[locale]/design",
@@ -94,14 +110,6 @@
         "nxtPlocale": "nxtPlocale"
       },
       "namedRegex": "^/(?<nxtPlocale>[^/]+?)/design(?:/)?$"
-    },
-    {
-      "page": "/[locale]/privacy",
-      "regex": "^/([^/]+?)/privacy(?:/)?$",
-      "routeKeys": {
-        "nxtPlocale": "nxtPlocale"
-      },
-      "namedRegex": "^/(?<nxtPlocale>[^/]+?)/privacy(?:/)?$"
     },
     {
       "page": "/[locale]/report",
@@ -118,14 +126,6 @@
         "nxtPlocale": "nxtPlocale"
       },
       "namedRegex": "^/(?<nxtPlocale>[^/]+?)/success(?:/)?$"
-    },
-    {
-      "page": "/[locale]/terms",
-      "regex": "^/([^/]+?)/terms(?:/)?$",
-      "routeKeys": {
-        "nxtPlocale": "nxtPlocale"
-      },
-      "namedRegex": "^/(?<nxtPlocale>[^/]+?)/terms(?:/)?$"
     }
   ],
   "staticRoutes": [

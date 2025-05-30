@@ -5,7 +5,8 @@ import { useSearchParams, useParams, useRouter, } from 'next/navigation';
 import useMobile from '@/app/hooks/useMobile';
 import useReportDoc from '@/app/hooks/useReportDoc';
 import Image from 'next/image';
-
+import emitter from '@/lib/emitter';
+import { EVENT_TRANSLATE_STATUS } from '@/types/constants'
 import { useTranslations } from 'next-intl';
 import UnlockButton from '@/components/UnlockButton';
 import Chapter3 from './report/Chapter3';
@@ -16,8 +17,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'react-toastify';
 import { useReactToPrint } from "react-to-print";
 import { useSession } from 'next-auth/react'
-import { get } from '@/lib/ajax'
-
+import { get, post, patch } from '@/lib/ajax'
+import { AntdSpin } from "antd-spin";
 const wuxingColorMap = {
     '金': '#CCBB00',
     '木': '#00991B',
@@ -29,7 +30,7 @@ const wuxingColorMap = {
 
 // you can use a function to return the target element besides using React refs
 
-export default function ReportPage({ locale, birthDateTime }) {
+export default function ReportPage({ locale }) {
 
     const isMobile = useMobile();
     const router = useRouter();
@@ -48,7 +49,13 @@ export default function ReportPage({ locale, birthDateTime }) {
     const [isPrinting, setIsPrinting] = useState(false);
     const [isLock, setIsLock] = useState(true);
     const [userInfo, setUserInfo] = useState(null);
-    const { loading, reportDocData } = useReportDoc(locale, birthDateTime);
+
+    const [mingLiData, setMingLiData] = useState(null);
+    const [liuNianData, setLiuNianData] = useState(null);
+    const [jiajuProData, setJiaJuData] = useState(null);
+    // const [proReportDataObj, setProReportDataObj] = useState({});
+    const { loading, reportDocData, assistantData } = useReportDoc(locale, userInfo);
+
     const handlePrint = useReactToPrint({
         contentRef,
         pageStyle: `
@@ -84,6 +91,10 @@ export default function ReportPage({ locale, birthDateTime }) {
         removeAfterPrint: true,
         documentTitle: 'Harmoniq风水家居报告'
     })
+    // useEffect(() => {
+    //     //触发事件，languageToggle组件监听
+    //     emitter.emit(EVENT_TRANSLATE_STATUS, transStatus)
+    // }, [transStatus])
     useEffect(() => {
 
         let sections = [
@@ -226,6 +237,27 @@ export default function ReportPage({ locale, birthDateTime }) {
         return () => window.removeEventListener('mousedown', handleClick);
     }, []);
 
+    //保存付费报告,更新生成状态
+    useEffect(() => {
+        const save = async () => {
+            const userId = session?.user?.userId;
+            if (!userId) return;
+
+            //先存一种语言的数据。然后异步翻译另一种语言再存储。
+            //console.log('twProData', twProData);
+            const { status } = await patch(`/api/reportUserDoc/${userId}/${locale == 'zh-CN' ? 'zh' : 'tw'}`, { mingLiData, liuNianData, jiajuProData });
+            if (status == 0) {
+                //成功后更新报告生成状态为已完成，下次不再生成报告
+                await post(`/api/users/${userId}`, {
+                    genStatus: 'done',
+                });
+            }
+
+        }
+        if (mingLiData && liuNianData && jiajuProData) {
+            save();
+        }
+    }, [mingLiData, liuNianData, jiajuProData])
 
 
     // 进度指示器hover/点击显示目录
@@ -242,6 +274,8 @@ export default function ReportPage({ locale, birthDateTime }) {
         sectionRefs.current[idx]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         // setShowMenu(false);
     };
+
+
     if (loading) {
         return <div className="space-y-8 mt-25">
             <Skeleton className="h-4 w-[80%]" />
@@ -256,6 +290,7 @@ export default function ReportPage({ locale, birthDateTime }) {
         router.push('/design');
         return;
     }
+
     // console.log('reportDocData:', activeIndex);
 
     return (
@@ -314,11 +349,12 @@ export default function ReportPage({ locale, birthDateTime }) {
                 )}
             </div>
             {/* 正文内容 */}
+
             <div
                 ref={contentRef}
             >
                 {/* 第一章 四柱*/}
-                <div key='section-0' className="max-w-250 mx-auto  md:px-5">
+                <div key='section-0' className="md:max-w-250 mx-auto  md:px-5">
                     <h1
                         ref={el => sectionRefs.current[0] = el}
                         className="md:text-[40px] text-[28px] text-center font-bold my-10 md:mt-30 md:px-0 px-5 text-[#073E31]"
@@ -531,7 +567,7 @@ export default function ReportPage({ locale, birthDateTime }) {
 
                 </div>
                 {/* 第二章 流年运程解析 */}
-                <div key='section-1' className="max-w-250 mx-auto  md:px-5">
+                <div key='section-1' className="md:max-w-250 mx-auto  md:px-5">
                     <h1
                         ref={el => sectionRefs.current[5] = el}
                         className="md:text-[40px] text-[28px] text-center font-bold md:mt-18 mt-10 mb-10 md:px-0 px-5 text-[#073E31]"
@@ -579,7 +615,7 @@ export default function ReportPage({ locale, birthDateTime }) {
                     </div>
                 </div>
                 {/* 第三章 家居风水解析 */}
-                <div key='section-2' className="max-w-250 mx-auto  md:px-5">
+                <div key='section-2' className="md:max-w-250 mx-auto  md:px-5">
                     <h1
                         ref={el => sectionRefs.current[12] = el}
                         className="md:text-[40px] text-[28px] text-center font-bold md:mt-18 mt-10 mb-10 md:px-0 px-5 text-[#073E31]"
@@ -595,8 +631,9 @@ export default function ReportPage({ locale, birthDateTime }) {
 
                     <Chapter3 jiajuDataString={JSON.stringify(reportDocData.jiajuData)} isPrinting={isPrinting} />
                 </div>
+
                 {/* 第四章 个人命理进阶解析 */}
-                <div key='section-3' className="relative max-w-250 mx-auto  md:px-5">
+                <div key='section-3' className="relative md:max-w-250 mx-auto  md:px-5">
                     <h1
                         ref={el => sectionRefs.current[13] = el}
                         className="md:text-[40px] text-[28px] text-center font-bold md:mt-18 mt-10 mb-10 md:px-0 px-5 text-[#073E31]"
@@ -605,10 +642,16 @@ export default function ReportPage({ locale, birthDateTime }) {
                         {sections[3].title}
                     </h1>
                     {
-                        isLock && <div className='absolute bg-lock z-10 left-0 top-25 w-full h-70'></div>
+                        isLock && <div className='absolute bg-lock z-10 left-0 top-25 w-full md:h-70 h-60'></div>
                     }
-                    <div className={isLock && 'h-70 overflow-hidden'}>
-                        <MingLi userInfo={userInfo} mingLiDataString={JSON.stringify(reportDocData.mingLiData || '')} isPrinting={isPrinting} />
+                    <div className={isLock && 'md:h-70 h-60 overflow-hidden'}>
+                        <MingLi
+                            locale={locale}
+                            onSaveData={setMingLiData}
+                            userInfo={userInfo}
+                            mingLiDataString={JSON.stringify(reportDocData.mingLiData || undefined)}
+                            assistantDataString={JSON.stringify(assistantData.mingLiData)}
+                            isPrinting={isPrinting} />
                     </div>
                 </div>
 
@@ -622,12 +665,12 @@ export default function ReportPage({ locale, birthDateTime }) {
                         >
                             {sections[4]?.title}
                         </h1>
-                        <LiuNian userInfo={userInfo} mingLiDataString={JSON.stringify(reportDocData.liuNianData || '')} isPrinting={isPrinting} />
+                        <LiuNian locale={locale} onSaveData={setLiuNianData} userInfo={userInfo} mingLiDataString={JSON.stringify(reportDocData.liuNianData || undefined)} assistantDataString={JSON.stringify(assistantData.liuNianData)} isPrinting={isPrinting} />
                     </div>
                 }
                 {/* 第六章 家居进阶解析 */}
                 {
-                    !isLock && <div key='section-5' className="max-w-250 mx-auto  md:px-5">
+                    !isLock && <div key='section-5' className="md:max-w-250 mx-auto  md:px-5">
                         <h1
                             ref={el => sectionRefs.current[15] = el}
                             className="md:text-[40px] text-[28px] text-center font-bold md:mt-18 mt-10 mb-10 md:px-0 px-5 text-[#073E31]"
@@ -635,11 +678,13 @@ export default function ReportPage({ locale, birthDateTime }) {
                         >
                             {sections[5]?.title}
                         </h1>
-                        <Chapter6 userInfo={userInfo} jiajuProDataString={JSON.stringify(reportDocData.jiajuProData || '')} isPrinting={isPrinting} />
+                        <Chapter6 locale={locale} onSaveData={setJiaJuData} userInfo={userInfo} jiajuProDataString={JSON.stringify(reportDocData.jiajuProData || undefined)} assistantDataString={JSON.stringify(assistantData.jiajuProData)} isPrinting={isPrinting} />
 
                     </div>
                 }
+
             </div>
+
         </div>
 
     );

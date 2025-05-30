@@ -10,15 +10,15 @@
   "/api/sendEmail/route": "/api/sendEmail",
   "/api/users/[userId]/route": "/api/users/[userId]",
   "/api/users/route": "/api/users",
-  "/favicon.ico/route": "/favicon.ico",
   "/api/webhook/route": "/api/webhook",
+  "/favicon.ico/route": "/favicon.ico",
   "/api/auth/[...nextauth]/route": "/api/auth/[...nextauth]",
+  "/[locale]/page": "/[locale]",
   "/[locale]/auth/login/page": "/[locale]/auth/login",
   "/[locale]/design/page": "/[locale]/design",
-  "/[locale]/contact/page": "/[locale]/contact",
-  "/[locale]/privacy/page": "/[locale]/privacy",
   "/[locale]/report/page": "/[locale]/report",
   "/[locale]/success/page": "/[locale]/success",
-  "/[locale]/terms/page": "/[locale]/terms",
-  "/[locale]/page": "/[locale]"
+  "/[locale]/customer/contact/page": "/[locale]/customer/contact",
+  "/[locale]/customer/terms/page": "/[locale]/customer/terms",
+  "/[locale]/customer/privacy/page": "/[locale]/customer/privacy"
 }

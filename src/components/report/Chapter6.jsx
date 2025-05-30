@@ -16,9 +16,11 @@ import { post } from '@/lib/ajax';
 import { AntdSpin } from "antd-spin";
 import { toast } from 'react-toastify';
 import { Separator } from "@/components/ui/separator";
-import { getJiajuPrompt, getJiajuUserData } from "./utils"
+import { getJiajuPrompt as getJiajuPromptZh, getJiajuUserData as getJiajuUserDataZh } from "./utilsZh"
+import { getJiajuPrompt as getJiajuPromptTw, getJiajuUserData as getJiajuUserDataTw } from "./utilsTw"
+import translate from './translate';
 import { Line } from '@rc-component/progress';
-export default function ({ userInfo, jiajuProDataString, onSaveData, isPrinting }) {
+export default function ({ locale, userInfo, jiajuProDataString, onSaveData, assistantDataString, isPrinting }) {
     const t = useTranslations('report.pro');
     const t2 = useTranslations("toast");
     const [activeRoom, setActiveRoom] = useState(null); // 当前激活的房间
@@ -30,6 +32,8 @@ export default function ({ userInfo, jiajuProDataString, onSaveData, isPrinting 
     const [wuxingData, setWuxingData] = useState({})
     const [progress, setProgress] = useState(5);
 
+    const getJiajuPrompt = locale === 'zh-CN' ? getJiajuPromptZh : getJiajuPromptTw;
+    const getJiajuUserData = locale === 'zh-CN' ? getJiajuUserDataZh : getJiajuUserDataTw;
 
 
     useEffect(() => {
@@ -40,17 +44,20 @@ export default function ({ userInfo, jiajuProDataString, onSaveData, isPrinting 
     }, [jiajuProDataString])
 
     useEffect(() => {
-        if (userInfo && designData) {
-            if (!userInfo.isLock && userInfo.genStatus === 'waiting') {
+        let wuxingData = {};
+        if (userInfo) {
+            wuxingData = getWuxingData(userInfo.birthDateTime, userInfo.gender);
+            setWuxingData(wuxingData);
+        }
+        if (userInfo && designData && !jiajuProDataString) {
+            if (!userInfo.isLock) {
                 //toast.info(t2('generating'));
                 //生成付费报告
-                const wuxingData = getWuxingData(userInfo.birthDateTime, userInfo.gender);
-                setWuxingData(wuxingData);
                 onGenerate(userInfo, wuxingData)
 
             }
         }
-    }, [userInfo, designData])
+    }, [userInfo, designData, jiajuProDataString])
     const fetchDesignData = (designData) => {
         setDesignData(designData);
     }
@@ -77,17 +84,20 @@ export default function ({ userInfo, jiajuProDataString, onSaveData, isPrinting 
         })
 
         const roomIndexIdArr = rooms.map((item) => item.id);
-
+        let transAssistantData = assistantDataString ? JSON.parse(assistantDataString) : {};
+        let fix = userInfo.genStatus === 'done' ? t('transfer') : ''
+        setLoading(true);
         const promises = newRooms.map((room) => post('/api/generateCode',
             {
                 user: getJiajuUserData(room, userInfo, _wuxingData || wuxingData),
-                system: systemPrompt,
+                system: fix + systemPrompt,
+                assistant: userInfo.genStatus === 'done' ? JSON.stringify(transAssistantData[room.id]) : '',
                 jsonResult: true
             }))
 
 
-        setLoading(true);
-        createProgressivePromiseAll(promises).then(results => {
+
+        createProgressivePromiseAll(promises).then(async results => {
             setLoading(false);
             let newResults = {};
             results.map((item, index) => {
@@ -101,7 +111,7 @@ export default function ({ userInfo, jiajuProDataString, onSaveData, isPrinting 
             });
             setJiajuProData(newResults);
             console.log('res 家居进阶', newResults)
-            //onSaveData({liuNianData});
+            onSaveData(newResults);
         }).catch(e => {
             setLoading(false);
             toast.error('家居风水进阶分析生成错误，请稍后刷新此页面重试。' + e.message, { autoClose: false })
@@ -131,14 +141,15 @@ export default function ({ userInfo, jiajuProDataString, onSaveData, isPrinting 
         });
     }
     return <section className="relative">
-        {loading && <div className="absolute z-12 w-[500px] top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 "><Line percent={progress} strokeWidth={2} strokeColor='#2db7f5' railWidth={2} /> </div>}
-        <AntdSpin size={'large'} spinning={loading} tip={t2('generating')} className='bg-[#fff9]' >
+        {loading && <div className="absolute z-12 w-[80%] max-w-125 top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 "><Line percent={progress} strokeWidth={2} strokeColor='#2db7f5' railWidth={2} /> </div>}
+        <AntdSpin size={'large'} spinning={loading} tip={t2(userInfo?.genStatus == 'done' ? 'translating2' : 'generating')} className='bg-[#fff9]' >
             <button onClick={() => { onGenerate(userInfo) }}>重新生成</button>
-            <p className='max-w-250 mx-auto md:mb-20 mb-10 md:px-0 px-5 font-bold leading-8 tracking-normal text-justify'>
+            <p className='md:mb-20 mb-10  md:px-0 px-2.5 font-bold leading-8 tracking-normal text-justify'>
                 <span className='text-sm leading-8'>命主八字</span>
                 <br />
-                <span className='text-[#073E31] font-bold'> {`${wuxingData.year}年、${wuxingData.month}月、${wuxingData.day}日、${wuxingData.hour}${t('hour')}`}</span>
+                <span className='text-[#073E31] font-bold text-xl'> {`${wuxingData.year}年、${wuxingData.month}月、${wuxingData.day}日、${wuxingData.hour}${t('hour')}`}</span>
             </p>
+
             <RoomCanvas activeRoom={activeRoom} setActiveRoom={onSetActiveRoom} onChangeDesignData={fetchDesignData} />
             {
                 activeRoom && !isPrinting && <div className="w-full md:rounded-b-3xl bg-[#fafafa] md:p-8 p-5 border-1 border-[#E6E6E6]">
@@ -157,33 +168,33 @@ export default function ({ userInfo, jiajuProDataString, onSaveData, isPrinting 
                         {
                             jiajuProData &&
                             <Tabs value={activeTab} className="w-full gap-0" onValueChange={(value) => setActiveTab(value)}>
-                                <TabsList className="gap-8 justify-start bg-transparent p-0">
+                                <TabsList className="gap-5 justify-start bg-transparent p-0">
 
                                     <TabsTrigger
                                         defaultValue
                                         value="tab1"
-                                        className="cursor-pointer pb-3 rounded-none bg-transparent text-sm md:text-base data-[state=active]:font-bold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
+                                        className="cursor-pointer pb-3  px-0 rounded-none bg-transparent text-sm md:text-base data-[state=active]:font-bold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
                                     >
                                         {t('tab1')}
 
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="tab2"
-                                        className="cursor-pointer pb-3 rounded-none bg-transparent text-sm md:text-base data-[state=active]:font-bold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
+                                        className="cursor-pointer pb-3  px-0 rounded-none bg-transparent text-sm md:text-base data-[state=active]:font-bold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
                                     >
                                         {t('tab2')}
 
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="tab3"
-                                        className="cursor-pointer pb-3 rounded-none bg-transparent text-sm md:text-base data-[state=active]:font-bold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
+                                        className="cursor-pointer pb-3  px-0 rounded-none bg-transparent text-sm md:text-base data-[state=active]:font-bold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
                                     >
                                         {t('tab3')}
 
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="tab4"
-                                        className="cursor-pointer pb-3 rounded-none bg-transparent text-sm md:text-base data-[state=active]:font-bold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
+                                        className="cursor-pointer pb-3  px-0 rounded-none bg-transparent text-sm md:text-base data-[state=active]:font-bold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
                                     >
                                         {t('tab4')}
 
@@ -216,30 +227,30 @@ export default function ({ userInfo, jiajuProDataString, onSaveData, isPrinting 
 
         {/* 在页面上隐藏，打印时展示 */}
         {
-            isPrinting && <div className="w-full md:rounded-b-3xl bg-[#fafafa] md:p-8 p-5 border-1 border-[#E6E6E6]">
-                <div className="mt-3">
-                    {
+            // isPrinting && <div className="w-full md:rounded-b-3xl bg-[#fafafa] md:p-8 p-5 border-1 border-[#E6E6E6]">
+            //     <div className="mt-3">
+            //         {
 
-                        roomList.map((room, i) => (
-                            <>
-                                <h2 className="text-xl font-bold text-[#073E31]">
-                                    {room.data.label}
-                                </h2>
-                                {jiajuData && jiajuData[room.data._type] &&
-                                    Object.entries(jiajuData[room.data._type][room.direction]).map(([key, value]) => {
-                                        return <p className="leading-8 flex" > <span className="font-bold whitespace-nowrap min-w-22.5">{key}：</span>
-                                            <span className="whitespace-pre-wrap">{value} </span>
-                                        </p>
-                                    })}
-                            </>
+            //             roomList.map((room, i) => (
+            //                 <>
+            //                     <h2 className="text-xl font-bold text-[#073E31]">
+            //                         {room.data.label}
+            //                     </h2>
+            //                     {jiajuData && jiajuData[room.data._type] &&
+            //                         Object.entries(jiajuData[room.data._type][room.direction]).map(([key, value]) => {
+            //                             return <p className="leading-8 flex" > <span className="font-bold whitespace-nowrap min-w-22.5">{key}：</span>
+            //                                 <span className="whitespace-pre-wrap">{value} </span>
+            //                             </p>
+            //                         })}
+            //                 </>
 
 
 
-                        ))
+            //             ))
 
-                    }
-                </div>
-            </div>
+            //         }
+            //     </div>
+            // </div>
         }
 
         <div className='mt-10 px-6 md:p-0'>

@@ -32,6 +32,7 @@
     "@rc-component/progress": "^1.0.1",
     "@stripe/stripe-js": "^7.3.0",
     "antd-spin": "^2.0.1",
+    "blueimp-md5": "^2.19.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.7",

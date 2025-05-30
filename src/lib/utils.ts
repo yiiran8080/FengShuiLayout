@@ -16,3 +16,18 @@ export function getBirthDate(birthDateTime: string) {
 }
 
 //console.log(getBirthDate(new Date("1989-10-06T18:00:00.000+00:00")));
+export function splitLongString(longString: string, maxLength: number) {
+  const result = [];
+  let startIndex = 0;
+
+  while (startIndex < longString.length) {
+    let endIndex = startIndex + maxLength;
+    if (endIndex > longString.length) {
+      endIndex = longString.length;
+    }
+    result.push(longString.substring(startIndex, endIndex));
+    startIndex = endIndex;
+  }
+
+  return result;
+}

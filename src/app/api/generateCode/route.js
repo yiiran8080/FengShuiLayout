@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
+import { getUserInfo } from '@/lib/session';
 import { genSuccessData, genUnAuthData, genErrorData } from "../utils/gen-res-data";
 // import { fetch } from "undici";
 
 
 export async function POST(request) {
-
+    const userInfo = await getUserInfo();
+    if (userInfo == null) return Response.json(genUnAuthData());
     const body = await request.json();
 
     let data = JSON.stringify({
@@ -58,7 +60,7 @@ export async function POST(request) {
         if (resData.choices) {
             return NextResponse.json(genSuccessData(resData.choices[0].message.content))
         }
-        throw new Error(resData.statusText);
+        //throw new Error(resData.statusText);
         return NextResponse.json(genErrorData(resData.statusText))
     } catch (error) {
         console.log('error', error);
