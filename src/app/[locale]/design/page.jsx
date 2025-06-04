@@ -46,7 +46,7 @@ import { AntdSpin } from "antd-spin";
 import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from "next-intl";
-
+import { LAYOUT1_ZH, LAYOUT1_TW } from "@/types/layout";
 const ROOM_COLORS = {
   [ROOM_TYPES.LIVING_ROOM]: '#F0DF9C',   // 客厅
   [ROOM_TYPES.DINING_ROOM]: '#F5D4BC',   // 饭厅
@@ -72,6 +72,7 @@ export default function DesignPage({ params }) {
   const t2 = useTranslations('toast');
   const ROOM_TYPES_LABEL = locale === 'zh-TW' ? ROOM_TYPES_LABEL_TW : ROOM_TYPES_LABEL_CN;
   const FURNITURE_TYPES_LABEL = locale === 'zh-TW' ? FURNITURE_TYPES_LABEL_TW : FURNITURE_TYPES_LABEL_CN;
+  const LAYOUT1 = locale === 'zh-TW' ? LAYOUT1_TW : LAYOUT1_ZH;
   const furnitureItems = [
     { id: 'door-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.DOOR, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.DOOR], icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png', activeIcon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png', size: { width: 40, height: 40 } } },
     { id: 'window-template', type: ITEM_TYPES.FURNITURE, data: { cateType: ITEM_TYPES.FURNITURE, type: FURNITURE_TYPES.WINDOW, label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.WINDOW], icon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png', activeIcon: 'https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png', size: { width: 8, height: 56 } } },
@@ -120,7 +121,7 @@ export default function DesignPage({ params }) {
   const draggingItemSize = isMobile ? 48 : 56;
   const defaultRoomSize = isMobile ? { width: 200, height: 200 } : { width: 300, height: 300 }
   const [alertOpen, setAlertOpen] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('')
+  const [moduleAlertOpen, setModuleAlertOpen] = useState(false);
   // const defaultFurSize = { width: draggingItemSize, height: 32 }
 
   const roomItems = [
@@ -513,6 +514,16 @@ export default function DesignPage({ params }) {
       setLoading(false)
     }
   };
+  const onModuleClick = (moduleId) => {
+    setModuleAlertOpen(true);
+  }
+  const onCoverDesign = () => {
+    canvasRef.current?.setLocalItems(LAYOUT1.localItems);
+    canvasRef.current?.setPosition(LAYOUT1.canvasPosition);
+    canvasRef.current?.setCompassRotation(LAYOUT1.compassRotation);
+    canvasRef.current?.setScale(LAYOUT1.scale);
+    setModuleAlertOpen(false);
+  }
   // if (loading) {
   //   return (
   //     <div className="flex flex-col py-25 px-5 ">
@@ -570,7 +581,18 @@ export default function DesignPage({ params }) {
                     )
                   }
                   {/* Canvas */}
-                  <div className="flex-1 overflow-auto" id="canvas-drop-area" >
+                  <div className="relative flex-1 overflow-auto" id="canvas-drop-area" >
+                    {/* 模组 */}
+                    <div className="absolute top-2 left-2 z-9 border-1 border-dashed border-gray-300 rounded-xl text-sm px-2 py-1 bg-secondary">
+                      <div className="text-center text-gray-600">
+                        {t('module')}
+                      </div>
+                      <div
+                        onClick={() => { onModuleClick('1') }}
+                        className="bg-primary text-white rounded-xl px-2 cursor-pointer m-2">
+                        {t('module1')}
+                      </div>
+                    </div>
                     <Canvas ref={canvasRef}
                       locale={locale}
                       history={history}
@@ -648,6 +670,19 @@ export default function DesignPage({ params }) {
               <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
               <AlertDialogAction onClick={onReadReport}>{t("readReport")}</AlertDialogAction>
               <AlertDialogAction onClick={onCoverReport}>{t("coverReport")}</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog open={moduleAlertOpen} onOpenChange={setModuleAlertOpen}>
+
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t("useModuleAlert")}</AlertDialogTitle>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
+              <AlertDialogAction onClick={onCoverDesign}>{t("ok")}</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

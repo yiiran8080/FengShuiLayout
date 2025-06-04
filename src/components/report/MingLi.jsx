@@ -241,7 +241,7 @@ export default function ({ locale, userInfo, mingLiDataString, assistantDataStri
     return <div className="relative">
         {loading && <div className="absolute z-12 w-[80%] max-w-125 top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 "><Line percent={progress} strokeWidth={2} strokeColor='#2db7f5' railWidth={2} /> </div>}
         <AntdSpin size={'large'} spinning={loading} tip={t2(userInfo?.genStatus == 'done' ? 'translating2' : 'generating')} className='bg-[#fff9]' >
-            <button onClick={() => { onGenerate(userInfo) }}>重新生成</button>
+            {/* <button onClick={() => { onGenerate(userInfo) }}>重新生成</button> */}
             {
                 !isPrinting ? <div>
                     {
@@ -354,7 +354,7 @@ export default function ({ locale, userInfo, mingLiDataString, assistantDataStri
                 </div> : (
 
                     //以下是打印模式。全部展示。
-                    <div className="mx-auto p-4 bg-secondary rounded-2xl">
+                    <div className="mx-auto p-5 bg-secondary rounded-2xl">
                         {Object.entries(mingLiData).map(([tabKey, tabValue]) => {
                             return <div key={tabKey} className="mb-5">
                                 <p className="font-bold whitespace-nowrap text-primary">{t(tabKey)}：</p>

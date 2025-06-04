@@ -143,7 +143,7 @@ export default function ({ locale, userInfo, jiajuProDataString, onSaveData, ass
     return <section className="relative">
         {loading && <div className="absolute z-12 w-[80%] max-w-125 top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 "><Line percent={progress} strokeWidth={2} strokeColor='#2db7f5' railWidth={2} /> </div>}
         <AntdSpin size={'large'} spinning={loading} tip={t2(userInfo?.genStatus == 'done' ? 'translating2' : 'generating')} className='bg-[#fff9]' >
-            <button onClick={() => { onGenerate(userInfo) }}>重新生成</button>
+            {/* <button onClick={() => { onGenerate(userInfo) }}>重新生成</button> */}
             <p className='md:mb-20 mb-10  md:px-0 px-2.5 font-bold leading-8 tracking-normal text-justify'>
                 <span className='text-sm leading-8'>命主八字</span>
                 <br />

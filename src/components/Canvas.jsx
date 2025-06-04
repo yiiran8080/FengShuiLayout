@@ -871,6 +871,7 @@ export const Canvas = forwardRef(
       // }
       setCompassRotation(newRotation);
     };
+
     const Sizehandler = (room) => {
       return (
         <>
@@ -912,6 +913,7 @@ export const Canvas = forwardRef(
         }}
         className="relative w-full min-h-[calc(100vh-64px)] overflow-hidden bg-background"
       >
+
         {/* 右上角控制面板 */}
         <div className="fixed top-20 right-6 flex items-center gap-4 z-9">
           {!isMobile && (

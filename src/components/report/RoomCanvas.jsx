@@ -114,6 +114,9 @@ export default function ({ activeRoom, setActiveRoom, onChangeDesignData, onChan
         setActiveRoom(room);
     }
 
+    const onHandleActiveRoom = (room) => {
+        setActiveRoom(room);
+    }
 
     // translate(${position.x}px, ${position.y}px)  
     return <div className="relative canvasImage">
@@ -155,10 +158,10 @@ export default function ({ activeRoom, setActiveRoom, onChangeDesignData, onChan
                                             // transform: `scale(${scale / 100})`,
                                             // transformOrigin: "center",
                                         }}
-                                    // onClick={(e) => {
-                                    //     e.stopPropagation();
-                                    //     onHandleActiveRoom(item);
-                                    // }}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onHandleActiveRoom(item);
+                                        }}
                                     // onMouseDown={(e) => handleRoomMouseDown(e, item)}
                                     // onTouchStart={(e) => handleRoomMouseDown(e, item)}
                                     >

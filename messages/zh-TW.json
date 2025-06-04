@@ -234,7 +234,9 @@
     "chosed": "已選中",
     "profile": "個人資料",
     "tip": "您的個人資料僅用於此次測算",
-    "hour": "時"
+    "hour": "時",
+    "module": "模組",
+    "module1": "兩室一廳"
   },
   "report": {
     "catelog": "目錄",

@@ -142,9 +142,9 @@ export default function ({ locale, userInfo, liuNianDataString, onSaveData, assi
     return <div className="relative">
         {loading && <div className="absolute z-12 w-[80%] max-w-125 top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 "><Line percent={progress} strokeWidth={2} strokeColor='#2db7f5' railWidth={2} /> </div>}
         <AntdSpin size={'large'} spinning={loading} tip={t2(userInfo?.genStatus == 'done' ? 'translating2' : 'generating')} className='bg-[#fff9]' >
-            <button onClick={() => { onGenerate(userInfo) }}>重新生成</button>
-            <div className="max-w-250 mx-auto md:px-0 px-2.5 ">
-                <p className='md:mb-20 mb-10 font-bold leading-8 tracking-normal text-justify'>
+            {/* <button onClick={() => { onGenerate(userInfo) }}>重新生成</button> */}
+            <div className="md:px-0 px-2.5 ">
+                <p className='max-w-250 mx-auto md:mb-20 mb-10 font-bold leading-8 tracking-normal text-justify'>
                     <span className='text-sm leading-8'>命主八字</span>
                     <br />
                     <span className='text-[#073E31] font-bold text-xl'> {`${wuxingData.year}年、${wuxingData.month}月、${wuxingData.day}日、${wuxingData.hour}${t('hour')}`}</span>
@@ -166,7 +166,7 @@ export default function ({ locale, userInfo, liuNianDataString, onSaveData, assi
                                                 <div className="p-6 flex md:flex-col items-center flex-row md:justify-start justify-between rounded-[8px] border-2 border-[#0E8C6F] md:min-w-74.5  md:h-117 h-38 md:mr-5 mb-5 md:mb-0">
                                                     <div className="md:flex md:flex-col md:items-center">
                                                         <div className="mt-12 md:mb-3 mb-2 text-[40px] font-[900] text-[#0E8C6F]">{monthMap[index + 1]}</div>
-                                                        <div className="mb-12 text-sm px-6.5 py-1.5 bg-[#0E8C6F] text-white rounded-sm" >{LYzhiMap[index + 1]}月</div>
+                                                        <div className="mb-12 text-sm text-center px-6.5 py-1.5 bg-[#0E8C6F] text-white rounded-sm" >{LYzhiMap[index + 1]}月</div>
                                                     </div>
 
                                                     <Image width={isMobile ? 104 : 208} height={isMobile ? 104 : 208} src={`/images/report/month/${2}.png`} alt={[index + 1] + '月'} className="object-contain" />
@@ -208,7 +208,7 @@ export default function ({ locale, userInfo, liuNianDataString, onSaveData, assi
                                     let lowerList = itemEntries.slice(4);
                                     return (
 
-                                        <div key={index} className="rounded-[8px]" style={!isMobile ? { boxShadow: '0px 0px 15px 0px' } : {}}>
+                                        <div key={index} className="rounded-[8px]">
                                             <div className="w-full h-12 bg-[#0E8C6F] rounded-t-[8px] relative py-4">
                                                 <div className="h-5 w-full" style={{ background: "url('/images/report/month/huawen.png') repeat" }}></div>
                                             </div>
@@ -216,7 +216,7 @@ export default function ({ locale, userInfo, liuNianDataString, onSaveData, assi
 
                                                 <div className="md:flex md:flex-col md:items-center">
                                                     <div className="mt-12 md:mb-3 mb-2 text-[40px] font-[900] text-[#0E8C6F]">{monthMap[index + 1]}</div>
-                                                    <div className="mb-12 text-sm px-6.5 py-1.5 bg-[#0E8C6F] text-white rounded-sm" >{LYzhiMap[index + 1]}月</div>
+                                                    <div className="mb-12 text-sm text-center px-6.5 py-1.5 bg-[#0E8C6F] text-white rounded-sm" >{LYzhiMap[index + 1]}月</div>
                                                 </div>
 
                                                 <div>

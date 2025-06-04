@@ -371,7 +371,7 @@ export default function ReportPage({ locale }) {
 
 
                     {/* 年柱 */}
-                    <section className='md:rounded-[26px] rounded-none bg-[#F7FAF9] p-8 md:mt-18 mt-10'>
+                    <section className='md:rounded-[26px] rounded-none bg-[#F7FAF9] md:p-10 p-5  md:mt-18 mt-10'>
                         <h2
                             id={`section-0-1`}
                             ref={el => sectionRefs.current[1] = el}
@@ -414,7 +414,7 @@ export default function ReportPage({ locale }) {
                         }
                     </section>
                     {/* 月柱 */}
-                    <section className='md:rounded-[26px] rounded-none bg-[#F7FAF9] p-8 md:mt-18 mt-10'>
+                    <section className='md:rounded-[26px] rounded-none bg-[#F7FAF9] md:p-10 p-5  md:mt-18 mt-10'>
                         <h2
                             id={`section-0-2`}
                             ref={el => sectionRefs.current[2] = el}
@@ -463,7 +463,7 @@ export default function ReportPage({ locale }) {
                         }
                     </section>
                     {/* 日柱 */}
-                    <section className='md:rounded-[26px] rounded-none bg-[#F7FAF9] p-8 md:mt-18 mt-10'>
+                    <section className='md:rounded-[26px] rounded-none bg-[#F7FAF9] md:p-10 p-5  md:mt-18 mt-10'>
                         <h2
                             id={`section-0-3`}
                             ref={el => sectionRefs.current[3] = el}
@@ -512,7 +512,7 @@ export default function ReportPage({ locale }) {
                         }
                     </section>
                     {/* 时柱 */}
-                    <section className='md:rounded-[26px] rounded-none bg-[#F7FAF9] p-8 md:mt-18 mt-10'>
+                    <section className='md:rounded-[26px] rounded-none bg-[#F7FAF9] md:p-10 p-5 md:mt-18 mt-10'>
                         <h2
                             id={`section-0-4`}
                             ref={el => sectionRefs.current[4] = el}

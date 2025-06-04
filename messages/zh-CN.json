@@ -234,9 +234,12 @@
     "furniture": "家具",
     "chosed": "已选中",
     "profile": "个人资料",
+    "useModuleAlert": "如果选择使用该模板，会覆盖当前布局。请确认是否继续？",
 
     "tip": "您的个人资料仅用于此次测算",
-    "hour": "时"
+    "hour": "时",
+    "module": "模组",
+    "module1": "两室一厅"
   },
   "report": {
     "catelog": "目录",
