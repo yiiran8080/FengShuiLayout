@@ -1,1 +1,1 @@
-self.__NEXT_FONT_MANIFEST='{"pages":{},"app":{},"appUsingSizeAdjust":false,"pagesUsingSizeAdjust":false}';
+self.__NEXT_FONT_MANIFEST='{"pages":{},"app":{"/Users/michaelng/Desktop/HarmoniqFengShui/FengShuiLayout/src/app/[locale]/layout":["static/media/36008747766f78c6-s.p.woff2","static/media/383c2ab2a767fb58-s.p.woff2"]},"appUsingSizeAdjust":true,"pagesUsingSizeAdjust":false}';

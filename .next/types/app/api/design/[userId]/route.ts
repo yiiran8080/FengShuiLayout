@@ -1,4 +1,4 @@
-// File: D:\code\fengshui\src\app\api\design\[userId]\route.js
+// File: /Users/michaelng/Desktop/HarmoniqFengShui/FengShuiLayout/src/app/api/design/[userId]/route.js
 import * as entry from '../../../../../../src/app/api/design/[userId]/route.js'
 import type { NextRequest } from 'next/server.js'
 

@@ -1,4 +1,4 @@
-// File: D:\code\fengshui\src\app\[locale]\report\page.jsx
+// File: /Users/michaelng/Desktop/HarmoniqFengShui/FengShuiLayout/src/app/[locale]/report/page.jsx
 import * as entry from '../../../../../src/app/[locale]/report/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

@@ -1,4 +1,4 @@
-// File: D:\code\fengshui\src\app\api\auth\[...nextauth]\route.ts
+// File: /Users/michaelng/Desktop/HarmoniqFengShui/FengShuiLayout/src/app/api/auth/[...nextauth]/route.ts
 import * as entry from '../../../../../../src/app/api/auth/[...nextauth]/route.js'
 import type { NextRequest } from 'next/server.js'
 
