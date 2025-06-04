@@ -233,6 +233,7 @@
     "furniture": "家具",
     "chosed": "已選中",
     "profile": "個人資料",
+    "useModuleAlert": "如果選擇使用該模板，會覆蓋當前布局。請確認是否繼續？",
     "tip": "您的個人資料僅用於此次測算",
     "hour": "時",
     "module": "模組",
