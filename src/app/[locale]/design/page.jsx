@@ -46,7 +46,23 @@ import { AntdSpin } from "antd-spin";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { LAYOUT1_ZH, LAYOUT1_TW, LAYOUT2_ZH, LAYOUT2_TW } from "@/types/layout";
+import {
+	LAYOUT1_ZH,
+	LAYOUT1_TW,
+	LAYOUT2_ZH,
+	LAYOUT2_TW,
+	LAYOUT3_ZH,
+	LAYOUT3_TW,
+	LAYOUT4_TW,
+	LAYOUT4_ZH,
+	LAYOUT5_TW,
+	LAYOUT5_ZH,
+	LAYOUT6_TW,
+	LAYOUT6_ZH,
+	LAYOUT7_TW, // 新增
+	LAYOUT7_ZH, // 新增
+} from "@/types/layout";
+
 const ROOM_COLORS = {
 	[ROOM_TYPES.LIVING_ROOM]: "#F0DF9C", // 客厅
 	[ROOM_TYPES.DINING_ROOM]: "#F5D4BC", // 饭厅
@@ -61,8 +77,380 @@ const ROOM_COLORS = {
 	[ROOM_TYPES.CORRIDOR]: "#CDCDCD", // 走廊
 };
 
+// REPLACE the AccessControlWrapper with this clean version:
+
+function AccessControlWrapper({ children, locale }) {
+	const { data: session, status } = useSession();
+	const router = useRouter();
+	const [hasAccess, setHasAccess] = useState(false);
+	const [loading, setLoading] = useState(true);
+	const t = useTranslations("design");
+
+	// 1. Initial access check (KEEP THIS ONE)
+	useEffect(() => {
+		const checkAccess = async () => {
+			if (status === "loading") return;
+
+			if (!session?.user?.userId) {
+				router.push(
+					`/${locale}/auth/login?callbackUrl=/${locale}/design`
+				);
+				return;
+			}
+
+			try {
+				const { status: apiStatus, data: userInfo } = await get(
+					`/api/users/${session.user.userId}`
+				);
+
+				console.log("🔍 FULL USER INFO:", {
+					userId: session.user.userId,
+					isLock: userInfo?.isLock,
+					genStatus: userInfo?.genStatus,
+					createdAt: userInfo?.createdAt,
+					updatedAt: userInfo?.updatedAt,
+				});
+
+				if (apiStatus === 0) {
+					if (userInfo.isLock) {
+						router.push(`/${locale}/price?redirect=design`);
+						return;
+					} else {
+						setHasAccess(true);
+					}
+				} else {
+					router.push(`/${locale}/auth/login`);
+					return;
+				}
+			} catch (error) {
+				console.error("Access check error:", error);
+				router.push(`/${locale}/price`);
+				return;
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		checkAccess();
+	}, [session, status, router, locale]);
+
+	// 2. Poll for webhook database updates (KEEP THIS ONE)
+	useEffect(() => {
+		const userId = session?.user?.userId;
+		if (!userId || hasAccess) return;
+
+		console.log("🔍 Design page: Starting webhook polling...");
+
+		const pollInterval = setInterval(async () => {
+			try {
+				const { status: apiStatus, data: userInfo } = await get(
+					`/api/users/${userId}`
+				);
+
+				console.log(
+					"🔍 Polling check - User lock status:",
+					userInfo?.isLock
+				);
+
+				if (apiStatus === 0 && !userInfo.isLock) {
+					console.log("🎉 Design page: Webhook unlock detected!");
+					setHasAccess(true);
+					setLoading(false);
+					clearInterval(pollInterval);
+				}
+			} catch (error) {
+				console.error("Design polling error:", error);
+			}
+		}, 2000);
+
+		return () => {
+			console.log("🛑 Design page: Stopping webhook polling");
+			clearInterval(pollInterval);
+		};
+	}, [session?.user?.userId, hasAccess]);
+
+	// 3. Handle payment success URL parameters (KEEP THIS ONE)
+	useEffect(() => {
+		const urlParams = new URLSearchParams(window.location.search);
+		const paymentStatus = urlParams.get("payment");
+		const sessionId = urlParams.get("session_id");
+
+		if (paymentStatus === "success" && sessionId && !hasAccess) {
+			console.log("💳 Design page: Payment success URL detected");
+			setLoading(true);
+
+			const recheckAccess = async () => {
+				const userId = session?.user?.userId;
+				if (userId) {
+					try {
+						// Wait for webhook to process
+						await new Promise((resolve) =>
+							setTimeout(resolve, 1000)
+						);
+
+						const { status: apiStatus, data: userInfo } = await get(
+							`/api/users/${userId}`
+						);
+
+						console.log(
+							"💳 URL recheck - User lock status:",
+							userInfo?.isLock
+						);
+
+						if (apiStatus === 0 && !userInfo.isLock) {
+							setHasAccess(true);
+						}
+					} catch (error) {
+						console.error("Payment recheck error:", error);
+					} finally {
+						setLoading(false);
+						// Clean up URL
+						window.history.replaceState(
+							{},
+							document.title,
+							window.location.pathname
+						);
+					}
+				}
+			};
+
+			recheckAccess();
+		}
+	}, [session?.user?.userId, hasAccess]);
+
+	if (loading) {
+		return (
+			<div className="flex items-center justify-center min-h-screen">
+				<div className="text-center">
+					<div className="w-32 h-32 mx-auto border-b-2 border-green-500 rounded-full animate-spin"></div>
+					<p className="mt-4 text-lg">{t("verifyingAccess")}</p>
+				</div>
+			</div>
+		);
+	}
+
+	if (!hasAccess) {
+		return (
+			<div className="flex items-center justify-center min-h-screen">
+				<div className="text-center">
+					<p className="text-lg">{t("redirecting")}</p>
+				</div>
+			</div>
+		);
+	}
+
+	return children;
+}
+
+function ModuleWizard({ open, onClose, onSelectModule }) {
+	const [step, setStep] = useState(1);
+	const [roomCount, setRoomCount] = useState(null);
+	const [bathroomCount, setBathroomCount] = useState(null);
+	const [hasBalcony, setHasBalcony] = useState(null);
+	const isMobile = useMobile();
+	const t = useTranslations("design");
+
+	const reset = () => {
+		setStep(1);
+		setRoomCount(null);
+		setBathroomCount(null);
+		setHasBalcony(null);
+	};
+
+	const handleClose = () => {
+		reset();
+		onClose();
+	};
+
+	const handleRoomSelect = (count) => {
+		setRoomCount(count);
+		if (count === 3) {
+			setStep(2); // Go to bathroom question for 3 rooms
+		} else {
+			setStep(3); // Go to balcony question for 1 or 2 rooms
+		}
+	};
+
+	const handleBathroomSelect = (count) => {
+		setBathroomCount(count);
+		// NEW LOGIC: For 3 rooms, if 2 bathrooms, go to balcony question
+		if (count === 2) {
+			setStep(3); // Go to balcony question
+		} else {
+			// If 1 bathroom with 3 rooms, select module 2
+			onSelectModule("2");
+			handleClose();
+		}
+	};
+
+	const handleBalconySelect = (has) => {
+		setHasBalcony(has);
+
+		// NEW LOGIC: Handle the updated logic based on conversation summary
+		if (roomCount === 3 && bathroomCount === 2) {
+			// For 3 rooms + 2 bathrooms
+			if (has === "yes") {
+				onSelectModule("4"); // Module 4 if has balcony
+			} else {
+				onSelectModule("6"); // Module 7 if no balcony
+			}
+		} else if (roomCount === 1) {
+			if (has === "yes") {
+				onSelectModule("3");
+			} else {
+				onSelectModule("7");
+			}
+		} else if (roomCount === 2) {
+			if (has === "yes") {
+				onSelectModule("1");
+			} else {
+				onSelectModule("5");
+			}
+		}
+		handleClose();
+	};
+
+	if (!open) return null;
+
+	return (
+		<div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 backdrop-blur-sm">
+			<div className="bg-white rounded-lg shadow-lg sm:max-w-[432px] w-full mx-4 max-h-[90vh] overflow-y-auto">
+				{/* Progress indicator */}
+				<div className="flex items-center justify-center pt-6 pb-4">
+					<div className="flex space-x-2">
+						{[1, 2, 3].map((stepNum) => (
+							<div
+								key={stepNum}
+								className={`w-3 h-3 rounded-full transition-colors ${
+									stepNum <= step
+										? "bg-[#13ab87]"
+										: stepNum === 2 && roomCount !== 3
+											? "bg-gray-300"
+											: "bg-gray-300"
+								}`}
+							/>
+						))}
+					</div>
+				</div>
+
+				{/* Header section */}
+				<div className="px-6 pb-4">
+					<div className="mb-4 text-lg font-bold text-center md:text-xl md:text-left">
+						{t("wizardTitle")}
+					</div>
+					<div className="py-4 text-sm text-left text-gray-600 md:text-base">
+						{t("wizardSubtitle")}
+					</div>
+				</div>
+
+				{/* Separator */}
+				<div className="border-t border-gray-200 md:hidden"></div>
+
+				{/* Content section */}
+				<div className="p-6 pt-4">
+					<div className="grid gap-4 pb-4">
+						{step === 1 && (
+							<>
+								<div className="mb-4 text-lg font-bold text-center">
+									{t("wizardStep1Title")}
+								</div>
+								<div className="grid gap-3">
+									{[
+										{ count: 1, label: t("oneRoom") },
+										{ count: 2, label: t("twoRooms") },
+										{ count: 3, label: t("threeRooms") },
+									].map(({ count, label }) => (
+										<button
+											key={count}
+											className="w-full py-4 bg-[#13ab87] hover:bg-[#0f9674] text-white font-bold rounded-[100px] text-base transition-colors"
+											onClick={() =>
+												handleRoomSelect(count)
+											}
+										>
+											{label}
+										</button>
+									))}
+								</div>
+							</>
+						)}
+
+						{step === 2 && (
+							<>
+								<div className="mb-4 text-lg font-bold text-center">
+									{t("wizardStep2Title")}
+								</div>
+								<div className="grid gap-3">
+									{[
+										{ count: 1, label: t("oneBathroom") },
+										{ count: 2, label: t("twoBathrooms") },
+									].map(({ count, label }) => (
+										<button
+											key={count}
+											className="w-full py-4 bg-[#13ab87] hover:bg-[#0f9674] text-white font-bold rounded-[100px] text-base transition-colors"
+											onClick={() =>
+												handleBathroomSelect(count)
+											}
+										>
+											{label}
+										</button>
+									))}
+								</div>
+							</>
+						)}
+
+						{step === 3 && (
+							<>
+								<div className="mb-4 text-lg font-bold text-center">
+									{t("wizardStep3Title")}
+								</div>
+								<div className="grid gap-3">
+									{[
+										{
+											value: "yes",
+											label: t("hasBalcony"),
+										},
+										{ value: "no", label: t("noBalcony") },
+									].map(({ value, label }) => (
+										<button
+											key={value}
+											className="w-full py-4 bg-[#13ab87] hover:bg-[#0f9674] text-white font-bold rounded-[100px] text-base transition-colors"
+											onClick={() =>
+												handleBalconySelect(value)
+											}
+										>
+											{label}
+										</button>
+									))}
+								</div>
+							</>
+						)}
+
+						{/* Cancel button */}
+						{isMobile ? (
+							<div className="flex justify-around">
+								<button
+									onClick={handleClose}
+									className="px-10 text-foreground rounded-[100px] bg-white font-bold mt-10 hover:bg-gray-50 transition-colors"
+								>
+									{t("cancel")}
+								</button>
+							</div>
+						) : (
+							<button
+								onClick={handleClose}
+								className="w-full text-foreground rounded-[100px] bg-white font-bold mt-10 hover:bg-gray-50 transition-colors"
+							>
+								{t("cancel")}
+							</button>
+						)}
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+}
+
 export default function DesignPage({ params }) {
-	//  console.log('params', params.locale)
 	const _params = use(params);
 	const locale = _params.locale;
 	const t = useTranslations("design");
@@ -75,6 +463,12 @@ export default function DesignPage({ params }) {
 			: FURNITURE_TYPES_LABEL_CN;
 	const LAYOUT1 = locale === "zh-TW" ? LAYOUT1_TW : LAYOUT1_ZH;
 	const LAYOUT2 = locale === "zh-TW" ? LAYOUT2_TW : LAYOUT2_ZH;
+	const LAYOUT3 = locale === "zh-TW" ? LAYOUT3_TW : LAYOUT3_ZH;
+	const LAYOUT4 = locale === "zh-TW" ? LAYOUT4_TW : LAYOUT4_ZH;
+	const LAYOUT5 = locale === "zh-TW" ? LAYOUT5_TW : LAYOUT5_ZH;
+	const LAYOUT6 = locale === "zh-TW" ? LAYOUT6_TW : LAYOUT6_ZH;
+	const LAYOUT7 = locale === "zh-TW" ? LAYOUT7_TW : LAYOUT7_ZH; // 新增
+
 	const furnitureItems = [
 		{
 			id: "door-template",
@@ -341,6 +735,7 @@ export default function DesignPage({ params }) {
 		: { width: 300, height: 300 };
 	const [alertOpen, setAlertOpen] = useState(false);
 	const [moduleAlertOpen, setModuleAlertOpen] = useState(false);
+	const [wizardOpen, setWizardOpen] = useState(false); // <-- Add this line
 	// const defaultFurSize = { width: draggingItemSize, height: 32 }
 
 	const roomItems = [
@@ -549,6 +944,24 @@ export default function DesignPage({ params }) {
 		loadDesign();
 	}, [session?.user?.userId]);
 
+	// ADD THIS NEW useEffect FOR PAYMENT SUCCESS HANDLING
+	useEffect(() => {
+		// Handle payment success redirect
+		const urlParams = new URLSearchParams(window.location.search);
+		const paymentStatus = urlParams.get("payment");
+		const sessionId = urlParams.get("session_id");
+
+		if (paymentStatus === "success" && sessionId) {
+			toast.success("Payment successful! Welcome to the design tool!");
+			// Clean up URL
+			window.history.replaceState(
+				{},
+				document.title,
+				window.location.pathname
+			);
+		}
+	}, []);
+
 	const handleDragStart = (event) => {
 		const { active } = event;
 		setActive(active);
@@ -601,7 +1014,6 @@ export default function DesignPage({ params }) {
 			redirect("/auth/login");
 		}
 
-		//const userId = 'yunyanyr@gmail.com'
 		try {
 			setLoading(true);
 			const designData = getRoomDirection({
@@ -615,14 +1027,11 @@ export default function DesignPage({ params }) {
 				designData
 			);
 			if (status == 0) {
-				toast.success("保存成功！");
+				toast.success(t2("saveSuccess"));
 			}
-
-			// 可以添加成功提示
 		} catch (error) {
-			toast.error("保存失败：" + error);
+			toast.error(t2("saveFailed") + error);
 			console.error("Error saving design:", error);
-			// 可以添加错误提示
 		} finally {
 			setLoading(false);
 		}
@@ -727,18 +1136,17 @@ export default function DesignPage({ params }) {
 		setLoading(true);
 		setuserInfo(userInfo);
 
-		const userId = "yunyanyr@gmail.com";
 		try {
 			const { status } = await post(`/api/users/${session.user.userId}`, {
 				gender: userInfo.gender,
 				birthDateTime: userInfo.birthDateTime.toISOString(),
 			});
 			if (status == 0) {
-				toast.success("保存成功！");
+				toast.success(t2("saveSuccess"));
 				setShowUserInfoDialog(false);
 			}
 		} catch (error) {
-			toast.error("保存失败：" + error);
+			toast.error(t2("saveFailed") + error);
 			console.error("Error saving user info:", error);
 		} finally {
 			setLoading(false);
@@ -754,6 +1162,32 @@ export default function DesignPage({ params }) {
 			canvasRef.current?.setPosition(LAYOUT2.canvasPosition);
 			canvasRef.current?.setCompassRotation(LAYOUT2.compassRotation);
 			canvasRef.current?.setScale(LAYOUT2.scale);
+		} else if (moduleId === "3") {
+			canvasRef.current?.setLocalItems(LAYOUT3.localItems);
+			canvasRef.current?.setPosition(LAYOUT3.canvasPosition);
+			canvasRef.current?.setCompassRotation(LAYOUT3.compassRotation);
+			canvasRef.current?.setScale(LAYOUT3.scale);
+		} else if (moduleId === "4") {
+			canvasRef.current?.setLocalItems(LAYOUT4.localItems);
+			canvasRef.current?.setPosition(LAYOUT4.canvasPosition);
+			canvasRef.current?.setCompassRotation(LAYOUT4.compassRotation);
+			canvasRef.current?.setScale(LAYOUT4.scale);
+		} else if (moduleId === "5") {
+			canvasRef.current?.setLocalItems(LAYOUT5.localItems);
+			canvasRef.current?.setPosition(LAYOUT5.canvasPosition);
+			canvasRef.current?.setCompassRotation(LAYOUT5.compassRotation);
+			canvasRef.current?.setScale(LAYOUT5.scale);
+		} else if (moduleId === "6") {
+			canvasRef.current?.setLocalItems(LAYOUT6.localItems);
+			canvasRef.current?.setPosition(LAYOUT6.canvasPosition);
+			canvasRef.current?.setCompassRotation(LAYOUT6.compassRotation);
+			canvasRef.current?.setScale(LAYOUT6.scale);
+		} else if (moduleId === "7") {
+			// 新增
+			canvasRef.current?.setLocalItems(LAYOUT7.localItems);
+			canvasRef.current?.setPosition(LAYOUT7.canvasPosition);
+			canvasRef.current?.setCompassRotation(LAYOUT7.compassRotation);
+			canvasRef.current?.setScale(LAYOUT7.scale);
 		} else {
 			canvasRef.current?.setLocalItems(LAYOUT1.localItems);
 			canvasRef.current?.setPosition(LAYOUT1.canvasPosition);
@@ -762,242 +1196,279 @@ export default function DesignPage({ params }) {
 		}
 		setModuleAlertOpen(false);
 	};
-	// if (loading) {
-	//   return (
-	//     <div className="flex flex-col px-5 py-25 ">
-	//       {/* <Skeleton className="w-full h-12" /> */}
-	//       <div className="space-y-2">
-	//         <Skeleton className="w-full h-6" />
-	//         <Skeleton className="w-full h-6" />
-	//         <Skeleton className="w-full h-6" />
-	//         <Skeleton className="w-full h-6" />
-	//       </div>
-	//     </div>
-	//   );
-	// }
-	return (
-		<Suspense fallback={<div>loading...</div>}>
-			<>
-				<AntdSpin
-					fullscreen={true}
-					spinning={loading}
-					tip={t2("loading2")}
-					className="bg-[#fff9]"
-				/>
 
-				<UserInfoDialog
-					open={showUserInfoDialog}
-					onUserOpen={setShowUserInfoDialog}
-					onSubmit={handleUserInfoSubmit}
-					userInfo={userInfo}
-				/>
-				{isMobile ? (
-					<NavbarDesignMobile
-						onSaveProject={onSaveProject}
-						history={history}
-						historyIndex={historyIndex}
-						handleUndo={handleUndo}
-						handleRedo={handleRedo}
-						onUserOpen={setShowUserInfoDialog}
+	// WRAP THE RETURN STATEMENT WITH AccessControlWrapper
+	return (
+		<AccessControlWrapper locale={locale}>
+			<Suspense fallback={<div>loading...</div>}>
+				<>
+					<AntdSpin
+						fullscreen={true}
+						spinning={loading}
+						tip={t2("loading2")}
+						className="bg-[#fff9]"
 					/>
-				) : (
-					<NavbarDesign
-						onSaveProject={onSaveProject}
-						onGenReport={onGenReport}
+
+					<UserInfoDialog
+						open={showUserInfoDialog}
 						onUserOpen={setShowUserInfoDialog}
+						onSubmit={handleUserInfoSubmit}
+						userInfo={userInfo}
 					/>
-				)}
-				<div className="pt-16">
-					<DndContext
-						sensors={sensors}
-						onDragStart={handleDragStart}
-						onDragOver={handleDragOver}
-						onDragMove={handleDragMove}
-					>
-						<div className="min-h-[calc(100vh-64px)] bg-gray-50">
-							<div
-								className="container p-0"
-								style={{ maxWidth: "100%" }}
-							>
-								<div className="flex h-[calc(100vh-64px)]">
-									{isMobile ? (
-										<DragBarMobile
-											showTab={showTab}
-											setShowTab={setShowTab}
-											roomItems={roomItems}
-											furnitureItems={furnitureItems}
-											isOverCanvas={isOverCanvas}
-											draggingItemSize={draggingItemSize}
-										/>
-									) : (
-										<DragBarPC
-											sidebarRef={sidebarRef}
-											roomItems={roomItems}
-											furnitureItems={furnitureItems}
-											isOverCanvas={isOverCanvas}
-											draggingItemSize={draggingItemSize}
-										/>
-									)}
-									{/* Canvas */}
-									<div
-										className="relative flex-1 overflow-auto"
-										id="canvas-drop-area"
-									>
-										{/* 模组 */}
-										<div className="absolute px-2 py-1 text-sm border-gray-300 border-dashed top-2 left-2 z-9 border-1 rounded-xl bg-secondary">
-											<div className="text-center text-gray-600">
-												{t("module")}
-											</div>
-											<div className="flex">
-												<div
-													onClick={() => {
-														onModuleClick("1");
-													}}
-													className="px-2 m-2 text-white cursor-pointer bg-primary rounded-xl"
-												>
-													{t("module1")}
+					{isMobile ? (
+						<NavbarDesignMobile
+							onSaveProject={onSaveProject}
+							history={history}
+							historyIndex={historyIndex}
+							handleUndo={handleUndo}
+							handleRedo={handleRedo}
+							onUserOpen={setShowUserInfoDialog}
+						/>
+					) : (
+						<NavbarDesign
+							onSaveProject={onSaveProject}
+							onGenReport={onGenReport}
+							onUserOpen={setShowUserInfoDialog}
+						/>
+					)}
+					<div className="pt-16">
+						<DndContext
+							sensors={sensors}
+							onDragStart={handleDragStart}
+							onDragOver={handleDragOver}
+							onDragMove={handleDragMove}
+						>
+							<div className="min-h-[calc(100vh-64px)] bg-gray-50">
+								<div
+									className="container p-0"
+									style={{ maxWidth: "100%" }}
+								>
+									<div className="flex h-[calc(100vh-64px)]">
+										{isMobile ? (
+											<DragBarMobile
+												showTab={showTab}
+												setShowTab={setShowTab}
+												roomItems={roomItems}
+												furnitureItems={furnitureItems}
+												isOverCanvas={isOverCanvas}
+												draggingItemSize={
+													draggingItemSize
+												}
+											/>
+										) : (
+											<DragBarPC
+												sidebarRef={sidebarRef}
+												roomItems={roomItems}
+												furnitureItems={furnitureItems}
+												isOverCanvas={isOverCanvas}
+												draggingItemSize={
+													draggingItemSize
+												}
+											/>
+										)}
+										{/* Canvas */}
+										<div
+											className="relative flex-1 overflow-auto"
+											id="canvas-drop-area"
+										>
+											{/* 模组 */}
+											<div className="absolute px-2 py-1 text-sm border-gray-300 border-dashed top-2 left-2 z-9 border-1 rounded-xl bg-secondary">
+												<div className="text-center text-gray-600">
+													{t("module")}
 												</div>
-												<div
-													onClick={() => {
-														onModuleClick("2");
-													}}
-													className="px-2 m-2 text-white cursor-pointer bg-primary rounded-xl"
-												>
-													{t("module2")}
+												<div className="flex">
+													<button
+														onClick={() =>
+															setWizardOpen(true)
+														}
+														className="px-2 m-2 text-white cursor-pointer bg-primary rounded-xl"
+													>
+														{t("smartSelection")}
+													</button>
 												</div>
 											</div>
+											<Canvas
+												ref={canvasRef}
+												locale={locale}
+												history={history}
+												historyIndex={historyIndex}
+												setHistory={setHistory}
+												setHistoryIndex={
+													setHistoryIndex
+												}
+												handleUndo={handleUndo}
+												handleRedo={handleRedo}
+												onGenReport={onGenReport}
+												showTab={showTab}
+												onShowTab={onShowTab}
+											/>
 										</div>
-										<Canvas
-											ref={canvasRef}
-											locale={locale}
-											history={history}
-											historyIndex={historyIndex}
-											setHistory={setHistory}
-											setHistoryIndex={setHistoryIndex}
-											handleUndo={handleUndo}
-											handleRedo={handleRedo}
-											onGenReport={onGenReport}
-											showTab={showTab}
-											onShowTab={onShowTab}
-										/>
 									</div>
 								</div>
 							</div>
-						</div>
-						<DragOverlay>
-							{active?.id &&
-								isOverCanvas &&
-								(active.data.current.cateType ===
-								ITEM_TYPES.ROOM ? (
-									// 房间在画布上的样式
-									<div
-										className="flex flex-col items-center justify-center rounded-lg bg-white/80"
-										style={{
-											transform: isMobile
-												? "translateY(78px)"
-												: "translateY(0)",
-											width: defaultRoomSize.width,
-											height: defaultRoomSize.height,
-											border: "8px solid",
-											borderColor:
-												ROOM_COLORS[
-													roomItems.find(
-														(item) =>
-															item.id ===
-															active.id
-													)?.data.type
-												],
-											borderRadius: "8px",
-										}}
-									>
-										<div className="flex flex-col items-center">
-											<Image
-												className="bg-[#EFF7F4] rounded-lg"
-												src={active.data.current.icon}
-												alt="Room"
-												width={draggingItemSize}
-												height={draggingItemSize}
-											/>
-
-											<span className="mt-1 text-sm text-gray-600">
-												{active.data.current.label +
-													(canvasRef.current
-														.getLocalItems()
-														.filter(
+							<DragOverlay>
+								{active?.id &&
+									isOverCanvas &&
+									(active.data.current.cateType ===
+									ITEM_TYPES.ROOM ? (
+										// 房间在画布上的样式
+										<div
+											className="flex flex-col items-center justify-center rounded-lg bg-white/80"
+											style={{
+												transform: isMobile
+													? "translateY(78px)"
+													: "translateY(0)",
+												width: defaultRoomSize.width,
+												height: defaultRoomSize.height,
+												border: "8px solid",
+												borderColor:
+													ROOM_COLORS[
+														roomItems.find(
 															(item) =>
-																item.data
-																	.type ===
-																active.data
-																	.current
-																	.type
-														).length +
-														1)}
-											</span>
-										</div>
-									</div>
-								) : (
-									// 家具在画布上的样式
-									<Image
-										// className='bg-[#EFF7F4] rounded-lg'
-										src={active.data.current.activeIcon}
-										alt="Furniture"
-										width={active.data.current.size.width}
-										height={active.data.current.size.height}
-									/>
-								))}
-						</DragOverlay>
-					</DndContext>
-				</div>
-				<AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
-					<AlertDialogContent>
-						<AlertDialogHeader>
-							<AlertDialogTitle>
-								{t("hasReportAlert")}
-							</AlertDialogTitle>
-							<AlertDialogDescription>
-								{t("description")}
-							</AlertDialogDescription>
-						</AlertDialogHeader>
-						<AlertDialogFooter>
-							<AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
-							<AlertDialogAction onClick={onReadReport}>
-								{t("readReport")}
-							</AlertDialogAction>
-							<AlertDialogAction onClick={onCoverReport}>
-								{t("coverReport")}
-							</AlertDialogAction>
-						</AlertDialogFooter>
-					</AlertDialogContent>
-				</AlertDialog>
+																item.id ===
+																active.id
+														)?.data.type
+													],
+												borderRadius: "8px",
+											}}
+										>
+											<div className="flex flex-col items-center">
+												<Image
+													className="bg-[#EFF7F4] rounded-lg"
+													src={
+														active.data.current.icon
+													}
+													alt="Room"
+													width={draggingItemSize}
+													height={draggingItemSize}
+												/>
 
-				<AlertDialog
-					open={moduleAlertOpen}
-					onOpenChange={setModuleAlertOpen}
-				>
-					<AlertDialogContent>
-						<AlertDialogHeader>
-							<AlertDialogTitle>
-								{t("useModuleAlert")}
-							</AlertDialogTitle>
-						</AlertDialogHeader>
-						<AlertDialogFooter>
-							<AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
-							<AlertDialogAction
-								onClick={() => onCoverDesign("1")}
-							>
-								{t("ok")}
-								{t("module1")}
-							</AlertDialogAction>
-							<AlertDialogAction
-								onClick={() => onCoverDesign("2")}
-							>
-								{t("ok")}
-								{t("module2")}
-							</AlertDialogAction>
-						</AlertDialogFooter>
-					</AlertDialogContent>
-				</AlertDialog>
-			</>
-		</Suspense>
+												<span className="mt-1 text-sm text-gray-600">
+													{active.data.current.label +
+														(canvasRef.current
+															.getLocalItems()
+															.filter(
+																(item) =>
+																	item.data
+																		.type ===
+																	active.data
+																		.current
+																		.type
+															).length +
+															1)}
+												</span>
+											</div>
+										</div>
+									) : (
+										// 家具在画布上的样式
+										<Image
+											// className='bg-[#EFF7F4] rounded-lg'
+											src={active.data.current.activeIcon}
+											alt="Furniture"
+											width={
+												active.data.current.size.width
+											}
+											height={
+												active.data.current.size.height
+											}
+										/>
+									))}
+							</DragOverlay>
+						</DndContext>
+					</div>
+					<AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
+						<AlertDialogContent>
+							<AlertDialogHeader>
+								<AlertDialogTitle>
+									{t("hasReportAlert")}
+								</AlertDialogTitle>
+								<AlertDialogDescription>
+									{t("description")}
+								</AlertDialogDescription>
+							</AlertDialogHeader>
+							<AlertDialogFooter>
+								<AlertDialogCancel>
+									{t("cancel")}
+								</AlertDialogCancel>
+								<AlertDialogAction onClick={onReadReport}>
+									{t("readReport")}
+								</AlertDialogAction>
+								<AlertDialogAction onClick={onCoverReport}>
+									{t("coverReport")}
+								</AlertDialogAction>
+							</AlertDialogFooter>
+						</AlertDialogContent>
+					</AlertDialog>
+
+					<AlertDialog
+						open={moduleAlertOpen}
+						onOpenChange={setModuleAlertOpen}
+					>
+						<AlertDialogContent>
+							<AlertDialogHeader>
+								<AlertDialogTitle>
+									{t("useModuleAlert")}
+								</AlertDialogTitle>
+							</AlertDialogHeader>
+							<AlertDialogFooter>
+								<AlertDialogCancel>
+									{t("cancel")}
+								</AlertDialogCancel>
+								<AlertDialogAction
+									onClick={() => onCoverDesign("1")}
+								>
+									{t("ok")}
+									{t("module1")}
+								</AlertDialogAction>
+								<AlertDialogAction
+									onClick={() => onCoverDesign("2")}
+								>
+									{t("ok")}
+									{t("module2")}
+								</AlertDialogAction>
+								<AlertDialogAction
+									onClick={() => onCoverDesign("3")}
+								>
+									{t("ok")}
+									{t("module3")}
+								</AlertDialogAction>
+								<AlertDialogAction
+									onClick={() => onCoverDesign("4")}
+								>
+									{t("ok")}
+									{t("module4")}
+								</AlertDialogAction>
+								<AlertDialogAction
+									onClick={() => onCoverDesign("5")}
+								>
+									{t("ok")}
+									{t("module5")}
+								</AlertDialogAction>
+								<AlertDialogAction
+									onClick={() => onCoverDesign("6")}
+								>
+									{t("ok")}
+									{t("module6")}
+								</AlertDialogAction>
+								<AlertDialogAction
+									onClick={() => onCoverDesign("7")}
+								>
+									{t("ok")}
+									{t("module7")}
+								</AlertDialogAction>
+							</AlertDialogFooter>
+						</AlertDialogContent>
+					</AlertDialog>
+					<ModuleWizard
+						open={wizardOpen}
+						onClose={() => setWizardOpen(false)}
+						onSelectModule={(moduleId) => {
+							onCoverDesign(moduleId);
+							setWizardOpen(false);
+						}}
+					/>
+				</>
+			</Suspense>
+		</AccessControlWrapper>
 	);
 }

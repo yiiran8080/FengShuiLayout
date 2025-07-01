@@ -12,42 +12,80 @@
 		"loading2": "加载中，请稍候...",
 		"generating": "正在生成中，请不要离开页面...",
 		"translating": "语言转换中，请稍候再试...",
-		"translating2": "语言转换中，时间较长，请耐心等待..."
+		"translating2": "语言转换中，时间较长，请耐心等待...",
+		"saveSuccess": "保存成功！",
+		"saveFailed": "保存失败："
 	},
 
 	"Navigation": {
 		"cn": "简体中文",
 		"tw": "繁體中文",
 		"unlock": "解锁进阶分析",
-		"yourReport": "您的家居风水分析结果"
+		"yourReport": "您的家居风水分析结果",
+		"home": "首页",
+		"pricing": "服务定价"
 	},
 	"home": {
 		"hero": {
 			"title": "打造和谐风水布局",
 			"title2": "融合自然之力，优化气场流动",
-			"subtitle": "新年新气象，一步实现365天好运",
+			"subtitle1": "你是否经常感到挫败？",
+			"subtitle2": "是否觉得人生停滞不前？",
+			"subtitle3": "家庭容易发生口角？",
+			"subtitle4": "试试移动房间的一个小角落，你将会变得更幸运，收获幸福！",
+			"subtitle5": "阅读专属科学订制测评报告，解锁幸福人生。",
 			"cta": "免费开始测算",
 			"login": "登录",
 			"logout": "登出",
 			"locale": "语言切换",
 			"home": "首页",
-			"readReport": "查看报告"
+			"readReport": "查看报告",
+			"pricing": "服务定价"
 		},
 		"features": {
-			"title1": "准确度高 用户称心满意",
-			"subtitle1": "配合住户八字，辅以流年九宫飞星图、家居方位等进行分析，并参考10万+案例，用户能量运势增强",
-			"title2": "24-7自助定制化服务",
-			"subtitle2": "随时随地，1分钟即可免费获取专业风水谘询。只需输入家居平面图和简单个人资料，操作简单方便",
-			"title3": "市场一折价格 退款保障",
-			"subtitle3": "划一价HKD$888，获得加强版风水报告，包括每月的调整方案。新张期内follow Instagram获得迎新码即享低至每平方呎HKD$1优惠，2025年6月30日前购买更享退款保障*。"
+			"title": "为何选择我们的风水测算服务？",
+			"title1": "10,000＋",
+			"subtitle1": "用户满意",
+			"title2": "24-7",
+			"subtitle2": "自助定制化服务",
+			"title3": "100%",
+			"subtitle3": "退款保障",
+			"title4": "10%",
+			"subtitle4": "市场一折价格"
+		},
+		"Desire": {
+			"bigtitle1": "你是否有以下问题烦恼?",
+			"bigtitle2": "你是否有想要拥有?",
+			"title1": "01",
+			"subtitle1": "财神不进家门？",
+			"title2": "02",
+			"subtitle2": "家庭关系不和睦？",
+			"title3": "03",
+			"subtitle3": "孩子读书不尽人意？",
+			"title4": "04",
+			"subtitle4": "事业停滞不前？",
+			"title5": "身体健康",
+			"subtitle5": "不再受疾病困扰",
+			"title6": "事业顺利",
+			"subtitle6": "找到理想工作",
+			"title7": "孩子省心",
+			"subtitle7": "孩子成绩提升",
+			"title8": "财运提升",
+			"subtitle8": "3个月提升15%"
 		},
 		"share": {
-			"title": "分享您的平面图",
-			"description": "绘制平面图，使用我们的交互工具拖放来可视化您的空间",
-			"cta": "立即开始"
+			"title": "HarmoniQ风水测算服务流程",
+			"subtitle1": "拍照上传房间照片",
+			"description1": "免费测评一个房间",
+			"subtitle2": "分享报告与好友",
+			"description2": "得coupon付费测算",
+			"subtitle3": "填写信息移动模块",
+			"description3": "绘制专属户型平面图",
+			"subtitle4": "获取专属定制报告",
+			"description4": "收到详细分析报告和建议"
 		},
 		"compare": {
-			"title": "HarmoniQ洞见",
+			"title": "HarmoniQ焕运",
 			"description": "获取个性化风水见解，按照我们的建议打造完美平衡的生活空间",
 			"cta": "定制化风水报告",
 			"before": "测算前",
@@ -64,17 +102,17 @@
 		},
 		"comments": {
 			"title": "甜蜜的家",
-			"description": "在各个交流平台与反馈渠道上，用户对我们的称赞不绝于耳，无论是产品品质还是服务态度，都得到充分肯定。",
+			"description": "在各大交流平台和反馈渠道上，用户对我们的称赞不绝于耳，无论是产品品质还是服务态度，都得到了充分肯定。",
 			"p1": "30岁自由职业者",
-			"c1": "HarmoniQ让我的小空间变得既时尚又实用！以前压力大、睡不好，杂物堆满导致工作与休息混乱。他们建议移走床头横梁压顶，改用屏风分隔工作与休息区，并在东南窗边摆放绿植提升木气，加强财运与健康气场。现在家中气流顺畅，晚上睡眠质量提升，工作效率也显著改善。",
+			"c1": "HarmoniQ让我的小户型变得既时尚又实用！以前压力大、睡不好，杂物堆满导致工作与休息混乱。他们建议移走床头横梁压顶，改用屏风分隔工作与休息区，并在东南窗边摆放绿植提升木气，加强财运与健康气场。现在家中气流顺畅，晚上睡眠质量提升，工作效率也显著改善。",
 			"p2": "一家三口",
-			"c2": "以前家中嘈杂，小孩读书不专心，气氛紧张。他们调整客厅家具朝向，移除西北角杂物以畅通财气，又在小孩书桌旁的东方加暖色调灯饰，增强文昌位学习运。现在空间和谐，小孩专注力提升，成绩进步，家庭关系也更融洽！",
-			"p3": "同居男女朋友，有宠物",
-			"c3": "HarmoniQ帮我们与狗狗打造舒适家园！以前杂物乱堆，争执不断。他们建议在玄关加储物柜清走东北方位杂物，改善入气口，又在客厅南方放置镜子扩展空间感，并在狗狗活动区的西方加自然石材，提升金气与稳定感。现在家整洁和谐，感情升温，狗狗也有舒适角落。",
-			"p4": "24岁自住Gen Z",
-			"c4": "HarmoniQ让我的首个家既型又实用！以前不懂布置，生活工作乱成一团。他们用多功能家具节省空间，调整床位避开西北方煞气，工作台移至东北文昌位增强事业运，又在客厅加潮流风水摆设提升正能量。现在空间井然有序，我对家充满信心与满足感。",
+			"c2": "以前家里嘈杂，孩子学习不专心，气氛紧张。他们调整客厅家具朝向，移除西北角杂物以畅通财气，又在孩子书桌旁的东方加暖色调灯饰，增强文昌位学习运。现在空间和谐，孩子专注力提升，成绩进步，家庭关系也更融洽！",
+			"p3": "同居情侣，有宠物",
+			"c3": "“入气口”有点难以理解；“现在家庭变得十分整洁和谐，我和对象的感情也不断升温，我们的狗狗也有属于它自己舒适的窝。”",
+			"p4": "24岁独居Gen Z",
+			"c4": "第一个家既有型又实用——让我第一次体验到独居生活也值得被重视，我对家充满信心与满足感——让我越来越享受在家的感觉",
 			"p5": "已婚专业人士",
-			"c5": "HarmoniQ帮我们找回生活平静！以前工作压力大，家中难放松。他们建议清走卧室东北角杂物，避免煞气影响健康，又用柔和色调灯光调和阴阳，并在客厅东南方加流水摆设催旺财运与活力。现在睡眠改善，压力减少，风水调整效果令人惊喜！"
+			"c5": "“家里难放松”——“经常把工作上的情绪带回家，导致我和妻子在家里总是充满一种紧绷感，并且总是失眠睡不好”，“现在睡眠改善”——“现在我和妻子都能一觉睡到天亮，甚至还怀上了宝宝！特别感谢HarmoniQ”"
 		},
 		"message": {
 			"title": "初心寄语",
@@ -103,13 +141,18 @@
 		},
 
 		"footer": {
+			"title": "准备开始你的风水之旅？",
+			"subtitle": "立即体验HarmoniQ的风水分析, 让科技为您的家居带来和谐好运",
 			"consult": "咨询",
+			"address": "地址",
+			"email": "电子邮箱",
 			"contact": "联系我们",
 			"privacy": "隐私政策",
 			"terms": "用户条款",
 			"focus": "关注我们",
 			"law": "法律信息",
-			"copyright": "保留所有权利"
+			"copyright": "保留所有权利",
+			"button": "立即开始分析 >"
 		},
 		"contact": {
 			"title": "联络我们",
@@ -219,6 +262,202 @@
 			}
 		}
 	},
+	"upload": {
+		"title": "上传您的家居照片以获得免费测算报告",
+		"description1": "将您的家居照片上传到此处，我们将免费帮您分析您的家居格局以及它的风水",
+		"description2": "是否有利您的运势。",
+		"uploadAction": "拍照/ 上传照片/ 拖拽照片到此处",
+		"fileFormat": "仅支持JPEG或PNG格式，10MB以下。",
+		"browseButton": "浏览照片",
+		"disclaimer": "*您的照片仅供测算使用。",
+		"nextStep": "下一步",
+		"modalTitle": "请填写以下信息",
+		"gender": "性别：",
+		"genderSelect": "请选择",
+		"male": "男",
+		"female": "女",
+		"birthDateTime": "出生年月日时间：",
+		"year": "年",
+		"month": "月",
+		"day": "日",
+		"hour": "时",
+		"roomType": "房间类型：",
+		"roomTypeSelect": "请选择",
+		"direction": "房间朝向：",
+		"directionSelect": "请选择",
+		"furniture": "家具：",
+		"furnitureInput": "请输入家具",
+		"startAnalysis": "免费开始测算",
+		"calculating": "计算中...",
+		"back": "返回",
+		"close": "关闭",
+		"processing": "计算中，请稍候...",
+		"roomTypes": {
+			"bedroom": "卧室",
+			"livingRoom": "客厅",
+			"diningRoom": "餐厅",
+			"kitchen": "厨房",
+			"bathroom": "洗手间",
+			"studyRoom": "书房",
+			"balcony": "阳台",
+			"storageRoom": "储物室"
+		},
+		"directions": {
+			"north": "正北",
+			"northEast": "东北",
+			"east": "正东",
+			"center": "正中",
+			"southEast": "东南",
+			"south": "正南",
+			"southWest": "西南",
+			"west": "正西",
+			"northWest": "西北"
+		},
+		"invalidRoomImage": "该图片不是房间照片，请上传室内房间图片",
+		"roomDetected": "房间照片验证成功！",
+		"validatingImage": "正在验证图片...",
+		"invalidFileFormat": "文件格式不正确，请上传JPEG或PNG格式的图片",
+		"uploadDifferentImage": "请上传不同的图片",
+		"roomImageRequired": "需要上传室内房间照片才能进行风水分析"
+	},
+	"theory": {
+		"title": "风水测算是基于什么原理？",
+		"description": "通过上传家居图片，我们的智能风水分析系统利用先进的图像识别和人工智能技术，结合传统风水学的核心理论，为您的家居环境提供深度的风水解析。",
+		"cards": {
+			"imageRecognition": {
+				"title": "图像识别与布局分析",
+				"description": "系统会对您上传的家居图片进行自动识别，提取家具摆放、空间格局、光线分布等关键信息，建立详细的室内环境模型。"
+			},
+			"knowledgeBase": {
+				"title": "风水学知识库对比",
+				"description": "AI内置了完整的风水学知识库，包括五行平衡、阴阳协调等理论。系统会将家居布局与风水原则进行对比，定位潜在问题和优化点。"
+			},
+			"energyFlow": {
+				"title": "能量流动评估",
+				"description": "系统通过分析空间的开口位置、家具朝向、光线反射等，预测气流和能量流动的路径，帮助判断是否存在风水上的「阻滞」或「泄气」问题。"
+			},
+			"personalizedAdvice": {
+				"title": "个性化风水建议",
+				"description": "根据您的家庭成员命理、五行需求，系统会生成具体调整建议，例如家具的摆放、色彩搭配、植物添加等，让您的家居环境更和谐。"
+			}
+		}
+	},
+	"freeChapter3": {
+		"title": "您的免费风水诊断卡报告已生成!",
+		"uploadedImage": "上传的房间照片",
+		"roomAnalysis": "房间分析",
+		"tabs": {
+			"base": "基础分析",
+			"furniture": "家具摆放",
+			"taboo": "禁忌",
+			"wuxing": "五行色系与材质"
+		},
+		"enhancementFocus": "🔥 命理增强焦点：根据您的八字.用神，本房应强化火元素能量；",
+		"suggestion1": "1. 每日午时开放正东的LED灯带；",
+		"suggestion2": "2. 在正东放置紫水晶洞补火元素",
+		"unlockButton": "解锁开启详尽报告",
+		"riskDetected": "检测到3处关键风水隐患!!",
+		"risks": {
+			"career": "事业隐患",
+			"relationship": "感情隐患",
+			"wealth": "财运隐患"
+		},
+		"careerContent": "房间布置会引发最近事业停滞不前，夏季火旺阶段则需低调，避免与同事正面冲突！对创业者而言，巳火为「驿马+劫财」，适合拓展异地市场，但合伙财务务必白纸黑字（己土食神被合，易有口头承诺反悔）。农历八月（酉月）「巳酉半合」将转化竞争为合作契机，可把握金属、科技相关领域商机。",
+		"relationshipContent": "房间布置会引发最近感情问题，夏季火旺阶段则需低调，避免与同事正面冲突！对创业者而言，巳火为「驿马+劫财」，适合拓展异地市场，但合伙财务务必白纸黑字（己土食神被合，易有口头承诺反悔）。农历八月（酉月）「巳酉半合」将转化竞争为合作契机，可把握金属、科技相关领域商机。",
+		"wealthContent": "房间布置会引发最近事业停滞不前，夏季火旺阶段则需低调，避免与同事正面冲突！对创业者而言，巳火为「驿马+劫财」，适合拓展异地市场，但合伙财务务必白纸黑字（己土食神被合，易有口头承诺反悔）。农历八月（酉月）「巳酉半合」将转化竞争为合作契机，可把握金属、科技相关领域商机。",
+		"unlockDetail": "解锁查看详细内容",
+		"noData": "No data found for this room type and direction."
+	},
+	"promo": {
+		"title": "全面掌握家庭风水运势?",
+		"description": "想要更加精准了解家庭风水, 改善运势状况, 增强生活幸福感? 只需要花点时间, 就可以改变你的长期运势!",
+		"button": "推荐HarmoniQ"
+	},
+	"pricePromo": {
+		"title": "您的付費風水報告包含哪些內容",
+		"desc": "随时随地分析您的家居的风水布局，并由风水大师庄先生提供风水指导，助您事事更顺心，运气更佳。",
+		"feature1": {
+			"title": "准确度高 用户称心满意",
+			"desc": "配合住户八字，辅以流年九宫飞星图、家居方位等进行分析，并参考10万+案例，用户能量运势增强"
+		},
+		"feature2": {
+			"title": "24-7自助定制化服务",
+			"desc": "随时随地，1分钟即可免费获取专业风水谘询。只需输入家居平面图和简单个人资料，操作简单方便"
+		},
+		"feature3": {
+			"title": "市场一折价格",
+			"desc": "新张期内follow Instagram获得迎新码即享低至每平方呎HKD$1优惠，2025年6月30日前购买更享退款保障*。"
+		}
+	},
+	"pricePage": {
+		"title": "解锁进阶分析",
+		"subtitle": "亲自动手还原家庭布局，解锁风水密码",
+		"desc": "免费版的分析为流年运程和家居风水的基础分析，进阶版的分析报告将由风水大师庄先生亲自分析您的命盘并给出专业的风水建议。",
+		"shareBtn": "立即分享解锁取得优惠码",
+		"perSqft": "每平方尺",
+		"freeVersion": "体验版",
+		"freeBtn": "免费测算",
+		"freeFeatures": [
+			"免费测试一个房间",
+			"单个房间基础分析",
+			"关键隐患提示",
+			"流年运程基础分析"
+		],
+		"freeDisabled": ["进阶个人命理分析", "流年预警"],
+		"premiumVersion": "专享版",
+		"premiumBtn": "立即测算",
+		"lockedBtn": "已锁定",
+		"unlockedBadge": "✓ 已解锁",
+		"popularBadge": "99%用户选择",
+		"lockedTitle": "此方案已锁定",
+		"lockedDesc": "分享输入优惠码解锁特殊价格",
+		"inputPromoBtn": "输入优惠码",
+		"inputPromoPlaceholder": "输入优惠码",
+		"confirmBtn": "确认",
+		"cancelBtn": "取消",
+		"promoError": "无效的优惠码，请重试",
+		"subVersion": "订阅版",
+		"subBtn": "立即测算",
+		"premiumFeatures": [
+			"深度优化全屋家居布局",
+			"全屋分析报告",
+			"关键隐患化解",
+			"流年运程综合分析",
+			"进阶个人命理分析",
+			"流年预警"
+		],
+		"sqftPopupTitle": "请输入房屋面积",
+		"sqftPopupDesc": "请输入您房屋的总面积（平方尺），我们将为您计算准确的订阅价格。",
+		"sqftInputLabel": "房屋面积（平方尺）",
+		"sqftInputPlaceholder": "例如：800",
+		"sqftProceedBtn": "立即订阅",
+		"sqftCancelBtn": "取消",
+		"sqftErrorMsg": "请输入有效的房屋面积",
+		"shareProcessing": "开启分享窗口中...",
+		"shareToFacebook": "📘 分享到Facebook获取优惠码",
+		"yourPromoCode": "您的专属优惠码：",
+		"copyPromoCode": "复制优惠码",
+		"copied": "已复制",
+		"usePromoCodeBelow": "请在以下方案使用此优惠码",
+		"shareConfirmTitle": "分享确认",
+		"shareConfirmDesc": "您是否已经成功在Facebook上分享了我们的内容？\n如果您已分享，请点击「是」获取优惠码！",
+		"yesShared": "是，我已分享",
+		"sqftPopupTitleNew": "请输入房屋面积",
+		"sqftPopupDescNew": "请输入您房屋的总面积（平方尺），我们将为您计算准确的价格。",
+		"sqftMinimumNote": "最少需要380平方尺",
+		"sqftInputLabelNew": "房屋面积（平方尺）",
+		"sqftPlaceholderNew": "例如：800",
+		"buyNow": "立即购买",
+		"cancel": "取消",
+		"processing": "处理中...",
+		"paymentError": "支付处理失败，请稍后再试",
+		"sqftValidationError": "房屋面积不能少于380平方尺",
+		"existingReportFound": "发现已有风水报告",
+		"existingReportDescription": "您已经生成过风水报告。您可以查看现有报告（免费），或重新测试新的布局（需要重新付费）。",
+		"viewExistingReport": "查看现有报告",
+		"retestWithPayment": "重新测试",
+		"checkingExistingReports": "正在检查已有报告..."
+	},
 	"design": {
 		"showTab": "选择房间或家具",
 		"cta": "开始测算",
@@ -240,7 +479,46 @@
 		"hour": "时",
 		"module": "模组",
 		"module1": "两室一厅",
-		"module2": "三室一厅"
+		"module2": "三室一厅",
+		"module3": "一室一厅",
+		"module4": "三室两厕",
+		"module5": "两室一厕(没阳台)",
+		"module6": "三室一厕(没阳台)",
+		"module7": "一室一厕(没阳台)",
+		"rotate": "旋转",
+		"delete": "删除",
+		"selected": "个已选择",
+		"multiSelectToast": "已多选，点击其他物件可继续多选",
+		"longPressHint": "长按可多选物件 (Long press to multi-select)",
+		"clear": "清空",
+		"clearCanvas": "清空画布",
+		"resetNorth": "重置北方",
+		"resetView": "重置视图",
+		"compassTooltip": "点击旋转指南针",
+		"clearTooltip": "清空画布",
+		"north": "北",
+		"northeast": "东北",
+		"east": "东",
+		"southeast": "东南",
+		"south": "南",
+		"southwest": "西南",
+		"west": "西",
+		"northwest": "西北",
+		"smartSelection": "智能选择",
+		"wizardTitle": "智能布局选择",
+		"wizardSubtitle": "回答几个简单问题，我们将为您推荐最适合的布局模组",
+		"wizardStep1Title": "你要运算的居家有多少房间？",
+		"wizardStep2Title": "请问有多少洗手间？",
+		"wizardStep3Title": "请问有没有阳台？",
+		"oneRoom": "一个房间",
+		"twoRooms": "两个房间",
+		"threeRooms": "三个房间",
+		"oneBathroom": "一个洗手间",
+		"twoBathrooms": "两个洗手间",
+		"hasBalcony": "有阳台",
+		"noBalcony": "没有阳台",
+		"verifyingAccess": "正在验证访问权限...",
+		"redirecting": "正在跳转..."
 	},
 	"report": {
 		"catelog": "目录",
@@ -301,7 +579,10 @@
 			"tab3": "五行色系与材质",
 			"tab4": "运势增强方法",
 			"p6-1": "注：以上建议需配合实际空间尺寸调整，若有冲煞需优先化解。",
-			"transfer": "如果assistant的内容有值，请直接把assistant提供的内容原样翻译成简体中文。"
+			"transfer": "如果assistant的内容有值，请直接把assistant提供的内容原样翻译成简体中文。",
+			"scrollInstruction": "下滑查看详细解读与1项免费调整方案（隐藏禁忌+运势增强方法）",
+			"advancedAnalysisTitle": "流年运程进阶分析",
+			"unlockAdvancedAnalysis": "解锁以得到整份流年分析"
 		}
 	}
 }

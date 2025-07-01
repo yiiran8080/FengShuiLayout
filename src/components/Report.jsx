@@ -192,7 +192,7 @@ export default function ReportPage({ locale }) {
 			},
 		];
 		if (isLock) {
-			setSections([...sections, { title: t("title4Preview") }]);
+			setSections([...sections, { title: t("title4") }]);
 			setAnchorList(anchorList);
 		} else {
 			setSections([
@@ -910,7 +910,9 @@ export default function ReportPage({ locale }) {
 							{t("p1-9")}
 							<span className="font-bold">{t("p1-10")}</span>
 						</p>
-						<UnlockButton className="bg-[#096E56] text-white md:ml-2 w-full md:w-auto mt-5 md:mt-0 block md:inline text-center" />
+						{isLock && (
+							<UnlockButton className="bg-[#096E56] text-white md:ml-2 w-full md:w-auto mt-5 md:mt-0 block md:inline text-center" />
+						)}
 					</div>
 				</div>
 				{/* 第二章 流年运程解析 */}
@@ -925,81 +927,127 @@ export default function ReportPage({ locale }) {
 					>
 						{sections[1].title}
 					</h1>
-					{isLock && (
-						<div className="absolute left-0 z-0 w-full bg-lock top-25 h-70"></div>
-					)}
-					<div className={isLock && "h-70 overflow-hidden"}>
-						<p className="px-5 font-bold leading-8 tracking-normal text-justify md:px-0">
-							<span className="text-[#073E31]">{t("p2-1")}</span>
-							{t("p2-2")}
-						</p>
+					<p className="px-5 font-bold leading-8 tracking-normal text-justify md:px-0">
+						<span className="text-[#073E31]">{t("p2-1")}</span>
+						{t("p2-2")}
+					</p>
 
-						{reportDocData.yunchengData.map((item, index) => {
-							return (
-								<section
-									style={{
-										backgroundColor:
-											sections[1].children[index].bgColor,
-									}}
-									className="md:rounded-[26px] rounded-none md:p-8 p-5 md:mt-10 mt-10"
+					{/* 指數展示 */}
+					<div className="flex flex-wrap justify-center gap-3 px-5 mt-8 mb-8 sm:gap-4 md:gap-6 md:px-0 md:justify-between">
+						{reportDocData.yunchengData
+							.slice(0, 5)
+							.map((item, index) => (
+								<div
+									key={index}
+									className="flex flex-col items-center min-w-0 flex-1 max-w-[calc(50%-6px)] sm:max-w-[calc(33.333%-8px)] md:max-w-none"
 								>
-									<div className="flex items-center justify-between">
-										<p
-											ref={(el) =>
-												(sectionRefs.current[
-													6 + index
-												] = el)
-											}
-											id={`section-1-${index}`}
-											className={`leading-8 text-xl font-bold flex items-center`}
+									<div
+										className="flex flex-col items-center justify-center w-16 h-16 mb-2 border-2 rounded-full sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 sm:border-3 md:border-4"
+										style={{
+											borderColor:
+												sections[1].children[index]
+													.color,
+											background: "#fff",
+										}}
+									>
+										<span
+											className="text-xl font-extrabold sm:text-2xl md:text-4xl lg:text-5xl"
 											style={{
 												color: sections[1].children[
 													index
 												].color,
 											}}
 										>
-											{index < 5 && (
-												<Image
-													src={`/images/report/icon${index}.png`}
-													width={24}
-													height={24}
-													alt=""
-													className="mr-1"
-												/>
-											)}
-											{sections[1].children[index].title}
-										</p>
-										{index < 5 && (
+											{item.zhishu?.split("/")[0]}
+										</span>
+										<span
+											className="text-xs font-bold sm:text-sm md:text-base lg:text-lg"
+											style={{
+												color: sections[1].children[
+													index
+												].color,
+											}}
+										>
+											/10
+										</span>
+									</div>
+									{/* Optional: Add labels below for mobile */}
+									<span className="mt-1 text-xs text-center text-gray-600 sm:text-sm md:hidden">
+										{sections[1].children[index].title}
+									</span>
+								</div>
+							))}
+					</div>
+
+					<div className="relative">
+						<div>
+							{reportDocData.yunchengData.map((item, index) => {
+								return (
+									<section
+										style={{
+											backgroundColor:
+												sections[1].children[index]
+													.bgColor,
+										}}
+										className="md:rounded-[26px] rounded-none md:p-8 p-5 md:mt-10 mt-10"
+									>
+										<div className="flex items-center justify-between">
 											<p
-												className={`leading-8 flex items-end`}
+												ref={(el) =>
+													(sectionRefs.current[
+														6 + index
+													] = el)
+												}
+												id={`section-1-${index}`}
+												className={`leading-8 text-xl font-bold flex items-center`}
 												style={{
 													color: sections[1].children[
 														index
 													].color,
 												}}
 											>
-												<span className="text-xl font-bold">
-													{item.zhishu?.split("/")[0]}
-												</span>
-												<span className="text-sm">
-													/10
-												</span>
+												{index < 5 && (
+													<Image
+														src={`/images/report/icon${index}.png`}
+														width={24}
+														height={24}
+														alt=""
+														className="mr-1"
+													/>
+												)}
+												{
+													sections[1].children[index]
+														.title
+												}
 											</p>
-										)}
-									</div>
-									<p className="leading-8 text-justify">
-										{item.content}
-									</p>
-								</section>
-							);
-						})}
-						<div className="items-center px-6 mt-10 md:flex md:p-0">
-							<p>
-								<span className="text-[#FF531A]">*</span>
-								{t("p2-3")}
-								<span className="font-bold">{t("p2-4")}</span>
-							</p>
-							<UnlockButton className="bg-[#096E56] text-white md:ml-2 w-full md:w-auto mt-5 md:mt-0 block md:inline text-center" />
+											{index < 5 && (
+												<p
+													className={`leading-8 flex items-end`}
+													style={{
+														color: sections[1]
+															.children[index]
+															.color,
+													}}
+												>
+													<span className="text-xl font-bold">
+														{
+															item.zhishu?.split(
+																"/"
+															)[0]
+														}
+													</span>
+													<span className="text-sm">
+														/10
+													</span>
+												</p>
+											)}
+										</div>
+										<p className="leading-8 text-justify">
+											{item.content}
+										</p>
+									</section>
+								);
+							})}
 						</div>
 					</div>
 				</div>
@@ -1012,7 +1060,7 @@ export default function ReportPage({ locale }) {
 					>
 						{sections[2].title}
 					</h1>
-					<p className="px-5 font-bold leading-8 tracking-normal text-justify md:px-0">
+					<p className="px-5 mb-8 font-bold leading-8 tracking-normal text-justify md:px-0">
 						<span className="text-[#073E31]">{t("p3-1")}</span>
 						{t("p3-2")}
 						<br />
@@ -1022,6 +1070,15 @@ export default function ReportPage({ locale }) {
 					</p>
 
 					<Chapter3
+						locale={locale}
+						onSaveData={setJiaJuData}
+						userInfo={userInfo}
+						jiajuProDataString={JSON.stringify(
+							reportDocData.jiajuProData || undefined
+						)}
+						assistantDataString={JSON.stringify(
+							assistantData.jiajuProData
+						)}
 						jiajuDataString={JSON.stringify(
 							reportDocData.jiajuData
 						)}
@@ -1039,28 +1096,27 @@ export default function ReportPage({ locale }) {
 						className="md:text-[40px] text-[28px] text-center font-bold md:mt-18 mt-10 mb-10 md:px-0 px-5 text-[#073E31]"
 						id={`section-3`}
 					>
-						{sections[3].title}
+						{sections[3]?.title}
 					</h1>
-					{isLock && (
-						<div className="absolute left-0 z-10 w-full bg-lock top-25 md:h-70 h-60"></div>
-					)}
-					<div className={isLock && "md:h-70 h-60 overflow-hidden"}>
-						<MingLi
-							locale={locale}
-							onSaveData={setMingLiData}
-							userInfo={userInfo}
-							mingLiDataString={JSON.stringify(
-								reportDocData.mingLiData || undefined
-							)}
-							assistantDataString={JSON.stringify(
-								assistantData.mingLiData
-							)}
-							isPrinting={isPrinting}
-						/>
+					<div className="relative">
+						<div>
+							<MingLi
+								locale={locale}
+								onSaveData={setMingLiData}
+								userInfo={userInfo}
+								mingLiDataString={JSON.stringify(
+									reportDocData.mingLiData || undefined
+								)}
+								assistantDataString={JSON.stringify(
+									assistantData.mingLiData
+								)}
+								isPrinting={isPrinting}
+							/>
+						</div>
 					</div>
 				</div>
 
-				{/* 第五章 流年运程进阶解析 */}
+				{/* 第五章 流年运程进阶解析
 				{!isLock && (
 					<div key="section-4">
 						<h1
@@ -1083,34 +1139,61 @@ export default function ReportPage({ locale }) {
 							isPrinting={isPrinting}
 						/>
 					</div>
-				)}
+				)} */}
 				{/* 第六章 家居进阶解析 */}
-				{!isLock && (
-					<div
-						key="section-5"
-						className="mx-auto md:max-w-250 md:px-5"
+				{/* <div
+					key="section-5"
+					className="relative mx-auto md:max-w-250 md:px-5"
+				>
+					<h1
+						ref={(el) => (sectionRefs.current[15] = el)}
+						className="md:text-[40px] text-[28px] text-center font-bold md:mt-18 mt-10 mb-10 md:px-0 px-5 text-[#073E31]"
+						id={`section-5`}
 					>
-						<h1
-							ref={(el) => (sectionRefs.current[15] = el)}
-							className="md:text-[40px] text-[28px] text-center font-bold md:mt-18 mt-10 mb-10 md:px-0 px-5 text-[#073E31]"
-							id={`section-5`}
+						{sections[5]?.title}
+					</h1>
+					<div className="relative">
+						{isLock && (
+							<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-[90%] md:w-[480px] bg-white rounded-xl shadow-lg border border-[#20B580] p-6 flex flex-col items-center">
+								<div className="text-xl font-bold text-[#20B580] mb-2">
+									立即解鎖
+								</div>
+								<div className="mb-4 text-base text-center text-gray-700">
+									取得完整報告，解鎖符合你性格的 10
+									種職涯路徑。
+								</div>
+								<button
+									className="bg-[#20B580] hover:bg-[#168c6e] text-white font-bold py-2 px-6 rounded-full text-lg transition"
+									onClick={() =>
+										(window.location.href = "/payment")
+									}
+								>
+									解鎖全部結果
+								</button>
+							</div>
+						)}
+						<div
+							className={
+								isLock
+									? "filter blur-sm pointer-events-none relative max-h-[900px] overflow-hidden"
+									: ""
+							}
 						>
-							{sections[5]?.title}
-						</h1>
-						<Chapter6
-							locale={locale}
-							onSaveData={setJiaJuData}
-							userInfo={userInfo}
-							jiajuProDataString={JSON.stringify(
-								reportDocData.jiajuProData || undefined
-							)}
-							assistantDataString={JSON.stringify(
-								assistantData.jiajuProData
-							)}
-							isPrinting={isPrinting}
-						/>
+							<Chapter6
+								locale={locale}
+								onSaveData={setJiaJuData}
+								userInfo={userInfo}
+								jiajuProDataString={JSON.stringify(
+									reportDocData.jiajuProData || undefined
+								)}
+								assistantDataString={JSON.stringify(
+									assistantData.jiajuProData
+								)}
+								isPrinting={isPrinting}
+							/>
+						</div>
 					</div>
-				)}
+				</div> */}
 			</div>
 		</div>
 	);

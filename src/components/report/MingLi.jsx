@@ -219,69 +219,59 @@ export default function ({
 	}
 	const RowFirst = (
 		<>
-			<div className="p-2  bg-[#F7FAF9] rounded-t-xl rounded-r-none  border-2 border-[#6CA698] flex items-center justify-center">
+			<div
+				className="md:p-2 p-1  bg-[#F7FAF9] md:rounded-t-xl rounded-t-lg rounded-r-none border-2 border-[#6CA698] flex items-center justify-center"
+				style={{ borderTopRightRadius: 0 }}
+			>
 				<div
 					style={
 						activeKey === "mingpan"
-							? {
-									background:
-										"linear-gradient(135deg, #066952CC 0%,rgb(185, 245, 45) 80%)",
-									color: "#fff",
-								}
+							? { backgroundColor: "#066952CC", color: "#fff" }
 							: { backgroundColor: "#F7FAF9" }
 					}
-					className="flex items-center justify-center w-full h-full text-xl font-bold cursor-pointer hover:bg-gray-100"
+					className="flex items-center justify-center w-full h-full text-xs font-bold text-center cursor-pointer md:text-xl min-h-12 hover:bg-gray-100"
 					onClick={() => handleClick("mingpan")}
 				>
 					{t("mingpan")}
 				</div>
 			</div>
-			<div className="p-2  bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
+			<div className="md:p-2 p-1  bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
 				<div
 					style={
 						activeKey === "minggong"
-							? {
-									background:
-										"linear-gradient(180deg, #066952CC 0%,rgb(185, 245, 45) 80%)",
-									color: "#fff",
-								}
+							? { backgroundColor: "#066952CC", color: "#fff" }
 							: { backgroundColor: "#F7FAF9" }
 					}
-					className="flex items-center justify-center w-full h-full text-xl font-bold cursor-pointer hover:bg-gray-100"
+					className="flex items-center justify-center w-full h-full text-xs font-bold text-center cursor-pointer md:text-xl min-h-12 hover:bg-gray-100"
 					onClick={() => handleClick("minggong")}
 				>
 					{t("minggong")}
 				</div>
 			</div>
-			<div className="p-2  bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
+			<div className="md:p-2 p-1  bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
 				<div
 					style={
 						activeKey === "gexing"
-							? {
-									background:
-										"linear-gradient(180deg, #066952CC 0%,rgb(185, 245, 45) 80%)",
-									color: "#fff",
-								}
+							? { backgroundColor: "#066952CC", color: "#fff" }
 							: { backgroundColor: "#F7FAF9" }
 					}
-					className="flex items-center justify-center w-full h-full text-xl font-bold cursor-pointer hover:bg-gray-100"
+					className="flex items-center justify-center w-full h-full text-xs font-bold text-center cursor-pointer md:text-xl min-h-12 hover:bg-gray-100"
 					onClick={() => handleClick("gexing")}
 				>
 					{t("gexing")}
 				</div>
 			</div>
-			<div className="p-2 bg-[#F7FAF9] rounded-t-xl rounded-l-none  border-2 border-[#6CA698] flex items-center justify-center">
+			<div
+				className="md:p-2 p-1 bg-[#F7FAF9] md:rounded-t-xl rounded-t-lg rounded-l-none  border-2 border-[#6CA698] flex items-center justify-center"
+				style={{ borderTopLeftRadius: 0 }}
+			>
 				<div
 					style={
 						activeKey === "yunshi"
-							? {
-									background:
-										"linear-gradient(225deg, #066952CC 0%,rgb(185, 245, 45) 80%)",
-									color: "#fff",
-								}
+							? { backgroundColor: "#066952CC", color: "#fff" }
 							: { backgroundColor: "#F7FAF9" }
 					}
-					className="flex items-center justify-center w-full h-full text-xl font-bold cursor-pointer hover:bg-gray-100"
+					className="flex items-center justify-center w-full h-full text-xs font-bold text-center cursor-pointer md:text-xl min-h-12 hover:bg-gray-100"
 					onClick={() => handleClick("yunshi")}
 				>
 					{t("yunshi")}
@@ -292,54 +282,42 @@ export default function ({
 	const RowLast = (
 		<>
 			<div
-				className="p-2 bg-[#F7FAF9] rounded-b-xl border-2 border-[#6CA698] flex items-center justify-center"
+				className="md:p-2 p-1 bg-[#F7FAF9] md:rounded-b-xl rounded-b-0 border-2 border-[#6CA698] flex items-center justify-center"
 				style={{ borderBottomRightRadius: 0 }}
 			>
 				<div
 					style={
 						activeKey === "renji"
-							? {
-									background:
-										"linear-gradient(45deg, #066952CC 0%,rgb(185, 245, 45) 80%)",
-									color: "#fff",
-								}
+							? { backgroundColor: "#066952CC", color: "#fff" }
 							: { backgroundColor: "#F7FAF9" }
 					}
-					className="flex items-center justify-center w-full h-full text-xl font-bold cursor-pointer hover:bg-gray-100"
+					className="flex items-center justify-center w-full h-full text-xs font-bold text-center cursor-pointer md:text-xl min-h-12 hover:bg-gray-100"
 					onClick={() => handleClick("renji")}
 				>
 					{t("renji")}
 				</div>
 			</div>
-			<div className="p-2  bg-[#F7FAF9]   border-2 border-[#6CA698] flex items-center justify-center">
+			<div className="md:p-2 p-1  bg-[#F7FAF9]   border-2 border-[#6CA698] flex items-center justify-center">
 				<div
 					style={
 						activeKey === "juece"
-							? {
-									background:
-										"linear-gradient(360deg, #066952CC 0%,rgb(185, 245, 45) 80%)",
-									color: "#fff",
-								}
+							? { backgroundColor: "#066952CC", color: "#fff" }
 							: { backgroundColor: "#F7FAF9" }
 					}
-					className="flex items-center justify-center w-full h-full text-xl font-bold cursor-pointer hover:bg-gray-100"
+					className="flex items-center justify-center w-full h-full text-xs font-bold text-center cursor-pointer md:text-xl min-h-12 hover:bg-gray-100"
 					onClick={() => handleClick("juece")}
 				>
 					{t("juece")}
 				</div>
 			</div>
-			<div className="p-2  bg-[#F7FAF9]   border-2 border-[#6CA698] flex items-center justify-center">
+			<div className="md:p-2 p-1  bg-[#F7FAF9]   border-2 border-[#6CA698] flex items-center justify-center">
 				<div
 					style={
 						activeKey === "kaiyun"
-							? {
-									background:
-										"linear-gradient(360deg, #066952CC 0%,rgb(185, 245, 45) 80%)",
-									color: "#fff",
-								}
+							? { backgroundColor: "#066952CC", color: "#fff" }
 							: { backgroundColor: "#F7FAF9" }
 					}
-					className="flex items-center justify-center w-full h-full text-xl font-bold cursor-pointer hover:bg-gray-100"
+					className="flex items-center justify-center w-full h-full text-xs font-bold text-center cursor-pointer md:text-xl min-h-12 hover:bg-gray-100"
 					onClick={() => handleClick("kaiyun")}
 				>
 					{t("kaiyun")}
@@ -378,17 +356,17 @@ export default function ({
 					<div>
 						{isMobile ? (
 							<div className="p-4 mx-auto">
-								<div className="grid grid-cols-4 grid-rows-3 h-full border-4 border-[#6CA698] rounded-t-xl ">
+								<div className="grid grid-cols-4 grid-rows-3 h-full border-2 border-[#6CA698] rounded-t-xl ">
 									{/* 第一行 */}
 									{RowFirst}
 									{/* 第二行 */}
-									<div className="p-2 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
+									<div className="p-1 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
 										<div
 											style={
 												activeKey === "liuqin"
 													? {
-															background:
-																"linear-gradient(90deg, #066952CC 0%,rgb(185, 245, 45) 80%)",
+															backgroundColor:
+																"#066952CC",
 															color: "#fff",
 														}
 													: {
@@ -396,7 +374,7 @@ export default function ({
 																"#F7FAF9",
 														}
 											}
-											className="flex items-center justify-center w-full h-full text-xl font-bold cursor-pointer hover:bg-gray-100"
+											className="flex items-center justify-center w-full h-full text-xs font-bold text-center cursor-pointer md:text-xl min-h-12 hover:bg-gray-100"
 											onClick={() =>
 												handleClick("liuqin")
 											}
@@ -404,13 +382,13 @@ export default function ({
 											{t("liuqin")}
 										</div>
 									</div>
-									<div className="p-2 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
+									<div className="p-1 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
 										<div
 											style={
 												activeKey === "shiye"
 													? {
-															background:
-																"linear-gradient(270deg, #066952CC 0%,rgb(185, 245, 45) 80%)",
+															backgroundColor:
+																"#066952CC",
 															color: "#fff",
 														}
 													: {
@@ -418,19 +396,19 @@ export default function ({
 																"#F7FAF9",
 														}
 											}
-											className="flex items-center justify-center w-full h-full text-xl font-bold cursor-pointer hover:bg-gray-100"
+											className="flex items-center justify-center w-full h-full text-xs font-bold text-center cursor-pointer md:text-xl min-h-12 hover:bg-gray-100"
 											onClick={() => handleClick("shiye")}
 										>
 											{t("shiye")}
 										</div>
 									</div>
-									<div className="p-2 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
+									<div className="p-1 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
 										<div
 											style={
 												activeKey === "ganqing"
 													? {
-															background:
-																"linear-gradient(90deg, #066952CC 0%,rgb(185, 245, 45) 80%)",
+															backgroundColor:
+																"#066952CC",
 															color: "#fff",
 														}
 													: {
@@ -438,7 +416,7 @@ export default function ({
 																"#F7FAF9",
 														}
 											}
-											className="flex items-center justify-center w-full h-full text-xl font-bold cursor-pointer hover:bg-gray-100"
+											className="flex items-center justify-center w-full h-full text-xs font-bold text-center cursor-pointer md:text-xl min-h-12 hover:bg-gray-100"
 											onClick={() =>
 												handleClick("ganqing")
 											}
@@ -446,13 +424,13 @@ export default function ({
 											{t("ganqing")}
 										</div>
 									</div>
-									<div className="p-2  bg-[#F7FAF9]   border-2 border-[#6CA698] flex items-center justify-center">
+									<div className="p-1  bg-[#F7FAF9]   border-2 border-[#6CA698] flex items-center justify-center">
 										<div
 											style={
 												activeKey === "jiankang"
 													? {
-															background:
-																"linear-gradient(270deg, #066952CC 0%,rgb(185, 245, 45) 80%)",
+															backgroundColor:
+																"#066952CC",
 															color: "#fff",
 														}
 													: {
@@ -460,7 +438,7 @@ export default function ({
 																"#F7FAF9",
 														}
 											}
-											className="flex items-center justify-center w-full h-full text-xl font-bold cursor-pointer hover:bg-gray-100"
+											className="flex items-center justify-center w-full h-full text-xs font-bold text-center cursor-pointer md:text-xl min-h-12 hover:bg-gray-100"
 											onClick={() =>
 												handleClick("jiankang")
 											}
@@ -477,7 +455,7 @@ export default function ({
 							</div>
 						) : (
 							<div className="mx-auto p-4 w-[952px] h-[608px]">
-								<div className="grid grid-cols-4 grid-rows-4 h-full border-4 border-[#6CA698] rounded-2xl">
+								<div className="grid grid-cols-4 grid-rows-4 h-full border-8 border-[#6CA698] rounded-2xl">
 									{RowFirst}
 									{/* 第二行 */}
 									<div className="p-2 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
@@ -485,8 +463,8 @@ export default function ({
 											style={
 												activeKey === "liuqin"
 													? {
-															background:
-																"linear-gradient(90deg, #066952CC 0%,rgb(185, 245, 45) 80%)",
+															backgroundColor:
+																"#066952CC",
 															color: "#fff",
 														}
 													: {
@@ -494,7 +472,7 @@ export default function ({
 																"#F7FAF9",
 														}
 											}
-											className="flex items-center justify-center w-full h-full text-xl font-bold cursor-pointer hover:bg-gray-100"
+											className="flex items-center justify-center w-full h-full text-xl font-bold text-center cursor-pointer hover:bg-gray-100"
 											onClick={() =>
 												handleClick("liuqin")
 											}
@@ -503,13 +481,7 @@ export default function ({
 										</div>
 									</div>
 									{/* 中间合并区域 */}
-									<div
-										className="flex justify-center col-span-2 row-span-2 p-4 overflow-y-auto text-sm whitespace-pre-wrap border border-gray-300 font-boldtext-black"
-										style={{
-											background:
-												"radial-gradient(circle,rgba(80, 236, 241, 0.95) 5%, #b9f52d 100%)",
-										}}
-									>
+									<div className="text-xs min-h-12 whitespace-pre-wrap text-white overflow-y-auto col-span-2 row-span-2 border border-gray-300  p-4 flex justify-center bg-[#066952CC]">
 										{mingLiData[activeKey]}
 									</div>
 									<div className="p-2 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
@@ -517,8 +489,8 @@ export default function ({
 											style={
 												activeKey === "shiye"
 													? {
-															background:
-																"linear-gradient(270deg, #066952CC 0%,rgb(185, 245, 45) 80%)",
+															backgroundColor:
+																"#066952CC",
 															color: "#fff",
 														}
 													: {
@@ -526,7 +498,7 @@ export default function ({
 																"#F7FAF9",
 														}
 											}
-											className="flex items-center justify-center w-full h-full text-xl font-bold cursor-pointer hover:bg-gray-100"
+											className="flex items-center justify-center w-full h-full text-sm font-bold cursor-pointer hover:bg-gray-100"
 											onClick={() => handleClick("shiye")}
 										>
 											{t("shiye")}
@@ -538,8 +510,8 @@ export default function ({
 											style={
 												activeKey === "ganqing"
 													? {
-															background:
-																"linear-gradient(90deg, #066952CC 0%,rgb(185, 245, 45) 80%)",
+															backgroundColor:
+																"#066952CC",
 															color: "#fff",
 														}
 													: {
@@ -547,7 +519,7 @@ export default function ({
 																"#F7FAF9",
 														}
 											}
-											className="flex items-center justify-center w-full h-full text-xl font-bold cursor-pointer hover:bg-gray-100"
+											className="flex items-center justify-center w-full h-full text-xl font-bold text-center cursor-pointer hover:bg-gray-100"
 											onClick={() =>
 												handleClick("ganqing")
 											}
@@ -561,8 +533,8 @@ export default function ({
 											style={
 												activeKey === "jiankang"
 													? {
-															background:
-																"linear-gradient(270deg, #066952CC 0%,rgb(185, 245, 45) 80%)",
+															backgroundColor:
+																"#066952CC",
 															color: "#fff",
 														}
 													: {
@@ -570,7 +542,7 @@ export default function ({
 																"#F7FAF9",
 														}
 											}
-											className="flex items-center justify-center w-full h-full text-xl font-bold cursor-pointer hover:bg-gray-100"
+											className="flex items-center justify-center w-full h-full text-xl font-bold text-center cursor-pointer hover:bg-gray-100"
 											onClick={() =>
 												handleClick("jiankang")
 											}

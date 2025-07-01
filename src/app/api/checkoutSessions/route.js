@@ -1,34 +1,45 @@
-import { NextResponse } from 'next/server'
-import { headers } from 'next/headers'
-import { genSuccessData, genUnAuthData, genErrorData } from "../utils/gen-res-data";
-import { stripe } from '@/lib/stripe'
-import { getUserInfo } from "@/lib/session"
-export async function POST() {
-    const userInfo = await getUserInfo();
-    if (userInfo == null) return NextResponse.json(genUnAuthData());
-    try {
-        const headersList = await headers()
-        const origin = headersList.get('origin')
-        // Create Checkout Sessions from body params.
-        const session = await stripe.checkout.sessions.create({
-            line_items: [
-                {
-                    // Provide the exact Price ID (for example, price_1234) of the product you want to sell
-                    price: process.env.PRICE_ID,
-                    quantity: 1,
-                },
-            ],
-            mode: 'payment',
-            success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${origin}/report?canceled=true`,
-            metadata: {
-                userId: userInfo.userId,
-            },
-        });
-        console.log('session.url', session.url)
+import { NextResponse } from "next/server";
+import { headers } from "next/headers";
+import {
+	genSuccessData,
+	genUnAuthData,
+	genErrorData,
+} from "../utils/gen-res-data";
+import { stripe } from "@/lib/stripe";
+import { getUserInfo } from "@/lib/session";
 
-        return NextResponse.json(genSuccessData(session))
-    } catch (err) {
-        return NextResponse.json(genErrorData('支付错误' + err.message));
-    }
+export async function POST(request) {
+	const userInfo = await getUserInfo();
+	if (userInfo == null) return NextResponse.json(genUnAuthData());
+	try {
+		const headersList = await headers();
+		const origin = headersList.get("origin");
+
+		// 取得前端傳來的 quantity
+		const body = await request.json();
+		const quantity = Number(body.quantity) || 1;
+
+		// Create Checkout Sessions from body params.
+		const session = await stripe.checkout.sessions.create({
+			line_items: [
+				{
+					price: process.env.PRICE_ID,
+					quantity,
+				},
+			],
+			mode: "payment",
+			allow_promotion_codes: true,
+			success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+			cancel_url: `${origin}/report?canceled=true`,
+			metadata: {
+				userId: userInfo.userId,
+				quantity: String(quantity),
+			},
+		});
+		console.log("session.url", session.url);
+
+		return NextResponse.json(genSuccessData(session));
+	} catch (err) {
+		return NextResponse.json(genErrorData("支付错误" + err.message));
+	}
 }

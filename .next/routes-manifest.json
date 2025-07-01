@@ -112,6 +112,30 @@
       "namedRegex": "^/(?<nxtPlocale>[^/]+?)/design(?:/)?$"
     },
     {
+      "page": "/[locale]/free",
+      "regex": "^/([^/]+?)/free(?:/)?$",
+      "routeKeys": {
+        "nxtPlocale": "nxtPlocale"
+      },
+      "namedRegex": "^/(?<nxtPlocale>[^/]+?)/free(?:/)?$"
+    },
+    {
+      "page": "/[locale]/freereport",
+      "regex": "^/([^/]+?)/freereport(?:/)?$",
+      "routeKeys": {
+        "nxtPlocale": "nxtPlocale"
+      },
+      "namedRegex": "^/(?<nxtPlocale>[^/]+?)/freereport(?:/)?$"
+    },
+    {
+      "page": "/[locale]/price",
+      "regex": "^/([^/]+?)/price(?:/)?$",
+      "routeKeys": {
+        "nxtPlocale": "nxtPlocale"
+      },
+      "namedRegex": "^/(?<nxtPlocale>[^/]+?)/price(?:/)?$"
+    },
+    {
       "page": "/[locale]/report",
       "regex": "^/([^/]+?)/report(?:/)?$",
       "routeKeys": {

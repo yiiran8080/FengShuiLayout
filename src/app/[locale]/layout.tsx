@@ -7,41 +7,44 @@ import "../globals.css";
 import { setRequestLocale } from "next-intl/server";
 import { ToastContainer, toast } from "react-toastify";
 const lora = Lora({ subsets: ["latin", "symbols"] });
+import { ImageProvider } from "@/context/ImageContext";
 
 export default async function LocaleLayout({
-  children,
-  params,
+	children,
+	params,
 }: {
-  children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+	children: React.ReactNode;
+	params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
-  if (!hasLocale(routing.locales, locale)) {
-    notFound();
-  }
-  setRequestLocale(locale);
-  console.log("locale", locale);
-  return (
-    <html lang={locale}>
-      <body className={lora.className}>
-        <ToastContainer
-          position="top-center"
-          autoClose={1000}
-          hideProgressBar={true}
-          newestOnTop={false}
-          closeOnClick={false}
-          rtl={false}
-          pauseOnFocusLoss
-          pauseOnHover
-          theme="light"
-          className={"text:sm"}
-        />
-        <AuthProvider>
-          <NextIntlClientProvider locale={locale}>
-            {children}
-          </NextIntlClientProvider>
-        </AuthProvider>
-      </body>
-    </html>
-  );
+	const { locale } = await params;
+	if (!hasLocale(routing.locales, locale)) {
+		notFound();
+	}
+	setRequestLocale(locale);
+	console.log("locale", locale);
+	return (
+		<html lang={locale}>
+			<body className={lora.className}>
+				<ToastContainer
+					position="top-center"
+					autoClose={1000}
+					hideProgressBar={true}
+					newestOnTop={false}
+					closeOnClick={false}
+					rtl={false}
+					pauseOnFocusLoss
+					pauseOnHover
+					theme="light"
+					className={"text:sm"}
+				/>
+				<AuthProvider>
+					<ImageProvider>
+						<NextIntlClientProvider locale={locale}>
+							{children}
+						</NextIntlClientProvider>
+					</ImageProvider>
+				</AuthProvider>
+			</body>
+		</html>
+	);
 }
