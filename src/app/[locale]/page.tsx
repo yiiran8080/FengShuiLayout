@@ -8,23 +8,26 @@ import Tips from "@/components/home/Tips";
 import FAQ from "@/components/home/FAQ";
 import Message from "@/components/home/Message";
 import Footer from "@/components/home/Footer";
+import Desire from "@/components/home/Desire";
+
 import { get } from "@/lib/ajax";
 export default function Home() {
-  return (
-    <>
-      <Navbar />
-      <main>
-        <Hero />
-        <Features />
-        <Share />
-        <BeforeAfter />
+	return (
+		<>
+			<Navbar />
+			<main>
+				<Hero />
+				<Features />
+				<Desire />
+				<Share />
+				<BeforeAfter />
 
-        <Tips />
-        <Comments />
-        <Message />
-        <FAQ />
-      </main>
-      <Footer />
-    </>
-  );
+				<Tips />
+				<Comments />
+				{/* <Message /> */}
+				<FAQ />
+			</main>
+			<Footer />
+		</>
+	);
 }
