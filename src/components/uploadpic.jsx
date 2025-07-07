@@ -37,41 +37,41 @@ const directionMap = {
 };
 
 export default function UploadPic({ onResult }) {
-    const t = useTranslations("upload");
-    const [file, setLocalFile] = useState(null);
-    const [preview, setPreview] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [gender, setGender] = useState("");
-    const [year, setYear] = useState("");
-    const [month, setMonth] = useState("");
-    const [day, setDay] = useState("");
-    const [hour, setHour] = useState("");
-    const [roomType, setRoomType] = useState("");
-    const [direction, setDirection] = useState("");
-    const [furniture, setFurniture] = useState("");
-    const [result, setResult] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [validating, setValidating] = useState(false);
-    const [validationError, setValidationError] = useState(null); // New state for validation error
-    const fileInputRef = useRef(null);
-    const router = useRouter();
-    const { setPreview: setGlobalPreview, setFile: setGlobalFile } = useImage();
-    const { data: session } = useSession();
+	const t = useTranslations("upload");
+	const [file, setLocalFile] = useState(null);
+	const [preview, setPreview] = useState(null);
+	const [showModal, setShowModal] = useState(false);
+	const [gender, setGender] = useState("");
+	const [year, setYear] = useState("");
+	const [month, setMonth] = useState("");
+	const [day, setDay] = useState("");
+	const [hour, setHour] = useState("");
+	const [roomType, setRoomType] = useState("");
+	const [direction, setDirection] = useState("");
+	const [furniture, setFurniture] = useState("");
+	const [result, setResult] = useState("");
+	const [loading, setLoading] = useState(false);
+	const [validating, setValidating] = useState(false);
+	const [validationError, setValidationError] = useState(null); // New state for validation error
+	const fileInputRef = useRef(null);
+	const router = useRouter();
+	const { setPreview: setGlobalPreview, setFile: setGlobalFile } = useImage();
+	const { data: session } = useSession();
 
-    // Get room types and directions from translations
-    const roomTypes = Object.keys(roomTypeMap);
-    const directions = Object.keys(directionMap);
+	// Get room types and directions from translations
+	const roomTypes = Object.keys(roomTypeMap);
+	const directions = Object.keys(directionMap);
 
-    const handleDelete = () => {
-        setLocalFile(null);
-        setPreview(null);
-        setGlobalFile(null);
-        setGlobalPreview(null);
-        setValidationError(null); // Clear validation error
-        if (fileInputRef.current) fileInputRef.current.value = "";
-    };
+	const handleDelete = () => {
+		setLocalFile(null);
+		setPreview(null);
+		setGlobalFile(null);
+		setGlobalPreview(null);
+		setValidationError(null); // Clear validation error
+		if (fileInputRef.current) fileInputRef.current.value = "";
+	};
 
-    async function handleStart() {
+	async function handleStart() {
 		const engRoomType = roomTypeMap[roomType];
 		const engDirection = directionMap[direction];
 
@@ -107,10 +107,9 @@ export default function UploadPic({ onResult }) {
 		setShowModal(false);
 	};
 
-	// Improved room detection function with stricter criteria
+	// Improved room detection function with balanced criteria
 	const detectRoomFeatures = async (file) => {
 		return new Promise((resolve) => {
-			// Use HTMLImageElement explicitly to avoid conflict with Next.js Image
 			const img = document.createElement("img");
 			img.src = URL.createObjectURL(file);
 
@@ -118,60 +117,94 @@ export default function UploadPic({ onResult }) {
 				const canvas = document.createElement("canvas");
 				const ctx = canvas.getContext("2d");
 
-				// Resize for faster processing
 				const maxSize = 400;
-				const ratio = Math.min(maxSize / img.width, maxSize / img.height);
+				const ratio = Math.min(
+					maxSize / img.width,
+					maxSize / img.height
+				);
 				canvas.width = img.width * ratio;
 				canvas.height = img.height * ratio;
 
 				ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-				const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+				const imageData = ctx.getImageData(
+					0,
+					0,
+					canvas.width,
+					canvas.height
+				);
 
-				// Multiple heuristics to detect room features
+				// Early filter: relax color variance threshold
+				let colorVariance = 0;
+				const { data } = imageData;
+				let avgR = 0,
+					avgG = 0,
+					avgB = 0;
+				for (let i = 0; i < data.length; i += 32) {
+					avgR += data[i];
+					avgG += data[i + 1];
+					avgB += data[i + 2];
+				}
+				const samples = data.length / 32;
+				avgR /= samples;
+				avgG /= samples;
+				avgB /= samples;
+				for (let i = 0; i < data.length; i += 32) {
+					colorVariance +=
+						Math.abs(data[i] - avgR) +
+						Math.abs(data[i + 1] - avgG) +
+						Math.abs(data[i + 2] - avgB);
+				}
+				colorVariance /= samples;
+				if (colorVariance < 5) {
+					// Lowered from 10 to 5
+					URL.revokeObjectURL(img.src);
+					return resolve(false);
+				}
+
 				const analysis = {
 					hasIndoorLighting: detectIndoorLighting(imageData),
 					hasStructuralLines: detectStructuralLines(imageData),
+					hasRoomGeometry: detectRoomGeometry(imageData),
 					hasIndoorColors: detectIndoorColors(imageData),
 					hasDepth: detectDepthIndicators(imageData),
-					hasRoomGeometry: detectRoomGeometry(imageData),
 					aspectRatio: canvas.width / canvas.height,
 					lightingVariance: calculateLightingVariance(imageData),
 					edgeComplexity: calculateEdgeComplexity(imageData),
 				};
 
-				// More stringent scoring system
+				// Essentials: at least 2 out of 3
+				const essentialsCount =
+					(analysis.hasIndoorLighting ? 1 : 0) +
+					(analysis.hasStructuralLines ? 1 : 0) +
+					(analysis.hasRoomGeometry ? 1 : 0);
+
+				// Relaxed supporting features
 				let score = 0;
-				let requiredFeatures = 0;
-
-				// Essential room features (must have at least 2 of these)
-				if (analysis.hasIndoorLighting) {
-					score += 20;
-					requiredFeatures++;
-				}
-				if (analysis.hasStructuralLines) {
-					score += 25;
-					requiredFeatures++;
-				}
-				if (analysis.hasRoomGeometry) {
-					score += 25;
-					requiredFeatures++;
-				}
-
-				// Supporting features
 				if (analysis.hasIndoorColors) score += 15;
 				if (analysis.hasDepth) score += 10;
-				if (analysis.aspectRatio > 0.8 && analysis.aspectRatio < 2.5) score += 5;
-				if (analysis.lightingVariance > 0.15 && analysis.lightingVariance < 0.6) score += 10;
-				if (analysis.edgeComplexity > 0.2 && analysis.edgeComplexity < 0.8) score += 10;
+				if (analysis.aspectRatio > 0.5 && analysis.aspectRatio < 3.0)
+					score += 5;
+				if (
+					analysis.lightingVariance > 0.07 &&
+					analysis.lightingVariance < 0.8
+				)
+					score += 10;
+				if (
+					analysis.edgeComplexity > 0.1 &&
+					analysis.edgeComplexity < 0.9
+				)
+					score += 10;
 
-				// Must have at least 2 essential features AND score >= 70
-				const isRoom = requiredFeatures >= 2 && score >= 70;
+				const isRoom = essentialsCount >= 2 && score >= 10; // Lowered score threshold
 
-				console.log("Room detection analysis:", { analysis, score, requiredFeatures, isRoom });
+				console.log("Room detection analysis (relaxed):", {
+					analysis,
+					score,
+					essentialsCount,
+					isRoom,
+				});
 
-				// Clean up the object URL
 				URL.revokeObjectURL(img.src);
-
 				resolve(isRoom);
 			};
 
@@ -207,12 +240,14 @@ export default function UploadPic({ onResult }) {
 		const moderateBrightRatio = moderateBrightSpots / totalPixels;
 		const darkRatio = darkSpots / totalPixels;
 
-		// Indoor spaces have controlled lighting: some bright spots (lights/windows), 
+		// Indoor spaces have controlled lighting: some bright spots (lights/windows),
 		// moderate brightness areas, and some shadows
 		return (
-			veryBrightRatio > 0.02 && veryBrightRatio < 0.15 &&
+			veryBrightRatio > 0.02 &&
+			veryBrightRatio < 0.15 &&
 			moderateBrightRatio > 0.25 &&
-			darkRatio > 0.1 && darkRatio < 0.4
+			darkRatio > 0.1 &&
+			darkRatio < 0.4
 		);
 	};
 
@@ -227,19 +262,30 @@ export default function UploadPic({ onResult }) {
 		for (let y = 5; y < height - 5; y += 5) {
 			for (let x = 5; x < width - 5; x += 5) {
 				const index = (y * width + x) * 4;
-				const currentBrightness = (data[index] + data[index + 1] + data[index + 2]) / 3;
+				const currentBrightness =
+					(data[index] + data[index + 1] + data[index + 2]) / 3;
 
 				// Check horizontal edges (walls, furniture tops)
 				const rightIndex = (y * width + (x + 5)) * 4;
-				const rightBrightness = (data[rightIndex] + data[rightIndex + 1] + data[rightIndex + 2]) / 3;
+				const rightBrightness =
+					(data[rightIndex] +
+						data[rightIndex + 1] +
+						data[rightIndex + 2]) /
+					3;
 
 				// Check vertical edges (wall corners, furniture sides)
 				const bottomIndex = ((y + 5) * width + x) * 4;
-				const bottomBrightness = (data[bottomIndex] + data[bottomIndex + 1] + data[bottomIndex + 2]) / 3;
+				const bottomBrightness =
+					(data[bottomIndex] +
+						data[bottomIndex + 1] +
+						data[bottomIndex + 2]) /
+					3;
 
 				// Stronger threshold for room edges
-				if (Math.abs(currentBrightness - rightBrightness) > 40) strongHorizontalEdges++;
-				if (Math.abs(currentBrightness - bottomBrightness) > 40) strongVerticalEdges++;
+				if (Math.abs(currentBrightness - rightBrightness) > 40)
+					strongHorizontalEdges++;
+				if (Math.abs(currentBrightness - bottomBrightness) > 40)
+					strongVerticalEdges++;
 				totalChecks++;
 			}
 		}
@@ -261,7 +307,11 @@ export default function UploadPic({ onResult }) {
 		for (let y = 10; y < height - 10; y += 10) {
 			for (let x = 10; x < width - 10; x += 10) {
 				const centerIndex = (y * width + x) * 4;
-				const centerBright = (data[centerIndex] + data[centerIndex + 1] + data[centerIndex + 2]) / 3;
+				const centerBright =
+					(data[centerIndex] +
+						data[centerIndex + 1] +
+						data[centerIndex + 2]) /
+					3;
 
 				// Check surrounding pixels for corner patterns
 				const topIndex = ((y - 5) * width + x) * 4;
@@ -269,10 +319,24 @@ export default function UploadPic({ onResult }) {
 				const leftIndex = (y * width + (x - 5)) * 4;
 				const rightIndex = (y * width + (x + 5)) * 4;
 
-				const topBright = (data[topIndex] + data[topIndex + 1] + data[topIndex + 2]) / 3;
-				const bottomBright = (data[bottomIndex] + data[bottomIndex + 1] + data[bottomIndex + 2]) / 3;
-				const leftBright = (data[leftIndex] + data[leftIndex + 1] + data[leftIndex + 2]) / 3;
-				const rightBright = (data[rightIndex] + data[rightIndex + 1] + data[rightIndex + 2]) / 3;
+				const topBright =
+					(data[topIndex] + data[topIndex + 1] + data[topIndex + 2]) /
+					3;
+				const bottomBright =
+					(data[bottomIndex] +
+						data[bottomIndex + 1] +
+						data[bottomIndex + 2]) /
+					3;
+				const leftBright =
+					(data[leftIndex] +
+						data[leftIndex + 1] +
+						data[leftIndex + 2]) /
+					3;
+				const rightBright =
+					(data[rightIndex] +
+						data[rightIndex + 1] +
+						data[rightIndex + 2]) /
+					3;
 
 				// Corner detection: significant brightness differences in perpendicular directions
 				const verticalDiff = Math.abs(topBright - bottomBright);
@@ -296,8 +360,11 @@ export default function UploadPic({ onResult }) {
 			brightnesses.push(brightness);
 		}
 
-		const mean = brightnesses.reduce((sum, b) => sum + b, 0) / brightnesses.length;
-		const variance = brightnesses.reduce((sum, b) => sum + Math.pow(b - mean, 2), 0) / brightnesses.length;
+		const mean =
+			brightnesses.reduce((sum, b) => sum + b, 0) / brightnesses.length;
+		const variance =
+			brightnesses.reduce((sum, b) => sum + Math.pow(b - mean, 2), 0) /
+			brightnesses.length;
 		const stdDev = Math.sqrt(variance);
 
 		return stdDev / 255; // Normalize to 0-1
@@ -312,7 +379,8 @@ export default function UploadPic({ onResult }) {
 		for (let y = 1; y < height - 1; y += 2) {
 			for (let x = 1; x < width - 1; x += 2) {
 				const index = (y * width + x) * 4;
-				const currentBright = (data[index] + data[index + 1] + data[index + 2]) / 3;
+				const currentBright =
+					(data[index] + data[index + 1] + data[index + 2]) / 3;
 
 				// Check all 8 neighbors
 				let maxDiff = 0;
@@ -320,8 +388,15 @@ export default function UploadPic({ onResult }) {
 					for (let dx = -1; dx <= 1; dx++) {
 						if (dx === 0 && dy === 0) continue;
 						const neighborIndex = ((y + dy) * width + (x + dx)) * 4;
-						const neighborBright = (data[neighborIndex] + data[neighborIndex + 1] + data[neighborIndex + 2]) / 3;
-						maxDiff = Math.max(maxDiff, Math.abs(currentBright - neighborBright));
+						const neighborBright =
+							(data[neighborIndex] +
+								data[neighborIndex + 1] +
+								data[neighborIndex + 2]) /
+							3;
+						maxDiff = Math.max(
+							maxDiff,
+							Math.abs(currentBright - neighborBright)
+						);
 					}
 				}
 
@@ -374,23 +449,29 @@ export default function UploadPic({ onResult }) {
 	// Enhanced color classification
 	const isNeutralColor = (r, g, b) => {
 		const avg = (r + g + b) / 3;
-		const variance = Math.abs(r - avg) + Math.abs(g - avg) + Math.abs(b - avg);
+		const variance =
+			Math.abs(r - avg) + Math.abs(g - avg) + Math.abs(b - avg);
 		return variance < 25 && avg > 80 && avg < 220; // More specific range
 	};
 
 	const isWoodColor = (r, g, b) => {
 		return (
-			r > 80 && r < 180 &&
-			g > 50 && g < 140 &&
-			b > 20 && b < 100 &&
-			r > g && g > b // Wood has this color progression
+			r > 80 &&
+			r < 180 &&
+			g > 50 &&
+			g < 140 &&
+			b > 20 &&
+			b < 100 &&
+			r > g &&
+			g > b // Wood has this color progression
 		);
 	};
 
 	const isWallColor = (r, g, b) => {
 		const avg = (r + g + b) / 3;
 		return (
-			avg > 160 && avg < 240 &&
+			avg > 160 &&
+			avg < 240 &&
 			Math.abs(r - g) < 30 &&
 			Math.abs(g - b) < 30 &&
 			Math.abs(r - b) < 30
@@ -401,8 +482,10 @@ export default function UploadPic({ onResult }) {
 		const saturation = Math.max(r, g, b) - Math.min(r, g, b);
 		const brightness = (r + g + b) / 3;
 		return (
-			saturation > 20 && saturation < 100 &&
-			brightness > 60 && brightness < 180
+			saturation > 20 &&
+			saturation < 100 &&
+			brightness > 60 &&
+			brightness < 180
 		);
 	};
 
@@ -437,9 +520,11 @@ export default function UploadPic({ onResult }) {
 
 		// Rooms have good distribution of shadows, midtones, and highlights
 		return (
-			shadowRatio > 0.1 && shadowRatio < 0.35 &&
+			shadowRatio > 0.1 &&
+			shadowRatio < 0.35 &&
 			midtoneRatio > 0.3 &&
-			highlightRatio > 0.1 && highlightRatio < 0.3
+			highlightRatio > 0.1 &&
+			highlightRatio < 0.3
 		);
 	};
 
@@ -509,7 +594,9 @@ export default function UploadPic({ onResult }) {
 						{validating ? (
 							<div className="flex flex-col items-center gap-4">
 								<div className="w-8 h-8 border-2 border-[#318161] border-t-transparent rounded-full animate-spin"></div>
-								<p className="text-sm text-[#004f44]">{t("validatingImage")}</p>
+								<p className="text-sm text-[#004f44]">
+									{t("validatingImage")}
+								</p>
 							</div>
 						) : (
 							<label
@@ -534,7 +621,9 @@ export default function UploadPic({ onResult }) {
 									<button
 										type="button"
 										className="px-4 py-2 text-sm font-medium text-white transition-all duration-200 bg-transparent border-none rounded-lg cursor-pointer sm:px-6 sm:py-3 md:text-base lg:text-lg bg-gradient-to-r from-[#318161] to-[#318177] hover:scale-105 active:scale-95"
-										onClick={() => fileInputRef.current?.click()}
+										onClick={() =>
+											fileInputRef.current?.click()
+										}
 									>
 										{t("browseButton")}
 									</button>
@@ -559,11 +648,13 @@ export default function UploadPic({ onResult }) {
 				{/* Uploaded File Info */}
 				{file && (
 					<div className="flex flex-col items-center w-full gap-4 mt-4 md:items-end md:w-auto md:mt-0">
-						<div className={`flex items-center gap-3 p-3 border rounded-lg shadow-sm sm:gap-4 ${
-							validationError 
-								? 'bg-red-50 border-red-200' 
-								: 'bg-white border-gray-100'
-						}`}>
+						<div
+							className={`flex items-center gap-3 p-3 border rounded-lg shadow-sm sm:gap-4 ${
+								validationError
+									? "bg-red-50 border-red-200"
+									: "bg-white border-gray-100"
+							}`}
+						>
 							<Image
 								className="object-cover w-12 h-12 rounded sm:w-14 sm:h-14 md:w-16 md:h-16"
 								loading="lazy"
@@ -582,10 +673,18 @@ export default function UploadPic({ onResult }) {
 								{/* Validation Error Message */}
 								{validationError && (
 									<div className="flex items-center gap-1 mt-1">
-										<svg className="w-3 h-3 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-											<path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+										<svg
+											className="flex-shrink-0 w-3 h-3 text-red-500"
+											fill="currentColor"
+											viewBox="0 0 20 20"
+										>
+											<path
+												fillRule="evenodd"
+												d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+												clipRule="evenodd"
+											/>
 										</svg>
-										<span className="text-xs text-red-600 font-medium sm:text-sm">
+										<span className="text-xs font-medium text-red-600 sm:text-sm">
 											{validationError}
 										</span>
 									</div>
@@ -595,9 +694,9 @@ export default function UploadPic({ onResult }) {
 						<button
 							onClick={handleDelete}
 							className={`flex items-center justify-center w-8 h-8 transition-colors rounded-full sm:w-10 sm:h-10 ${
-								validationError 
-									? 'bg-red-100 hover:bg-red-200' 
-									: 'bg-red-50 hover:bg-red-100'
+								validationError
+									? "bg-red-100 hover:bg-red-200"
+									: "bg-red-50 hover:bg-red-100"
 							}`}
 						>
 							<Image
@@ -614,28 +713,41 @@ export default function UploadPic({ onResult }) {
 			</div>
 
 			{/* Next Step Button */}
-			{file && !validationError && ( // Only show if no validation error
-				<div className="flex justify-center w-full mt-8 sm:mt-10">
-					<button
-						type="button"
-						className="w-full max-w-xs px-6 py-3 text-base font-medium text-white transition-all duration-200 rounded-lg shadow-lg sm:w-auto sm:px-8 sm:py-4 sm:text-lg bg-gradient-to-r from-[#7BB8A9] to-[#318177] hover:scale-105 hover:shadow-xl active:scale-95"
-						onClick={() => setShowModal(true)}
-					>
-						{t("nextStep")}
-					</button>
-				</div>
-			)}
+			{file &&
+				!validationError && ( // Only show if no validation error
+					<div className="flex justify-center w-full mt-8 sm:mt-10">
+						<button
+							type="button"
+							className="w-full max-w-xs px-6 py-3 text-base font-medium text-white transition-all duration-200 rounded-lg shadow-lg sm:w-auto sm:px-8 sm:py-4 sm:text-lg bg-gradient-to-r from-[#7BB8A9] to-[#318177] hover:scale-105 hover:shadow-xl active:scale-95"
+							onClick={() => setShowModal(true)}
+						>
+							{t("nextStep")}
+						</button>
+					</div>
+				)}
 
 			{/* Error message for non-room images */}
 			{file && validationError && (
 				<div className="flex justify-center w-full mt-8 sm:mt-10">
-					<div className="flex items-center gap-3 px-4 py-3 text-sm bg-red-50 border border-red-200 rounded-lg text-red-700 sm:text-base max-w-md">
-						<svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-							<path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+					<div className="flex items-center max-w-md gap-3 px-4 py-3 text-sm text-red-700 border border-red-200 rounded-lg bg-red-50 sm:text-base">
+						<svg
+							className="flex-shrink-0 w-5 h-5 text-red-500"
+							fill="currentColor"
+							viewBox="0 0 20 20"
+						>
+							<path
+								fillRule="evenodd"
+								d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+								clipRule="evenodd"
+							/>
 						</svg>
 						<div>
-							<p className="font-medium">{t("uploadDifferentImage")}</p>
-							<p className="text-xs mt-1 text-red-600">{t("roomImageRequired")}</p>
+							<p className="font-medium">
+								{t("uploadDifferentImage")}
+							</p>
+							<p className="mt-1 text-xs text-red-600">
+								{t("roomImageRequired")}
+							</p>
 						</div>
 					</div>
 				</div>

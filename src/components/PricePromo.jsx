@@ -20,8 +20,8 @@ export default function PricePromo() {
 
 			{/* Features Section */}
 			<section className="w-full max-w-[1382.5px] flex flex-col lg:flex-row items-center lg:items-end justify-center lg:justify-between gap-8 lg:gap-5 z-[unset] text-left text-xl sm:text-2xl text-[#073e31] font-[ABeeZee] mx-auto">
-				<div className="w-full max-w-[1160px] flex flex-col items-start justify-start pt-0 px-0 pb-0 lg:pb-[65px] box-border">
-					<div className="w-full flex flex-col sm:flex-row items-start justify-start gap-8 sm:gap-6 md:gap-12 lg:gap-[100px]">
+				<div className="w-full max-w-[1160px] flex flex-col items-center lg:items-start justify-center lg:justify-start pt-0 px-0 pb-0 lg:pb-[65px] box-border">
+					<div className="w-full flex flex-col sm:flex-row items-center sm:items-start justify-center sm:justify-start gap-8 sm:gap-6 md:gap-12 lg:gap-[100px]">
 						{/* Feature 1 */}
 						<div className="flex-1 min-w-0 sm:min-w-[250px] lg:min-w-[320px] flex flex-col items-center sm:items-start justify-start">
 							<div className="flex flex-col items-center justify-start w-full gap-4 sm:items-start sm:gap-5">

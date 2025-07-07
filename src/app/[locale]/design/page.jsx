@@ -46,6 +46,7 @@ import { AntdSpin } from "antd-spin";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import DemoOverlay from "@/components/DemoOverlay"; // Add this import
 import {
 	LAYOUT1_ZH,
 	LAYOUT1_TW,
@@ -292,7 +293,7 @@ function ModuleWizard({ open, onClose, onSelectModule }) {
 			if (has === "yes") {
 				onSelectModule("4"); // Module 4 if has balcony
 			} else {
-				onSelectModule("6"); // Module 7 if no balcony
+				onSelectModule("7"); // Module 7 if no balcony
 			}
 		} else if (roomCount === 1) {
 			if (has === "yes") {
@@ -736,6 +737,7 @@ export default function DesignPage({ params }) {
 	const [alertOpen, setAlertOpen] = useState(false);
 	const [moduleAlertOpen, setModuleAlertOpen] = useState(false);
 	const [wizardOpen, setWizardOpen] = useState(false); // <-- Add this line
+	const [showDemo, setShowDemo] = useState(false); // Add demo state
 	// const defaultFurSize = { width: draggingItemSize, height: 32 }
 
 	const roomItems = [
@@ -1197,6 +1199,81 @@ export default function DesignPage({ params }) {
 		setModuleAlertOpen(false);
 	};
 
+	// ADD THIS REF:
+	const demoActionsRef = useRef(new Set());
+
+	// ADD THIS NEW FUNCTION to control showTab based on tutorial steps:
+	const handleShowTabControl = (step) => {
+		// Keep items tab open during steps 1 and 2 (room/furniture drag) on mobile
+		if (isMobile) {
+			if (step === 1 || step === 2) {
+				// DRAG_ROOM (1) and DRAG_FURNITURE (2)
+				setShowTab(true);
+			}
+			// Close tab when tutorial is finished, cancelled, or on intro
+			else if (step === 10 || step === 0) {
+				// COMPLETE (10) or INTRO (0)
+				setShowTab(false);
+			}
+			// For other steps (3-9), leave tab state as is (user can control it)
+		}
+	};
+
+	// ADD THESE THREE FUNCTIONS HERE:
+	const handleStartDemo = () => {
+		// Clear canvas for clean demo experience
+		if (canvasRef.current) {
+			canvasRef.current.setLocalItems([]);
+			canvasRef.current.setPosition({ x: 0, y: 0 });
+			canvasRef.current.setScale(isMobile ? 30 : 60);
+			canvasRef.current.setCompassRotation(0);
+		}
+		demoActionsRef.current.clear();
+		setShowDemo(true);
+		// Close tab initially on mobile (step 0 - INTRO)
+		if (isMobile) {
+			setShowTab(false);
+		}
+	};
+
+	const handleCloseDemo = () => {
+		setShowDemo(false);
+		// Close tab when demo is closed on mobile
+		if (isMobile) {
+			setShowTab(false);
+		}
+	};
+
+	const handleDemoStep = (step) => {
+		// Optional: Add specific handling for each demo step
+		console.log("Demo step:", step);
+	};
+
+	// ADD THIS NEW FUNCTION:
+	const handleDemoAction = (action, item) => {
+		if (!showDemo) return;
+
+		// Notify the demo overlay of user actions
+		switch (action) {
+			case "rotate":
+				// Mark rotation as completed
+				demoActionsRef.current.add("item-rotated");
+				break;
+			case "delete":
+				// Mark deletion as completed
+				demoActionsRef.current.add("item-deleted");
+				break;
+			case "compass-clicked": // ADD THIS CASE
+				// Mark compass clicked as completed
+				demoActionsRef.current.add("compass-clicked");
+				break;
+			case "model-shown": // ADD THIS CASE
+				// Mark model dialog shown as completed
+				demoActionsRef.current.add("model-shown");
+				break;
+		}
+	};
+
 	// WRAP THE RETURN STATEMENT WITH AccessControlWrapper
 	return (
 		<AccessControlWrapper locale={locale}>
@@ -1268,25 +1345,43 @@ export default function DesignPage({ params }) {
 										)}
 										{/* Canvas */}
 										<div
-											className="relative flex-1 overflow-auto"
+											className="relative flex-1 overflow-auto canvas-items canvas-controls"
 											id="canvas-drop-area"
 										>
-											{/* 模组 */}
-											<div className="absolute px-2 py-1 text-sm border-gray-300 border-dashed top-2 left-2 z-9 border-1 rounded-xl bg-secondary">
-												<div className="text-center text-gray-600">
+											{/* Enhanced module section with demo button */}
+											<div className="absolute px-3 py-2 text-sm border-gray-300 border-dashed shadow-sm top-2 left-2 z-9 border-1 rounded-xl bg-secondary">
+												<div className="mb-2 font-medium text-center text-gray-600 ">
 													{t("module")}
 												</div>
-												<div className="flex">
+												<div className="flex flex-col gap-2">
 													<button
-														onClick={() =>
-															setWizardOpen(true)
-														}
-														className="px-2 m-2 text-white cursor-pointer bg-primary rounded-xl"
+														onClick={() => {
+															setWizardOpen(true);
+															// Trigger demo action when smart selection is opened
+															if (showDemo) {
+																handleDemoAction(
+																	"model-shown"
+																);
+															}
+														}}
+														className="px-3 py-1.5 text-white cursor-pointer bg-primary rounded-lg hover:bg-primary/90 transition-colors text-xs generate-btn"
 													>
 														{t("smartSelection")}
 													</button>
+													{/* Add demo button */}
+													<button
+														onClick={
+															handleStartDemo
+														}
+														className="px-3 py-1.5 text-white cursor-pointer bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors text-xs"
+													>
+														{t(
+															"demo.startTutorial"
+														)}
+													</button>
 												</div>
 											</div>
+
 											<Canvas
 												ref={canvasRef}
 												locale={locale}
@@ -1301,6 +1396,7 @@ export default function DesignPage({ params }) {
 												onGenReport={onGenReport}
 												showTab={showTab}
 												onShowTab={onShowTab}
+												onDemoAction={handleDemoAction} // ADD THIS LINE
 											/>
 										</div>
 									</div>
@@ -1376,6 +1472,7 @@ export default function DesignPage({ params }) {
 							</DragOverlay>
 						</DndContext>
 					</div>
+
 					<AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
 						<AlertDialogContent>
 							<AlertDialogHeader>
@@ -1467,6 +1564,19 @@ export default function DesignPage({ params }) {
 							setWizardOpen(false);
 						}}
 					/>
+
+					{/* Demo Overlay - ADD THIS */}
+					<DemoOverlay
+						isActive={showDemo}
+						onClose={handleCloseDemo}
+						onStep={handleDemoStep}
+						onShowTabControl={handleShowTabControl} // ADD THIS PROP
+						canvasRef={canvasRef}
+						isMobile={isMobile}
+						demoActions={demoActionsRef.current}
+					/>
+
+					<ToastContainer />
 				</>
 			</Suspense>
 		</AccessControlWrapper>

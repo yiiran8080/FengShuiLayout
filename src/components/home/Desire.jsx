@@ -73,18 +73,24 @@ const Desire = ({ className = "" }) => {
 				</div>
 				<section
 					className="
-                    w-max
+                    w-full
+                    max-w-none
                     mx-auto
                     grid
-                    grid-cols-1
+                    grid-cols-2
                     sm:grid-cols-2
                     lg:grid-cols-4
-                    gap-30
+                    gap-2
+                    sm:gap-4
+                    lg:gap-30
                     text-center
-                    text-[20px]
+                    text-[16px]
+                    sm:text-[18px]
+                    lg:text-[20px]
                     text-[#1d1d1d]
                     font-[Outfit]
-                    px-4
+                    px-2
+                    sm:px-4
                 "
 				>
 					{cards.map((card, idx) => (
@@ -110,18 +116,24 @@ const Desire = ({ className = "" }) => {
 				</div>
 				<section
 					className="
-                    w-max
+                    w-full
+                    max-w-none
                     mx-auto
                     grid
-                    grid-cols-1
+                    grid-cols-2
                     sm:grid-cols-2
                     lg:grid-cols-4
-                    gap-30
+                    gap-2
+                    sm:gap-4
+                    lg:gap-30
                     text-center
-                    text-[20px]
+                    text-[16px]
+                    sm:text-[18px]
+                    lg:text-[20px]
                     text-[#1d1d1d]
                     font-[Outfit]
-                    px-4
+                    px-2
+                    sm:px-4
                 "
 				>
 					{cards2.map((card, idx) => (

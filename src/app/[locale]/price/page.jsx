@@ -391,12 +391,20 @@ export default function YourPage() {
 								<button
 									onClick={handleFacebookShare}
 									disabled={sharing}
-									className="px-6 sm:px-8 lg:px-10 py-3 sm:py-4 bg-[#096e56] text-white rounded-[50px] hover:bg-[#0a7e63] transition-colors text-sm sm:text-base lg:text-lg font-medium shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-200 disabled:opacity-70 disabled:transform-none"
+									className="px-6 sm:px-8 lg:px-10 py-3 sm:py-4 bg-[#1877F2] text-white rounded-[50px] hover:bg-[#166fe5] transition-colors text-sm sm:text-base lg:text-lg font-medium shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-200 disabled:opacity-70 disabled:transform-none flex items-center gap-2 justify-center"
 									style={{
 										boxShadow:
-											"0 6px 20px rgba(9, 110, 86, 0.4)",
+											"0 6px 20px rgba(24, 119, 242, 0.4)",
 									}}
 								>
+									{/* Facebook Icon SVG */}
+									<svg
+										className="w-5 h-5 sm:w-6 sm:h-6"
+										fill="currentColor"
+										viewBox="0 0 24 24"
+									>
+										<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+									</svg>
 									{sharing
 										? t("shareProcessing")
 										: t("shareToFacebook")}
@@ -466,13 +474,13 @@ export default function YourPage() {
 						<div className="self-stretch flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 lg:gap-[70px] max-w-full">
 							{/* First card - Free version */}
 							<section
-								className="group w-full max-w-[328px] sm:w-[280px] lg:w-[328px] h-auto sm:h-[480px] lg:h-[514px] rounded-[20px] bg-[#fff] border-[#066952] border-solid border-[1px] box-border flex flex-col items-center justify-center p-4 sm:p-6 lg:p-7 text-left text-2xl sm:text-3xl lg:text-4xl text-[#111827] font-[Inter] transition-all duration-200 hover:scale-105 sm:hover:scale-110 lg:hover:scale-120 hover:border-[#066952] hover:border-2 hover:bg-[#f2faf7] sm:flex-1 shadow-lg hover:shadow-xl"
+								className="group w-full max-w-[328px] sm:w-[280px] lg:w-[328px] h-auto sm:h-[480px] lg:h-[514px] rounded-[20px] bg-[#fff] border-[#066952] border-solid border-[1px] box-border flex flex-col items-center justify-between p-4 sm:p-6 lg:p-7 text-left text-2xl sm:text-3xl lg:text-4xl text-[#111827] font-[Inter] transition-all duration-200 hover:scale-105 sm:hover:scale-110 lg:hover:scale-120 hover:border-[#066952] hover:border-2 hover:bg-[#f2faf7] sm:flex-1 shadow-lg hover:shadow-xl"
 								style={{
 									boxShadow: "0 8px 25px rgba(0, 0, 0, 0.15)",
 								}}
 							>
-								<div className="w-full max-w-[232.7px] h-auto flex flex-col items-center justify-start pt-0 px-0 box-border gap-8 sm:gap-12 lg:gap-[102.3px]">
-									<div className="w-full max-w-[232px] flex flex-col items-start justify-start gap-4 sm:gap-5 lg:gap-6">
+								<div className="w-full max-w-[232.7px] h-full flex flex-col items-center justify-between pt-0 px-0 box-border">
+									<div className="w-full max-w-[232px] flex flex-col items-start justify-start gap-4 sm:gap-5 lg:gap-6 flex-grow">
 										{/* Price Section */}
 										<div className="flex flex-col items-start self-stretch justify-start gap-3 sm:gap-4 lg:gap-5">
 											<div className="flex flex-row items-start justify-start w-full">
@@ -550,164 +558,52 @@ export default function YourPage() {
 									</div>
 
 									{/* Button */}
-									<Link
-										href="/free"
-										className="w-full sm:w-auto"
-									>
-										<button
-											className="cursor-pointer [border:none] px-4 sm:px-6 lg:px-[67px] py-2 sm:py-3 lg:py-[4.1px] bg-[#096e56] rounded-[50px] sm:rounded-[75px] lg:rounded-[100px] overflow-hidden flex flex-row items-center justify-center shrink-0 transition-all duration-200 group-hover:bg-[#19ad6b] hover:bg-[#19ad6b] w-full sm:w-auto shadow-md hover:shadow-lg"
-											style={{
-												boxShadow:
-													"0 4px 15px rgba(0, 0, 0, 0.2)",
-											}}
+									<div className="w-full mt-6 sm:w-auto">
+										<Link
+											href="/free"
+											className="w-full sm:w-auto"
 										>
-											<div className="text-sm sm:text-base leading-6 sm:leading-8 font-[ABeeZee] text-[#fff] text-center">
-												{t("freeBtn")}
-											</div>
-										</button>
-									</Link>
+											<button
+												className="cursor-pointer [border:none] px-4 sm:px-6 lg:px-[67px] py-2 sm:py-3 lg:py-[4.1px] bg-[#096e56] rounded-[50px] sm:rounded-[75px] lg:rounded-[100px] overflow-hidden flex flex-row items-center justify-center shrink-0 transition-all duration-200 group-hover:bg-[#19ad6b] hover:bg-[#19ad6b] w-full sm:w-auto shadow-md hover:shadow-lg"
+												style={{
+													boxShadow:
+														"0 4px 15px rgba(0, 0, 0, 0.2)",
+												}}
+											>
+												<div className="text-sm sm:text-base leading-6 sm:leading-8 font-[ABeeZee] text-[#fff] text-center">
+													{t("freeBtn")}
+												</div>
+											</button>
+										</Link>
+									</div>
 								</div>
 							</section>
 
-							{/* Second card - Premium version with lock/unlock */}
+							{/* Second card - Premium version with button lock only */}
 							<section
-								className={`relative w-full max-w-[328px] sm:w-[280px] lg:w-[328px] h-auto sm:h-[480px] lg:h-[514px] rounded-[20px] bg-[#fff] border-[#066952] border-solid border-[1px] box-border flex flex-col items-center justify-center p-4 sm:p-6 lg:p-7 text-left text-2xl sm:text-3xl lg:text-4xl text-[#111827] font-[Inter] transition-all duration-200 ${
-									isUnlocked
-										? "hover:scale-105 sm:hover:scale-110 lg:hover:scale-120 hover:border-[#066952] hover:border-2 hover:bg-[#f2faf7]"
-										: "opacity-75"
-								} sm:flex-1 shadow-lg hover:shadow-xl`}
+								className="relative w-full max-w-[328px] sm:w-[280px] lg:w-[328px] h-auto sm:h-[480px] lg:h-[514px] rounded-[20px] bg-[#fff] border-[#066952] border-solid border-[1px] box-border flex flex-col items-center justify-between p-4 sm:p-6 lg:p-7 text-left text-2xl sm:text-3xl lg:text-4xl text-[#111827] font-[Inter] transition-all duration-200 hover:scale-105 sm:hover:scale-110 lg:hover:scale-120 hover:border-[#066952] hover:border-2 hover:bg-[#f2faf7] sm:flex-1 shadow-lg hover:shadow-xl"
 								style={{
 									boxShadow: "0 8px 25px rgba(0, 0, 0, 0.15)",
 								}}
 							>
-								{/* Badge - always visible, above lock overlay */}
-								<div className="absolute top-2 sm:top-3 right-2 sm:right-3 bg-[#0e8c6f] text-white text-xs sm:text-sm font-bold px-2 sm:px-3 py-1 rounded-md shadow-lg shadow-[#0e8c6f]/70 z-20">
+								{/* Badge - always visible */}
+								<div className="absolute top-2 sm:top-[-10] right-2 sm:right-1 bg-[#0e8c6f] text-white text-xs sm:text-sm font-bold px-2 sm:px-3 py-1 rounded-md shadow-lg shadow-[#0e8c6f]/70 z-20">
 									{isUnlocked
 										? t("unlockedBadge")
 										: t("popularBadge")}
 								</div>
 
-								{/* Lock overlay when locked */}
-								{!isUnlocked && (
-									<div className="absolute inset-0 bg-gray-200/80 backdrop-blur-sm rounded-[20px] flex flex-col items-center justify-center z-10">
-										<div className="flex flex-col items-center gap-3 p-4 sm:gap-4 sm:p-6">
-											{/* Lock icon */}
-											<svg
-												className="w-12 h-12 text-gray-600 sm:w-16 sm:h-16"
-												fill="none"
-												stroke="currentColor"
-												viewBox="0 0 24 24"
-											>
-												<path
-													strokeLinecap="round"
-													strokeLinejoin="round"
-													strokeWidth={2}
-													d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-												/>
-											</svg>
-
-											<div className="text-center">
-												<h3 className="mb-2 text-base font-bold text-gray-700 sm:text-lg">
-													{t("lockedTitle")}
-												</h3>
-												<p className="mb-3 text-xs text-gray-600 sm:mb-4 sm:text-sm">
-													{t("lockedDesc")}
-												</p>
-
-												{!showPromoInput ? (
-													<button
-														onClick={() =>
-															setShowPromoInput(
-																true
-															)
-														}
-														className="px-3 sm:px-4 py-1.5 sm:py-2 bg-[#096e56] text-white rounded-lg hover:bg-[#19ad6b] transition-colors text-sm sm:text-base shadow-md hover:shadow-lg"
-														style={{
-															boxShadow:
-																"0 4px 15px rgba(0, 0, 0, 0.3)",
-														}}
-													>
-														{t("inputPromoBtn")}
-													</button>
-												) : (
-													<div className="space-y-2 w-full max-w-[200px]">
-														<input
-															type="text"
-															placeholder={t(
-																"inputPromoPlaceholder"
-															)}
-															value={promoCode}
-															onChange={(e) =>
-																setPromoCode(
-																	e.target
-																		.value
-																)
-															}
-															className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-black border border-gray-300 rounded-lg shadow-sm"
-															onKeyPress={(e) =>
-																e.key ===
-																	"Enter" &&
-																handlePromoSubmit()
-															}
-														/>
-														{promoError && (
-															<p className="text-xs text-red-500">
-																{promoError}
-															</p>
-														)}
-														<div className="flex gap-1 sm:gap-2">
-															<button
-																onClick={
-																	handlePromoSubmit
-																}
-																className="px-2 sm:px-3 py-1 bg-[#096e56] text-white rounded text-xs sm:text-sm hover:bg-[#19ad6b] transition-colors flex-1 shadow-sm hover:shadow-md"
-															>
-																{t(
-																	"confirmBtn"
-																)}
-															</button>
-															<button
-																onClick={() => {
-																	setShowPromoInput(
-																		false
-																	);
-																	setPromoCode(
-																		""
-																	);
-																	setPromoError(
-																		""
-																	);
-																}}
-																className="flex-1 px-2 py-1 text-xs text-white transition-colors bg-gray-500 rounded shadow-sm sm:px-3 sm:text-sm hover:bg-gray-600 hover:shadow-md"
-															>
-																{t("cancelBtn")}
-															</button>
-														</div>
-													</div>
-												)}
-											</div>
-										</div>
-									</div>
-								)}
-
-								{/* Rest of the card content */}
-								<div className="w-full max-w-[232.7px] h-auto flex flex-col items-center justify-start pt-0 px-0 box-border gap-8 sm:gap-12 lg:gap-[102.3px]">
-									<div className="w-full max-w-[232px] flex flex-col items-start justify-start gap-4 sm:gap-5 lg:gap-6">
+								<div className="w-full max-w-[232.7px] h-full flex flex-col items-center justify-between pt-0 px-0 box-border">
+									<div className="w-full max-w-[232px] flex flex-col items-start justify-start gap-4 sm:gap-5 lg:gap-6 flex-grow">
 										{/* Price Section */}
 										<div className="flex flex-col items-start self-stretch justify-start gap-3 sm:gap-4 lg:gap-5">
 											<div className="flex flex-row items-start justify-start w-full">
 												<div className="flex flex-row items-center justify-start gap-2">
 													<h2 className="m-0 relative text-[length:inherit] leading-8 sm:leading-10 lg:leading-[46px] font-[500] font-[inherit] inline-block shrink-0 text-xl sm:text-2xl lg:text-4xl">
-														{isUnlocked ? (
-															<>
-																$1
-																<span className="ml-1 text-sm text-gray-500 line-through sm:text-base">
-																	$3.8
-																</span>
-															</>
-														) : (
-															"$3.8"
-														)}
+														$1
+														<span className="ml-1 text-sm text-gray-500 line-through sm:text-base">
+															$3.8
+														</span>
 													</h2>
 													<div className="relative text-sm sm:text-base lg:text-[17px] font-[500] text-[#848199] inline-block shrink-0">
 														/ {t("perSqft")}
@@ -751,48 +647,151 @@ export default function YourPage() {
 										</div>
 									</div>
 
-									{/* Button */}
-									<button
-										onClick={
-											isUnlocked
-												? handlePremiumClick
-												: undefined
-										}
-										className={`cursor-pointer [border:none] px-4 sm:px-6 lg:px-[67px] py-2 sm:py-3 lg:py-[4.1px] rounded-[50px] sm:rounded-[75px] lg:rounded-[100px] overflow-hidden flex flex-row items-center justify-center shrink-0 transition-all duration-200 w-full sm:w-auto shadow-md hover:shadow-lg ${
-											isUnlocked
-												? "bg-[#096e56] hover:bg-[#19ad6b]"
-												: "bg-gray-400 cursor-not-allowed"
-										}`}
-										disabled={
-											!isUnlocked || isProcessingPayment
-										}
-										style={{
-											boxShadow:
-												"0 4px 15px rgba(0, 0, 0, 0.2)",
-										}}
-									>
-										<div className="text-sm sm:text-base leading-6 sm:leading-8 font-[ABeeZee] text-[#fff] text-center">
-											{isUnlocked
-												? isProcessingPayment &&
-													currentCardType ===
-														"premium"
-													? t("processing")
-													: t("premiumBtn")
-												: t("lockedBtn")}
-										</div>
-									</button>
+									{/* Button Area - with promo code input when locked */}
+									<div className="w-full mt-6 sm:w-auto">
+										{isUnlocked ? (
+											/* Unlocked State - Show promo section first, then button */
+											<div className="w-full space-y-3">
+												{/* Show promo code info when unlocked */}
+												<div className="text-center">
+													<p className="mb-2 text-xs text-gray-600">
+														{t("unlockedWithPromo")}
+													</p>
+													<div className="text-xs text-[#096e56] font-medium">
+														{t("promoCodeUsed")}
+													</div>
+												</div>
+
+												{/* Unlocked Button */}
+												<button
+													onClick={handlePremiumClick}
+													className="cursor-pointer [border:none] px-4 sm:px-6 lg:px-[67px] py-2 sm:py-3 lg:py-[4.1px] bg-[#096e56] rounded-[50px] sm:rounded-[75px] lg:rounded-[100px] overflow-hidden flex flex-row items-center justify-center shrink-0 transition-all duration-200 hover:bg-[#19ad6b] w-full sm:w-auto shadow-md hover:shadow-lg"
+													disabled={
+														isProcessingPayment
+													}
+													style={{
+														boxShadow:
+															"0 4px 15px rgba(0, 0, 0, 0.2)",
+													}}
+												>
+													<div className="text-sm sm:text-base leading-6 sm:leading-8 font-[ABeeZee] text-[#fff] text-center">
+														{isProcessingPayment &&
+														currentCardType ===
+															"premium"
+															? t("processing")
+															: t("premiumBtn")}
+													</div>
+												</button>
+											</div>
+										) : (
+											/* Locked State - Show promo section first, then button */
+											<div className="w-full space-y-3">
+												{/* Promo Code Section - Always visible when locked */}
+												{!showPromoInput ? (
+													/* Unlock with Promo Code */
+													<div className="text-center">
+														<p className="mb-2 text-xs text-gray-600">
+															{t("havePromoCode")}
+														</p>
+														<button
+															onClick={() =>
+																setShowPromoInput(
+																	true
+																)
+															}
+															className="text-xs text-[#096e56] hover:text-[#19ad6b] font-medium underline transition-colors"
+														>
+															{t(
+																"enterPromoCode"
+															)}
+														</button>
+													</div>
+												) : (
+													/* Promo Code Input */
+													<div className="space-y-2">
+														<input
+															type="text"
+															placeholder={t(
+																"inputPromoPlaceholder"
+															)}
+															value={promoCode}
+															onChange={(e) =>
+																setPromoCode(
+																	e.target
+																		.value
+																)
+															}
+															className="w-full px-3 py-2 text-sm text-black border border-gray-300 rounded-lg shadow-sm focus:border-[#096e56] focus:outline-none"
+															onKeyPress={(e) =>
+																e.key ===
+																	"Enter" &&
+																handlePromoSubmit()
+															}
+														/>
+														{promoError && (
+															<p className="text-xs text-center text-red-500">
+																{promoError}
+															</p>
+														)}
+														<div className="flex gap-2">
+															<button
+																onClick={
+																	handlePromoSubmit
+																}
+																className="px-4 py-2 bg-[#096e56] text-white rounded-lg text-sm hover:bg-[#19ad6b] transition-colors flex-1 shadow-sm hover:shadow-md"
+															>
+																{t(
+																	"confirmBtn"
+																)}
+															</button>
+															<button
+																onClick={() => {
+																	setShowPromoInput(
+																		false
+																	);
+																	setPromoCode(
+																		""
+																	);
+																	setPromoError(
+																		""
+																	);
+																}}
+																className="flex-1 px-4 py-2 text-sm text-white transition-colors bg-gray-500 rounded-lg shadow-sm hover:bg-gray-600 hover:shadow-md"
+															>
+																{t("cancelBtn")}
+															</button>
+														</div>
+													</div>
+												)}
+
+												{/* Locked Button - Moved to bottom */}
+												<button
+													className="cursor-not-allowed [border:none] px-4 sm:px-6 lg:px-[67px] py-2 sm:py-3 lg:py-[4.1px] bg-gray-400 rounded-[50px] sm:rounded-[75px] lg:rounded-[100px] overflow-hidden flex flex-row items-center justify-center shrink-0 w-full sm:w-auto shadow-md opacity-75"
+													disabled
+													style={{
+														boxShadow:
+															"0 4px 15px rgba(0, 0, 0, 0.2)",
+													}}
+												>
+													<div className="text-sm sm:text-base leading-6 sm:leading-8 font-[ABeeZee] text-[#fff] text-center">
+														{t("lockedBtn")}
+													</div>
+												</button>
+											</div>
+										)}
+									</div>
 								</div>
 							</section>
 
 							{/* Third card - Subscription version */}
 							<section
-								className="relative w-full max-w-[328px] sm:w-[280px] lg:w-[328px] h-auto sm:h-[480px] lg:h-[514px] rounded-[20px] bg-[#fff] border-[#066952] border-solid border-[1px] box-border flex flex-col items-center justify-center p-4 sm:p-6 lg:p-7 text-left text-2xl sm:text-3xl lg:text-4xl text-[#111827] font-[Inter] transition-all duration-200 hover:scale-105 sm:hover:scale-110 lg:hover:scale-120 hover:border-[#066952] hover:border-2 hover:bg-[#f2faf7] sm:flex-1 shadow-lg hover:shadow-xl"
+								className="relative w-full max-w-[328px] sm:w-[280px] lg:w-[328px] h-auto sm:h-[480px] lg:h-[514px] rounded-[20px] bg-[#fff] border-[#066952] border-solid border-[1px] box-border flex flex-col items-center justify-between p-4 sm:p-6 lg:p-7 text-left text-2xl sm:text-3xl lg:text-4xl text-[#111827] font-[Inter] transition-all duration-200 hover:scale-105 sm:hover:scale-110 lg:hover:scale-120 hover:border-[#066952] hover:border-2 hover:bg-[#f2faf7] sm:flex-1 shadow-lg hover:shadow-xl"
 								style={{
 									boxShadow: "0 8px 25px rgba(0, 0, 0, 0.15)",
 								}}
 							>
-								<div className="w-full max-w-[232.7px] h-auto flex flex-col items-center justify-start pt-0 px-0 box-border gap-8 sm:gap-12 lg:gap-[102.3px]">
-									<div className="w-full max-w-[232px] flex flex-col items-start justify-start gap-4 sm:gap-5 lg:gap-6">
+								<div className="w-full max-w-[232.7px] h-full flex flex-col items-center justify-between pt-0 px-0 box-border">
+									<div className="w-full max-w-[232px] flex flex-col items-start justify-start gap-4 sm:gap-5 lg:gap-6 flex-grow">
 										{/* Price Section */}
 										<div className="flex flex-col items-start self-stretch justify-start gap-3 sm:gap-4 lg:gap-5">
 											<div className="flex flex-row items-start justify-start w-full">
@@ -843,22 +842,25 @@ export default function YourPage() {
 									</div>
 
 									{/* Button */}
-									<button
-										onClick={handleSubscriptionClick}
-										disabled={isProcessingPayment}
-										className="cursor-pointer [border:none] px-4 sm:px-6 lg:px-[67px] py-2 sm:py-3 lg:py-[4.1px] bg-[#096e56] rounded-[50px] sm:rounded-[75px] lg:rounded-[100px] overflow-hidden flex flex-row items-center justify-center shrink-0 transition-all duration-200 group-hover:bg-[#19ad6b] hover:bg-[#19ad6b] w-full sm:w-auto shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-										style={{
-											boxShadow:
-												"0 4px 15px rgba(0, 0, 0, 0.2)",
-										}}
-									>
-										<div className="text-sm sm:text-base leading-6 sm:leading-8 font-[ABeeZee] text-[#fff] text-center">
-											{isProcessingPayment &&
-											currentCardType === "subscription"
-												? t("processing")
-												: t("subBtn")}
-										</div>
-									</button>
+									<div className="w-full mt-6 sm:w-auto">
+										<button
+											onClick={handleSubscriptionClick}
+											disabled={isProcessingPayment}
+											className="cursor-pointer [border:none] px-4 sm:px-6 lg:px-[67px] py-2 sm:py-3 lg:py-[4.1px] bg-[#096e56] rounded-[50px] sm:rounded-[75px] lg:rounded-[100px] overflow-hidden flex flex-row items-center justify-center shrink-0 transition-all duration-200 group-hover:bg-[#19ad6b] hover:bg-[#19ad6b] w-full sm:w-auto shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+											style={{
+												boxShadow:
+													"0 4px 15px rgba(0, 0, 0, 0.2)",
+											}}
+										>
+											<div className="text-sm sm:text-base leading-6 sm:leading-8 font-[ABeeZee] text-[#fff] text-center">
+												{isProcessingPayment &&
+												currentCardType ===
+													"subscription"
+													? t("processing")
+													: t("subBtn")}
+											</div>
+										</button>
+									</div>
 								</div>
 							</section>
 						</div>

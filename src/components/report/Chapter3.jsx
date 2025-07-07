@@ -313,13 +313,13 @@ export default function Chapter3({
 
 						<div className="mt-8">
 							{/* Mobile Dropdown */}
-							<div className="block mb-5 md:hidden">
+							<div className="block md:hidden mb-5">
 								<div className="relative">
 									<button
 										onClick={() =>
 											setShowDropdown(!showDropdown)
 										}
-										className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium bg-white border border-gray-200 rounded-lg"
+										className="w-full flex items-center justify-between px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm font-medium"
 									>
 										<span>{getCurrentTabLabel()}</span>
 										<ChevronDown
@@ -330,7 +330,7 @@ export default function Chapter3({
 									</button>
 
 									{showDropdown && (
-										<div className="absolute left-0 right-0 z-10 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg top-full">
+										<div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
 											<button
 												onClick={() =>
 													handleTabChange("tab0")

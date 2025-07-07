@@ -22,14 +22,18 @@
 		"unlock": "解鎖進階分析",
 		"yourReport": "您的家居風水分析結果",
 		"home": "首頁",
-		"pricing": "服務定價"
+		"about": "關於我們",
+		"process": "服務流程",
+		"theory": "風水原理",
+		"pricing": "服務定價",
+		"faq": "常見問題"
 	},
 	"home": {
 		"hero": {
 			"title": "打造和諧風水布局",
 			"title2": "融合自然之力，優化氣場流動",
-			"subtitle1": "你是否經常感到挫敗？",
-			"subtitle2": "是否覺得人生停滯不前？",
+			"subtitle1": "只要輕輕挪動房間的一個角落，幸運與幸福便悄悄降臨你的生活",
+			"subtitle2": "閱讀專屬於你的科學客製化評測報告，開啟專屬幸福人生的鑰匙",
 			"subtitle3": "家庭容易發生口角？",
 			"subtitle4": "試試移動房間的一個小角落，你將會變得更幸運，收穫幸福！",
 			"subtitle5": "阅读專屬科學訂製測評報告，解鎖幸福人生。",
@@ -77,25 +81,25 @@
 			"subtitle3": "孩子讀書不盡人意？",
 			"title4": "04",
 			"subtitle4": "事業停滯不前？",
-			"title5": "身體健康",
+			"title5": "財運提升",
 			"subtitle5": "不再受疾病困擾",
-			"title6": "事業順利",
+			"title6": "身體健康",
 			"subtitle6": "找到理想工作",
 			"title7": "孩子省心",
 			"subtitle7": "孩子成績提升",
-			"title8": "財運提升",
+			"title8": "事業順利",
 			"subtitle8": "3個月提升15%"
 		},
 		"share": {
 			"title": "HarmoniQ風水測算服務流程",
 			"subtitle1": "拍照上傳房間照片",
 			"description1": "免費測評一個房間",
-			"subtitle2": "分享報告與好親友",
-			"description2": "得coupon付費測算",
-			"subtitle3": "填寫信息移動模組",
-			"description3": "繪製專屬戶型平面圖",
-			"subtitle4": "獲取專屬定製報告",
-			"description4": "收到詳細分析報告和建議"
+			"subtitle2": "與好友分享HarmoniQ",
+			"description2": "優惠碼低至$1平方呎全屋測算",
+			"subtitle3": "拖放戶型圖",
+			"description3": "鳥瞰精準分析",
+			"subtitle4": "您的專屬定製報告",
+			"description4": "個人化分析及改善方法"
 		},
 		"compare": {
 			"title": "HarmoniQ煥運",
@@ -209,7 +213,7 @@
 			},
 			"block5": {
 				"title": "優惠及退款政策",
-				"content": "我們提供限時優惠及退款。限時優惠需要用戶到關注官方instagram社交媒體，獲得迎新優惠碼，即享低至每平方尺HKD$1優惠，最低消費爲HKD$388 。\n風水優化能量需時，退款期會在購買服務後第91天-120天生效，退款金額會先扣除不多於百分之十的行政費用，以用戶繳費渠道退款給用戶。歡迎通過聯絡我們安排退款。\n*優惠及退款保障受有關條款及細則約束。本公司保留對優惠及任何爭議之最終決定權，並可更改此優惠之條款及細則而不作另行通知。"
+				"content": "我們提供限時優惠及退款保障。限時優惠需要用戶分享指定訊息到社交媒體，從而獲得優惠碼，即享低至每平方呎HKD$1優惠，最低消費為HKD$380 。風水優化能量需時，退款期會在購買服務後第91天-120天生效，退款金額會先扣除不多於百分之十的行政費用，以用戶繳費渠道退款給用戶。歡迎通過聯絡我們安排退款。\n*優惠及退款保障受有關條款及細則約束。本公司保留對優惠及任何爭議之最終決定權，並可更改此優惠之條款及細則而不作另行通知。。"
 			},
 			"block6": {
 				"title": "使用者行爲",
@@ -312,7 +316,7 @@
 			"west": "正西",
 			"northWest": "西北"
 		},
-		"invalidRoomImage": "該圖片不是房間照片，請上傳室內房間圖片",
+		"invalidRoomImage": "錯誤, 請上傳一張房間圖片",
 		"roomDetected": "房間照片驗證成功！",
 		"validatingImage": "正在驗證圖片...",
 		"invalidFileFormat": "文件格式不正確，請上傳JPEG或PNG格式的圖片",
@@ -321,23 +325,23 @@
 	},
 	"theory": {
 		"title": "風水測算是基於什麼原理？",
-		"description": "通過上傳家居圖片，我們的智能風水分析系統利用先進的圖像識別和人工智能技術，結合傳統風水學的核心理論，為您的家居環境提供深度的風水解析。",
+		"description": "通過上傳家居圖片，我們的智能風水分析系統利用先進的圖像識別技術，結合傳統風水學的核心理論，為您的家居環境提供深度的風水解析。",
 		"cards": {
 			"imageRecognition": {
 				"title": "圖像識別與布局分析",
-				"description": "系統會對您上傳的家居圖片進行自動識別，提取家具擺放、空間格局、光線分布等關鍵信息，建立詳細的室內環境模型。"
+				"description": "系統會對您上傳的家居圖片進行自動識別，提取傢具擺放、空間格局、光線分布等關鍵信息進行分析。"
 			},
 			"knowledgeBase": {
 				"title": "風水學知識庫對比",
-				"description": "AI內置了完整的風水學知識庫，包括五行平衡、陰陽協調等理論。系統會將家居布局與風水原則進行對比，定位潛在問題和優化點。"
+				"description": "內置了完整的風水學知識庫，包括五行平衡、陰陽協調等理論，同時參考超過十萬案例，系統會將家居佈局與風水原則進行對比，定位潛在問題和優化點。"
 			},
 			"energyFlow": {
 				"title": "能量流動評估",
-				"description": "系統通過分析空間的開口位置、家具朝向、光線反射等，預測氣流和能量流動的路徑，幫助判斷是否存在風水上的「阻滯」或「洩氣」問題。"
+				"description": "系統通過分析空間的開口位置、傢具朝向、光線反射等，預測氣流和能量流動的路徑，幫助判斷是否存在風水上的“阻滯”或“洩氣”問題。"
 			},
 			"personalizedAdvice": {
 				"title": "個性化風水建議",
-				"description": "根據您的家庭成員命理、五行需求，系統會生成具體調整建議，例如家具的擺放、色彩搭配、植物添加等，讓您的家居環境更和諧。"
+				"description": "根據您的家庭成員命理、五行需求，系統會具體調整建議，例如傢具的擺放、色彩搭配、植物添加等，讓您的家居環境更和諧。"
 			}
 		}
 	},
@@ -455,11 +459,18 @@
 		"existingReportDescription": "您已經生成過風水報告。您可以查看現有報告（免費），或重新測試新的布局（需要重新付費）。",
 		"viewExistingReport": "查看現有報告",
 		"retestWithPayment": "重新測試",
-		"checkingExistingReports": "正在檢查已有報告..."
+		"checkingExistingReports": "正在檢查已有報告...",
+		"havePromoCode": "有優惠碼？",
+		"enterPromoCode": "輸入優惠碼解鎖",
+		"unlockedWithPromo": "已通過優惠碼解鎖",
+		"promoCodeUsed": "優惠碼已使用"
 	},
 
 	"design": {
 		"showTab": "選擇房間或家具",
+		"demo": {
+			"startTutorial": "教學"
+		},
 		"cta": "開始測算",
 		"alert": "請確認個人資料和房間布局是否準確？",
 		"warning": "至少需要設置1個房間、1扇門和1扇窗才可測算",
@@ -517,7 +528,9 @@
 		"hasBalcony": "有陽台",
 		"noBalcony": "沒有陽台",
 		"verifyingAccess": "正在驗證訪問權限...",
-		"redirecting": "正在跳轉..."
+		"redirecting": "正在跳轉...",
+		"tapToDrag": "輕觸拖動",
+		"itemSelected": "物品已選中"
 	},
 	"report": {
 		"catelog": "目錄",
@@ -584,5 +597,85 @@
 			"advancedAnalysisTitle": "流年運程進階分析",
 			"unlockAdvancedAnalysis": "解鎖以得到整份流年分析"
 		}
+	},
+	"demo": {
+		"startTutorial": "開始教學",
+		"step": "步驟",
+		"of": "共",
+		"progress": "進度",
+		"welcome": {
+			"title": "歡迎使用設計工具",
+			"description": "讓我們通過簡單的步驟學習如何使用畫布。這個教學將向您展示如何添加房間、家具以及使用各種工具來創建完美的風水佈局。"
+		},
+		"dragRoom": {
+			"title": "步驟1: 添加房間",
+			"description": "首先，讓我們添加一個房間到畫布。從左側邊欄的房間區域拖拽任意房間類型到右側的畫布區域。"
+		},
+		"dragFurniture": {
+			"title": "步驟2: 添加家具",
+			"description": "很好！現在讓我們添加一些家具。從左側邊欄的家具區域拖拽任意家具到畫布上的房間內。"
+		},
+		"selectItem": {
+			"title": "步驟3: 選擇物品",
+			"description": "點擊畫布上的任意物品來選擇它。選中的物品會顯示紅色邊框和控制按鈕。"
+		},
+		"rotateItem": {
+			"title": "步驟4: 旋轉物品",
+			"description": "選擇一個物品後，點擊旋轉按鈕來改變它的朝向。每次點擊會旋轉45度。"
+		},
+		"deleteItem": {
+			"title": "步驟5: 刪除物品",
+			"description": "選擇一個物品後，點擊刪除按鈕來移除它。被刪除的物品將從畫布上消失。"
+		},
+		"multiSelect": {
+			"title": "步驟6: 多選功能",
+			"description": "您可以同時選擇多個物品進行批量操作。",
+			"mobileDescription": "在移動設備上，長按物品0.5秒來添加到多選。選中的物品會顯示藍色邊框。",
+			"desktopDescription": "在桌面上，雙擊物品來添加到多選。選中的物品會顯示藍色邊框。"
+		},
+		"zoomPan": {
+			"title": "步驟7: 縮放和平移",
+			"description": "使用縮放控件來放大或縮小畫布，拖拽畫布來平移視圖。"
+		},
+		"compassDirection": {
+			"title": "步驟8: 設置方位",
+			"description": "調整羅盤方向來設定房間的正確朝向。風水佈局中，正確的方位非常重要。點擊羅盤或使用方向控制來調整方位。"
+		},
+		"clearCanvas": {
+			"title": "步驟9: 清空畫布",
+			"description": "學習如何清空畫布以重新開始設計。點擊清空按鈕來移除所有房間和家具，開始新的佈局設計。"
+		},
+		"chooseModel": {
+			"title": "步驟10: 選擇模板",
+			"description": "探索預設的風水佈局模板。選擇一個適合的模板作為設計起點，或者繼續使用自定義佈局。"
+		},
+		"complete": {
+			"title": "教學完成！",
+			"description": "恭喜！您已經學會了設計工具的基本功能。現在您可以開始創建自己的風水佈局了。記住，好的風水佈局需要考慮房間的朝向、家具的擺放位置等因素。"
+		},
+		"tapToSelect": "點擊選擇物品",
+		"clickToSelect": "點擊選擇物品",
+		"selectHint": "選中的物品會顯示紅色邊框",
+		"rotateHint": "點擊旋轉按鈕",
+		"rotateDetail": "每次點擊旋轉45度",
+		"deleteHint": "點擊刪除按鈕",
+		"deleteDetail": "確認刪除後物品會從畫布消失",
+		"longPressToSelect": "長按選擇多個物品",
+		"holdFor500ms": "按住0.5秒來添加到選擇",
+		"doubleClickToSelect": "雙擊選擇多個物品",
+		"doubleClickOnItems": "雙擊物品添加到多選狀態",
+		"zoomPanHint": "使用縮放控件和拖拽",
+		"zoomPanDetail": "縮放查看細節，拖拽移動視圖",
+		"compassHint": "調整羅盤方向",
+		"compassDetail": "設定正確的房間朝向",
+		"clearHint": "點擊清空按鈕",
+		"clearDetail": "移除所有元素重新開始",
+		"modelHint": "選擇預設模板",
+		"modelDetail": "使用模板快速開始設計",
+		"waitingForAction": "等待您的操作...",
+		"previous": "上一步",
+		"next": "下一步",
+		"skip": "跳過",
+		"finish": "完成教學"
 	}
 }

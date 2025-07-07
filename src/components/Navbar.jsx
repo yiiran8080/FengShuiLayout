@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Link } from "@/i18n/navigation";
+import { useRouter, usePathname } from "@/i18n/navigation";
 import LanguageToggle from "./LanguageToggle";
 import useMobile from "../app/hooks/useMobile";
 import { useSession } from "next-auth/react";
@@ -12,10 +13,42 @@ import Avatar from "./Avatar";
 export default function Navbar({ from }) {
 	const t = useTranslations("Navigation");
 	const t2 = useTranslations("home.hero");
+	const router = useRouter();
+	const pathname = usePathname();
 
 	const isMobile = useMobile();
 	const { data: session } = useSession();
 	const isLogined = session?.user?.userId;
+
+	const scrollToSection = (sectionId) => {
+		const element = document.getElementById(sectionId);
+		if (element) {
+			element.scrollIntoView({ behavior: "smooth" });
+		}
+	};
+
+	const navigateToSection = (sectionId) => {
+		// If we're on the home page, just scroll
+		if (pathname === "/" || pathname === "") {
+			scrollToSection(sectionId);
+		} else {
+			// If we're on another page, navigate to home page with hash
+			router.push(`/#${sectionId}`);
+		}
+	};
+
+	// Handle scrolling when coming from another page with hash
+	useEffect(() => {
+		if (typeof window !== "undefined") {
+			const hash = window.location.hash.replace("#", "");
+			if (hash) {
+				// Small delay to ensure the page has loaded
+				setTimeout(() => {
+					scrollToSection(hash);
+				}, 100);
+			}
+		}
+	}, [pathname]);
 
 	return (
 		<nav className="bg-[#004F44] h-16 hidden-on-print">
@@ -34,18 +67,36 @@ export default function Navbar({ from }) {
 						{/* Navigation Links */}
 						{!isMobile && from !== "report" && (
 							<div className="flex items-center gap-6 ml-6">
-								<Link
-									href="/"
-									className="text-white transition-colors hover:text-gray-200"
+								<button
+									onClick={() => navigateToSection("hero")}
+									className="text-white transition-colors cursor-pointer hover:text-gray-200"
 								>
-									{t("home")}
-								</Link>
+									{t("about")}
+								</button>
+								<button
+									onClick={() => navigateToSection("share")}
+									className="text-white transition-colors cursor-pointer hover:text-gray-200"
+								>
+									{t("process")}
+								</button>
+								<button
+									onClick={() => navigateToSection("theory")}
+									className="text-white transition-colors cursor-pointer hover:text-gray-200"
+								>
+									{t("theory")}
+								</button>
 								<Link
 									href="/price"
 									className="text-white transition-colors hover:text-gray-200"
 								>
 									{t("pricing")}
 								</Link>
+								<button
+									onClick={() => navigateToSection("faq")}
+									className="text-white transition-colors cursor-pointer hover:text-gray-200"
+								>
+									{t("faq")}
+								</button>
 							</div>
 						)}
 

@@ -1,11 +1,13 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
-export default function Theory() {
+export default function Theory({ bgColor = "bg-[#f0f8f6]" }) {
 	const t = useTranslations("theory");
 
 	return (
-		<section className="w-full max-w-full flex flex-col items-center justify-center bg-[#f0f8f6] px-4 sm:px-8 md:px-[60px] lg:px-[120px] xl:px-[200px] py-10 sm:py-14 md:py-20">
+		<section
+			className={`w-full max-w-full flex flex-col items-center justify-center ${bgColor} px-4 sm:px-8 md:px-[60px] lg:px-[120px] xl:px-[200px] py-10 sm:py-14 md:py-20`}
+		>
 			{/* Title Section */}
 			<section className="w-full flex flex-row items-start justify-center max-w-full text-left text-2xl sm:text-3xl md:text-[40px] text-[#073e31] font-['Source_Sans_Pro'] mb-6 sm:mb-10">
 				<div className="w-full max-w-[729px] flex flex-col items-start justify-start gap-4">

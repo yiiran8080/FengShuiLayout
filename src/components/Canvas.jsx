@@ -54,6 +54,7 @@ export const Canvas = forwardRef(
 			handleRedo,
 			onGenReport,
 			locale,
+			onDemoAction = () => {}, // ADD THIS PROP
 		},
 		ref
 	) => {
@@ -99,11 +100,29 @@ export const Canvas = forwardRef(
 		const [selectedItems, setSelectedItems] = useState([]);
 		const [multiSelectHintShown, setMultiSelectHintShown] = useState(false);
 
-		// --- Mobile long-press for multi-select ---
+		// --- NEW: Mobile selection state for tap-to-select behavior ---
+		const [mobileSelectedItem, setMobileSelectedItem] = useState(null);
 		const longPressTimeout = useRef();
+		const tapTimeout = useRef();
 
+		// Enhanced mobile touch handling for select-then-drag behavior
 		const handleItemTouchStart = (e, item) => {
 			if (!isMobile) return;
+
+			// Clear any existing tap timeout
+			if (tapTimeout.current) {
+				clearTimeout(tapTimeout.current);
+				tapTimeout.current = null;
+			}
+
+			// If item is already selected for mobile, allow dragging
+			if (mobileSelectedItem?.id === item.id) {
+				// Start dragging immediately
+				handleRoomMouseDown(e, item);
+				return;
+			}
+
+			// Set up long press for multi-select
 			longPressTimeout.current = setTimeout(() => {
 				setSelectedItems((prev) => {
 					if (prev.includes(item.id)) {
@@ -117,19 +136,40 @@ export const Canvas = forwardRef(
 				});
 			}, 500);
 
-			if (!multiSelectHintShown) {
-				toast.info(t("longPressHint"), {
-					autoClose: 2000,
-				});
-				setMultiSelectHintShown(true);
-			}
+			// Prevent the immediate drag behavior on mobile
+			e.preventDefault();
+			e.stopPropagation();
 		};
 
-		const handleItemTouchEnd = () => {
+		const handleItemTouchEnd = (e, item) => {
 			if (!isMobile) return;
-			clearTimeout(longPressTimeout.current);
+
+			// Clear long press timeout
+			if (longPressTimeout.current) {
+				clearTimeout(longPressTimeout.current);
+				longPressTimeout.current = null;
+			}
+
+			// If this was a quick tap (not a long press), select the item
+			tapTimeout.current = setTimeout(() => {
+				if (mobileSelectedItem?.id !== item.id) {
+					setMobileSelectedItem(item);
+					onHandleActiveRoom(item);
+					toast.info(t("itemSelected"), {
+						autoClose: 1000,
+					});
+				}
+				tapTimeout.current = null;
+			}, 50);
 		};
-		// ------------------------------------------
+
+		// Clear mobile selection when touching canvas background
+		const handleCanvasTouch = (e) => {
+			if (!isMobile) return;
+			if (e.target.id === "canvas") {
+				setMobileSelectedItem(null);
+			}
+		};
 
 		useImperativeHandle(
 			ref,
@@ -137,6 +177,8 @@ export const Canvas = forwardRef(
 				getLocalItems: () => localItems,
 				setLocalItems,
 				setActiveRoom,
+				getActiveRoom: () => activeRoom,
+				getSelectedItems: () => selectedItems,
 				setIsRoomDragging,
 				setDraggedRoom,
 				setRoomDragStart,
@@ -146,8 +188,19 @@ export const Canvas = forwardRef(
 				getCompassRotation: () => compassRotation,
 				getScale: () => scale,
 				setScale,
+				// Add mobile selection methods
+				getMobileSelectedItem: () => mobileSelectedItem,
+				setMobileSelectedItem,
 			}),
-			[localItems, position, compassRotation, scale]
+			[
+				localItems,
+				position,
+				compassRotation,
+				scale,
+				activeRoom,
+				selectedItems,
+				mobileSelectedItem,
+			]
 		);
 
 		const containerRef = useRef(null);
@@ -303,6 +356,11 @@ export const Canvas = forwardRef(
 
 				if (e.button !== 0 && !e.touches) return;
 
+				// Clear mobile selection when touching canvas
+				if (isMobile) {
+					setMobileSelectedItem(null);
+				}
+
 				// Enhanced pinch-to-zoom for mobile
 				if (e.touches?.length === 2) {
 					const touch1 = e.touches[0];
@@ -343,7 +401,7 @@ export const Canvas = forwardRef(
 					});
 				}
 			},
-			[position, scale]
+			[position, scale, isMobile]
 		);
 
 		const furnitureInroom = (furniture, parentRoom) => {
@@ -371,6 +429,12 @@ export const Canvas = forwardRef(
 		const handleRoomMouseDown = useCallback(
 			(e, room) => {
 				e.stopPropagation();
+
+				// On mobile, only allow dragging if item is already selected
+				if (isMobile && mobileSelectedItem?.id !== room.id) {
+					return;
+				}
+
 				setIsRoomDragging(true);
 				setDraggedRoom(room);
 				if (e.touches?.length == 1) {
@@ -414,7 +478,7 @@ export const Canvas = forwardRef(
 					setLocalItems(updatedItems);
 				}
 			},
-			[localItems]
+			[localItems, isMobile, mobileSelectedItem]
 		);
 
 		const handleResizeStart = useCallback((e, room, corner) => {
@@ -638,6 +702,8 @@ export const Canvas = forwardRef(
 					width: canvasWidth || canvasSize.width,
 					height: canvasHeight || canvasSize.height,
 				});
+				// Notify demo of pan action
+				onDemoAction("pan", { x: newX, y: newY });
 			}
 		};
 
@@ -843,11 +909,14 @@ export const Canvas = forwardRef(
 					<button
 						className="p-2 rounded-full bg-red-50"
 						onClick={() => {
+							const itemToDelete = activeRoom;
 							const newItems = localItems.filter(
 								(item) => item.id !== activeRoom.id
 							);
 							setLocalItems(newItems);
 							setActiveRoom(null);
+							// Notify demo of delete action
+							onDemoAction("delete", itemToDelete);
 						}}
 						title={t("delete")}
 					>
@@ -889,26 +958,36 @@ export const Canvas = forwardRef(
 				});
 			}
 			setScale(newScale);
+
+			// Notify demo of zoom action
+			onDemoAction("zoom", { type, scale: newScale });
 		}
 
 		const handleRotate = useCallback(() => {
 			if (!activeRoom) return;
+			let rotatedRoom = null;
 			const updatedItems = localItems.map((item) => {
 				if (item.id === activeRoom.id) {
 					const newRotation = ((item.rotation || 0) - 45) % 360;
-					return {
+					const updatedItem = {
 						...item,
 						rotation: newRotation,
 					};
+					rotatedRoom = updatedItem; // Store the rotated room
+					return updatedItem;
 				}
 				return item;
 			});
 			setLocalItems(updatedItems);
-		}, [activeRoom, localItems]);
+			// Notify demo of rotation action with the correct rotated room
+			onDemoAction("rotate", rotatedRoom);
+		}, [activeRoom, localItems, onDemoAction]); // Also add onDemoAction to dependencies
 
 		const onCompassClick = () => {
 			let newRotation = compassRotation + 45;
 			setCompassRotation(newRotation);
+			// Notify demo of compass action
+			onDemoAction("compass-clicked", { rotation: newRotation }); // CHANGE: from "compass" to "compass-clicked"
 		};
 
 		const directions = [
@@ -951,19 +1030,34 @@ export const Canvas = forwardRef(
 		// Multi-rotate selected items
 		const handleMultiRotate = () => {
 			if (selectedItems.length === 0) return;
+
+			// Store the rotated items for demo action
+			const rotatedItems = [];
+
 			const updatedItems = localItems.map((item) => {
 				if (selectedItems.includes(item.id)) {
 					const newRotation = ((item.rotation || 0) - 45) % 360;
-					return { ...item, rotation: newRotation };
+					const rotatedItem = { ...item, rotation: newRotation };
+					rotatedItems.push(rotatedItem); // Store rotated item
+					return rotatedItem;
 				}
 				return item;
 			});
 			setLocalItems(updatedItems);
+
+			// Notify demo of multi-rotation action
+			onDemoAction("rotate", rotatedItems);
 		};
 
 		// Multi-delete selected items
 		const handleMultiDelete = () => {
 			if (selectedItems.length === 0) return;
+
+			// Store deleted items for demo action
+			const deletedItems = localItems.filter((item) =>
+				selectedItems.includes(item.id)
+			);
+
 			const updatedItems = localItems.filter(
 				(item) => !selectedItems.includes(item.id)
 			);
@@ -972,6 +1066,9 @@ export const Canvas = forwardRef(
 			if (activeRoom && selectedItems.includes(activeRoom.id)) {
 				setActiveRoom(null);
 			}
+
+			// Notify demo of delete action
+			onDemoAction("delete", deletedItems);
 		};
 
 		const debouncedHandleMouseMove = useRef(
@@ -998,6 +1095,7 @@ export const Canvas = forwardRef(
 				}}
 				className="relative w-full min-h-[calc(100vh-64px)] overflow-hidden bg-background"
 				onDoubleClick={handleCanvasDoubleClick}
+				onTouchStart={handleCanvasTouch}
 			>
 				{/* Enhanced Mobile Controls */}
 				<div
@@ -1008,6 +1106,20 @@ export const Canvas = forwardRef(
 							: "top-20 right-6 gap-4"
 					}`}
 				>
+					{!isMobile && (
+						<>
+							{/* 撤销/重做 */}
+							<Undo
+								history={history}
+								historyIndex={historyIndex}
+								handleUndo={handleUndo}
+								handleRedo={handleRedo}
+								className={
+									" bg-white rounded-full shadow-lg  px-3 py-2"
+								}
+							/>
+						</>
+					)}
 					{/* Mobile: Enhanced zoom controls with better visibility */}
 					{isMobile && (
 						<div className="flex items-center justify-end w-full gap-2">
@@ -1033,7 +1145,7 @@ export const Canvas = forwardRef(
 							</div>
 
 							{/* Enhanced compass for mobile */}
-							<div className="flex flex-col items-center">
+							<div className="flex flex-col items-center compass-btn">
 								<div
 									style={{
 										width: 52,
@@ -1058,8 +1170,8 @@ export const Canvas = forwardRef(
 									<Image
 										src="/images/compass.png"
 										alt="方向"
-										width={40}
-										height={40}
+										width={60}
+										height={60}
 										style={{
 											pointerEvents: "none",
 											transition:
@@ -1089,7 +1201,7 @@ export const Canvas = forwardRef(
 
 							{/* Clear button with better mobile styling */}
 							<button
-								className="px-3 py-2 text-xs font-medium text-white transition-all bg-red-500 rounded-full shadow-lg hover:bg-red-600 active:scale-95"
+								className="px-3 py-2 text-white transition-all bg-red-500 rounded-full shadow-lg hover:bg-red-600 active:scale-95 clear-canvas-btn"
 								onClick={() => {
 									setLocalItems([]);
 									setActiveRoom(null);
@@ -1124,10 +1236,21 @@ export const Canvas = forwardRef(
 								>
 									<Plus className="w-4 h-4" />
 								</button>
+								{/* Desktop reset view button */}
+								<button
+									className="px-3 py-2 text-sm font-medium text-gray-700 transition-colors border border-gray-200 rounded-full shadow-sm bg-white/90 backdrop-blur-sm hover:bg-gray-50"
+									onClick={() => {
+										setPosition({ x: 0, y: 0 });
+										setScale(60); // Desktop default scale
+									}}
+									title={t("resetView")}
+								>
+									{t("resetView")}
+								</button>
 							</div>
 
 							{/* Desktop compass */}
-							<div className="flex flex-col items-center">
+							<div className="flex flex-col items-center compass-btn">
 								<div
 									style={{
 										width: 72,
@@ -1205,7 +1328,7 @@ export const Canvas = forwardRef(
 							</div>
 
 							<button
-								className="px-3 py-2 text-white transition bg-red-500 rounded-full shadow-lg hover:bg-red-600"
+								className="px-3 py-2 text-white transition bg-red-500 rounded-full shadow-lg hover:bg-red-600 clear-canvas-btn"
 								onClick={() => {
 									setLocalItems([]);
 									setActiveRoom(null);
@@ -1220,7 +1343,7 @@ export const Canvas = forwardRef(
 
 					{/* Mobile: Multi-select controls in second row if active */}
 					{isMobile && selectedItems.length > 0 && (
-						<div className="flex items-center justify-center w-full gap-2 px-3 py-2 bg-white rounded-full shadow-lg mt-7">
+						<div className="flex items-center justify-center gap-2 px-3 py-2 mx-auto mt-0 bg-white rounded-full shadow-lg w-fit">
 							<button
 								className="p-1 text-gray-600 rounded hover:bg-gray-100"
 								onClick={handleMultiRotate}
@@ -1240,6 +1363,29 @@ export const Canvas = forwardRef(
 							</span>
 						</div>
 					)}
+
+					{/* Desktop: Multi-select controls in fixed position */}
+					{!isMobile && selectedItems.length > 0 && (
+						<div className="fixed z-50 flex items-center gap-3 px-4 py-2 bg-white border border-gray-200 rounded-full shadow-lg top-28 right-112">
+							<button
+								className="p-1 text-gray-600 rounded hover:bg-gray-100"
+								onClick={handleMultiRotate}
+								title={t("rotate")}
+							>
+								<RotateCcwSquare className="w-5 h-5" />
+							</button>
+							<button
+								className="p-1 text-red-500 rounded hover:bg-gray-100"
+								onClick={handleMultiDelete}
+								title={t("delete")}
+							>
+								<Trash2 className="w-5 h-5" />
+							</button>
+							<span className="text-sm font-medium text-gray-700">
+								{selectedItems.length} {t("selected")}
+							</span>
+						</div>
+					)}
 				</div>
 
 				{/* translate(${position.x}px, ${position.y}px) */}
@@ -1253,13 +1399,16 @@ export const Canvas = forwardRef(
 						transformOrigin: "top left",
 						backgroundImage:
 							"radial-gradient(circle, #ddd 1px, transparent 1px)",
-						backgroundSize: isMobile ? "15px 15px" : "10px 10px", // Larger grid for mobile
-						touchAction: "none", // Prevent default touch behaviors
+						backgroundSize: isMobile ? "15px 15px" : "10px 10px",
+						touchAction: "none",
 					}}
 				>
 					<div className="relative">
 						{localItems.map((item) => {
 							const isSelected = selectedItems.includes(item.id);
+							const isMobileSelected =
+								isMobile && mobileSelectedItem?.id === item.id;
+
 							if (item.type === ITEM_TYPES.ROOM) {
 								return (
 									<div
@@ -1269,13 +1418,16 @@ export const Canvas = forwardRef(
 											activeRoom?.id === item.id
 												? "ring-2 ring-red-500"
 												: ""
-										} ${isSelected ? "ring-2 ring-blue-500 shadow-lg" : ""} ${isDragging ? "shadow-2xl" : ""} cursor-move z-100`}
+										} ${isSelected ? "ring-2 ring-blue-500 shadow-lg" : ""} ${
+											isMobileSelected
+												? "ring-2 ring-green-500 shadow-lg"
+												: ""
+										} ${isDragging ? "shadow-2xl" : ""} cursor-move z-100`}
 										style={{
 											left: item.position.x,
 											top: item.position.y,
 											width: item.size.width,
 											height: item.size.height,
-											// Enhanced touch targets for mobile
 											minWidth: isMobile
 												? 60
 												: item.size.width,
@@ -1285,23 +1437,40 @@ export const Canvas = forwardRef(
 										}}
 										onClick={(e) => {
 											e.stopPropagation();
-											onHandleActiveRoom(item);
+											if (!isMobile) {
+												onHandleActiveRoom(item);
+											}
 										}}
-										onMouseDown={(e) =>
-											handleRoomMouseDown(e, item)
-										}
-										onTouchStart={(e) =>
-											handleRoomMouseDown(e, item)
-										}
+										onMouseDown={(e) => {
+											if (!isMobile) {
+												handleRoomMouseDown(e, item);
+											}
+										}}
+										onTouchStart={(e) => {
+											if (isMobile) {
+												handleItemTouchStart(e, item);
+											} else {
+												handleRoomMouseDown(e, item);
+											}
+										}}
+										onTouchEnd={(e) => {
+											if (isMobile) {
+												handleItemTouchEnd(e, item);
+											}
+										}}
 										onDoubleClick={(e) =>
 											handleItemDoubleClick(e, item)
 										}
-										onTouchStartCapture={(e) =>
-											handleItemTouchStart(e, item)
-										}
-										onTouchEndCapture={handleItemTouchEnd}
-										onTouchMoveCapture={handleItemTouchEnd}
 									>
+										{/* Show selection indicator on mobile */}
+										{isMobileSelected && (
+											<div className="absolute inset-0 border-2 border-green-500 rounded pointer-events-none bg-green-100/20">
+												<div className="absolute px-2 py-1 text-xs font-bold text-white bg-green-500 rounded top-1 left-1">
+													{t("tapToDrag")}
+												</div>
+											</div>
+										)}
+
 										{/* Enhanced mobile info panel */}
 										{activeRoom &&
 											activeRoom.id === item.id && (
@@ -1418,18 +1587,20 @@ export const Canvas = forwardRef(
 									</div>
 								);
 							} else if (item.type === ITEM_TYPES.FURNITURE) {
-								// Similar enhancements for furniture items...
 								return (
 									<div
 										key={item.id}
 										data-room-element="true"
-										className={`absolute cursor-move z-200 ${isSelected ? "ring-2 ring-blue-500" : ""}`}
+										className={`absolute cursor-move z-200 ${
+											isSelected
+												? "ring-2 ring-blue-500"
+												: ""
+										} ${isMobileSelected ? "ring-2 ring-green-500 shadow-lg" : ""}`}
 										style={{
 											left: item.position.x,
 											top: item.position.y,
 											width: item.size.width,
 											height: item.size.height,
-											// Enhanced touch targets for mobile
 											minWidth: isMobile
 												? 40
 												: item.size.width,
@@ -1439,25 +1610,42 @@ export const Canvas = forwardRef(
 										}}
 										onClick={(e) => {
 											e.stopPropagation();
-											onHandleActiveRoom(item);
+											if (!isMobile) {
+												onHandleActiveRoom(item);
+											}
 										}}
 										onMouseDown={(e) => {
 											e.stopPropagation();
-											handleRoomMouseDown(e, item);
+											if (!isMobile) {
+												handleRoomMouseDown(e, item);
+											}
 										}}
 										onTouchStart={(e) => {
 											e.stopPropagation();
-											handleRoomMouseDown(e, item);
+											if (isMobile) {
+												handleItemTouchStart(e, item);
+											} else {
+												handleRoomMouseDown(e, item);
+											}
+										}}
+										onTouchEnd={(e) => {
+											if (isMobile) {
+												handleItemTouchEnd(e, item);
+											}
 										}}
 										onDoubleClick={(e) =>
 											handleItemDoubleClick(e, item)
 										}
-										onTouchStartCapture={(e) =>
-											handleItemTouchStart(e, item)
-										}
-										onTouchEndCapture={handleItemTouchEnd}
-										onTouchMoveCapture={handleItemTouchEnd}
 									>
+										{/* Show selection indicator on mobile */}
+										{isMobileSelected && (
+											<div className="absolute inset-0 border-2 border-green-500 rounded pointer-events-none bg-green-100/20">
+												<div className="absolute px-2 py-1 text-xs font-bold text-white bg-green-500 rounded top-1 left-1">
+													{t("tapToDrag")}
+												</div>
+											</div>
+										)}
+
 										{/* Enhanced furniture info panel and resize handles */}
 										{activeRoom &&
 											activeRoom.id === item.id && (
@@ -1519,6 +1707,8 @@ export const Canvas = forwardRef(
 														className="flex-shrink-0 text-red-500 transition-colors hover:text-red-600"
 														onClick={(e) => {
 															e.stopPropagation();
+															const itemToDelete =
+																activeRoom;
 															const newItems =
 																localItems.filter(
 																	(item) =>
@@ -1529,6 +1719,11 @@ export const Canvas = forwardRef(
 																newItems
 															);
 															setActiveRoom(null);
+															// Notify demo of delete action
+															onDemoAction(
+																"delete",
+																itemToDelete
+															);
 														}}
 													>
 														<Trash2 className="w-4 h-4 text-red-500" />
@@ -1604,14 +1799,17 @@ export const Canvas = forwardRef(
 							</button>
 						)}
 						<button
-							className="flex-shrink-0 text-red-500 transition-colors hover:text-red-600"
+							className="flex-shrink-0 text-red-500"
 							onClick={(e) => {
 								e.stopPropagation();
+								const itemToDelete = activeRoom;
 								const newItems = localItems.filter(
 									(item) => item.id !== activeRoom.id
 								);
 								setLocalItems(newItems);
 								setActiveRoom(null);
+								// Notify demo of delete action
+								onDemoAction("delete", itemToDelete);
 							}}
 						>
 							<Trash2 className="w-4 h-4 text-red-500" />
@@ -1662,9 +1860,10 @@ export const Canvas = forwardRef(
 					</AlertDialog>
 				</div>
 
+				{/* Keep the mobile resetView button but remove the desktop-only one at the bottom */}
 				{isMobile && (
 					<button
-						className="fixed z-50 px-4 py-3 border border-gray-200 rounded-full shadow-lg bg-white/90 backdrop-blur-sm bottom-32 right-4"
+						className="fixed z-50 px-4 py-3 border border-gray-200 rounded-full shadow-lg bg-white/90 backdrop-blur-sm bottom-20 right-4"
 						onClick={() => {
 							setPosition({ x: 0, y: 0 });
 							setScale(40); // Better default for mobile

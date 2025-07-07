@@ -56,11 +56,11 @@ export default function Share() {
 					</div>
 
 					{/* Steps */}
-					<div className="relative z-10 space-y-6">
+					<div className="relative z-10 flex flex-col items-center space-y-6">
 						{steps.map((step, index) => (
 							<div
 								key={step.number}
-								className="relative flex items-start space-x-4"
+								className="relative flex items-start w-full max-w-sm space-x-4"
 							>
 								{/* Step Circle */}
 								<div className="relative flex-shrink-0">
@@ -79,7 +79,7 @@ export default function Share() {
 								</div>
 
 								{/* Step Content */}
-								<div className="flex-1 pt-2">
+								<div className="flex-1 pt-2 text-center">
 									<h3 className="font-bold text-[#004f44] text-base mb-1">
 										{step.title}
 									</h3>

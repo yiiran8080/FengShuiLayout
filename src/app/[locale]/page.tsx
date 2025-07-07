@@ -9,6 +9,7 @@ import FAQ from "@/components/home/FAQ";
 import Message from "@/components/home/Message";
 import Footer from "@/components/home/Footer";
 import Desire from "@/components/home/Desire";
+import Theory from "@/components/free/theory"; // Changed import
 
 import { get } from "@/lib/ajax";
 export default function Home() {
@@ -16,16 +17,28 @@ export default function Home() {
 		<>
 			<Navbar />
 			<main>
-				<Hero />
+				<section id="hero">
+					<Hero />
+				</section>
 				<Features />
 				<Desire />
-				<Share />
+				<section id="share">
+					<Share />
+				</section>
 				<BeforeAfter />
-
-				<Tips />
+				<section id="theory">
+					<Theory bgColor="bg-white" />{" "}
+					{/* Use Theory with white background */}
+				</section>
+				{/* Hide Tips component on mobile devices */}
+				<div className="hidden md:block">
+					<Tips />
+				</div>
 				<Comments />
 				{/* <Message /> */}
-				<FAQ />
+				<section id="faq">
+					<FAQ />
+				</section>
 			</main>
 			<Footer />
 		</>
