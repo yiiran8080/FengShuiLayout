@@ -1,23 +1,3 @@
-
-  declare module 'next/server' {
-
-    import type { AsyncLocalStorage as NodeAsyncLocalStorage } from 'async_hooks'
-    declare global {
-      var AsyncLocalStorage: typeof NodeAsyncLocalStorage
-    }
-    export { NextFetchEvent } from 'next/dist/server/web/spec-extension/fetch-event'
-    export { NextRequest } from 'next/dist/server/web/spec-extension/request'
-    export { NextResponse } from 'next/dist/server/web/spec-extension/response'
-    export { NextMiddleware, MiddlewareConfig } from 'next/dist/server/web/types'
-    export { userAgentFromString } from 'next/dist/server/web/spec-extension/user-agent'
-    export { userAgent } from 'next/dist/server/web/spec-extension/user-agent'
-    export { URLPattern } from 'next/dist/compiled/@edge-runtime/primitives/url'
-    export { ImageResponse } from 'next/dist/server/web/spec-extension/image-response'
-    export type { ImageResponseOptions } from 'next/dist/compiled/@vercel/og/types'
-    export { after } from 'next/dist/server/after'
-    export { connection } from 'next/dist/server/request/connection'
-    export type { UnsafeUnwrappedSearchParams } from 'next/dist/server/request/search-params'
-    export type { UnsafeUnwrappedParams } from 'next/dist/server/request/params'
-    export function unstable_rootParams(): Promise<{ locale: string }>
-  }
-  
+version https://git-lfs.github.com/spec/v1
+oid sha256:6c1b1a7df2ef20edea7af3b853134925e9fe26e3f6cb51b04201ecd6ae35e284
+size 1319

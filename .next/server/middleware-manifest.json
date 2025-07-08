@@ -1,36 +1,3 @@
-{
-  "version": 3,
-  "middleware": {
-    "/": {
-      "files": [
-        "server/edge-runtime-webpack.js",
-        "server/src/middleware.js"
-      ],
-      "name": "src/middleware",
-      "page": "/",
-      "matchers": [
-        {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/((?!api|_next|.*\\..*).*))(\\.json)?[\\/#\\?]?$",
-          "originalSource": "/((?!api|_next|.*\\..*).*)"
-        },
-        {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/(\\/?index|\\/?index\\.json))?[\\/#\\?]?$",
-          "originalSource": "/"
-        }
-      ],
-      "wasm": [],
-      "assets": [],
-      "env": {
-        "__NEXT_BUILD_ID": "ypvyy0WII_GQ5LbAO4z05",
-        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "wC9HSZD5vJ6ddk60pvM/WNrdoJr72oVUXZPQeAzPcrE=",
-        "__NEXT_PREVIEW_MODE_ID": "bf8d47f41f90fbc80c0aaebf1c06d0fd",
-        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "43aee3533ffa8d3c2cf0381037fed9647611d0560b7df0daf50a32de3758d765",
-        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "c30d91f9232b1b8e6d1238a9ac0a8831f6b1aa6faabcfa81416b40dcc847ecd7"
-      }
-    }
-  },
-  "functions": {},
-  "sortedMiddleware": [
-    "/"
-  ]
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:88201e1c60eac408d6c8f48cea300d23b607a87190d554441449eceb8fb3a70a
+size 1144

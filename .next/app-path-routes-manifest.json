@@ -1,31 +1,3 @@
-{
-  "/_not-found/page": "/_not-found",
-  "/api/auth/complete-profile/route": "/api/auth/complete-profile",
-  "/api/checkoutSessions/payment1/route": "/api/checkoutSessions/payment1",
-  "/api/checkoutSessions/payment2/route": "/api/checkoutSessions/payment2",
-  "/api/countdown-end/route": "/api/countdown-end",
-  "/api/checkoutSessions/route": "/api/checkoutSessions",
-  "/api/generateCode/route": "/api/generateCode",
-  "/api/design/[userId]/route": "/api/design/[userId]",
-  "/api/reportUserDoc/[userId]/[language]/route": "/api/reportUserDoc/[userId]/[language]",
-  "/api/reportDoc/[language]/route": "/api/reportDoc/[language]",
-  "/api/reportUserDoc/[userId]/route": "/api/reportUserDoc/[userId]",
-  "/api/send-promo/route": "/api/send-promo",
-  "/api/users/[userId]/route": "/api/users/[userId]",
-  "/api/users/route": "/api/users",
-  "/api/sendEmail/route": "/api/sendEmail",
-  "/favicon.ico/route": "/favicon.ico",
-  "/api/webhook/route": "/api/webhook",
-  "/api/auth/[...nextauth]/route": "/api/auth/[...nextauth]",
-  "/[locale]/auth/login/page": "/[locale]/auth/login",
-  "/[locale]/free/page": "/[locale]/free",
-  "/[locale]/design/page": "/[locale]/design",
-  "/[locale]/page": "/[locale]",
-  "/[locale]/report/page": "/[locale]/report",
-  "/[locale]/success/page": "/[locale]/success",
-  "/[locale]/freereport/page": "/[locale]/freereport",
-  "/[locale]/customer/privacy/page": "/[locale]/customer/privacy",
-  "/[locale]/customer/contact/page": "/[locale]/customer/contact",
-  "/[locale]/customer/terms/page": "/[locale]/customer/terms",
-  "/[locale]/price/page": "/[locale]/price"
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:4a1d89f4ed97e55e2defd65db471d6f745ef28fc806904bbe4abca8bc43c41a8
+size 1596

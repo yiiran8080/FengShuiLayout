@@ -1,1 +1,3 @@
-self.__NEXT_FONT_MANIFEST='{"pages":{},"app":{"/Users/michaelng/Desktop/HarmoniqFengShui/FengShuiLayout/src/app/[locale]/layout":["static/media/36008747766f78c6-s.p.woff2","static/media/383c2ab2a767fb58-s.p.woff2"]},"appUsingSizeAdjust":true,"pagesUsingSizeAdjust":false}';
+version https://git-lfs.github.com/spec/v1
+oid sha256:73aa638994527b26f07e898955ce9bf44d15401ae86de0c8052f7846ca6341a9
+size 273
