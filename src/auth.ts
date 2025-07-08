@@ -18,9 +18,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 		AppleProvider({
 			clientId: process.env.APPLE_ID as string,
 			clientSecret: {
-				appleId: process.env.APPLE_ID as string,
+				clientId: process.env.APPLE_ID as string,
 				teamId: process.env.APPLE_TEAM_ID as string,
-				privateKey: process.env.APPLE_SECRET as string,
+				privateKey: process.env.APPLE_PRIVATE_KEY as string, // ✅ Changed from APPLE_SECRET
 				keyId: process.env.APPLE_KEY_ID as string,
 			},
 		}),
