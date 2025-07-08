@@ -2,7 +2,6 @@ import NextAuth, { customFetch } from "next-auth";
 import type { NextAuthConfig } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import AppleProvider from "next-auth/providers/apple";
-import GithubProvider from "next-auth/providers/github";
 import dbConnect from "@/lib/mongoose";
 import User from "@/models/User";
 import { createUserIfNotExists } from "@/lib/userUtils";
