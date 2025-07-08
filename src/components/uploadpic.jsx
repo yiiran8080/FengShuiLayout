@@ -574,7 +574,10 @@ export default function UploadPic({ onResult }) {
 	};
 
 	return (
-		<div className="flex flex-col items-center justify-start w-full px-4 py-6 text-center mb-30 sm:px-6 md:px-8 lg:px-0">
+		<div
+			className="flex flex-col items-center justify-start w-full px-4 py-6 text-center mb-30 sm:px-6 md:px-8 lg:px-0"
+			style={{ fontFamily: '"Noto Serif TC", serif' }}
+		>
 			{/* Title */}
 			<h1 className="mb-4 text-xl font-normal mt-10  text-[#004f44] sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl leading-tight sm:leading-normal">
 				{t("title")}

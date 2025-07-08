@@ -694,15 +694,15 @@ export default function DesignPage({ params }) {
 		},
 		{
 			id: "bathtub-template",
-			type: ITEM_TYPES.FURNITURE,
-			data: {
-				cateType: ITEM_TYPES.FURNITURE,
-				type: FURNITURE_TYPES.BATHTUB,
-				label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.BATHTUB],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub.png",
-				activeIcon:
+		 type: ITEM_TYPES.FURNITURE,
+		 data: {
+			 cateType: ITEM_TYPES.FURNITURE,
+			 type: FURNITURE_TYPES.BATHTUB,
+			 label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.BATHTUB],
+			 icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub.png",
+			 activeIcon:
 					"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub-gr.png",
-				size: { width: 120, height: 60 },
+			 size: { width: 120, height: 60 },
 			},
 		},
 	];
@@ -1501,7 +1501,7 @@ export default function DesignPage({ params }) {
 						open={moduleAlertOpen}
 						onOpenChange={setModuleAlertOpen}
 					>
-						<AlertDialogContent>
+						<AlertDialogContent style={{ fontFamily: '"Noto Serif TC", serif' }}>
 							<AlertDialogHeader>
 								<AlertDialogTitle>
 									{t("useModuleAlert")}

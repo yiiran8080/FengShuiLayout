@@ -13,9 +13,15 @@ export default function FAQ() {
 	const t = useTranslations("home.FAQ");
 	const [showMore, setShowMore] = useState(false);
 	return (
-		<section className="bg-white md:py-20 py-15">
+		<section
+			className="bg-white md:py-20 py-15"
+			style={{ fontFamily: "Noto Serif TC, serif" }}
+		>
 			<div className="container px-4 mx-auto">
-				<h3 className="text-center  text-hero md:text-5xl text-[28px] font-bold md:mb-9 mb-5">
+				<h3
+					className="text-center text-hero md:text-5xl text-[28px] font-bold md:mb-9 mb-5"
+					style={{ fontFamily: "Noto Serif TC, serif" }}
+				>
 					FAQ
 				</h3>
 
@@ -30,10 +36,21 @@ export default function FAQ() {
 							value="item-1"
 							className="data-[state=open]:bg-[#F2FAF7] py-7 px-6 data-[state=open]:mb-8 data-[state=closed]:pt-0 md:data-[state=open]:border-l-4 data-[state=open]:border-l-0 md:data-[state=open]:border-t-0 data-[state=open]:border-t-4 border-[#25826C]"
 						>
-							<AccordionTrigger className="font-bold text-hero ">
-								<span className="text-xl">{t("q1")}</span>
+							<AccordionTrigger
+								className="font-bold text-hero"
+								style={{ fontFamily: "Noto Serif TC, serif" }}
+							>
+								<span
+									className="text-xl"
+									style={{ fontFamily: "Noto Serif TC, serif" }}
+								>
+									{t("q1")}
+								</span>
 							</AccordionTrigger>
-							<AccordionContent className="text-[#25826C] text-lg pt-4 pb-0">
+							<AccordionContent
+								className="text-[#25826C] text-lg pt-4 pb-0"
+								style={{ fontFamily: "Noto Serif TC, serif" }}
+							>
 								{t("a1")}
 							</AccordionContent>
 						</AccordionItem>
@@ -41,10 +58,21 @@ export default function FAQ() {
 							value="item-2"
 							className="data-[state=open]:bg-[#F2FAF7] py-7 px-6 data-[state=open]:mb-8 data-[state=closed]:pt-0 md:data-[state=open]:border-l-4 data-[state=open]:border-l-0 md:data-[state=open]:border-t-0 data-[state=open]:border-t-4 border-[#25826C]"
 						>
-							<AccordionTrigger className="font-bold text-hero ">
-								<span className="text-xl">{t("q2")}</span>
+							<AccordionTrigger
+								className="font-bold text-hero"
+								style={{ fontFamily: "Noto Serif TC, serif" }}
+							>
+								<span
+									className="text-xl"
+									style={{ fontFamily: "Noto Serif TC, serif" }}
+								>
+									{t("q2")}
+								</span>
 							</AccordionTrigger>
-							<AccordionContent className="text-[#25826C] text-lg pt-4 pb-0">
+							<AccordionContent
+								className="text-[#25826C] text-lg pt-4 pb-0"
+								style={{ fontFamily: "Noto Serif TC, serif" }}
+							>
 								{t("a2")}
 							</AccordionContent>
 						</AccordionItem>
@@ -52,10 +80,21 @@ export default function FAQ() {
 							value="item-3"
 							className="data-[state=open]:bg-[#F2FAF7] py-7 px-6 data-[state=open]:mb-8 data-[state=closed]:pt-0 md:data-[state=open]:border-l-4 data-[state=open]:border-l-0 md:data-[state=open]:border-t-0 data-[state=open]:border-t-4 border-[#25826C]"
 						>
-							<AccordionTrigger className="font-bold text-hero ">
-								<span className="text-xl">{t("q3")}</span>
+							<AccordionTrigger
+								className="font-bold text-hero"
+								style={{ fontFamily: "Noto Serif TC, serif" }}
+							>
+								<span
+									className="text-xl"
+									style={{ fontFamily: "Noto Serif TC, serif" }}
+								>
+									{t("q3")}
+								</span>
 							</AccordionTrigger>
-							<AccordionContent className="text-[#25826C] text-lg pt-4 pb-0">
+							<AccordionContent
+								className="text-[#25826C] text-lg pt-4 pb-0"
+								style={{ fontFamily: "Noto Serif TC, serif" }}
+							>
 								{t("a3")}
 							</AccordionContent>
 						</AccordionItem>
@@ -65,12 +104,21 @@ export default function FAQ() {
 									value="item-4"
 									className="data-[state=open]:bg-[#F2FAF7] py-7 px-6 data-[state=open]:mb-8 data-[state=closed]:pt-0 md:data-[state=open]:border-l-4 data-[state=open]:border-l-0 md:data-[state=open]:border-t-0 data-[state=open]:border-t-4 border-[#25826C]"
 								>
-									<AccordionTrigger className="font-bold text-hero ">
-										<span className="text-xl">
+									<AccordionTrigger
+										className="font-bold text-hero"
+										style={{ fontFamily: "Noto Serif TC, serif" }}
+									>
+										<span
+											className="text-xl"
+											style={{ fontFamily: "Noto Serif TC, serif" }}
+										>
 											{t("q4")}
 										</span>
 									</AccordionTrigger>
-									<AccordionContent className="text-[#25826C] text-lg pt-4 pb-0">
+									<AccordionContent
+										className="text-[#25826C] text-lg pt-4 pb-0"
+										style={{ fontFamily: "Noto Serif TC, serif" }}
+									>
 										{t("a4")}
 									</AccordionContent>
 								</AccordionItem>
@@ -78,12 +126,21 @@ export default function FAQ() {
 									value="item-5"
 									className="data-[state=open]:bg-[#F2FAF7] py-7 px-6 data-[state=open]:mb-8 data-[state=closed]:pt-0 md:data-[state=open]:border-l-4 data-[state=open]:border-l-0 md:data-[state=open]:border-t-0 data-[state=open]:border-t-4 border-[#25826C]"
 								>
-									<AccordionTrigger className="font-bold text-hero ">
-										<span className="text-xl">
+									<AccordionTrigger
+										className="font-bold text-hero"
+										style={{ fontFamily: "Noto Serif TC, serif" }}
+									>
+										<span
+											className="text-xl"
+											style={{ fontFamily: "Noto Serif TC, serif" }}
+										>
 											{t("q5")}
 										</span>
 									</AccordionTrigger>
-									<AccordionContent className="text-[#25826C] text-lg pt-4 pb-0">
+									<AccordionContent
+										className="text-[#25826C] text-lg pt-4 pb-0"
+										style={{ fontFamily: "Noto Serif TC, serif" }}
+									>
 										{t("a5")}
 									</AccordionContent>
 								</AccordionItem>
@@ -91,12 +148,21 @@ export default function FAQ() {
 									value="item-6"
 									className="data-[state=open]:bg-[#F2FAF7] py-7 px-6 data-[state=open]:mb-8 data-[state=closed]:pt-0 md:data-[state=open]:border-l-4 data-[state=open]:border-l-0 md:data-[state=open]:border-t-0 data-[state=open]:border-t-4 border-[#25826C]"
 								>
-									<AccordionTrigger className="font-bold text-hero ">
-										<span className="text-xl">
+									<AccordionTrigger
+										className="font-bold text-hero"
+										style={{ fontFamily: "Noto Serif TC, serif" }}
+									>
+										<span
+											className="text-xl"
+											style={{ fontFamily: "Noto Serif TC, serif" }}
+										>
 											{t("q6")}
 										</span>
 									</AccordionTrigger>
-									<AccordionContent className="text-[#25826C] text-lg pt-4 pb-0">
+									<AccordionContent
+										className="text-[#25826C] text-lg pt-4 pb-0"
+										style={{ fontFamily: "Noto Serif TC, serif" }}
+									>
 										{t("a6")}
 									</AccordionContent>
 								</AccordionItem>
@@ -104,12 +170,21 @@ export default function FAQ() {
 									value="item-7"
 									className="data-[state=open]:bg-[#F2FAF7] py-7 px-6 data-[state=open]:mb-8 data-[state=closed]:pt-0 md:data-[state=open]:border-l-4 data-[state=open]:border-l-0 md:data-[state=open]:border-t-0 data-[state=open]:border-t-4 border-[#25826C]"
 								>
-									<AccordionTrigger className="font-bold text-hero ">
-										<span className="text-xl">
+									<AccordionTrigger
+										className="font-bold text-hero"
+										style={{ fontFamily: "Noto Serif TC, serif" }}
+									>
+										<span
+											className="text-xl"
+											style={{ fontFamily: "Noto Serif TC, serif" }}
+										>
 											{t("q7")}
 										</span>
 									</AccordionTrigger>
-									<AccordionContent className="text-[#25826C] text-lg pt-4 pb-0">
+									<AccordionContent
+										className="text-[#25826C] text-lg pt-4 pb-0"
+										style={{ fontFamily: "Noto Serif TC, serif" }}
+									>
 										{t("a7")}
 									</AccordionContent>
 								</AccordionItem>
@@ -117,12 +192,21 @@ export default function FAQ() {
 									value="item-8"
 									className="data-[state=open]:bg-[#F2FAF7] py-7 px-6 data-[state=open]:mb-8 data-[state=closed]:pt-0 md:data-[state=open]:border-l-4 data-[state=open]:border-l-0 md:data-[state=open]:border-t-0 data-[state=open]:border-t-4 border-[#25826C]"
 								>
-									<AccordionTrigger className="font-bold text-hero ">
-										<span className="text-xl">
+									<AccordionTrigger
+										className="font-bold text-hero"
+										style={{ fontFamily: "Noto Serif TC, serif" }}
+									>
+										<span
+											className="text-xl"
+											style={{ fontFamily: "Noto Serif TC, serif" }}
+										>
 											{t("q8")}
 										</span>
 									</AccordionTrigger>
-									<AccordionContent className="text-[#25826C] text-lg pt-4 pb-0">
+									<AccordionContent
+										className="text-[#25826C] text-lg pt-4 pb-0"
+										style={{ fontFamily: "Noto Serif TC, serif" }}
+									>
 										{t("a8")}
 									</AccordionContent>
 								</AccordionItem>
@@ -135,15 +219,22 @@ export default function FAQ() {
 							setShowMore(!showMore);
 						}}
 						className="cursor-pointer rounded-[100px] bg-[#F2FAF7] text-[#25826C] border-1 border-[#25826C] text-center text-xl py-2 px-4.5"
+						style={{ fontFamily: "Noto Serif TC, serif" }}
 					>
 						{" "}
 						{showMore ? (
-							<span className="flex items-center">
+							<span
+								className="flex items-center"
+								style={{ fontFamily: "Noto Serif TC, serif" }}
+							>
 								<ChevronUp />
 								{t("closeMore")}
 							</span>
 						) : (
-							<span className="flex items-center">
+							<span
+								className="flex items-center"
+								style={{ fontFamily: "Noto Serif TC, serif" }}
+							>
 								<ChevronDown />
 								{t("showMore")}
 							</span>

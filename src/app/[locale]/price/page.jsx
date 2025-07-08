@@ -367,17 +367,30 @@ export default function YourPage() {
 				style={{
 					backgroundImage: "url('/images/hero/Tipsbg.png')",
 					backgroundColor: "#f8f9fa",
+					fontFamily: '"Noto Serif TC", serif',
 				}}
 			>
 				<Navbar />
-				<section className="self-stretch flex flex-col items-center justify-start mb-25 gap-16 sm:gap-24 lg:gap-[164px] max-w-full text-center text-2xl sm:text-3xl lg:text-[40px] text-[#073e31] font-[ABeeZee] px-4 sm:px-6 lg:px-0">
+				<section
+					className="self-stretch flex flex-col items-center justify-start mb-25 gap-16 sm:gap-24 lg:gap-[164px] max-w-full text-center text-2xl sm:text-3xl lg:text-[40px] text-[#073e31] font-[ABeeZee] px-4 sm:px-6 lg:px-0"
+					style={{ fontFamily: '"Noto Serif TC", serif' }}
+				>
 					<div className="w-full max-w-[996px] flex flex-col items-center justify-start mt-5 gap-16 sm:gap-20 lg:gap-[120px]">
 						{/* Title Section */}
-						<div className="w-full max-w-[960px] flex flex-col items-start justify-start gap-6 sm:gap-8 lg:gap-10">
-							<h2 className="mt-6 sm:mt-8 lg:mt-10 self-stretch relative text-[length:inherit] font-bold font-[inherit] text-center sm:text-center">
+						<div
+							className="w-full max-w-[960px] flex flex-col items-start justify-start gap-6 sm:gap-8 lg:gap-10"
+							style={{ fontFamily: '"Noto Serif TC", serif' }}
+						>
+							<h2
+								className="mt-6 sm:mt-8 lg:mt-10 self-stretch relative text-[length:inherit] font-bold font-[inherit] text-center sm:text-center"
+								style={{ fontFamily: '"Noto Serif TC", serif' }}
+							>
 								{t("title")}
 							</h2>
-							<div className="self-stretch leading-6 text-center sm:leading-7 lg:leading-8">
+							<div
+								className="self-stretch leading-6 text-center sm:leading-7 lg:leading-8"
+								style={{ fontFamily: '"Noto Serif TC", serif' }}
+							>
 								<p className="mb-3 text-lg font-bold sm:mb-4 sm:text-xl">
 									{t("subtitle")}
 								</p>
@@ -395,6 +408,7 @@ export default function YourPage() {
 									style={{
 										boxShadow:
 											"0 6px 20px rgba(24, 119, 242, 0.4)",
+										fontFamily: '"Noto Serif TC", serif',
 									}}
 								>
 									{/* Facebook Icon SVG */}
@@ -421,17 +435,24 @@ export default function YourPage() {
 													"rgba(9,110,86,0.08)",
 												backgroundImage: `url("data:image/svg+xml,%3Csvg width='120' height='60' viewBox='0 0 120 60' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='2' fill='%23096e56'/%3E%3Ccircle cx='60' cy='20' r='1.5' fill='%23fbbf24'/%3E%3Ccircle cx='100' cy='40' r='2' fill='%23f87171'/%3E%3Ccircle cx='30' cy='50' r='1.5' fill='%23096e56'/%3E%3Ccircle cx='80' cy='10' r='1.5' fill='%23096e56'/%3E%3Ccircle cx='110' cy='15' r='1' fill='%23fbbf24'/%3E%3Ccircle cx='50' cy='45' r='1' fill='%23f87171'/%3E%3C/svg%3E")`,
 												backgroundRepeat: "repeat",
+                                                fontFamily: '"Noto Serif TC", serif',
 											}}
 										>
 											<div
 												className="mb-2 text-sm"
-												style={{ color: "#096e56" }}
+												style={{
+													color: "#096e56",
+                                                    fontFamily: '"Noto Serif TC", serif',
+												}}
 											>
 												{t("yourPromoCode")}
 											</div>
 											<div
 												className="mb-2 text-2xl font-bold tracking-wider select-all"
-												style={{ color: "#096e56" }}
+												style={{
+													color: "#096e56",
+                                                    fontFamily: '"Noto Serif TC", serif',
+												}}
 											>
 												{sharePromoCode}
 											</div>
@@ -447,11 +468,19 @@ export default function YourPage() {
 													);
 												}}
 												className="px-4 py-1 text-sm font-medium bg-[#096e56] text-white rounded transition-colors shadow hover:bg-[#19ad6b] hover:shadow-lg"
+                                                style={{
+                                                    fontFamily: '"Noto Serif TC", serif',
+                                                }}
 											>
 												{t("copyPromoCode")}
 											</button>
 											{copied && (
-												<div className="mt-2 text-xs font-semibold text-green-600 animate-fade-in">
+												<div
+													className="mt-2 text-xs font-semibold text-green-600 animate-fade-in"
+                                                    style={{
+                                                        fontFamily: '"Noto Serif TC", serif',
+                                                    }}
+												>
 													{t("copied")}
 												</div>
 											)}
@@ -460,6 +489,7 @@ export default function YourPage() {
 												style={{
 													color: "#096e56",
 													opacity: 0.7,
+                                                    fontFamily: '"Noto Serif TC", serif',
 												}}
 											>
 												{t("usePromoCodeBelow")}
@@ -975,7 +1005,7 @@ export default function YourPage() {
 					open={showExistingReportDialog}
 					onOpenChange={setShowExistingReportDialog}
 				>
-					<AlertDialogContent>
+					<AlertDialogContent style={{ fontFamily: '"Noto Serif TC", serif' }}>
 						<AlertDialogHeader>
 							<AlertDialogTitle>
 								{t("existingReportFound")}

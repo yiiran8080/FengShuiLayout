@@ -206,7 +206,7 @@ export default function UserInfoDialog({ open, onUserOpen, onSubmit, userInfo })
     }
     return (
         <Dialog open={open} onOpenChange={onUserOpen}>
-            <DialogContent className="sm:max-w-[432px]">
+            <DialogContent className="sm:max-w-[432px]" style={{ fontFamily: '"Noto Serif TC", serif' }}>
                 <DialogHeader>
                     <DialogTitle className="text-lg md:text-xl font-bold md:text-left text-center"> {t('profile')} </DialogTitle>
                     <div className="py-4 text-sm md:text-base  text-left">
@@ -239,4 +239,4 @@ export default function UserInfoDialog({ open, onUserOpen, onSubmit, userInfo })
             </DialogContent>
         </Dialog>
     )
-} 
+}

@@ -53,6 +53,7 @@ export default function ({ className }) {
 					"cursor-pointer font-bold text-[#066952] rounded-[20px] bg-[#A7F7D3] md:px-4 px-1.5 py-1 mr-1 md:mr-6",
 					className
 				)}
+				style={{ fontFamily: '"Noto Serif TC", serif' }}
 			>
 				{t("unlock")}
 			</button>

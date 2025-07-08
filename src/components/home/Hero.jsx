@@ -40,8 +40,6 @@ export default function Hero() {
 
 	// Hero images carousel state (separate)
 	const [heroIndex, setHeroIndex] = useState(0);
-	const [prevHeroIndex, setPrevHeroIndex] = useState(0);
-	const [heroFade, setHeroFade] = useState(false);
 
 	useEffect(() => {
 		let timer;
@@ -94,12 +92,7 @@ export default function Hero() {
 	// Hero images carousel effect
 	useEffect(() => {
 		const interval = setInterval(() => {
-			setPrevHeroIndex(heroIndex);
-			setHeroFade(true);
-			setTimeout(() => {
-				setHeroIndex((prev) => (prev + 1) % heroImages.length);
-				setHeroFade(false);
-			}, 800);
+			setHeroIndex((prev) => (prev + 1) % heroImages.length);
 		}, 3000); // Different timing than background
 		return () => clearInterval(interval);
 	}, [heroIndex]);
@@ -117,12 +110,7 @@ export default function Hero() {
 
 	const handleHeroDotClick = (idx) => {
 		if (idx !== heroIndex) {
-			setPrevHeroIndex(heroIndex);
-			setHeroFade(true);
-			setTimeout(() => {
-				setHeroIndex(idx);
-				setHeroFade(false);
-			}, 800);
+			setHeroIndex(idx);
 		}
 	};
 
@@ -188,18 +176,18 @@ export default function Hero() {
 			</div>
 
 			<div className="container relative z-10 flex flex-col px-3 sm:px-4 md:px-0">
-				<div className="flex-1">
-					<div className="grid items-stretch grid-cols-1 gap-4 sm:gap-8 md:gap-14 md:grid-cols-2">
+				<div className="flex-1 flex items-center justify-center min-h-[60vh]">
+					<div className="grid items-center w-full grid-cols-1 gap-8 justify-items-center sm:gap-10 md:gap-16 md:grid-cols-2 max-w-7xl">
 						{/* Left Side */}
 						<motion.div
 							initial={{ opacity: 0, x: -80 }}
 							whileInView={{ opacity: 1, x: 0 }}
 							viewport={{ once: true, amount: 0.3 }}
 							transition={{ duration: 0.8, ease: "easeOut" }}
-							className="flex flex-col justify-center order-2 md:order-1"
+							className="flex flex-col items-center justify-center order-2 w-full md:items-start md:order-1"
 						>
 							<div
-								className="flex flex-col items-center max-w-4xl ml-2 text-white md:items-start sm:ml-4 md:ml-4 lg:ml-4 xl:ml-0"
+								className="flex flex-col items-center max-w-4xl text-white md:items-start"
 								style={{ fontFamily: "Noto Serif TC, serif" }}
 							>
 								<h1
@@ -215,6 +203,7 @@ export default function Hero() {
 											WebkitBackgroundClip: "text",
 											WebkitTextFillColor: "transparent",
 											backgroundClip: "text",
+											fontFamily: "Noto Serif TC, serif",
 										}}
 									>
 										{t("title")}
@@ -231,6 +220,7 @@ export default function Hero() {
 													WebkitTextFillColor:
 														"transparent",
 													backgroundClip: "text",
+													fontFamily: "Noto Serif TC, serif",
 												}}
 											>
 												{t("title2").split("，")[0]}
@@ -245,6 +235,7 @@ export default function Hero() {
 													WebkitTextFillColor:
 														"transparent",
 													backgroundClip: "text",
+													fontFamily: "Noto Serif TC, serif",
 												}}
 											>
 												{t("title2").split("，")[1]}
@@ -260,6 +251,7 @@ export default function Hero() {
 												WebkitTextFillColor:
 													"transparent",
 												backgroundClip: "text",
+												fontFamily: "Noto Serif TC, serif",
 											}}
 										>
 											{t("title2")}
@@ -288,18 +280,19 @@ export default function Hero() {
 								</div>
 							</div>
 						</motion.div>
+
 						{/* Right Side */}
 						<motion.div
-							className="flex flex-col items-center order-1 h-full md:items-start md:pl-16 md:order-2"
+							className="flex flex-col items-center justify-center order-1 w-full md:order-2"
 							initial={{ opacity: 0, x: 80 }}
 							whileInView={{ opacity: 1, x: 0 }}
 							viewport={{ once: true, amount: 0.3 }}
 							transition={{ duration: 0.8, ease: "easeOut" }}
 						>
-							<div className="flex flex-col items-center justify-center w-full h-auto p-0 md:pt-4 md:pb-0 md:px-0">
+							<div className="flex flex-col items-center justify-center w-full">
 								{/* Container with 50% opacity and rounded corners */}
 								<div
-									className="relative w-full max-w-[250px] sm:max-w-xs md:max-w-sm p-3 sm:p-4 md:p-6 rounded-[16px] sm:rounded-[20px] md:rounded-[24px]"
+									className="relative w-full max-w-[250px] sm:max-w-xs md:max-w-sm p-4 sm:p-5 md:p-5 rounded-[16px] sm:rounded-[20px] md:rounded-[24px]"
 									style={{
 										backgroundColor:
 											"rgba(255, 255, 255, 0.5)",
@@ -307,36 +300,43 @@ export default function Hero() {
 									}}
 								>
 									{/* Image Carousel */}
-									<div className="relative w-full mb-3 sm:mb-4 md:mb-6">
-										<div className="relative w-full h-48 sm:h-64 md:h-80 lg:h-[335.4px] rounded-[12px] sm:rounded-[16px] md:rounded-[20px] overflow-hidden">
-											{/* Previous hero image */}
-											<Image
-												className={`absolute inset-0 object-contain w-full h-full transition-all duration-700 ease-in-out ${
-													heroFade
-														? "opacity-100 scale-110"
-														: "opacity-0 scale-95"
-												}`}
-												loading="lazy"
-												fill
-												alt="Hero carousel"
-												src={heroImages[prevHeroIndex]}
-											/>
-											{/* Current hero image */}
-											<Image
-												className={`absolute inset-0 object-contain w-full h-full transition-all duration-700 ease-in-out ${
-													heroFade
-														? "opacity-0 scale-95"
-														: "opacity-100 scale-100"
-												}`}
-												loading="lazy"
-												fill
-												alt="Hero carousel"
-												src={heroImages[heroIndex]}
-											/>
+									<div className="relative w-full mb-1 sm:mb-3 md:mb-2">
+										<div className="relative w-full h-45 sm:h-64 md:h-80 lg:h-[320px] rounded-[12px] sm:rounded-[16px] md:rounded-[20px] overflow-hidden">
+											{/* Sliding container */}
+											<div
+												className="flex h-full transition-transform duration-700 ease-in-out"
+												style={{
+													transform: `translateX(-${heroIndex * 25}%)`,
+													width: `400%`,
+												}}
+											>
+												{heroImages.map(
+													(image, idx) => (
+														<div
+															key={idx}
+															className="relative flex-shrink-0 w-1/4 h-full px-2"
+														>
+															<div className="relative w-full h-full">
+																<Image
+																	className="object-contain w-full h-full"
+																	fill
+																	alt={`Hero carousel ${idx + 1}`}
+																	src={image}
+																	sizes="(max-width: 640px) 250px, (max-width: 768px) 384px, 448px"
+																	priority={
+																		idx ===
+																		0
+																	}
+																/>
+															</div>
+														</div>
+													)
+												)}
+											</div>
 										</div>
 
 										{/* Hero Image Carousel Dots */}
-										<div className="flex justify-center gap-1.5 sm:gap-2 mt-2">
+										<div className="flex justify-center mb-5 sm:gap-2">
 											{heroImages.map((_, idx) => (
 												<button
 													key={idx}
@@ -362,9 +362,9 @@ export default function Hero() {
 											style={{
 												background:
 													"linear-gradient(135deg, #096E56 0%, #19AD6B 100%)",
-												height: "38px",
+												height: "58px",
 												width: "220px",
-												fontSize: "13px",
+												fontSize: "20px",
 												fontFamily:
 													"Noto Serif TC, serif",
 												color: "white",

@@ -21,19 +21,29 @@ export default function Services() {
 	];
 
 	return (
-		<section className="py-20 bg-white">
+		<section
+			className="py-20 bg-white"
+			style={{ fontFamily: "Noto Serif TC, serif" }}
+		>
 			<div className="container px-4 mx-auto">
 				<div className="grid grid-cols-1 gap-8 md:grid-cols-3">
 					{services.map((service, index) => (
 						<div
 							key={index}
 							className="flex flex-col items-center p-6 text-center"
+							style={{ fontFamily: "Noto Serif TC, serif" }}
 						>
 							<div className="mb-4 text-4xl">{service.icon}</div>
-							<h3 className="mb-4 text-xl font-semibold text-primary">
+							<h3
+								className="mb-4 text-xl font-semibold text-primary"
+								style={{ fontFamily: "Noto Serif TC, serif" }}
+							>
 								{service.title}
 							</h3>
-							<p className="leading-relaxed text-gray-600">
+							<p
+								className="leading-relaxed text-gray-600"
+								style={{ fontFamily: "Noto Serif TC, serif" }}
+							>
 								{service.description}
 							</p>
 						</div>

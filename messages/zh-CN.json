@@ -34,7 +34,7 @@
 			"title": "打造和谐风水布局",
 			"title2": "融合自然之力，优化气场流动",
 			"subtitle1": "只要轻轻挪动房间的一个角落，幸运与幸福便悄悄降临你的生活",
-			"subtitle2": "阅读专属于你的科学定制化评测报告，开启专属幸福人生的钥匙",
+			"subtitle2": "阅读专属于你的定制化评测报告，开启专属幸福人生的钥匙",
 			"subtitle3": "家庭容易发生口角？",
 			"subtitle4": "试试移动房间的一个小角落，你将会变得更幸运，收获幸福！",
 			"subtitle5": "阅读专属科学订制测评报告，解锁幸福人生。",
@@ -270,7 +270,7 @@
 		"title": "上传您的家居照片以获得免费测算报告",
 		"description1": "将您的家居照片上传到此处，我们将免费帮您分析您的家居格局以及它的风水",
 		"description2": "是否有利您的运势。",
-		"uploadAction": "拍照/ 上传照片/ 拖拽照片到此处",
+		"uploadAction": "拍照/ 上传照片/ 到此处",
 		"fileFormat": "仅支持JPEG或PNG格式，10MB以下。",
 		"browseButton": "浏览照片",
 		"disclaimer": "*您的照片仅供测算使用。",
@@ -347,7 +347,7 @@
 		}
 	},
 	"freeChapter3": {
-		"title": "您的免费风水诊断卡报告已生成!",
+		"title": "您的免费风水诊断卡已生成!",
 		"uploadedImage": "上传的房间照片",
 		"roomAnalysis": "房间分析",
 		"tabs": {
@@ -438,7 +438,7 @@
 		"sqftCancelBtn": "取消",
 		"sqftErrorMsg": "请输入有效的房屋面积",
 		"shareProcessing": "开启分享窗口中...",
-		"shareToFacebook": "📘 分享到Facebook获取优惠码",
+		"shareToFacebook": "分享到Facebook获取优惠码",
 		"yourPromoCode": "您的专属优惠码：",
 		"copyPromoCode": "复制优惠码",
 		"copied": "已复制",

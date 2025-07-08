@@ -7,12 +7,14 @@ const Card = ({ className = "", cardWidth, divTop, pict, title, subtitle }) => {
 	const cardStyle = useMemo(() => {
 		return {
 			width: cardWidth,
+			fontFamily: "Noto Serif TC, serif",
 		};
 	}, [cardWidth]);
 
 	const divStyle = useMemo(() => {
 		return {
 			top: divTop,
+			fontFamily: "Noto Serif TC, serif",
 		};
 	}, [divTop]);
 
@@ -28,7 +30,7 @@ const Card = ({ className = "", cardWidth, divTop, pict, title, subtitle }) => {
                 pb-[12px] sm:pb-[18px] lg:pb-[24px] 
                 box-border relative text-center 
                 text-[14px] sm:text-[18px] lg:text-[22px] 
-                text-[#1d1d1d] font-[Outfit] 
+                text-[#1d1d1d]
                 shadow-[2px_2px_4px_rgba(0,0,0,0.15)] sm:shadow-[3px_3px_4px_rgba(0,0,0,0.2)] lg:shadow-[4px_4px_4px_rgba(0,0,0,0.25)]
                 ${className}
             `}
@@ -58,7 +60,9 @@ const Card = ({ className = "", cardWidth, divTop, pict, title, subtitle }) => {
                 "
 				style={divStyle}
 			>
-				<p className="px-1 m-0 font-medium">{subtitle}</p>
+				<p className="px-1 m-0 font-medium" style={{ fontFamily: "Noto Serif TC, serif" }}>
+					{subtitle}
+				</p>
 			</div>
 		</div>
 	);

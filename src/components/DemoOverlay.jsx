@@ -686,14 +686,12 @@ export default function DemoOverlay({
 						...getHighlightStyle(),
 						border: `${isMobile ? "4px" : "3px"} solid #60a5fa`,
 						borderRadius: getBorderRadius(),
-						// Simplified box-shadow for better performance
 						boxShadow: `
                             0 0 0 4px rgba(96, 165, 250, 0.4),
                             0 0 20px rgba(96, 165, 250, 0.8),
                             0 0 40px rgba(96, 165, 250, 0.6)
                         `,
 						background: "transparent",
-						// Use transform instead of complex animations
 						transform: "scale(1)",
 						transition: "all 0.2s ease-out",
 					}}
@@ -708,7 +706,7 @@ export default function DemoOverlay({
 						left: highlightRect.left + highlightRect.width / 2,
 						top:
 							panelPosition === "bottom"
-								? highlightRect.top + highlightRect.height + 15 // Increased offset
+								? highlightRect.top + highlightRect.height + 15
 								: highlightRect.top - 25,
 						transform: "translateX(-50%)",
 					}}
@@ -716,11 +714,11 @@ export default function DemoOverlay({
 					<div
 						className={`w-0 h-0 border-l-[15px] border-r-[15px] border-l-transparent border-r-transparent ${
 							panelPosition === "bottom"
-								? "border-b-[15px] border-b-blue-400" // Larger, brighter arrow
+								? "border-b-[15px] border-b-blue-400"
 								: "border-t-[15px] border-t-blue-400"
 						}`}
 						style={{
-							filter: "drop-shadow(0 0 8px rgba(96, 165, 250, 0.8))", // Glowing arrow
+							filter: "drop-shadow(0 0 8px rgba(96, 165, 250, 0.8))",
 						}}
 					/>
 				</div>
@@ -732,6 +730,7 @@ export default function DemoOverlay({
 				style={{
 					...panelStyles,
 					borderRadius: isMobile ? panelStyles.borderRadius : "16px",
+					fontFamily: '"Noto Serif TC", serif',
 				}}
 			>
 				{/* Desktop collapsed state or Mobile minimized state */}

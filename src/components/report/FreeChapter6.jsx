@@ -353,9 +353,9 @@ export function FreeChapter6({ locale }) {
 											}
 										</p>
 										{/* Blur overlay for second section - half height */}
-										{index === 1 && (
+										{/* {index === 1 && (
 											<div className="absolute left-0 bottom-[-15px] w-full h-1/2 pointer-events-none rounded-b-[20px] bg-gradient-to-t from-white/90 via-white/60 to-transparent backdrop-blur-sm flex items-center justify-center"></div>
-										)}
+										)} */}
 										{/* Blur overlay for third section - full height */}
 										{index === 2 && (
 											<div className="absolute left-0 bottom-0 w-full h-full pointer-events-none rounded-b-[20px] bg-gradient-to-t from-white/95 via-white/70 to-transparent backdrop-blur-sm flex items-center justify-center">

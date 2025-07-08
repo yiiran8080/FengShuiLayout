@@ -34,7 +34,10 @@ export default function FreeReportPage() {
 	}, [roomType, direction]);
 
 	return (
-		<div className="flex flex-col min-h-screen bg-white">
+		<div
+			className="flex flex-col min-h-screen bg-white"
+			style={{ fontFamily: '"Noto Serif TC", serif' }}
+		>
 			<Navbar />
 			<div className="flex flex-col flex-1 w-full gap-2 px-2 py-2 mx-0 sm:gap-4 sm:px-4 sm:py-4 sm:mx-2 md:mx-5 md:flex-row lg:gap-6 lg:px-6">
 				{/* Left: FreeChapter3 */}

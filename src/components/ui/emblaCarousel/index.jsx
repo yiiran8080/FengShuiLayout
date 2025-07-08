@@ -82,7 +82,7 @@ export default function CommentsCarousel() {
 						({ratings[i].toFixed(1)})
 					</span>
 				</div>
-				<p className="text-[#888888] leading-6 mt-3 text-sm lg:text-base">
+				<p className="text-[#4A4A4A] leading-6 mt-3 text-sm lg:text-base">
 					{t(slide.commentKey)}
 				</p>
 			</div>

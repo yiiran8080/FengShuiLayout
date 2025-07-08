@@ -132,6 +132,7 @@ export default function Tips() {
 			style={{
 				backgroundImage: "url('/images/hero/tipsbg.png')",
 				backgroundAttachment: "fixed",
+				fontFamily: "Noto Serif TC, serif",
 			}}
 			onClick={handleBackgroundClick}
 		>
@@ -140,13 +141,16 @@ export default function Tips() {
 
 			{/* Title Section */}
 			<div className="relative z-10 mb-6 text-center sm:mb-4 md:mb-8 lg:mb-8">
-				<h2 className="text-2xl font-bold text-white d sm:text-3xl md:text-4xl lg:text-5xl text-shadow-lg">
+				<h2
+					className="text-2xl font-bold text-[#004F44] d sm:text-3xl md:text-4xl lg:text-5xl text-shadow-lg"
+					style={{ fontFamily: "Noto Serif TC, serif" }}
+				>
 					{t("title")}
 				</h2>
 			</div>
 
 			{/* Books Container - Responsive */}
-			<div className="relative z-10 flex items-end justify-center w-full overflow-x-auto min-h-[40vh] sm:min-h-[65vh] md:min-h-[40vh] lg:min-h-[40vh] ">
+			<div className="relative z-10 flex items-end justify-center w-full overflow-x-auto min-h-[40vh] sm:min-h-[75vh] md:min-h-[60vh] lg:min-h-[60vh] ">
 				{/* Enhanced book shelf */}
 				<div className="relative px-2 min-w-fit sm:px-4">
 					{/* Shelf base with responsive alignment */}
@@ -166,6 +170,7 @@ export default function Tips() {
 											: active !== null
 												? 5
 												: 10,
+									fontFamily: "Noto Serif TC, serif",
 								}}
 							>
 								{active === index ? (
@@ -274,6 +279,8 @@ export default function Tips() {
 												transformOrigin:
 													"bottom center",
 												opacity: 0.6,
+												fontFamily:
+													"Noto Serif TC, serif",
 											}}
 											className={`
                                                 relative ${config.height} ${config.color} ${config.shadow}
@@ -286,7 +293,13 @@ export default function Tips() {
                                                 backdrop-blur-sm
                                             `}
 										>
-											<span className="relative z-10 px-0.5 sm:px-1 font-semibold leading-tight text-shadow">
+											<span
+												className="relative z-10 px-0.5 sm:px-1 font-semibold leading-tight text-shadow"
+												style={{
+													fontFamily:
+														"Noto Serif TC, serif",
+												}}
+											>
 												{t(`tip${index + 1}`) ||
 													`Tip ${index + 1}`}
 											</span>
@@ -299,6 +312,7 @@ export default function Tips() {
 											writingMode: "vertical-lr",
 											transform: `rotate(${config.angle}deg) translateZ(0)`,
 											transformOrigin: "bottom center",
+											fontFamily: "Noto Serif TC, serif",
 										}}
 										className={`
                                             relative ${config.height} ${config.color} ${config.shadow}
@@ -321,7 +335,13 @@ export default function Tips() {
 										<div className="absolute bottom-2 sm:bottom-3 md:bottom-4 left-1/2 transform -translate-x-1/2 w-4 sm:w-6 md:w-8 lg:w-12 h-0.5 bg-white/50 rounded"></div>
 
 										{/* Responsive book title */}
-										<span className="relative z-10 px-1 font-bold leading-tight sm:px-2 text-shadow">
+										<span
+											className="relative z-10 px-1 font-bold leading-tight sm:px-2 text-shadow"
+											style={{
+												fontFamily:
+													"Noto Serif TC, serif",
+											}}
+										>
 											{t(`tip${index + 1}`) ||
 												`Tip ${index + 1}`}
 										</span>

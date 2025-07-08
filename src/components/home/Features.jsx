@@ -27,9 +27,15 @@ export default function Features() {
 	];
 
 	return (
-		<section className="py-10 bg-white md:py-20">
+		<section
+			className="py-10 bg-white md:py-20"
+			style={{ fontFamily: "Noto Serif TC, serif" }}
+		>
 			<div className="container w-full px-4 md:p-0">
-				<h3 className="mb-12 text-2xl font-bold text-center md:text-3xl lg:text-4xl md:mb-25 text-hero font-yahei">
+				<h3
+					className="mb-12 text-2xl font-bold text-center md:text-3xl lg:text-4xl md:mb-25 text-hero"
+					style={{ fontFamily: "Noto Serif TC, serif" }}
+				>
 					{t("title")}
 				</h3>
 
@@ -46,23 +52,25 @@ export default function Features() {
 								className="w-[35px] h-[35px] object-contain mb-1"
 							/>
 							<h3
-								className="mb-1 text-center font-Acme"
+								className="mb-1 text-center"
 								style={{
 									color: "#004F44",
 									fontWeight: 600,
 									fontSize: "10px",
 									lineHeight: "1.1",
+									fontFamily: "Noto Serif TC, serif",
 								}}
 							>
 								{feature.title}
 							</h3>
 							<p
-								className="text-center font-AbeeZee"
+								className="text-center"
 								style={{
 									fontWeight: 400,
 									fontSize: "8px",
 									color: "#073E31",
 									lineHeight: "1.2",
+									fontFamily: "Noto Serif TC, serif",
 								}}
 							>
 								{feature.description}
@@ -87,23 +95,24 @@ export default function Features() {
 								/>
 								<div className="flex flex-col text-left">
 									<h3
-										className="mb-2 font-Acme"
+										className="mb-2"
 										style={{
 											color: "#004F44",
 											fontWeight: 600,
 											fontSize: "32px",
 											lineHeight: "1.2",
+											fontFamily: "Noto Serif TC, serif",
 										}}
 									>
 										{feature.title}
 									</h3>
 									<p
-										className="font-AbeeZee"
 										style={{
 											fontWeight: 400,
 											fontSize: "22px",
 											color: "#073E31",
 											lineHeight: "1.4",
+											fontFamily: "Noto Serif TC, serif",
 										}}
 									>
 										{feature.description}

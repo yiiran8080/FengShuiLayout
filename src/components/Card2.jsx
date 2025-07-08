@@ -14,12 +14,14 @@ const Card2 = ({
 	const cardStyle = useMemo(() => {
 		return {
 			width: cardWidth,
+			fontFamily: "Noto Serif TC, serif",
 		};
 	}, [cardWidth]);
 
 	const divStyle = useMemo(() => {
 		return {
 			top: divTop,
+			fontFamily: "Noto Serif TC, serif",
 		};
 	}, [divTop]);
 
@@ -35,7 +37,7 @@ const Card2 = ({
                 pb-[12px] sm:pb-[18px] lg:pb-[24px] 
                 box-border relative text-center 
                 text-[14px] sm:text-[18px] lg:text-[22px] 
-                text-[#1d1d1d] font-[Outfit] 
+                text-[#1d1d1d]
                 shadow-[2px_2px_4px_rgba(0,0,0,0.15)] sm:shadow-[3px_3px_4px_rgba(0,0,0,0.2)] lg:shadow-[4px_4px_4px_rgba(0,0,0,0.25)]
                 ${className}
             `}
@@ -54,9 +56,10 @@ const Card2 = ({
 							fontWeight: 600,
 							fontSize: "18px", // Mobile - increased from 16px
 							color: "#004F44",
+							fontFamily: "Noto Serif TC, serif",
 						}}
 					>
-						<span className="sm:text-[20px] lg:text-[28px]">
+						<span className="sm:text-[20px] lg:text-[28px]" style={{ fontFamily: "Noto Serif TC, serif" }}>
 							{title}
 						</span>
 					</p>

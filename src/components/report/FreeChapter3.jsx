@@ -89,7 +89,10 @@ export function FreeChapter3({ roomType, direction, data }) {
 	if (!randomEntry) return null;
 
 	return (
-		<div className="flex items-start justify-center w-full min-h-screen px-2 mx-auto sm:px-4 lg:px-0">
+		<div
+			className="flex items-start justify-center w-full min-h-screen px-2 mx-auto sm:px-4 lg:px-0"
+			style={{ fontFamily: '"Noto Serif TC", serif' }}
+		>
 			<div className="w-full max-w-full p-2 mt-4 sm:p-4 sm:mt-6 lg:p-8 lg:mt-10 rounded-xl">
 				<>
 					{/* Main Title */}
@@ -235,7 +238,10 @@ export function FreeChapter3({ roomType, direction, data }) {
 										src="/images/image-206@2x.jpeg"
 									/>
 								</div>
-								<h2 className="m-0 justify-center font-semibold leading-6 sm:leading-8 font-[400] z-[1] text-sm sm:text-lg lg:text-[32px] lg:leading-[26px]">
+								<h2
+									className="m-0 justify-center font-semibold leading-6 sm:leading-8 font-[400] z-[1] text-sm sm:text-lg lg:text-[32px] lg:leading-[26px]"
+									style={{ fontFamily: '"Noto Serif TC", serif' }}
+								>
 									{t("riskDetected")}
 								</h2>
 							</div>
@@ -305,9 +311,11 @@ export function FreeChapter3({ roomType, direction, data }) {
 											>
 												<div
 													className={`p-3 sm:p-4 lg:p-6 rounded-lg ${item.bgColor} relative shadow-[0_6px_20px_rgba(0,0,0,0.12)] hover:shadow-[0_8px_25px_rgba(0,0,0,0.18)] transition-shadow duration-300 max-w-full sm:max-w-xl lg:max-w-2xl w-full`}
+													style={{ fontFamily: '"Noto Serif TC", serif' }}
 												>
 													<div
 														className={`mb-2 sm:mb-3 lg:mb-4 text-base sm:text-lg lg:text-xl font-bold ${item.titleColor}`}
+														style={{ fontFamily: '"Noto Serif TC", serif' }}
 													>
 														{item.title}:
 													</div>
@@ -324,6 +332,7 @@ export function FreeChapter3({ roomType, direction, data }) {
 																? "blur-sm"
 																: ""
 														}`}
+														style={{ fontFamily: '"Noto Serif TC", serif' }}
 													>
 														{item.content}
 													</div>
