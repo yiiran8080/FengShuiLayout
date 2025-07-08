@@ -1,3 +1,41 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:be9c03ad516f6dc6af1a1a1a5c0bf54a543e3a06e29a619d6e9f476c6253c241
-size 1208
+{
+  "version": 4,
+  "routes": {
+    "/favicon.ico": {
+      "initialHeaders": {
+        "cache-control": "public, max-age=0, must-revalidate",
+        "content-type": "image/x-icon",
+        "x-next-cache-tags": "_N_T_/layout,_N_T_/favicon.ico/layout,_N_T_/favicon.ico/route,_N_T_/favicon.ico"
+      },
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "Next-Action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/favicon.ico",
+      "dataRoute": null,
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    }
+  },
+  "dynamicRoutes": {},
+  "notFoundRoutes": [],
+  "preview": {
+    "previewModeId": "4a96779843817634b8c297df80a948b6",
+    "previewModeSigningKey": "85c60c1100191ac8b1a9c88a7098789682680450648e86df7f12edc27f0c243f",
+    "previewModeEncryptionKey": "e1aa1ee42c681e4b0c39193e9c9c8caebcde417c1c9a875448951be8f58662e8"
+  }
+}

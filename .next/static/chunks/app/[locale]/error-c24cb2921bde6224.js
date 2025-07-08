@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5883aad097f756e0cda26bc78293961ef3727b5bb17840ba63c68a6fb3c04bbb
-size 437
+(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[8530],{30932:(e,r,s)=>{Promise.resolve().then(s.bind(s,48724))},48724:(e,r,s)=>{"use strict";s.r(r),s.d(r,{default:()=>l});var n=s(95155),c=s(12115);function l(e){let{error:r}=e;return(0,c.useEffect)(()=>{console.error(r)},[r]),(0,n.jsx)("div",{children:(0,n.jsx)("h2",{children:"出了些问题！"})})}}},e=>{var r=r=>e(e.s=r);e.O(0,[8441,1684,7358],()=>r(30932)),_N_E=e.O()}]);
