@@ -6,7 +6,7 @@ export default function () {
 	const t = useTranslations("home.comments");
 	return (
 		<section
-			className="relative py-6 pb-6 overflow-hidden sm:py-8 sm:pb-8 md:py-10 md:pb-10 lg:pb-30 bg-secondary"
+			className="relative py-6 pb-6 overflow-hidden bg-white sm:py-8 sm:pb-8 md:py-10 md:pb-10 lg:pb-30"
 			style={{ fontFamily: "Noto Serif TC, serif" }}
 		>
 			<div className="container px-4 lg:px-4">

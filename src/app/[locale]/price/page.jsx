@@ -435,14 +435,16 @@ export default function YourPage() {
 													"rgba(9,110,86,0.08)",
 												backgroundImage: `url("data:image/svg+xml,%3Csvg width='120' height='60' viewBox='0 0 120 60' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='2' fill='%23096e56'/%3E%3Ccircle cx='60' cy='20' r='1.5' fill='%23fbbf24'/%3E%3Ccircle cx='100' cy='40' r='2' fill='%23f87171'/%3E%3Ccircle cx='30' cy='50' r='1.5' fill='%23096e56'/%3E%3Ccircle cx='80' cy='10' r='1.5' fill='%23096e56'/%3E%3Ccircle cx='110' cy='15' r='1' fill='%23fbbf24'/%3E%3Ccircle cx='50' cy='45' r='1' fill='%23f87171'/%3E%3C/svg%3E")`,
 												backgroundRepeat: "repeat",
-                                                fontFamily: '"Noto Serif TC", serif',
+												fontFamily:
+													'"Noto Serif TC", serif',
 											}}
 										>
 											<div
 												className="mb-2 text-sm"
 												style={{
 													color: "#096e56",
-                                                    fontFamily: '"Noto Serif TC", serif',
+													fontFamily:
+														'"Noto Serif TC", serif',
 												}}
 											>
 												{t("yourPromoCode")}
@@ -451,7 +453,8 @@ export default function YourPage() {
 												className="mb-2 text-2xl font-bold tracking-wider select-all"
 												style={{
 													color: "#096e56",
-                                                    fontFamily: '"Noto Serif TC", serif',
+													fontFamily:
+														'"Noto Serif TC", serif',
 												}}
 											>
 												{sharePromoCode}
@@ -468,18 +471,20 @@ export default function YourPage() {
 													);
 												}}
 												className="px-4 py-1 text-sm font-medium bg-[#096e56] text-white rounded transition-colors shadow hover:bg-[#19ad6b] hover:shadow-lg"
-                                                style={{
-                                                    fontFamily: '"Noto Serif TC", serif',
-                                                }}
+												style={{
+													fontFamily:
+														'"Noto Serif TC", serif',
+												}}
 											>
 												{t("copyPromoCode")}
 											</button>
 											{copied && (
 												<div
 													className="mt-2 text-xs font-semibold text-green-600 animate-fade-in"
-                                                    style={{
-                                                        fontFamily: '"Noto Serif TC", serif',
-                                                    }}
+													style={{
+														fontFamily:
+															'"Noto Serif TC", serif',
+													}}
 												>
 													{t("copied")}
 												</div>
@@ -489,7 +494,8 @@ export default function YourPage() {
 												style={{
 													color: "#096e56",
 													opacity: 0.7,
-                                                    fontFamily: '"Noto Serif TC", serif',
+													fontFamily:
+														'"Noto Serif TC", serif',
 												}}
 											>
 												{t("usePromoCodeBelow")}
@@ -1005,7 +1011,9 @@ export default function YourPage() {
 					open={showExistingReportDialog}
 					onOpenChange={setShowExistingReportDialog}
 				>
-					<AlertDialogContent style={{ fontFamily: '"Noto Serif TC", serif' }}>
+					<AlertDialogContent
+						style={{ fontFamily: '"Noto Serif TC", serif' }}
+					>
 						<AlertDialogHeader>
 							<AlertDialogTitle>
 								{t("existingReportFound")}
@@ -1032,7 +1040,7 @@ export default function YourPage() {
 				</AlertDialog>
 
 				{/* Show loading state while checking for existing reports */}
-				{checkingExistingReport && (
+				{/* {checkingExistingReport && (
 					<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
 						<div className="p-6 bg-white rounded-lg">
 							<div className="w-8 h-8 mx-auto border-b-2 border-green-500 rounded-full animate-spin"></div>
@@ -1041,7 +1049,7 @@ export default function YourPage() {
 							</p>
 						</div>
 					</div>
-				)}
+				)} */}
 
 				<PricePromo />
 				<FAQ />

@@ -579,15 +579,15 @@ export default function UploadPic({ onResult }) {
 			style={{ fontFamily: '"Noto Serif TC", serif' }}
 		>
 			{/* Title */}
-			<h1 className="mb-4 text-xl font-normal mt-10  text-[#004f44] sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl leading-tight sm:leading-normal">
+			<h1 className="mb-4 text-xl font-normal mt-10 mb-30 text-[#004f44] sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl leading-tight sm:leading-normal">
 				{t("title")}
 			</h1>
 
 			{/* Description */}
-			<div className="w-full max-w-3xl mb-8 text-sm leading-relaxed text-[#004f44] sm:text-base md:text-lg lg:text-xl sm:mb-10 md:mb-12">
+			{/* <div className="w-full max-w-3xl mb-8 text-sm leading-relaxed text-[#004f44] sm:text-base md:text-lg lg:text-xl sm:mb-10 md:mb-12">
 				<p className="mb-2">{t("description1")}</p>
 				<p className="m-0">{t("description2")}</p>
-			</div>
+			</div> */}
 
 			{/* Upload section */}
 			<div className="flex flex-col items-center justify-center w-full max-w-6xl gap-6 md:flex-row md:items-start lg:gap-8">

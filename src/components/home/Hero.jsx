@@ -155,7 +155,7 @@ export default function Hero() {
 			/>
 
 			{/* Carousel Dots for background overlay effects */}
-			<div className="absolute z-20 flex gap-2 -translate-x-1/2 sm:gap-3 bottom-4 sm:bottom-6 md:bottom-8 left-1/2">
+			{/* <div className="absolute z-20 flex gap-2 -translate-x-1/2 sm:gap-3 bottom-4 sm:bottom-6 md:bottom-8 left-1/2">
 				{backgroundOverlayEffects.map((overlay, idx) => (
 					<button
 						key={idx}
@@ -173,18 +173,18 @@ export default function Hero() {
 						aria-label={`Switch to background overlay ${idx + 1}`}
 					/>
 				))}
-			</div>
+			</div> */}
 
-			<div className="container relative z-10 flex flex-col px-3 sm:px-4 md:px-0">
-				<div className="flex-1 flex items-center justify-center min-h-[60vh]">
-					<div className="grid items-center w-full grid-cols-1 gap-8 justify-items-center sm:gap-10 md:gap-16 md:grid-cols-2 max-w-7xl">
+			<div className="container relative z-10 flex flex-col items-center justify-center px-4 mx-auto md:px-8 max-w-7xl">
+				<div className="flex-1 flex items-center justify-center w-full min-h-[60vh]">
+					<div className="grid items-center w-full grid-cols-1 mx-auto max-w-7xl gap-y-15 gap-x-40 md:gap-x-40 lg:gap-x-40 md:grid-cols-2">
 						{/* Left Side */}
 						<motion.div
 							initial={{ opacity: 0, x: -80 }}
 							whileInView={{ opacity: 1, x: 0 }}
 							viewport={{ once: true, amount: 0.3 }}
 							transition={{ duration: 0.8, ease: "easeOut" }}
-							className="flex flex-col items-center justify-center order-2 w-full md:items-start md:order-1"
+							className="flex flex-col items-center justify-center order-2 w-full min-w-0 md:items-start md:order-1"
 						>
 							<div
 								className="flex flex-col items-center max-w-4xl text-white md:items-start"
@@ -220,7 +220,8 @@ export default function Hero() {
 													WebkitTextFillColor:
 														"transparent",
 													backgroundClip: "text",
-													fontFamily: "Noto Serif TC, serif",
+													fontFamily:
+														"Noto Serif TC, serif",
 												}}
 											>
 												{t("title2").split("，")[0]}
@@ -235,7 +236,8 @@ export default function Hero() {
 													WebkitTextFillColor:
 														"transparent",
 													backgroundClip: "text",
-													fontFamily: "Noto Serif TC, serif",
+													fontFamily:
+														"Noto Serif TC, serif",
 												}}
 											>
 												{t("title2").split("，")[1]}
@@ -251,7 +253,8 @@ export default function Hero() {
 												WebkitTextFillColor:
 													"transparent",
 												backgroundClip: "text",
-												fontFamily: "Noto Serif TC, serif",
+												fontFamily:
+													"Noto Serif TC, serif",
 											}}
 										>
 											{t("title2")}
@@ -283,7 +286,7 @@ export default function Hero() {
 
 						{/* Right Side */}
 						<motion.div
-							className="flex flex-col items-center justify-center order-1 w-full md:order-2"
+							className="flex flex-col items-center justify-center order-1 w-full min-w-0 md:order-2"
 							initial={{ opacity: 0, x: 80 }}
 							whileInView={{ opacity: 1, x: 0 }}
 							viewport={{ once: true, amount: 0.3 }}

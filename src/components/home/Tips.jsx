@@ -128,17 +128,13 @@ export default function Tips() {
 
 	return (
 		<section
-			className="relative flex flex-col items-center justify-center px-2 py-4 overflow-hidden bg-center bg-cover sm:px-4 md:py-8 lg:py-12"
+			className="relative flex flex-col items-center justify-center px-2 py-4 overflow-hidden bg-secondary sm:px-4 md:py-8 lg:py-12"
 			style={{
-				backgroundImage: "url('/images/hero/tipsbg.png')",
-				backgroundAttachment: "fixed",
+				// Removed backgroundImage and backgroundAttachment
 				fontFamily: "Noto Serif TC, serif",
 			}}
 			onClick={handleBackgroundClick}
 		>
-			{/* Enhanced backdrop overlay */}
-			<div className="absolute inset-0 bg-black/10"></div>
-
 			{/* Title Section */}
 			<div className="relative z-10 mb-6 text-center sm:mb-4 md:mb-8 lg:mb-8">
 				<h2

@@ -66,18 +66,40 @@ export default function ReportPage({ locale }) {
 	const handlePrint = useReactToPrint({
 		contentRef,
 		pageStyle: `
-            @page { size: A4;margin:0  }
+            @page { 
+                size: A4;
+                margin: 20mm 15mm 20mm 15mm;  /* top right bottom left margins */
+            }
             @media print {
                 body, html {
                     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
                     height: auto;
                     font-family: 'SimSun', 'Microsoft YaHei', sans-serif;
-                    overflow: initial !important;  // 重要，如果不分页需要加上
+                    overflow: initial !important;
                     margin: 0;
                     zoom: 100%;
                 }
                 .hidden-on-print { display: none !important; }
                 .show-on-print { display: block !important;}
+                
+                /* Page breaks for chapters */
+                .chapter-page-break {
+                    page-break-before: always !important;
+                }
+                
+                /* Show all tab content when printing */
+                .tab-content-print {
+                    max-height: none !important;
+                    overflow: visible !important;
+                    opacity: 1 !important;
+                    display: block !important;
+                }
+                
+                /* Hide interactive buttons when printing */
+                .interactive-tabs {
+                    display: none !important;
+                }
+                
                 .page-break {
                     margin-top: 1rem;
                     display: block;
@@ -442,7 +464,7 @@ export default function ReportPage({ locale }) {
 							{t("p1-5")}
 						</p>
 						{/* Tag buttons */}
-						<div className="flex flex-wrap gap-3 mb-6">
+						<div className="flex flex-wrap gap-3 mb-6 interactive-tabs">
 							{Object.entries(reportDocData.nianzhuData).map(
 								([key, value], index) => (
 									<button
@@ -468,18 +490,6 @@ export default function ReportPage({ locale }) {
 													? null
 													: index
 											);
-											setTimeout(() => {
-												if (
-													openedNianzhuIndex !== index
-												) {
-													nianzhuRefs.current[
-														index
-													]?.scrollIntoView({
-														behavior: "smooth",
-														block: "start",
-													});
-												}
-											}, 200);
 										}}
 									>
 										{key}
@@ -495,20 +505,26 @@ export default function ReportPage({ locale }) {
 									ref={(el) =>
 										(nianzhuRefs.current[index] = el)
 									}
-									className="flex justify-center mt-4"
-									style={{
-										maxHeight:
-											openedNianzhuIndex === index
-												? 500
-												: 0,
-										overflow: "hidden",
-										transition:
-											"max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s",
-										opacity:
-											openedNianzhuIndex === index
-												? 1
-												: 0,
-									}}
+									className={`flex justify-center mt-4 ${isPrinting ? "tab-content-print" : ""}`}
+									style={
+										isPrinting
+											? {}
+											: {
+													maxHeight:
+														openedNianzhuIndex ===
+														index
+															? 500
+															: 0,
+													overflow: "hidden",
+													transition:
+														"max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s",
+													opacity:
+														openedNianzhuIndex ===
+														index
+															? 1
+															: 0,
+												}
+									}
 								>
 									<section
 										className={`${index !== 2 && "lg:max-w-125"} flex-grow`}
@@ -531,7 +547,7 @@ export default function ReportPage({ locale }) {
 										<div
 											className="flex items-center justify-end ml-4"
 											style={{
-												marginRight: "-40px", // adjust this value as needed for "a bit outside"
+												marginRight: "-40px",
 												zIndex: 1,
 											}}
 										>
@@ -562,7 +578,7 @@ export default function ReportPage({ locale }) {
 							{t("p1-6")}
 						</p>
 						{/* Tag buttons */}
-						<div className="flex flex-wrap gap-3 mb-6">
+						<div className="flex flex-wrap gap-3 mb-6 interactive-tabs">
 							{Object.entries(reportDocData.yuezhuData).map(
 								([key, value], index) => (
 									<button
@@ -588,18 +604,6 @@ export default function ReportPage({ locale }) {
 													? null
 													: index
 											);
-											setTimeout(() => {
-												if (
-													openedYuezhuIndex !== index
-												) {
-													yuezhuRefs.current[
-														index
-													]?.scrollIntoView({
-														behavior: "smooth",
-														block: "start",
-													});
-												}
-											}, 200);
 										}}
 									>
 										{key}
@@ -615,18 +619,26 @@ export default function ReportPage({ locale }) {
 									ref={(el) =>
 										(yuezhuRefs.current[index] = el)
 									}
-									className="flex justify-center mt-4"
-									style={{
-										maxHeight:
-											openedYuezhuIndex === index
-												? 500
-												: 0,
-										overflow: "hidden",
-										transition:
-											"max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s",
-										opacity:
-											openedYuezhuIndex === index ? 1 : 0,
-									}}
+									className={`flex justify-center mt-4 ${isPrinting ? "tab-content-print" : ""}`}
+									style={
+										isPrinting
+											? {}
+											: {
+													maxHeight:
+														openedYuezhuIndex ===
+														index
+															? 500
+															: 0,
+													overflow: "hidden",
+													transition:
+														"max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s",
+													opacity:
+														openedYuezhuIndex ===
+														index
+															? 1
+															: 0,
+												}
+									}
 								>
 									<section
 										className={`${index !== 2 && "lg:max-w-125"} flex-grow`}
@@ -680,7 +692,7 @@ export default function ReportPage({ locale }) {
 							{t("p1-7")}
 						</p>
 						{/* Tag buttons */}
-						<div className="flex flex-wrap gap-3 mb-6">
+						<div className="flex flex-wrap gap-3 mb-6 interactive-tabs">
 							{Object.entries(reportDocData.rizhuData).map(
 								([key, value], index) => (
 									<button
@@ -706,18 +718,7 @@ export default function ReportPage({ locale }) {
 													? null
 													: index
 											);
-											setTimeout(() => {
-												if (
-													openedRizhuIndex !== index
-												) {
-													rizhuRefs.current[
-														index
-													]?.scrollIntoView({
-														behavior: "smooth",
-														block: "start",
-													});
-												}
-											}, 200);
+											// Remove the scrolling behavior
 										}}
 									>
 										{key}
@@ -733,18 +734,26 @@ export default function ReportPage({ locale }) {
 									ref={(el) =>
 										(rizhuRefs.current[index] = el)
 									}
-									className="flex justify-center mt-4"
-									style={{
-										maxHeight:
-											openedRizhuIndex === index
-												? 500
-												: 0,
-										overflow: "hidden",
-										transition:
-											"max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s",
-										opacity:
-											openedRizhuIndex === index ? 1 : 0,
-									}}
+									className={`flex justify-center mt-4 ${isPrinting ? "tab-content-print" : ""}`}
+									style={
+										isPrinting
+											? {}
+											: {
+													maxHeight:
+														openedRizhuIndex ===
+														index
+															? 500
+															: 0,
+													overflow: "hidden",
+													transition:
+														"max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s",
+													opacity:
+														openedRizhuIndex ===
+														index
+															? 1
+															: 0,
+												}
+									}
 								>
 									<section
 										className={`${index !== 2 && "lg:max-w-125"} flex-grow`}
@@ -799,7 +808,7 @@ export default function ReportPage({ locale }) {
 							{t("p1-8")}
 						</p>
 						{/* Tag buttons */}
-						<div className="flex flex-wrap gap-3 mb-6">
+						<div className="flex flex-wrap gap-3 mb-6 interactive-tabs">
 							{Object.entries(reportDocData.shizhuData).map(
 								([key, value], index) => (
 									<button
@@ -825,18 +834,6 @@ export default function ReportPage({ locale }) {
 													? null
 													: index
 											);
-											setTimeout(() => {
-												if (
-													openedShizhuIndex !== index
-												) {
-													shizhuRefs.current[
-														index
-													]?.scrollIntoView({
-														behavior: "smooth",
-														block: "start",
-													});
-												}
-											}, 200);
 										}}
 									>
 										{key}
@@ -852,18 +849,26 @@ export default function ReportPage({ locale }) {
 									ref={(el) =>
 										(shizhuRefs.current[index] = el)
 									}
-									className="flex justify-center mt-4"
-									style={{
-										maxHeight:
-											openedShizhuIndex === index
-												? 500
-												: 0,
-										overflow: "hidden",
-										transition:
-											"max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s",
-										opacity:
-											openedShizhuIndex === index ? 1 : 0,
-									}}
+									className={`flex justify-center mt-4 ${isPrinting ? "tab-content-print" : ""}`}
+									style={
+										isPrinting
+											? {}
+											: {
+													maxHeight:
+														openedShizhuIndex ===
+														index
+															? 500
+															: 0,
+													overflow: "hidden",
+													transition:
+														"max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s",
+													opacity:
+														openedShizhuIndex ===
+														index
+															? 1
+															: 0,
+												}
+									}
 								>
 									<section
 										className={`${index !== 2 && "lg:max-w-125"} flex-grow`}
@@ -918,7 +923,7 @@ export default function ReportPage({ locale }) {
 				{/* 第二章 流年运程解析 */}
 				<div
 					key="section-1"
-					className="relative mx-auto max-w-250 md:px-5"
+					className="relative mx-auto max-w-250 md:px-5 chapter-page-break"
 				>
 					<h1
 						ref={(el) => (sectionRefs.current[5] = el)}
@@ -1052,7 +1057,10 @@ export default function ReportPage({ locale }) {
 					</div>
 				</div>
 				{/* 第三章 家居风水解析 */}
-				<div key="section-2" className="mx-auto md:max-w-250 md:px-5">
+				<div
+					key="section-2"
+					className="mx-auto md:max-w-250 md:px-5 chapter-page-break"
+				>
 					<h1
 						ref={(el) => (sectionRefs.current[12] = el)}
 						className="md:text-[40px] text-[28px] text-center font-bold md:mt-18 mt-10 mb-10 md:px-0 px-5 text-[#073E31]"
@@ -1089,7 +1097,7 @@ export default function ReportPage({ locale }) {
 				{/* 第四章 个人命理进阶解析 */}
 				<div
 					key="section-3"
-					className="relative mx-auto md:max-w-250 md:px-5"
+					className="relative mx-auto md:max-w-250 md:px-5 chapter-page-break"
 				>
 					<h1
 						ref={(el) => (sectionRefs.current[13] = el)}

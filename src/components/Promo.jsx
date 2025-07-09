@@ -7,13 +7,28 @@ export default function Promo() {
 
 	return (
 		<div
-			className="flex flex-col md:flex-row items-center justify-between rounded-[15px] sm:rounded-[20px] mx-2 sm:mx-6 lg:mx-10 bg-[#f5faf7] pt-4 pb-6 px-4 sm:pt-6 sm:pb-8 sm:px-6 md:pt-8 md:pb-10 md:px-8 lg:pt-10 lg:pb-[72px] lg:pl-[84px] lg:pr-[93px] gap-4 sm:gap-6 md:gap-8 lg:gap-24"
+			className="
+        w-full
+        flex flex-col md:flex-row
+        items-center md:items-stretch
+        justify-between
+        rounded-[15px] sm:rounded-[20px]
+        mx-auto
+        max-w-[800px] lg:max-w-[1000px]
+        bg-[#f5faf7]
+        pt-7 pb-6 px-5
+        sm:pt-6 sm:pb-8 sm:px-4
+        md:pt-8 md:pb-10 md:px-8
+        lg:pt-10 lg:pb-[72px] lg:px-[84px]
+        gap-7 md:gap-8 lg:gap-24
+        flex-wrap
+    "
 			style={{
 				boxShadow: "0 4px 15px rgba(0, 0, 0, 0.3)",
 				fontFamily: '"Noto Serif TC", serif',
 			}}
 		>
-			<section className="flex flex-col items-start justify-start flex-1 max-w-full text-left text-Neutral-07-100">
+			<section className="flex flex-col items-start justify-center flex-1 min-w-[220px] md:min-w-[320px] max-w-full text-left text-Neutral-07-100">
 				<div className="flex flex-col items-start justify-start w-full gap-4 sm:gap-6 md:gap-8 lg:gap-11">
 					<div className="w-full flex flex-col items-start justify-start gap-3 sm:gap-4 md:gap-5 lg:gap-[21px]">
 						<div className="w-full flex flex-col items-start justify-start gap-2 sm:gap-3 md:gap-4 lg:gap-[27px]">
@@ -57,17 +72,17 @@ export default function Promo() {
 					</Link>
 				</div>
 			</section>
-			<div className="w-full max-w-[280px] sm:max-w-[320px] md:max-w-xs lg:max-w-[348px] flex-shrink-0 mt-4 sm:mt-6 md:mt-8 lg:mt-0 hidden md:block">
-				<Image
-					className="object-cover w-full h-auto max-w-full rounded-lg"
-					style={{ height: "auto", width: "100%", maxWidth: 348 }}
-					loading="lazy"
-					width={348}
-					height={177}
-					sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 348px"
-					alt=""
-					src="/images/report/fengshui05-1@2x.png"
-				/>
+			<div className="w-full max-w-[348px] flex-shrink-0 self-center md:self-auto mb-4 md:mb-0">
+				<div className="relative w-full aspect-[348/177]">
+					<Image
+						className="object-cover w-full h-full rounded-lg"
+						fill
+						sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 348px"
+						alt=""
+						src="/images/report/fengshui05-1@2x.png"
+						priority={false}
+					/>
+				</div>
 			</div>
 		</div>
 	);

@@ -72,9 +72,9 @@ export default function BeforeAfterSlider({ beforeImg, afterImg }) {
 				style={{
 					position: "absolute",
 					left: 0,
-					top: 0,
+					top: -20,
 					width: "50%",
-					height: "100%",
+					height: "110%",
 					objectFit: "cover",
 					zIndex: 0,
 				}}

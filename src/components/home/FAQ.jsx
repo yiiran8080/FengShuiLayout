@@ -14,7 +14,7 @@ export default function FAQ() {
 	const [showMore, setShowMore] = useState(false);
 	return (
 		<section
-			className="bg-white md:py-20 py-15"
+			className="bg-secondary md:py-20 py-15"
 			style={{ fontFamily: "Noto Serif TC, serif" }}
 		>
 			<div className="container px-4 mx-auto">
@@ -37,18 +37,20 @@ export default function FAQ() {
 							className="data-[state=open]:bg-[#F2FAF7] py-7 px-6 data-[state=open]:mb-8 data-[state=closed]:pt-0 md:data-[state=open]:border-l-4 data-[state=open]:border-l-0 md:data-[state=open]:border-t-0 data-[state=open]:border-t-4 border-[#25826C]"
 						>
 							<AccordionTrigger
-								className="font-bold text-hero"
+								className="text-xs font-bold text-hero sm:text-base md:text-lg lg:text-xl"
 								style={{ fontFamily: "Noto Serif TC, serif" }}
 							>
 								<span
-									className="text-xl"
-									style={{ fontFamily: "Noto Serif TC, serif" }}
+									className="text-xs sm:text-base md:text-lg lg:text-xl"
+									style={{
+										fontFamily: "Noto Serif TC, serif",
+									}}
 								>
 									{t("q1")}
 								</span>
 							</AccordionTrigger>
 							<AccordionContent
-								className="text-[#25826C] text-lg pt-4 pb-0"
+								className="text-[#25826C] text-xs sm:text-base md:text-lg lg:text-xl pt-4 pb-0"
 								style={{ fontFamily: "Noto Serif TC, serif" }}
 							>
 								{t("a1")}
@@ -59,18 +61,20 @@ export default function FAQ() {
 							className="data-[state=open]:bg-[#F2FAF7] py-7 px-6 data-[state=open]:mb-8 data-[state=closed]:pt-0 md:data-[state=open]:border-l-4 data-[state=open]:border-l-0 md:data-[state=open]:border-t-0 data-[state=open]:border-t-4 border-[#25826C]"
 						>
 							<AccordionTrigger
-								className="font-bold text-hero"
+								className="text-xs font-bold text-hero sm:text-base md:text-lg lg:text-xl"
 								style={{ fontFamily: "Noto Serif TC, serif" }}
 							>
 								<span
-									className="text-xl"
-									style={{ fontFamily: "Noto Serif TC, serif" }}
+									className="text-xs sm:text-base md:text-lg lg:text-xl"
+									style={{
+										fontFamily: "Noto Serif TC, serif",
+									}}
 								>
 									{t("q2")}
 								</span>
 							</AccordionTrigger>
 							<AccordionContent
-								className="text-[#25826C] text-lg pt-4 pb-0"
+								className="text-[#25826C] text-xs sm:text-base md:text-lg lg:text-xl pt-4 pb-0"
 								style={{ fontFamily: "Noto Serif TC, serif" }}
 							>
 								{t("a2")}
@@ -81,18 +85,20 @@ export default function FAQ() {
 							className="data-[state=open]:bg-[#F2FAF7] py-7 px-6 data-[state=open]:mb-8 data-[state=closed]:pt-0 md:data-[state=open]:border-l-4 data-[state=open]:border-l-0 md:data-[state=open]:border-t-0 data-[state=open]:border-t-4 border-[#25826C]"
 						>
 							<AccordionTrigger
-								className="font-bold text-hero"
+								className="text-xs font-bold text-hero sm:text-base md:text-lg lg:text-xl"
 								style={{ fontFamily: "Noto Serif TC, serif" }}
 							>
 								<span
-									className="text-xl"
-									style={{ fontFamily: "Noto Serif TC, serif" }}
+									className="text-xs sm:text-base md:text-lg lg:text-xl"
+									style={{
+										fontFamily: "Noto Serif TC, serif",
+									}}
 								>
 									{t("q3")}
 								</span>
 							</AccordionTrigger>
 							<AccordionContent
-								className="text-[#25826C] text-lg pt-4 pb-0"
+								className="text-[#25826C] text-xs sm:text-base md:text-lg lg:text-xl pt-4 pb-0"
 								style={{ fontFamily: "Noto Serif TC, serif" }}
 							>
 								{t("a3")}
@@ -105,19 +111,26 @@ export default function FAQ() {
 									className="data-[state=open]:bg-[#F2FAF7] py-7 px-6 data-[state=open]:mb-8 data-[state=closed]:pt-0 md:data-[state=open]:border-l-4 data-[state=open]:border-l-0 md:data-[state=open]:border-t-0 data-[state=open]:border-t-4 border-[#25826C]"
 								>
 									<AccordionTrigger
-										className="font-bold text-hero"
-										style={{ fontFamily: "Noto Serif TC, serif" }}
+										className="text-xs font-bold text-hero sm:text-base md:text-lg lg:text-xl"
+										style={{
+											fontFamily: "Noto Serif TC, serif",
+										}}
 									>
 										<span
-											className="text-xl"
-											style={{ fontFamily: "Noto Serif TC, serif" }}
+											className="text-xs sm:text-base md:text-lg lg:text-xl"
+											style={{
+												fontFamily:
+													"Noto Serif TC, serif",
+											}}
 										>
 											{t("q4")}
 										</span>
 									</AccordionTrigger>
 									<AccordionContent
-										className="text-[#25826C] text-lg pt-4 pb-0"
-										style={{ fontFamily: "Noto Serif TC, serif" }}
+										className="text-[#25826C] text-xs sm:text-base md:text-lg lg:text-xl pt-4 pb-0"
+										style={{
+											fontFamily: "Noto Serif TC, serif",
+										}}
 									>
 										{t("a4")}
 									</AccordionContent>
@@ -127,19 +140,26 @@ export default function FAQ() {
 									className="data-[state=open]:bg-[#F2FAF7] py-7 px-6 data-[state=open]:mb-8 data-[state=closed]:pt-0 md:data-[state=open]:border-l-4 data-[state=open]:border-l-0 md:data-[state=open]:border-t-0 data-[state=open]:border-t-4 border-[#25826C]"
 								>
 									<AccordionTrigger
-										className="font-bold text-hero"
-										style={{ fontFamily: "Noto Serif TC, serif" }}
+										className="text-xs font-bold text-hero sm:text-base md:text-lg lg:text-xl"
+										style={{
+											fontFamily: "Noto Serif TC, serif",
+										}}
 									>
 										<span
-											className="text-xl"
-											style={{ fontFamily: "Noto Serif TC, serif" }}
+											className="text-xs sm:text-base md:text-lg lg:text-xl"
+											style={{
+												fontFamily:
+													"Noto Serif TC, serif",
+											}}
 										>
 											{t("q5")}
 										</span>
 									</AccordionTrigger>
 									<AccordionContent
-										className="text-[#25826C] text-lg pt-4 pb-0"
-										style={{ fontFamily: "Noto Serif TC, serif" }}
+										className="text-[#25826C] text-xs sm:text-base md:text-lg lg:text-xl pt-4 pb-0"
+										style={{
+											fontFamily: "Noto Serif TC, serif",
+										}}
 									>
 										{t("a5")}
 									</AccordionContent>
@@ -149,19 +169,26 @@ export default function FAQ() {
 									className="data-[state=open]:bg-[#F2FAF7] py-7 px-6 data-[state=open]:mb-8 data-[state=closed]:pt-0 md:data-[state=open]:border-l-4 data-[state=open]:border-l-0 md:data-[state=open]:border-t-0 data-[state=open]:border-t-4 border-[#25826C]"
 								>
 									<AccordionTrigger
-										className="font-bold text-hero"
-										style={{ fontFamily: "Noto Serif TC, serif" }}
+										className="text-xs font-bold text-hero sm:text-base md:text-lg lg:text-xl"
+										style={{
+											fontFamily: "Noto Serif TC, serif",
+										}}
 									>
 										<span
-											className="text-xl"
-											style={{ fontFamily: "Noto Serif TC, serif" }}
+											className="text-xs sm:text-base md:text-lg lg:text-xl"
+											style={{
+												fontFamily:
+													"Noto Serif TC, serif",
+											}}
 										>
 											{t("q6")}
 										</span>
 									</AccordionTrigger>
 									<AccordionContent
-										className="text-[#25826C] text-lg pt-4 pb-0"
-										style={{ fontFamily: "Noto Serif TC, serif" }}
+										className="text-[#25826C] text-xs sm:text-base md:text-lg lg:text-xl pt-4 pb-0"
+										style={{
+											fontFamily: "Noto Serif TC, serif",
+										}}
 									>
 										{t("a6")}
 									</AccordionContent>
@@ -171,19 +198,26 @@ export default function FAQ() {
 									className="data-[state=open]:bg-[#F2FAF7] py-7 px-6 data-[state=open]:mb-8 data-[state=closed]:pt-0 md:data-[state=open]:border-l-4 data-[state=open]:border-l-0 md:data-[state=open]:border-t-0 data-[state=open]:border-t-4 border-[#25826C]"
 								>
 									<AccordionTrigger
-										className="font-bold text-hero"
-										style={{ fontFamily: "Noto Serif TC, serif" }}
+										className="text-xs font-bold text-hero sm:text-base md:text-lg lg:text-xl"
+										style={{
+											fontFamily: "Noto Serif TC, serif",
+										}}
 									>
 										<span
-											className="text-xl"
-											style={{ fontFamily: "Noto Serif TC, serif" }}
+											className="text-xs sm:text-base md:text-lg lg:text-xl"
+											style={{
+												fontFamily:
+													"Noto Serif TC, serif",
+											}}
 										>
 											{t("q7")}
 										</span>
 									</AccordionTrigger>
 									<AccordionContent
-										className="text-[#25826C] text-lg pt-4 pb-0"
-										style={{ fontFamily: "Noto Serif TC, serif" }}
+										className="text-[#25826C] text-xs sm:text-base md:text-lg lg:text-xl pt-4 pb-0"
+										style={{
+											fontFamily: "Noto Serif TC, serif",
+										}}
 									>
 										{t("a7")}
 									</AccordionContent>
@@ -193,19 +227,26 @@ export default function FAQ() {
 									className="data-[state=open]:bg-[#F2FAF7] py-7 px-6 data-[state=open]:mb-8 data-[state=closed]:pt-0 md:data-[state=open]:border-l-4 data-[state=open]:border-l-0 md:data-[state=open]:border-t-0 data-[state=open]:border-t-4 border-[#25826C]"
 								>
 									<AccordionTrigger
-										className="font-bold text-hero"
-										style={{ fontFamily: "Noto Serif TC, serif" }}
+										className="text-xs font-bold text-hero sm:text-base md:text-lg lg:text-xl"
+										style={{
+											fontFamily: "Noto Serif TC, serif",
+										}}
 									>
 										<span
-											className="text-xl"
-											style={{ fontFamily: "Noto Serif TC, serif" }}
+											className="text-xs sm:text-base md:text-lg lg:text-xl"
+											style={{
+												fontFamily:
+													"Noto Serif TC, serif",
+											}}
 										>
 											{t("q8")}
 										</span>
 									</AccordionTrigger>
 									<AccordionContent
-										className="text-[#25826C] text-lg pt-4 pb-0"
-										style={{ fontFamily: "Noto Serif TC, serif" }}
+										className="text-[#25826C] text-xs sm:text-base md:text-lg lg:text-xl pt-4 pb-0"
+										style={{
+											fontFamily: "Noto Serif TC, serif",
+										}}
 									>
 										{t("a8")}
 									</AccordionContent>
