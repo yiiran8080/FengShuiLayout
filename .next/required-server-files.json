@@ -48,9 +48,7 @@
       "path": "/_next/image",
       "loader": "default",
       "loaderFile": "",
-      "domains": [
-        "d3cbeloe0vn1bb.cloudfront.net"
-      ],
+      "domains": [],
       "disableStaticImages": false,
       "minimumCacheTTL": 60,
       "formats": [
@@ -59,7 +57,13 @@
       "dangerouslyAllowSVG": false,
       "contentSecurityPolicy": "script-src 'none'; frame-src 'none'; sandbox;",
       "contentDispositionType": "attachment",
-      "remotePatterns": [],
+      "remotePatterns": [
+        {
+          "protocol": "https",
+          "hostname": "d3cbeloe0vn1bb.cloudfront.net",
+          "pathname": "/**"
+        }
+      ],
       "unoptimized": false
     },
     "devIndicators": {

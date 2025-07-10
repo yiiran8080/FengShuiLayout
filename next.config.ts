@@ -14,7 +14,13 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
-    domains: ["d3cbeloe0vn1bb.cloudfront.net"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "d3cbeloe0vn1bb.cloudfront.net",
+        pathname: "/**",
+      },
+    ],
   },
   reactStrictMode: false,
   // experimental: {

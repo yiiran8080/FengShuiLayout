@@ -146,7 +146,7 @@ export default function Tips() {
 			</div>
 
 			{/* Books Container - Responsive */}
-			<div className="relative z-10 flex items-end justify-center w-full overflow-x-auto min-h-[40vh] sm:min-h-[75vh] md:min-h-[60vh] lg:min-h-[60vh] ">
+			<div className="relative z-10 flex items-end justify-center w-full overflow-x-auto min-h-[40vh] sm:min-h-[75vh] md:min-h-[60vh] lg:min-h-[70vh] ">
 				{/* Enhanced book shelf */}
 				<div className="relative px-2 min-w-fit sm:px-4">
 					{/* Shelf base with responsive alignment */}
