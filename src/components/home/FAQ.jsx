@@ -8,13 +8,19 @@ import {
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function FAQ() {
 	const t = useTranslations("home.FAQ");
 	const [showMore, setShowMore] = useState(false);
+	const pathname = usePathname();
+	const isPricePage = pathname.endsWith("/price");
+
 	return (
 		<section
-			className="bg-secondary md:py-20 py-15"
+			className={`${
+				isPricePage ? "bg-white" : "bg-secondary"
+			} md:py-20 py-15`}
 			style={{ fontFamily: "Noto Serif TC, serif" }}
 		>
 			<div className="container px-4 mx-auto">

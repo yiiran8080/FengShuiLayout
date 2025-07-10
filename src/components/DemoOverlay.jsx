@@ -48,7 +48,7 @@ export default function DemoOverlay({
 	canvasRef,
 	isMobile = false,
 	onStep = () => {},
-	demoActions = new Set(), 
+	demoActions = new Set(),
 	onShowTabControl = () => {}, // ADD THIS PROP
 }) {
 	const t = useTranslations("demo");
@@ -476,7 +476,7 @@ export default function DemoOverlay({
 			setCurrentStep(newStep);
 			setIsWaitingForAction(false);
 			onStep(newStep);
-			
+
 			// Control showTab based on tutorial step
 			onShowTabControl(newStep);
 		} else {
@@ -492,7 +492,7 @@ export default function DemoOverlay({
 			setCurrentStep(newStep);
 			setIsWaitingForAction(false);
 			onStep(newStep);
-			
+
 			// Control showTab based on tutorial step
 			onShowTabControl(newStep);
 		}
@@ -569,58 +569,123 @@ export default function DemoOverlay({
 			return;
 		}
 
-		// Try to find the element in the DOM
-		const el = document.querySelector(selector);
-		if (el) {
-			const rect = el.getBoundingClientRect();
-			const computedStyle = window.getComputedStyle(el);
-			const borderRadius = computedStyle.borderRadius || "8px";
+		// Add a small delay to ensure DOM is fully rendered
+		const calculateRect = () => {
+			const el = document.querySelector(selector);
+			if (el) {
+				// Force layout recalculation
+				el.offsetHeight;
 
-			setHighlightRect({
-				top: rect.top + window.scrollY,
-				left: rect.left + window.scrollX,
-				width: rect.width,
-				height: rect.height,
-				borderRadius: borderRadius, // Store the element's border radius
-			});
-		} else {
-			setHighlightRect(null);
-		}
+				const rect = el.getBoundingClientRect();
+				const computedStyle = window.getComputedStyle(el);
+				const borderRadius = computedStyle.borderRadius || "8px";
+
+				setHighlightRect({
+					top: rect.top + window.scrollY,
+					left: rect.left + window.scrollX,
+					width: rect.width,
+					height: rect.height,
+					borderRadius: borderRadius,
+				});
+			} else {
+				// Retry after a short delay if element not found
+				setTimeout(calculateRect, 100);
+			}
+		};
+
+		// Use requestAnimationFrame to ensure DOM is ready
+		requestAnimationFrame(() => {
+			setTimeout(calculateRect, 50);
+		});
 	}, [highlightedArea, isMobile]);
 
-	// Scroll to highlight when it changes (mobile)
+	// Add a separate effect to recalculate when step changes
 	useEffect(() => {
-		if (highlightRect && isMobile) {
-			setTimeout(() => scrollToHighlight(), 300);
+		// Recalculate highlight rect when step changes (especially for steps 1-2)
+		if (
+			highlightedArea &&
+			(currentStep === DEMO_STEPS.DRAG_ROOM ||
+				currentStep === DEMO_STEPS.DRAG_FURNITURE)
+		) {
+			const selector = HIGHLIGHT_SELECTORS[highlightedArea];
+			if (selector) {
+				// Wait a bit longer for mobile layout to settle
+				const delay = isMobile ? 300 : 100;
+				setTimeout(() => {
+					const el = document.querySelector(selector);
+					if (el) {
+						el.offsetHeight; // Force layout
+						const rect = el.getBoundingClientRect();
+						setHighlightRect({
+							top: rect.top + window.scrollY,
+							left: rect.left + window.scrollX,
+							width: rect.width,
+							height: rect.height,
+							borderRadius: getBorderRadius(),
+						});
+					}
+				}, delay);
+			}
 		}
-	}, [highlightRect, isMobile]);
+	}, [currentStep, highlightedArea, isMobile]);
 
-	// Also update on window resize/orientation change
+	// Also update the resize handler to be more robust
 	useEffect(() => {
 		const handleResize = () => {
 			if (highlightedArea) {
+				// Debounce the resize calculation
+				clearTimeout(window.resizeTimeout);
+				window.resizeTimeout = setTimeout(() => {
+					const selector = HIGHLIGHT_SELECTORS[highlightedArea];
+					const el = document.querySelector(selector);
+					if (el) {
+						el.offsetHeight; // Force layout recalculation
+						const rect = el.getBoundingClientRect();
+						setHighlightRect({
+							top: rect.top + window.scrollY,
+							left: rect.left + window.scrollX,
+							width: rect.width,
+							height: rect.height,
+							borderRadius: getBorderRadius(),
+						});
+					}
+				}, 100);
+			}
+		};
+
+		window.addEventListener("resize", handleResize);
+		window.addEventListener("orientationchange", handleResize);
+
+		return () => {
+			window.removeEventListener("resize", handleResize);
+			window.removeEventListener("orientationchange", handleResize);
+			if (window.resizeTimeout) {
+				clearTimeout(window.resizeTimeout);
+			}
+		};
+	}, [highlightedArea, isMobile]);
+
+	// Add a visibility check for mobile panel positioning
+	useEffect(() => {
+		// Force recalculation when panel position changes on mobile
+		if (isMobile && highlightedArea) {
+			setTimeout(() => {
 				const selector = HIGHLIGHT_SELECTORS[highlightedArea];
 				const el = document.querySelector(selector);
 				if (el) {
+					el.offsetHeight;
 					const rect = el.getBoundingClientRect();
 					setHighlightRect({
 						top: rect.top + window.scrollY,
 						left: rect.left + window.scrollX,
 						width: rect.width,
 						height: rect.height,
+						borderRadius: getBorderRadius(),
 					});
-				} else {
-					setHighlightRect(null);
 				}
-			}
-		};
-		window.addEventListener("resize", handleResize);
-		window.addEventListener("orientationchange", handleResize);
-		return () => {
-			window.removeEventListener("resize", handleResize);
-			window.removeEventListener("orientationchange", handleResize);
-		};
-	}, [highlightedArea, isMobile]);
+			}, 200);
+		}
+	}, [panelPosition, isMobile, highlightedArea]);
 
 	// Cleanup on unmount
 	useEffect(() => {

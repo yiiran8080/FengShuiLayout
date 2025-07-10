@@ -909,7 +909,7 @@ export default function ReportPage({ locale }) {
 							)
 						)}
 					</section>
-					<div className="items-center px-6 mt-10 md:flex md:p-0">
+					{/* <div className="items-center px-6 mt-10 md:flex md:p-0">
 						<p>
 							<span className="text-[#FF531A]">*</span>{" "}
 							{t("p1-9")}
@@ -918,7 +918,7 @@ export default function ReportPage({ locale }) {
 						{isLock && (
 							<UnlockButton className="bg-[#096E56] text-white md:ml-2 w-full md:w-auto mt-5 md:mt-0 block md:inline text-center" />
 						)}
-					</div>
+					</div> */}
 				</div>
 				{/* 第二章 流年运程解析 */}
 				<div

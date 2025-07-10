@@ -132,7 +132,7 @@ export const Canvas = forwardRef(
 					}
 				});
 				toast.info(t("multiSelectToast"), {
-					autoClose: 1200,
+					autoClose: 600, // Reduced from 1200ms to 600ms (0.6 seconds)
 				});
 			}, 500);
 
@@ -156,7 +156,7 @@ export const Canvas = forwardRef(
 					setMobileSelectedItem(item);
 					onHandleActiveRoom(item);
 					toast.info(t("itemSelected"), {
-						autoClose: 1000,
+						autoClose: 500, // Reduced from 1000ms to 500ms (0.5 seconds)
 					});
 				}
 				tapTimeout.current = null;
@@ -430,8 +430,35 @@ export const Canvas = forwardRef(
 			(e, room) => {
 				e.stopPropagation();
 
-				// On mobile, only allow dragging if item is already selected
-				if (isMobile && mobileSelectedItem?.id !== room.id) {
+				// Check if this is part of a multi-selection (works for both desktop and mobile)
+				if (
+					selectedItems.length > 0 &&
+					selectedItems.includes(room.id)
+				) {
+					// Start multi-item drag
+					setIsRoomDragging(true);
+					setDraggedRoom(room); // Use as reference for multi-drag
+
+					if (e.touches?.length == 1) {
+						setRoomDragStart({
+							x: e.touches[0].clientX,
+							y: e.touches[0].clientY,
+						});
+					} else {
+						setRoomDragStart({
+							x: e.clientX,
+							y: e.clientY,
+						});
+					}
+					return;
+				}
+
+				// Mobile individual selection check (only if NOT in multi-selection)
+				if (
+					isMobile &&
+					mobileSelectedItem?.id !== room.id &&
+					selectedItems.length === 0
+				) {
 					return;
 				}
 
@@ -454,20 +481,24 @@ export const Canvas = forwardRef(
 							item.type === ITEM_TYPES.FURNITURE &&
 							furnitureInroom(item, room)
 						) {
-							return {
-								...item,
-								parentId: room.id,
-								offset: {
-									x: item.position.x - room.position.x,
-									y: item.position.y - room.position.y,
-								},
-							};
-						} else {
-							return {
-								...item,
-								parentId: null,
-							};
+							// Only assign parentId if the furniture doesn't already belong to another room
+							// or if it already belongs to this room
+							if (
+								item.parentId === null ||
+								item.parentId === room.id
+							) {
+								return {
+									...item,
+									parentId: room.id,
+									offset: {
+										x: item.position.x - room.position.x,
+										y: item.position.y - room.position.y,
+									},
+								};
+							}
 						}
+						// Don't modify items that belong to other rooms or items not in this room
+						return item;
 					});
 					let updatedItems = localItems.map((item) => {
 						let target = furnitureList.find(
@@ -478,7 +509,7 @@ export const Canvas = forwardRef(
 					setLocalItems(updatedItems);
 				}
 			},
-			[localItems, isMobile, mobileSelectedItem]
+			[localItems, isMobile, mobileSelectedItem, selectedItems] // Add selectedItems dependency
 		);
 
 		const handleResizeStart = useCallback((e, room, corner) => {
@@ -618,12 +649,50 @@ export const Canvas = forwardRef(
 			} else if (isRoomDragging && draggedRoom) {
 				let newX, newY;
 				if (e.touches?.length == 1) {
-					newX = e.touches[0].clientX - roomDragStart.x;
-					newY = e.touches[0].clientY - roomDragStart.y;
+					newX = e.touches[0].clientX;
+					newY = e.touches[0].clientY;
 				} else {
-					newX = e.clientX - roomDragStart.x;
-					newY = e.clientY - roomDragStart.y;
+					newX = e.clientX;
+					newY = e.clientY;
 				}
+
+				// Calculate delta for multi-selection
+				const deltaX = newX - roomDragStart.x;
+				const deltaY = newY - roomDragStart.y;
+
+				// Check if this is a multi-selection drag
+				if (
+					selectedItems.length > 0 &&
+					selectedItems.includes(draggedRoom.id)
+				) {
+					// Move all selected items
+					const updatedItems = localItems.map((item) => {
+						if (selectedItems.includes(item.id)) {
+							return {
+								...item,
+								position: {
+									x: Math.max(
+										0,
+										item.position.x + deltaX / (scale / 100)
+									),
+									y: Math.max(
+										0,
+										item.position.y + deltaY / (scale / 100)
+									),
+								},
+							};
+						}
+						return item;
+					});
+					setLocalItems(updatedItems);
+
+					// Update drag start for next frame
+					setRoomDragStart({ x: newX, y: newY });
+					return;
+				}
+
+				newX = newX - roomDragStart.x;
+				newY = newY - roomDragStart.y;
 				newX = Math.max(0, newX);
 				newY = Math.max(0, newY);
 				let updatedItems = [];
@@ -1071,6 +1140,28 @@ export const Canvas = forwardRef(
 			onDemoAction("delete", deletedItems);
 		};
 
+		// New: Multi-move selected items
+		const handleMultiMove = useCallback(
+			(deltaX, deltaY) => {
+				if (selectedItems.length === 0) return;
+
+				const updatedItems = localItems.map((item) => {
+					if (selectedItems.includes(item.id)) {
+						return {
+							...item,
+							position: {
+								x: Math.max(0, item.position.x + deltaX),
+								y: Math.max(0, item.position.y + deltaY),
+							},
+						};
+					}
+					return item;
+				});
+				setLocalItems(updatedItems);
+			},
+			[selectedItems, localItems]
+		);
+
 		const debouncedHandleMouseMove = useRef(
 			debounce(handleMouseMove, 16)
 		).current;
@@ -1344,18 +1435,10 @@ export const Canvas = forwardRef(
 					{/* Mobile: Multi-select controls in second row if active */}
 					{isMobile && selectedItems.length > 0 && (
 						<div className="flex items-center justify-center gap-2 px-3 py-2 mx-auto mt-0 bg-white rounded-full shadow-lg w-fit">
-							<button
-								className="p-1 text-gray-600 rounded hover:bg-gray-100"
-								onClick={handleMultiRotate}
-								title={t("rotate")}
-							>
+							<button onClick={handleMultiRotate}>
 								<RotateCcwSquare className="w-4 h-4" />
 							</button>
-							<button
-								className="p-1 text-red-500 rounded hover:bg-gray-100"
-								onClick={handleMultiDelete}
-								title={t("delete")}
-							>
+							<button onClick={handleMultiDelete}>
 								<Trash2 className="w-4 h-4" />
 							</button>
 							<span className="text-xs text-gray-500">
@@ -1366,7 +1449,7 @@ export const Canvas = forwardRef(
 
 					{/* Desktop: Multi-select controls in fixed position */}
 					{!isMobile && selectedItems.length > 0 && (
-						<div className="fixed z-50 flex items-center gap-3 px-4 py-2 bg-white border border-gray-200 rounded-full shadow-lg top-28 right-112">
+						<div className="fixed z-50 flex items-center gap-3 px-4 py-2 bg-white border border-gray-200 rounded-full shadow-lg top-28 right-130">
 							<button
 								className="p-1 text-gray-600 rounded hover:bg-gray-100"
 								onClick={handleMultiRotate}

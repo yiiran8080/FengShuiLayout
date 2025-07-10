@@ -168,7 +168,7 @@ export function FreeChapter6({ locale }) {
 					<p className=" text-lg px-9  text-[#25826c] flex items-center justify-center inline-block mb-5 max-w-full">
 						{t("pro.scrollInstruction")}
 					</p>
-					<p className="font-bold text-lg px-9 font-boldsm:text-lg text-[#25826c] flex items-center justify-center inline-block mb-5 max-w-full">
+					<p className="font-bold text-4xl px-9 font-boldsm:text-lg text-[#25826c] flex items-center justify-center inline-block mb-5 max-w-full">
 						{t("pro.advancedAnalysisTitle")}
 					</p>
 				</div>
@@ -185,51 +185,19 @@ export function FreeChapter6({ locale }) {
 					{/* Intro */}
 					<section className="flex flex-col bg-[#f5faf7] rounded-[20px] p-3 sm:p-5 w-full shadow-md">
 						{/* 指數展示 */}
-						<div className="grid grid-cols-2 sm:flex sm:flex-row flex-wrap rounded-t-none rounded-b-[20px] mb-6 sm:mb-2 bg-[#f5faf7] items-center justify-between pt-4 sm:pt-[31px] px-1 sm:px-[20px] pb-4 sm:pb-[37px] box-border gap-4 sm:gap-8 z-[1]">
-							{reportDocData?.yunchengData
-								?.slice(0, 5)
-								.map((item, index) => (
-									<div
-										key={index}
-										className="flex flex-col items-center w-full sm:w-[120px] mb-2 sm:mb-0"
-									>
-										{/* Title and icon at the top */}
-										<p
-											className="flex items-center mb-2 text-sm font-bold leading-8 sm:text-xl"
-											style={{
-												color:
-													sections?.[1]?.children?.[
-														index
-													]?.color || "#20B580",
-											}}
-										>
-											{index < 5 && (
-												<Image
-													src={`/images/report/icon${index}.png`}
-													width={24}
-													height={24}
-													alt=""
-													className="mr-1"
-												/>
-											)}
-											{sections?.[1]?.children?.[index]
-												?.title || `运势${index + 1}`}
-										</p>
-										{/* Score circle */}
+						<div className="w-full mb-6 sm:mb-2 bg-[#f5faf7] pt-4 sm:pt-[31px] px-1 sm:px-[20px] pb-4 sm:pb-[37px] box-border rounded-t-none rounded-b-[20px] z-[1]">
+							{/* Mobile: Keep original 2-column grid */}
+							<div className="grid grid-cols-2 gap-4 sm:hidden">
+								{reportDocData?.yunchengData
+									?.slice(0, 5)
+									.map((item, index) => (
 										<div
-											className="flex flex-col items-center justify-center w-16 h-16 mb-2 border-4 rounded-full sm:w-24 sm:h-24"
-											style={{
-												borderColor:
-													sections?.[1]?.children?.[
-														index
-													]?.color || "#20B580",
-												background: "#fff",
-												boxShadow:
-													"0 6px 20px rgba(0, 0, 0, 0.4)",
-											}}
+											key={index}
+											className="flex flex-col items-center w-full mb-2"
 										>
-											<span
-												className="text-xl font-extrabold sm:text-4xl"
+											{/* Title and icon at the top */}
+											<p
+												className="flex items-center mb-2 text-sm font-bold leading-8"
 												style={{
 													color:
 														sections?.[1]
@@ -238,23 +206,232 @@ export function FreeChapter6({ locale }) {
 														"#20B580",
 												}}
 											>
-												{item.zhishu?.split("/")[0]}
-											</span>
-											<span
-												className="text-xs font-bold sm:text-base"
+												{index < 5 && (
+													<Image
+														src={`/images/report/icon${index}.png`}
+														width={24}
+														height={24}
+														alt=""
+														className="mr-1"
+													/>
+												)}
+												{sections?.[1]?.children?.[
+													index
+												]?.title || `运势${index + 1}`}
+											</p>
+											{/* Score circle */}
+											<div
+												className="flex flex-col items-center justify-center w-16 h-16 mb-2 border-4 rounded-full"
 												style={{
-													color:
+													borderColor:
 														sections?.[1]
 															?.children?.[index]
 															?.color ||
 														"#20B580",
+													background: "#fff",
+													boxShadow:
+														"0 6px 20px rgba(0, 0, 0, 0.4)",
 												}}
 											>
-												/10
-											</span>
+												<span
+													className="text-xl font-extrabold"
+													style={{
+														color:
+															sections?.[1]
+																?.children?.[
+																index
+															]?.color ||
+															"#20B580",
+													}}
+												>
+													{item.zhishu?.split("/")[0]}
+												</span>
+												<span
+													className="text-xs font-bold"
+													style={{
+														color:
+															sections?.[1]
+																?.children?.[
+																index
+															]?.color ||
+															"#20B580",
+													}}
+												>
+													/10
+												</span>
+											</div>
 										</div>
-									</div>
-								))}
+									))}
+							</div>
+
+							{/* Desktop: Two rows layout */}
+							<div className="hidden sm:block">
+								{/* First row: 3 items */}
+								<div className="flex items-center justify-between mb-6 px-30">
+									{reportDocData?.yunchengData
+										?.slice(0, 3)
+										.map((item, index) => (
+											<div
+												key={index}
+												className="flex flex-col items-center"
+											>
+												{/* Title and icon at the top */}
+												<p
+													className="flex items-center mb-2 text-xl font-bold leading-8"
+													style={{
+														color:
+															sections?.[1]
+																?.children?.[
+																index
+															]?.color ||
+															"#20B580",
+													}}
+												>
+													<Image
+														src={`/images/report/icon${index}.png`}
+														width={24}
+														height={24}
+														alt=""
+														className="mr-1"
+													/>
+													{sections?.[1]?.children?.[
+														index
+													]?.title ||
+														`运势${index + 1}`}
+												</p>
+												{/* Score circle */}
+												<div
+													className="flex flex-col items-center justify-center w-24 h-24 mb-2 border-4 rounded-full"
+													style={{
+														borderColor:
+															sections?.[1]
+																?.children?.[
+																index
+															]?.color ||
+															"#20B580",
+														background: "#fff",
+														boxShadow:
+															"0 6px 20px rgba(0, 0, 0, 0.4)",
+													}}
+												>
+													<span
+														className="text-4xl font-extrabold"
+														style={{
+															color:
+																sections?.[1]
+																	?.children?.[
+																	index
+																]?.color ||
+																"#20B580",
+														}}
+													>
+														{
+															item.zhishu?.split(
+																"/"
+															)[0]
+														}
+													</span>
+													<span
+														className="text-base font-bold"
+														style={{
+															color:
+																sections?.[1]
+																	?.children?.[
+																	index
+																]?.color ||
+																"#20B580",
+														}}
+													>
+														/10
+													</span>
+												</div>
+											</div>
+										))}
+								</div>
+
+								{/* Second row: 2 items */}
+								<div className="flex items-center px-20 justify-evenly">
+									{reportDocData?.yunchengData
+										?.slice(3, 5)
+										.map((item, index) => (
+											<div
+												key={index + 3}
+												className="flex flex-col items-center"
+											>
+												{/* Title and icon at the top */}
+												<p
+													className="flex items-center mb-2 text-xl font-bold leading-8"
+													style={{
+														color:
+															sections?.[1]
+																?.children?.[
+																index + 3
+															]?.color ||
+															"#20B580",
+													}}
+												>
+													<Image
+														src={`/images/report/icon${index + 3}.png`}
+														width={24}
+														height={24}
+														alt=""
+														className="mr-1"
+													/>
+													{sections?.[1]?.children?.[
+														index + 3
+													]?.title ||
+														`运势${index + 4}`}
+												</p>
+												{/* Score circle */}
+												<div
+													className="flex flex-col items-center justify-center w-24 h-24 mb-2 border-4 rounded-full"
+													style={{
+														borderColor:
+															sections?.[1]
+																?.children?.[
+																index + 3
+															]?.color ||
+															"#20B580",
+														background: "#fff",
+														boxShadow:
+															"0 6px 20px rgba(0, 0, 0, 0.4)",
+													}}
+												>
+													<span
+														className="text-4xl font-extrabold"
+														style={{
+															color:
+																sections?.[1]
+																	?.children?.[
+																	index + 3
+																]?.color ||
+																"#20B580",
+														}}
+													>
+														{
+															item.zhishu?.split(
+																"/"
+															)[0]
+														}
+													</span>
+													<span
+														className="text-base font-bold"
+														style={{
+															color:
+																sections?.[1]
+																	?.children?.[
+																	index + 3
+																]?.color ||
+																"#20B580",
+														}}
+													>
+														/10
+													</span>
+												</div>
+											</div>
+										))}
+								</div>
+							</div>
 						</div>
 					</section>
 					{/* 运势详细内容 */}
