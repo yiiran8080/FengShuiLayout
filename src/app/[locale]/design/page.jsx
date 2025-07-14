@@ -558,14 +558,14 @@ export default function DesignPage({ params }) {
 		},
 		{
 			id: "tv-template",
-		 type: ITEM_TYPES.FURNITURE,
-		 data: {
-			 cateType: ITEM_TYPES.FURNITURE,
-			 type: FURNITURE_TYPES.TV,
-			 label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.TV],
-			 icon: "/images/fur-icon/tv.png", // Changed from CloudFront URL
-			 activeIcon: "/images/fur-icon/tv-gr.png", // Changed from CloudFront URL
-			 size: { width: 134, height: 32 },
+			type: ITEM_TYPES.FURNITURE,
+			data: {
+				cateType: ITEM_TYPES.FURNITURE,
+				type: FURNITURE_TYPES.TV,
+				label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.TV],
+				icon: "/images/fur-icon/tv.png", // Changed from CloudFront URL
+				activeIcon: "/images/fur-icon/tv-gr.png", // Changed from CloudFront URL
+				size: { width: 134, height: 32 },
 			},
 		},
 		{
@@ -760,13 +760,13 @@ export default function DesignPage({ params }) {
 		},
 		{
 			id: "study-room",
-		 type: ITEM_TYPES.ROOM,
-		 data: {
-			 cateType: ITEM_TYPES.ROOM,
-			 type: ROOM_TYPES.STUDY_ROOM,
-			 label: ROOM_TYPES_LABEL[ROOM_TYPES.STUDY_ROOM],
-			 icon: "/images/room-icon/study_room.png", // Changed from CloudFront URL
-			 size: defaultRoomSize,
+			type: ITEM_TYPES.ROOM,
+			data: {
+				cateType: ITEM_TYPES.ROOM,
+				type: ROOM_TYPES.STUDY_ROOM,
+				label: ROOM_TYPES_LABEL[ROOM_TYPES.STUDY_ROOM],
+				icon: "/images/room-icon/study_room.png", // Changed from CloudFront URL
+				size: defaultRoomSize,
 			},
 		},
 		{
@@ -799,7 +799,7 @@ export default function DesignPage({ params }) {
 				type: ROOM_TYPES.KITCHEN,
 				label: ROOM_TYPES_LABEL[ROOM_TYPES.KITCHEN],
 				icon: "/images/room-icon/kitchen.png", // Changed from CloudFront URL
-			 size: defaultRoomSize,
+				size: defaultRoomSize,
 			},
 		},
 		{

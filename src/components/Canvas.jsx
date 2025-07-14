@@ -2206,7 +2206,7 @@ export const Canvas = forwardRef(
 					<div
 						className={cn(
 							"min-w-fit whitespace-nowrap fixed  left-1/2 -translate-x-1/2 h-10 rounded-4xl bg-white shadow-lg flex items-center px-3 gap-2 md:hidden",
-							showTab ? "bottom-85" : "bottom-22.5 "
+							showTab ? "bottom-85" : "bottom-30 "
 						)}
 					>
 						<span className="text-sm text-gray-600">
@@ -2227,25 +2227,36 @@ export const Canvas = forwardRef(
 									borderRadius: "2px",
 								}}
 							/>
-							<span className="font-bold text-gray-600">
+							<span className="text-sm font-bold text-gray-600">
 								{activeRoom.data.label}
 							</span>
 						</div>
+						{activeRoom.type === ITEM_TYPES.FURNITURE && (
+							<button
+								className="flex-shrink-0"
+								onClick={(e) => {
+									e.stopPropagation();
+									handleRotate();
+								}}
+							>
+								<RotateCcwSquare className="w-4 h-4" />
+							</button>
+						)}
 						<button
 							className="flex-shrink-0 text-red-500"
 							onClick={(e) => {
 								e.stopPropagation();
-								const itemToDelete = activeRoom; // Store before deletion
+								const itemToDelete = activeRoom;
 								const newItems = localItems.filter(
 									(item) => item.id !== activeRoom.id
 								);
 								setLocalItems(newItems);
 								setActiveRoom(null);
-								// ADD THIS LINE - Missing onDemoAction call for room deletion
+								// Notify demo of delete action
 								onDemoAction("delete", itemToDelete);
 							}}
 						>
-							<Trash2 className="w-4 h-4" />
+							<Trash2 className="w-4 h-4 text-red-500" />
 						</button>
 					</div>
 				)}

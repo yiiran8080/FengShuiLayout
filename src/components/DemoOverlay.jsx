@@ -613,30 +613,33 @@ export default function DemoOverlay({
 				if (window.highlightTimeout) {
 					clearTimeout(window.highlightTimeout);
 				}
-				
+
 				// Set a longer delay for these problematic steps
-				window.highlightTimeout = setTimeout(() => {
-					const el = document.querySelector(selector);
-					if (el) {
-						// Double force layout for mobile
-						if (isMobile) {
-							el.offsetHeight;
-							el.getBoundingClientRect();
+				window.highlightTimeout = setTimeout(
+					() => {
+						const el = document.querySelector(selector);
+						if (el) {
+							// Double force layout for mobile
+							if (isMobile) {
+								el.offsetHeight;
+								el.getBoundingClientRect();
+							}
+							el.offsetHeight; // Force layout
+							const rect = el.getBoundingClientRect();
+							setHighlightRect({
+								top: rect.top + window.scrollY,
+								left: rect.left + window.scrollX,
+								width: rect.width,
+								height: rect.height,
+								borderRadius: getBorderRadius(),
+							});
 						}
-						el.offsetHeight; // Force layout
-						const rect = el.getBoundingClientRect();
-						setHighlightRect({
-							top: rect.top + window.scrollY,
-							left: rect.left + window.scrollX,
-							width: rect.width,
-							height: rect.height,
-							borderRadius: getBorderRadius(),
-						});
-					}
-				}, isMobile ? 500 : 200); // Much longer delay for mobile
+					},
+					isMobile ? 500 : 200
+				); // Much longer delay for mobile
 			}
 		}
-		
+
 		return () => {
 			if (window.highlightTimeout) {
 				clearTimeout(window.highlightTimeout);
@@ -655,23 +658,26 @@ export default function DemoOverlay({
 				if (window.highlightTimeout) {
 					clearTimeout(window.highlightTimeout);
 				}
-				
+
 				// Debounce the resize calculation with longer delay
-				window.resizeTimeout = setTimeout(() => {
-					const selector = HIGHLIGHT_SELECTORS[highlightedArea];
-					const el = document.querySelector(selector);
-					if (el) {
-						el.offsetHeight; // Force layout recalculation
-						const rect = el.getBoundingClientRect();
-						setHighlightRect({
-							top: rect.top + window.scrollY,
-							left: rect.left + window.scrollX,
-							width: rect.width,
-							height: rect.height,
-							borderRadius: getBorderRadius(),
-						});
-					}
-				}, isMobile ? 300 : 150); // Longer delay for mobile
+				window.resizeTimeout = setTimeout(
+					() => {
+						const selector = HIGHLIGHT_SELECTORS[highlightedArea];
+						const el = document.querySelector(selector);
+						if (el) {
+							el.offsetHeight; // Force layout recalculation
+							const rect = el.getBoundingClientRect();
+							setHighlightRect({
+								top: rect.top + window.scrollY,
+								left: rect.left + window.scrollX,
+								width: rect.width,
+								height: rect.height,
+								borderRadius: getBorderRadius(),
+							});
+						}
+					},
+					isMobile ? 300 : 150
+				); // Longer delay for mobile
 			}
 		};
 
