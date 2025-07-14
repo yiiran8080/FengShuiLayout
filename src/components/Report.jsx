@@ -297,29 +297,66 @@ export default function ReportPage({ locale }) {
 		return () => window.removeEventListener("mousedown", handleClick);
 	}, []);
 
-	//保存付费报告,更新生成状态
+	//保存MingLi数据
 	useEffect(() => {
-		const save = async () => {
+		const saveMingLi = async () => {
 			const userId = session?.user?.userId;
-			if (!userId) return;
+			if (!userId || !mingLiData) return;
 
-			//先存一种语言的数据。然后异步翻译另一种语言再存储。
-			//console.log('twProData', twProData);
+			console.log("💾 Saving MingLi data:", mingLiData);
 			const { status } = await patch(
 				`/api/reportUserDoc/${userId}/${locale == "zh-CN" ? "zh" : "tw"}`,
-				{ mingLiData, liuNianData, jiajuProData }
+				{ mingLiData }
 			);
-			if (status == 0) {
-				//成功后更新报告生成状态为已完成，下次不再生成报告
+			console.log("💾 MingLi save result:", status);
+		};
+		if (mingLiData) {
+			saveMingLi();
+		}
+	}, [mingLiData]);
+
+	//保存LiuNian数据
+	useEffect(() => {
+		const saveLiuNian = async () => {
+			const userId = session?.user?.userId;
+			if (!userId || !liuNianData) return;
+
+			console.log("💾 Saving LiuNian data:", liuNianData);
+			const { status } = await patch(
+				`/api/reportUserDoc/${userId}/${locale == "zh-CN" ? "zh" : "tw"}`,
+				{ liuNianData }
+			);
+			console.log("💾 LiuNian save result:", status);
+		};
+		if (liuNianData) {
+			saveLiuNian();
+		}
+	}, [liuNianData]);
+
+	//保存JiajuPro数据
+	useEffect(() => {
+		const saveJiajuPro = async () => {
+			const userId = session?.user?.userId;
+			if (!userId || !jiajuProData) return;
+
+			console.log("💾 Saving JiajuPro data:", jiajuProData);
+			const { status } = await patch(
+				`/api/reportUserDoc/${userId}/${locale == "zh-CN" ? "zh" : "tw"}`,
+				{ jiajuProData }
+			);
+			console.log("💾 JiajuPro save result:", status);
+
+			// Only update genStatus when all premium data is saved
+			if (status === 0 && mingLiData && liuNianData) {
 				await post(`/api/users/${userId}`, {
 					genStatus: "done",
 				});
 			}
 		};
-		if (mingLiData && liuNianData && jiajuProData) {
-			save();
+		if (jiajuProData) {
+			saveJiajuPro();
 		}
-	}, [mingLiData, liuNianData, jiajuProData]);
+	}, [jiajuProData]);
 
 	// 进度指示器hover/点击显示目录
 	const handleProgressEnter = () => {
@@ -383,7 +420,13 @@ export default function ReportPage({ locale }) {
 					{anchorList.map((item, idx) => (
 						<div
 							key={item.id}
-							className={`transition-all duration-200 ${item.isMain ? "w-5 h-5" : "w-2 h-2"} rounded-full  ${activeIndex === idx ? "bg-[#20B580]" : "bg-[#E7F2EE] "}`}
+							className={`transition-all duration-200 ${
+								item.isMain ? "w-5 h-5" : "w-2 h-2"
+							} rounded-full  ${
+								activeIndex === idx
+									? "bg-[#20B580]"
+									: "bg-[#E7F2EE] "
+							}`}
 							style={{ margin: item.isMain ? "8px 0" : "3px 0" }}
 						/>
 					))}
@@ -397,7 +440,14 @@ export default function ReportPage({ locale }) {
 						{sections.map((section, i) => (
 							<div key={section.title}>
 								<div
-									className={`text-sm mb-1 cursor-pointer ${activeIndex === anchorList.findIndex((a) => a.id === `section-${i}`) ? "text-[#20B580]" : ""}`}
+									className={`text-sm mb-1 cursor-pointer ${
+										activeIndex ===
+										anchorList.findIndex(
+											(a) => a.id === `section-${i}`
+										)
+											? "text-[#20B580]"
+											: ""
+									}`}
 									onClick={() =>
 										handleAnchorClick(
 											anchorList.findIndex(
@@ -411,7 +461,15 @@ export default function ReportPage({ locale }) {
 								{section.children?.map((child, j) => (
 									<div
 										key={child.title}
-										className={`text-sm pl-4 py-1 cursor-pointer ${activeIndex === anchorList.findIndex((a) => a.id === `section-${i}-${j}`) ? "text-[#20B580]" : "text-gray-700"}`}
+										className={`text-sm pl-4 py-1 cursor-pointer ${
+											activeIndex ===
+											anchorList.findIndex(
+												(a) =>
+													a.id === `section-${i}-${j}`
+											)
+												? "text-[#20B580]"
+												: "text-gray-700"
+										}`}
 										onClick={() =>
 											handleAnchorClick(
 												anchorList.findIndex(

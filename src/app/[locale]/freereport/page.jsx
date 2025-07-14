@@ -11,14 +11,13 @@ import { FreeChapter6 } from "@/components/report/FreeChapter6";
 import Promo from "@/components/Promo";
 
 // Full-Width Floating Promo Component
-const FloatingPromo = ({ locale }) => {
+const FloatingPromo = ({ locale, onClose }) => {
 	const [isExpanded, setIsExpanded] = useState(false);
 
 	return (
 		<div className="fixed bottom-0 left-0 right-0 z-50">
-			{/* Full-width floating container */}
 			<div
-				className="w-full bg-gradient-to-r from-[#f5faf7] via-[#ffffff] to-[#f5faf7] border-t border-gray-200 shadow-2xl"
+				className="w-full bg-gradient-to-r from-[#f5faf7] via-[#ffffff] to-[#f5faf7] border-t border-gray-200 shadow-2xl relative"
 				style={{
 					fontFamily: '"Noto Serif TC", serif',
 					boxShadow:
@@ -27,39 +26,27 @@ const FloatingPromo = ({ locale }) => {
 						"linear-gradient(135deg, #f5faf7 0%, #ffffff 50%, #f5faf7 100%)",
 				}}
 			>
-				{/* Animated accent line */}
 				<div className="w-full h-1 bg-gradient-to-r from-[#318161] via-[#20B580] to-[#318177] animate-pulse"></div>
 
-				<div className="px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-					{/* Main content area */}
-					<div className="flex items-center justify-between gap-4">
+				<div className="max-w-full px-2 py-3 mx-auto sm:px-4 sm:py-4 sm:max-w-7xl">
+					<div className="flex flex-col items-center justify-between w-full gap-3 sm:flex-row sm:items-center sm:gap-4">
 						{/* Left: Content */}
-						<div className="flex-1 min-w-0">
-							<div className="flex items-center gap-3 mb-2">
-								{/* Icon */}
-								<div className="flex-shrink-0">
-									<div className="w-10 h-10 bg-gradient-to-r from-[#318161] to-[#20B580] rounded-full flex items-center justify-center text-white text-lg shadow-lg">
-										🏠
-									</div>
-								</div>
-
-								{/* Title */}
-								<h3
-									className="text-lg sm:text-xl font-bold text-[#073E31] truncate"
-									style={{
-										fontFamily: '"Noto Serif TC", serif',
-									}}
-								>
-									{locale === "zh-CN"
-										? "全面掌握家庭风水运势?"
-										: "全面掌握家庭風水運勢?"}
-								</h3>
-							</div>
-
-							{/* Description */}
+						<div className="flex flex-col items-center w-full sm:items-start">
+							<h3
+								className="text-base sm:text-lg md:text-xl font-bold text-[#073E31] truncate text-center sm:text-left"
+								style={{
+									fontFamily: '"Noto Serif TC", serif',
+								}}
+							>
+								{locale === "zh-CN"
+									? "全面掌握家庭风水运势?"
+									: "全面掌握家庭風水運勢?"}
+							</h3>
 							<p
-								className="text-sm sm:text-base text-[#088C6E] opacity-90 line-clamp-2"
-								style={{ fontFamily: '"Noto Serif TC", serif' }}
+								className="text-xs sm:text-sm md:text-base text-[#088C6E] opacity-90 line-clamp-2 sm:line-clamp-2 w-full text-center sm:text-left sm:mt-1"
+								style={{
+									fontFamily: '"Noto Serif TC", serif',
+								}}
 							>
 								{locale === "zh-CN"
 									? "想要更加精准了解家庭风水, 改善运势状况, 增强生活幸福感? 只需要花点时间, 就可以改变您的长期运势!"
@@ -68,20 +55,17 @@ const FloatingPromo = ({ locale }) => {
 						</div>
 
 						{/* Right: CTA Button */}
-						<div className="flex-shrink-0">
+						<div className="flex justify-center flex-shrink-0 w-full sm:w-auto sm:justify-end">
 							<a
 								href="/price"
-								className="group relative inline-flex items-center px-6 py-3 sm:px-8 sm:py-4 text-sm sm:text-base font-semibold text-white transition-all duration-300 rounded-xl bg-gradient-to-r from-[#318161] to-[#318177] hover:from-[#2a6e56] hover:to-[#2a6e62] hover:scale-105 active:scale-100 shadow-lg hover:shadow-xl"
+								className="group relative inline-flex items-center justify-center w-full sm:w-auto px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm md:text-base font-semibold text-white transition-all duration-300 rounded-xl bg-gradient-to-r from-[#318161] to-[#318177] hover:from-[#2a6e56] hover:to-[#2a6e62] hover:scale-105 active:scale-100 shadow-lg hover:shadow-xl"
 								style={{
 									fontFamily: '"Noto Serif TC", serif',
 									boxShadow:
 										"0 8px 24px rgba(49, 129, 97, 0.3)",
 								}}
 							>
-								{/* Button background glow */}
 								<div className="absolute inset-0 rounded-xl bg-gradient-to-r from-[#318161] to-[#318177] opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-lg"></div>
-
-								{/* Button content */}
 								<span className="relative z-10 flex items-center gap-2">
 									<span>
 										{locale === "zh-CN"
@@ -102,83 +86,62 @@ const FloatingPromo = ({ locale }) => {
 										/>
 									</svg>
 								</span>
-
-								{/* Notification indicator */}
 								<div className="absolute w-3 h-3 bg-red-500 border-2 border-white rounded-full -top-1 -right-1 animate-pulse"></div>
 							</a>
 						</div>
 					</div>
-
-					{/* Expandable content (optional) */}
-					{isExpanded && (
-						<div className="pt-4 mt-4 transition-all duration-300 border-t border-gray-200">
-							<div className="grid grid-cols-1 gap-4 text-center sm:grid-cols-3">
-								<div className="flex flex-col items-center">
-									<div className="mb-1 text-2xl">📊</div>
-									<p
-										className="text-xs text-[#088C6E]"
-										style={{
-											fontFamily:
-												'"Noto Serif TC", serif',
-										}}
-									>
-										{locale === "zh-CN"
-											? "专业分析"
-											: "專業分析"}
-									</p>
-								</div>
-								<div className="flex flex-col items-center">
-									<div className="mb-1 text-2xl">⚡</div>
-									<p
-										className="text-xs text-[#088C6E]"
-										style={{
-											fontFamily:
-												'"Noto Serif TC", serif',
-										}}
-									>
-										{locale === "zh-CN"
-											? "快速生成"
-											: "快速生成"}
-									</p>
-								</div>
-								<div className="flex flex-col items-center">
-									<div className="mb-1 text-2xl">💎</div>
-									<p
-										className="text-xs text-[#088C6E]"
-										style={{
-											fontFamily:
-												'"Noto Serif TC", serif',
-										}}
-									>
-										{locale === "zh-CN"
-											? "个性化建议"
-											: "個性化建議"}
-									</p>
-								</div>
-							</div>
-						</div>
-					)}
 				</div>
 
-				{/* Toggle expand button (optional) */}
+				{/* Close button (top-right) */}
 				<button
-					onClick={() => setIsExpanded(!isExpanded)}
-					className="absolute flex items-center justify-center w-6 h-6 text-gray-500 transition-colors duration-200 bg-white rounded-full shadow-md top-2 right-4 hover:text-gray-700"
+					onClick={onClose}
+					className="absolute z-20 flex items-center justify-center w-8 h-8 transition rounded-full top-2 right-2 bg-white/80 hover:bg-gray-200"
+					aria-label="Close"
 				>
 					<svg
-						className={`w-3 h-3 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+						className="w-5 h-5 text-gray-700"
+						viewBox="0 0 20 20"
 						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
 					>
-						<path
+						<line
+							x1="5"
+							y1="5"
+							x2="15"
+							y2="15"
+							stroke="currentColor"
+							strokeWidth="2"
 							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth={2}
-							d="M19 9l-7 7-7-7"
+						/>
+						<line
+							x1="15"
+							y1="5"
+							x2="5"
+							y2="15"
+							stroke="currentColor"
+							strokeWidth="2"
+							strokeLinecap="round"
 						/>
 					</svg>
 				</button>
+				{/* Make promo scrollable on small screens if content overflows */}
+				<style jsx>{`
+					@media (max-width: 639px) {
+						.max-w-full {
+							max-width: 100vw !important;
+						}
+						.px-2 {
+							padding-left: 0.5rem !important;
+							padding-right: 0.5rem !important;
+						}
+						.py-3 {
+							padding-top: 0.75rem !important;
+							padding-bottom: 0.75rem !important;
+						}
+						.overflow-y-auto {
+							overflow-y: auto !important;
+						}
+					}
+				`}</style>
 			</div>
 		</div>
 	);
@@ -197,6 +160,7 @@ export default function FreeReportPage() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
 	const [showFloating, setShowFloating] = useState(false);
+	const [floatingClosed, setFloatingClosed] = useState(false); // NEW
 
 	const promoSectionRef = useRef(null);
 	const contentRef = useRef(null);
@@ -212,29 +176,29 @@ export default function FreeReportPage() {
 			.finally(() => setLoading(false));
 	}, [roomType, direction]);
 
+	// In your scroll/observer logic, only update showFloating if not closed
 	useEffect(() => {
 		const handleScroll = () => {
-			if (!promoSectionRef.current) return;
+			if (!promoSectionRef.current || floatingClosed) return; // ADD floatingClosed check
 
 			const promoElement = promoSectionRef.current;
 			const rect = promoElement.getBoundingClientRect();
 			const windowHeight = window.innerHeight;
 
-			// Show floating button when promo section is not visible
 			const isPromoVisible = rect.top < windowHeight && rect.bottom > 0;
 			setShowFloating(!isPromoVisible);
 		};
 
-		// Use Intersection Observer for better performance
 		const observer = new IntersectionObserver(
 			(entries) => {
+				if (floatingClosed) return; // ADD floatingClosed check
 				entries.forEach((entry) => {
 					setShowFloating(!entry.isIntersecting);
 				});
 			},
 			{
 				threshold: 0.1,
-				rootMargin: "0px 0px -100px 0px", // Start showing floating button before promo is completely out of view
+				rootMargin: "0px 0px -100px 0px",
 			}
 		);
 
@@ -242,15 +206,14 @@ export default function FreeReportPage() {
 			observer.observe(promoSectionRef.current);
 		}
 
-		// Fallback to scroll listener
 		window.addEventListener("scroll", handleScroll);
-		handleScroll(); // Initial check
+		handleScroll();
 
 		return () => {
 			observer.disconnect();
 			window.removeEventListener("scroll", handleScroll);
 		};
-	}, []);
+	}, [floatingClosed]); // ADD floatingClosed as dependency
 
 	return (
 		<div
@@ -288,7 +251,15 @@ export default function FreeReportPage() {
 			</div>
 
 			{/* Floating Full-Width Promo - Shows when main promo is not visible */}
-			{showFloating && <FloatingPromo locale={locale} />}
+			{showFloating && !floatingClosed && (
+				<FloatingPromo
+					locale={locale}
+					onClose={() => {
+						setShowFloating(false);
+						setFloatingClosed(true); // Hide until refresh
+					}}
+				/>
+			)}
 
 			<Footer />
 		</div>

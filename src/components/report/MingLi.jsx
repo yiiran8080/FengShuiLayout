@@ -498,7 +498,7 @@ export default function ({
 																"#F7FAF9",
 														}
 											}
-											className="flex items-center justify-center w-full h-full text-sm font-bold cursor-pointer hover:bg-gray-100"
+											className="flex items-center justify-center w-full h-full text-xl font-bold cursor-pointer hover:bg-gray-100"
 											onClick={() => handleClick("shiye")}
 										>
 											{t("shiye")}

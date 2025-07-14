@@ -254,13 +254,26 @@ export function FreeChapter6({ locale }) {
 	return (
 		<div className="flex items-start justify-center w-full min-h-screen ">
 			<div className="w-full max-w-full p-2 mx-auto bg-white lg:w-full sm:p-1 sm:mt-16 rounded-xl">
-				<div className="flex flex-col justify-start">
+				<div className="flex flex-row justify-between md:mr-10 sm:mr-0">
 					{/* <p className=" text-lg px-9  text-[#25826c] flex items-center justify-center inline-block mb-5 max-w-full">
 						{t("pro.scrollInstruction")}
 					</p> */}
-					<p className="font-bold text-4xl px-9 font-boldsm:text-lg text-[#25826c] flex items-center justify-center inline-block mb-5 max-w-full">
-						{t("pro.advancedAnalysisTitle")}
-					</p>
+					<div className="flex flex-col items-center w-full gap-3 mb-5 sm:flex-row sm:justify-between sm:gap-0">
+						{/* <p className=" text-lg px-9  text-[#25826c] flex items-center justify-center inline-block mb-5 max-w-full">
+							{t("pro.scrollInstruction")}
+						</p> */}
+						<p className="font-bold text-2xl sm:text-4xl px-4 sm:px-9 text-[#25826c] flex items-center justify-center inline-block max-w-full mb-2 sm:mb-0">
+							{t("pro.advancedAnalysisTitle")}
+						</p>
+						<Link
+							href="/price"
+							className="flex justify-center w-full sm:w-auto"
+						>
+							<button className="w-full sm:w-auto pointer-events-auto px-3 sm:px-3 py-2 rounded-full bg-[rgba(49,129,97)] hover:bg-green-600 text-white font-bold text-sm sm:text-lg shadow-[0_8px_16px_rgba(0,0,0,0.25)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.3)] transition-all duration-300">
+								{t("unlockButton")}
+							</button>
+						</Link>
+					</div>
 				</div>
 				<div className="flex items-center justify-center mb-5">
 					<p className="text-base font-bold leading-8 tracking-normal text-justify px-9">
