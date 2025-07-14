@@ -204,16 +204,14 @@ export default function Hero() {
 								style={{ fontFamily: "Noto Serif TC, serif" }}
 							>
 								<h1
-									className={`text-2xl sm:text-3xl lg:text-4xl xl:text-[48px] 2xl:text-[52px] font-bold mb-3 sm:mb-6 lg:mb-12 xl:mb-16 2xl:mb-20 mt-3 sm:mt-6 lg:mt-0 leading-tight flex flex-col gap-2 sm:gap-3 lg:gap-4 w-full ${
-										isMobileLayout
-											? "items-center text-center"
-											: "items-start text-left"
-									}`}
+									className={`text-2xl sm:text-3xl lg:text-4xl xl:text-[48px] 2xl:text-[52px] font-bold mb-3 sm:mb-6 lg:mb-12 xl:mb-16 2xl:mb-20 mt-3 sm:mt-6 lg:mt-0 leading-tight w-full
+    ${isMobileLayout ? "flex flex-col gap-2 items-center text-center" : "block text-left whitespace-nowrap"}`}
 									style={{
 										fontFamily: "Noto Serif TC, serif",
 									}}
 								>
 									<span
+										className="block whitespace-nowrap"
 										style={{
 											background:
 												"linear-gradient(135deg, #EDDAC1 0%,rgb(248, 245, 245) 100%)",
@@ -225,58 +223,19 @@ export default function Hero() {
 									>
 										{t("title")}
 									</span>
-									{isMobileLayout ? (
-										<>
-											<span
-												className="text-center"
-												style={{
-													background:
-														"linear-gradient(135deg, #EDDAC1 0%,rgb(239, 235, 235) 100%)",
-													WebkitBackgroundClip:
-														"text",
-													WebkitTextFillColor:
-														"transparent",
-													backgroundClip: "text",
-													fontFamily:
-														"Noto Serif TC, serif",
-												}}
-											>
-												{t("title2").split("，")[0]}
-											</span>
-											<span
-												className="text-center"
-												style={{
-													background:
-														"linear-gradient(135deg, #EDDAC1 0%,rgb(240, 236, 236) 100%)",
-													WebkitBackgroundClip:
-														"text",
-													WebkitTextFillColor:
-														"transparent",
-													backgroundClip: "text",
-													fontFamily:
-														"Noto Serif TC, serif",
-												}}
-											>
-												{t("title2").split("，")[1]}
-											</span>
-										</>
-									) : (
-										<span
-											className="w-full"
-											style={{
-												background:
-													"linear-gradient(135deg, #EDDAC1 0%,rgb(250, 247, 247) 100%)",
-												WebkitBackgroundClip: "text",
-												WebkitTextFillColor:
-													"transparent",
-												backgroundClip: "text",
-												fontFamily:
-													"Noto Serif TC, serif",
-											}}
-										>
-											{t("title2")}
-										</span>
-									)}
+									<span
+										className="block whitespace-nowrap"
+										style={{
+											background:
+												"linear-gradient(135deg, #EDDAC1 0%,rgb(250, 247, 247) 100%)",
+											WebkitBackgroundClip: "text",
+											WebkitTextFillColor: "transparent",
+											backgroundClip: "text",
+											fontFamily: "Noto Serif TC, serif",
+										}}
+									>
+										{t("title2")}
+									</span>
 								</h1>
 								<div
 									className={`flex w-full mb-1 sm:mb-2 ${
@@ -286,7 +245,7 @@ export default function Hero() {
 									}`}
 								>
 									<p
-										className={`text-sm sm:text-base lg:text-lg xl:text-xl leading-relaxed ${
+										className={`text-sm sm:text-base lg:text-lg xl:text-xl leading-relaxed whitespace-nowrap ${
 											isMobileLayout
 												? "text-center max-w-[240px] sm:max-w-none"
 												: "text-left max-w-none"
