@@ -104,6 +104,13 @@ export default function YourPage() {
 
 	// Handle premium button click
 	const handlePremiumClick = () => {
+		// Check if user is logged in first
+		if (!session?.user?.userId) {
+			// Redirect to login page immediately
+			router.push("/auth/login");
+			return;
+		}
+
 		if (existingReport) {
 			setShowExistingReportDialog(true);
 			setCurrentCardType("premium");
@@ -117,6 +124,13 @@ export default function YourPage() {
 
 	// Handle subscription button click
 	const handleSubscriptionClick = () => {
+		// Check if user is logged in first
+		if (!session?.user?.userId) {
+			// Redirect to login page immediately
+			router.push("/auth/login");
+			return;
+		}
+
 		if (existingReport) {
 			setShowExistingReportDialog(true);
 			setCurrentCardType("subscription");

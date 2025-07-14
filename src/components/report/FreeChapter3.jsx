@@ -2,7 +2,7 @@
 import _ from "lodash";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import UnlockButton from "../UnlockButton";
 import RoomCanvas from "./RoomCanvas";
@@ -14,6 +14,7 @@ Chart.register(ArcElement, Tooltip, Legend);
 
 export function FreeChapter3({ roomType, direction, data }) {
 	const t = useTranslations("freeChapter3");
+	const locale = useLocale(); // Get current locale from navbar/route
 	const [jiajuData, setJiajuData] = useState(null);
 	const [randomEntry, setRandomEntry] = useState(null);
 	const [activeTab, setActiveTab] = useState("base");
@@ -55,9 +56,22 @@ export function FreeChapter3({ roomType, direction, data }) {
 
 	useEffect(() => {
 		if (!data) return;
-		const langData = data.zhData || data.twData;
+
+		// Choose data based on current locale
+		let langData;
+		if (locale === "zh-CN" || locale === "zh") {
+			// Use Simplified Chinese
+			langData = data.zhData || data.twData; // fallback to twData if zhData not available
+		} else if (locale === "zh-TW" || locale === "tw") {
+			// Use Traditional Chinese
+			langData = data.twData || data.zhData; // fallback to zhData if twData not available
+		} else {
+			// Default fallback - you can adjust this based on your needs
+			langData = data.zhData || data.twData;
+		}
+
 		setJiajuData(langData?.jiajuData);
-	}, [data]);
+	}, [data, locale]); // Add locale to dependency array
 
 	useEffect(() => {
 		if (

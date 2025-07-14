@@ -84,9 +84,8 @@ export default function LoginPage({ searchParams }) {
 							className={`cursor-pointer flex items-center justify-center w-full px-4 py-3 font-medium text-white transition-colors rounded-full  focus:outline-none focus:ring-2 focus:ring-offset-2 ${isLoading ? "bg-muted" : "bg-[#25826D]"}`}
 						>
 							<svg
-								className="w-5 h-5 mr-2"
+								className="w-5 h-5 mr-2 icon"
 								t="1748329994186"
-								class="icon"
 								viewBox="0 0 1024 1024"
 								version="1.1"
 								xmlns="http://www.w3.org/2000/svg"

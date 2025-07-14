@@ -12,7 +12,7 @@ export const LAYOUT1_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bathroom",
 				label: "浴室1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bathroom.png",
+				icon: "/images/room-icon/bathroom.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 300, height: 300 },
@@ -26,7 +26,7 @@ export const LAYOUT1_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "dining_room",
 				label: "飯廳1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/dining_room.png",
+				icon: "/images/room-icon/dining_room.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 441, height: 296 },
@@ -40,7 +40,7 @@ export const LAYOUT1_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "living_room",
 				label: "客廳1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/living_room.png",
+				icon: "/images/room-icon/living_room.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 443, height: 290 },
@@ -54,7 +54,7 @@ export const LAYOUT1_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bedroom",
 				label: "睡房1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+				icon: "/images/room-icon/bedroom.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 367, height: 304 },
@@ -68,7 +68,7 @@ export const LAYOUT1_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bedroom",
 				label: "睡房2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+				icon: "/images/room-icon/bedroom.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 421, height: 375 },
@@ -82,7 +82,7 @@ export const LAYOUT1_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "kitchen",
 				label: "廚房1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/kitchen.png",
+				icon: "/images/room-icon/kitchen.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 270, height: 363 },
@@ -96,7 +96,7 @@ export const LAYOUT1_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "balcony",
 				label: "陽台1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/balcony.png",
+				icon: "/images/room-icon/balcony.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 116, height: 296 },
@@ -107,13 +107,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "toilet-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet-gr.png",
+			activeIcon: "/images/fur-icon/toilet-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "toilet",
 				label: "浴室1-馬桶1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet.png",
+				icon: "/images/fur-icon/toilet.png",
 				size: { width: 40, height: 60 },
 			},
 			size: { width: 40, height: 60 },
@@ -125,13 +124,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "shower-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/shower-gr.png",
+			activeIcon: "/images/fur-icon/shower-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "shower",
 				label: "浴室1-淋浴1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/shower.png",
+				icon: "/images/fur-icon/shower.png",
 				size: { width: 80, height: 80 },
 			},
 			size: { width: 80, height: 80 },
@@ -143,13 +141,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "bathtub-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub-gr.png",
+			activeIcon: "/images/fur-icon/bathtub-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bathtub",
 				label: "浴室1-浸浴1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub.png",
+				icon: "/images/fur-icon/bathtub.png",
 				size: { width: 120, height: 60 },
 			},
 			size: { width: 70, height: 35 },
@@ -161,13 +158,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "sink-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink-gr.png",
+			activeIcon: "/images/fur-icon/sink-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sink",
 				label: "浴室1-锌盘1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink.png",
+				icon: "/images/fur-icon/sink.png",
 				size: { width: 60, height: 40 },
 			},
 			size: { width: 60, height: 40 },
@@ -179,13 +175,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "door-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "浴室1-門1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -196,13 +191,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "window-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "浴室1-窗2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -213,13 +207,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "door-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "飯廳1-門1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -231,13 +224,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "window-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "浴室1-窗1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -249,13 +241,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "table-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table-gr.png",
+			activeIcon: "/images/fur-icon/table-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "table",
 				label: "飯廳1-枱1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table.png",
+				icon: "/images/fur-icon/table.png",
 				size: { width: 44, height: 120 },
 			},
 			size: { width: 44, height: 120 },
@@ -267,13 +258,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "fridge-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/fridge-gr.png",
+			activeIcon: "/images/fur-icon/fridge-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "fridge",
 				label: "廚房1-冰箱1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/fridge.png",
+				icon: "/images/fur-icon/fridge.png",
 				size: { width: 40, height: 43 },
 			},
 			size: { width: 40, height: 43 },
@@ -284,13 +274,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "door-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "廚房1-門1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -301,13 +290,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "wardrobe-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "飯廳1-櫃1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 			},
 			size: { width: 40, height: 129 },
@@ -319,13 +307,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "bed-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed-gr.png",
+			activeIcon: "/images/fur-icon/bed-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bed",
 				label: "睡房2-床1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed.png",
+				icon: "/images/fur-icon/bed.png",
 				size: { width: 89, height: 128 },
 			},
 			size: { width: 89, height: 128 },
@@ -336,13 +323,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "window-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "睡房2-窗1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -353,13 +339,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "window-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "睡房2-窗2",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -370,13 +355,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "bookshelf-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bookshelf-gr.png",
+			activeIcon: "/images/fur-icon/bookshelf-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bookshelf",
 				label: "客廳1-茶几1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/bookshelf.png",
+				icon: "/images/fur-icon/bookshelf.png",
 				size: { width: 44, height: 44 },
 			},
 			size: { width: 44, height: 44 },
@@ -387,13 +371,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "bed-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed-gr.png",
+			activeIcon: "/images/fur-icon/bed-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bed",
 				label: "睡房1-床1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/bed.png",
+				icon: "/images/fur-icon/bed.png",
 				size: { width: 89, height: 128 },
 			},
 			size: { width: 89, height: 128 },
@@ -404,13 +387,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "stove-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/stove-gr.png",
+			activeIcon: "/images/fur-icon/stove-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "stove",
 				label: "廚房1-爐具1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/stove.png",
+				icon: "/images/fur-icon/stove.png",
 				size: { width: 62, height: 32 },
 			},
 			size: { width: 62, height: 32 },
@@ -421,13 +403,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "sink-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink-gr.png",
+			activeIcon: "/images/fur-icon/sink-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sink",
 				label: "廚房1-锌盘1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/sink.png",
+				icon: "/images/fur-icon/sink.png",
 				size: { width: 60, height: 40 },
 			},
 			size: { width: 60, height: 40 },
@@ -438,13 +419,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "tv-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/tv-gr.png",
+			activeIcon: "/images/fur-icon/tv-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "tv",
 				label: "客廳1-電視1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/tv.png",
+				icon: "/images/fur-icon/tv.png",
 				size: { width: 134, height: 32 },
 			},
 			size: { width: 134, height: 32 },
@@ -455,13 +435,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "sofa-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sofa-gr.png",
+			activeIcon: "/images/fur-icon/sofa-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sofa",
 				label: "客廳1-沙發1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sofa.png",
+				icon: "/images/fur-icon/sofa.png",
 				size: { width: 67, height: 123 },
 			},
 			size: { width: 67, height: 123 },
@@ -473,13 +452,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "door-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "睡房2-門1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -490,13 +468,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "door-5",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "睡房1-門1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -507,13 +484,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "wardrobe-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "睡房2-櫃1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 			},
 			size: { width: 40, height: 129 },
@@ -524,13 +500,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "wardrobe-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "睡房1-櫃1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 			},
 			size: { width: 40, height: 129 },
@@ -541,13 +516,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "window-5",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "未分配-窗",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -558,13 +532,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "window-6",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "廚房1-窗1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -575,13 +548,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "wardrobe-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "廚房1-櫃1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 			},
 			size: { width: 40, height: 129 },
@@ -592,13 +564,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "table-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table-gr.png",
+			activeIcon: "/images/fur-icon/table-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "table",
 				label: "睡房2-枱1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table.png",
+				icon: "/images/fur-icon/table.png",
 				size: { width: 44, height: 120 },
 			},
 			size: { width: 44, height: 120 },
@@ -609,13 +580,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "chair-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "飯廳1-椅子1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				size: { width: 28, height: 35 },
 			},
 			size: { width: 28, height: 35 },
@@ -627,13 +597,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "chair-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "飯廳1-椅子3",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				size: { width: 28, height: 35 },
 			},
 			size: { width: 28, height: 35 },
@@ -645,13 +614,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "chair-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "飯廳1-椅子2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				size: { width: 28, height: 35 },
 			},
 			size: { width: 28, height: 35 },
@@ -663,13 +631,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "chair-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "飯廳1-椅子4",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				size: { width: 28, height: 35 },
 			},
 			size: { width: 28, height: 35 },
@@ -681,13 +648,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "wardrobe-5",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "客廳1-櫃1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 			},
 			size: { width: 40, height: 129 },
@@ -698,13 +664,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "tv-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/tv-gr.png",
+			activeIcon: "/images/fur-icon/tv-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "tv",
 				label: "睡房2-電視1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/tv.png",
+				icon: "/images/fur-icon/tv.png",
 				size: { width: 134, height: 32 },
 			},
 			size: { width: 134, height: 32 },
@@ -715,13 +680,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "plant-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/plant-gr.png",
+			activeIcon: "/images/fur-icon/plant-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "plant",
 				label: "陽台1-植物2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/plant.png",
+				icon: "/images/fur-icon/plant.png",
 				size: { width: 36, height: 36 },
 			},
 			size: { width: 36, height: 36 },
@@ -732,13 +696,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "plant-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/plant-gr.png",
+			activeIcon: "/images/fur-icon/plant-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "plant",
 				label: "陽台1-植物1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/plant.png",
+				icon: "/images/fur-icon/plant.png",
 				size: { width: 36, height: 36 },
 			},
 			size: { width: 36, height: 36 },
@@ -749,13 +712,12 @@ export const LAYOUT1_TW = {
 		{
 			id: "door-6",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "陽台1-門1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -778,7 +740,7 @@ export const LAYOUT1_ZH = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bathroom",
 				label: "浴室1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bathroom.png",
+				icon: "/images/room-icon/bathroom.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 300, height: 300 },
@@ -792,7 +754,7 @@ export const LAYOUT1_ZH = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "dining_room",
 				label: "饭厅1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/dining_room.png",
+				icon: "/images/room-icon/dining_room.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 441, height: 296 },
@@ -806,7 +768,7 @@ export const LAYOUT1_ZH = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "living_room",
 				label: "客厅1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/living_room.png",
+				icon: "/images/room-icon/living_room.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 443, height: 290 },
@@ -820,7 +782,7 @@ export const LAYOUT1_ZH = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bedroom",
 				label: "睡房1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+				icon: "/images/room-icon/bedroom.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 367, height: 304 },
@@ -834,7 +796,7 @@ export const LAYOUT1_ZH = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bedroom",
 				label: "睡房2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+				icon: "/images/room-icon/bedroom.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 421, height: 375 },
@@ -848,7 +810,7 @@ export const LAYOUT1_ZH = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "kitchen",
 				label: "厨房1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/kitchen.png",
+				icon: "/images/room-icon/kitchen.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 270, height: 363 },
@@ -862,7 +824,7 @@ export const LAYOUT1_ZH = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "balcony",
 				label: "阳台1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/balcony.png",
+				icon: "/images/room-icon/balcony.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 116, height: 296 },
@@ -873,13 +835,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "toilet-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet-gr.png",
+			activeIcon: "/images/fur-icon/toilet-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "toilet",
 				label: "浴室1-马桶1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet.png",
+				icon: "/images/fur-icon/toilet.png",
 				size: { width: 40, height: 60 },
 			},
 			size: { width: 40, height: 60 },
@@ -891,13 +852,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "shower-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/shower-gr.png",
+			activeIcon: "/images/fur-icon/shower-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "shower",
 				label: "浴室1-淋浴1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/shower.png",
+				icon: "/images/fur-icon/shower.png",
 				size: { width: 80, height: 80 },
 			},
 			size: { width: 80, height: 80 },
@@ -909,13 +869,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "bathtub-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub-gr.png",
+			activeIcon: "/images/fur-icon/bathtub-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bathtub",
 				label: "浴室1-浸浴1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub.png",
+				icon: "/images/fur-icon/bathtub.png",
 				size: { width: 120, height: 60 },
 			},
 			size: { width: 70, height: 35 },
@@ -927,13 +886,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "sink-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink-gr.png",
+			activeIcon: "/images/fur-icon/sink-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sink",
 				label: "浴室1-锌盘1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink.png",
+				icon: "/images/fur-icon/sink.png",
 				size: { width: 60, height: 40 },
 			},
 			size: { width: 60, height: 40 },
@@ -945,13 +903,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "door-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "浴室1-门1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -962,13 +919,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "window-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "浴室1-窗2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -979,13 +935,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "door-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "饭厅1-门1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -997,13 +952,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "window-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "浴室1-窗1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -1015,13 +969,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "table-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table-gr.png",
+			activeIcon: "/images/fur-icon/table-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "table",
 				label: "饭厅1-枱1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/table.png",
+				icon: "/images/fur-icon/table.png",
 				size: { width: 44, height: 120 },
 			},
 			size: { width: 44, height: 120 },
@@ -1033,13 +986,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "fridge-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/fridge-gr.png",
+			activeIcon: "/images/fur-icon/fridge-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "fridge",
 				label: "厨房1-冰箱1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/fridge.png",
+				icon: "/images/fur-icon/fridge.png",
 				size: { width: 40, height: 43 },
 			},
 			size: { width: 40, height: 43 },
@@ -1050,13 +1002,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "door-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "厨房1-门1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -1067,13 +1018,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "wardrobe-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "饭厅1-柜1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 			},
 			size: { width: 40, height: 129 },
@@ -1085,13 +1035,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "bed-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed-gr.png",
+			activeIcon: "/images/fur-icon/bed-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bed",
 				label: "睡房2-床1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/bed.png",
+				icon: "/images/fur-icon/bed.png",
 				size: { width: 89, height: 128 },
 			},
 			size: { width: 89, height: 128 },
@@ -1102,13 +1051,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "window-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "睡房2-窗1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -1119,13 +1067,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "window-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "睡房2-窗2",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -1136,13 +1083,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "bookshelf-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bookshelf-gr.png",
+			activeIcon: "/images/fur-icon/bookshelf-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bookshelf",
 				label: "客厅1-茶几1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/bookshelf.png",
+				icon: "/images/fur-icon/bookshelf.png",
 				size: { width: 44, height: 44 },
 			},
 			size: { width: 44, height: 44 },
@@ -1153,13 +1099,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "bed-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed-gr.png",
+			activeIcon: "/images/fur-icon/bed-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bed",
 				label: "睡房1-床1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/bed.png",
+				icon: "/images/fur-icon/bed.png",
 				size: { width: 89, height: 128 },
 			},
 			size: { width: 89, height: 128 },
@@ -1170,13 +1115,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "stove-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/stove-gr.png",
+			activeIcon: "/images/fur-icon/stove-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "stove",
 				label: "厨房1-炉具1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/stove.png",
+				icon: "/images/fur-icon/stove.png",
 				size: { width: 62, height: 32 },
 			},
 			size: { width: 62, height: 32 },
@@ -1187,13 +1131,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "sink-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink-gr.png",
+			activeIcon: "/images/fur-icon/sink-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sink",
 				label: "厨房1-锌盘1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/sink.png",
+				icon: "/images/fur-icon/sink.png",
 				size: { width: 60, height: 40 },
 			},
 			size: { width: 60, height: 40 },
@@ -1204,13 +1147,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "tv-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/tv-gr.png",
+			activeIcon: "/images/fur-icon/tv-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "tv",
 				label: "客厅1-电视1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/tv.png",
+				icon: "/images/fur-icon/tv.png",
 				size: { width: 134, height: 32 },
 			},
 			size: { width: 134, height: 32 },
@@ -1221,13 +1163,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "sofa-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sofa-gr.png",
+			activeIcon: "/images/fur-icon/sofa-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sofa",
 				label: "客厅1-沙发1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sofa.png",
+				icon: "/images/fur-icon/sofa.png",
 				size: { width: 67, height: 123 },
 			},
 			size: { width: 67, height: 123 },
@@ -1239,13 +1180,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "door-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "睡房2-门1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -1256,13 +1196,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "door-5",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "睡房1-门1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -1273,13 +1212,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "wardrobe-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "睡房2-柜1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 			},
 			size: { width: 40, height: 129 },
@@ -1290,13 +1228,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "wardrobe-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "睡房1-柜1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 			},
 			size: { width: 40, height: 129 },
@@ -1307,13 +1244,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "window-5",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "未分配-窗",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -1324,13 +1260,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "window-6",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "厨房1-窗1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -1341,13 +1276,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "wardrobe-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "厨房1-柜1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 			},
 			size: { width: 40, height: 129 },
@@ -1358,13 +1292,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "table-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table-gr.png",
+			activeIcon: "/images/fur-icon/table-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "table",
 				label: "睡房2-枱1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/table.png",
+				icon: "/images/fur-icon/table.png",
 				size: { width: 44, height: 120 },
 			},
 			size: { width: 44, height: 120 },
@@ -1375,13 +1308,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "chair-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "飯廳1-椅子1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				size: { width: 28, height: 35 },
 			},
 			size: { width: 28, height: 35 },
@@ -1393,13 +1325,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "chair-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "飯廳1-椅子3",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				size: { width: 28, height: 35 },
 			},
 			size: { width: 28, height: 35 },
@@ -1411,13 +1342,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "chair-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "飯廳1-椅子2",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				size: { width: 28, height: 35 },
 			},
 			size: { width: 28, height: 35 },
@@ -1429,13 +1359,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "chair-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "飯廳1-椅子4",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				size: { width: 28, height: 35 },
 			},
 			size: { width: 28, height: 35 },
@@ -1447,13 +1376,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "wardrobe-5",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "客廳1-櫃1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 			},
 			size: { width: 40, height: 129 },
@@ -1464,13 +1392,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "tv-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/tv-gr.png",
+			activeIcon: "/images/fur-icon/tv-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "tv",
 				label: "睡房2-電視1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/tv.png",
+				icon: "/images/fur-icon/tv.png",
 				size: { width: 134, height: 32 },
 			},
 			size: { width: 134, height: 32 },
@@ -1481,13 +1408,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "plant-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/plant-gr.png",
+			activeIcon: "/images/fur-icon/plant-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "plant",
 				label: "陽台1-植物2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/plant.png",
+				icon: "/images/fur-icon/plant.png",
 				size: { width: 36, height: 36 },
 			},
 			size: { width: 36, height: 36 },
@@ -1498,13 +1424,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "plant-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/plant-gr.png",
+			activeIcon: "/images/fur-icon/plant-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "plant",
 				label: "陽台1-植物1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/plant.png",
+				icon: "/images/fur-icon/plant.png",
 				size: { width: 36, height: 36 },
 			},
 			size: { width: 36, height: 36 },
@@ -1515,13 +1440,12 @@ export const LAYOUT1_ZH = {
 		{
 			id: "door-6",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "陽台1-門1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -1546,7 +1470,7 @@ export const LAYOUT2_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bathroom",
 				label: "浴室1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bathroom.png",
+				icon: "/images/room-icon/bathroom.png",
 				parentRoom: null,
 				size: { width: 300, height: 300 },
 			},
@@ -1563,7 +1487,7 @@ export const LAYOUT2_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "dining_room",
 				label: "飯廳1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/dining_room.png",
+				icon: "/images/room-icon/dining_room.png",
 				parentRoom: null,
 				size: { width: 300, height: 300 },
 			},
@@ -1580,7 +1504,7 @@ export const LAYOUT2_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "living_room",
 				label: "客廳1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/living_room.png",
+				icon: "/images/room-icon/living_room.png",
 				parentRoom: null,
 				size: { width: 300, height: 300 },
 			},
@@ -1597,7 +1521,7 @@ export const LAYOUT2_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bedroom",
 				label: "睡房1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+				icon: "/images/room-icon/bedroom.png",
 				parentRoom: null,
 				size: { width: 300, height: 300 },
 			},
@@ -1614,7 +1538,7 @@ export const LAYOUT2_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bedroom",
 				label: "睡房2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+				icon: "/images/room-icon/bedroom.png",
 				parentRoom: null,
 				size: { width: 300, height: 300 },
 			},
@@ -1631,7 +1555,7 @@ export const LAYOUT2_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "kitchen",
 				label: "廚房1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/kitchen.png",
+				icon: "/images/room-icon/kitchen.png",
 				parentRoom: null,
 				size: { width: 300, height: 300 },
 			},
@@ -1648,7 +1572,7 @@ export const LAYOUT2_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "balcony",
 				label: "陽台1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/balcony.png",
+				icon: "/images/room-icon/balcony.png",
 				parentRoom: null,
 				size: { width: 300, height: 300 },
 			},
@@ -1665,7 +1589,7 @@ export const LAYOUT2_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bedroom",
 				label: "睡房3",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+				icon: "/images/room-icon/bedroom.png",
 				parentRoom: null,
 				size: { width: 300, height: 300 },
 			},
@@ -1678,13 +1602,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "toilet-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet-gr.png",
+			activeIcon: "/images/fur-icon/toilet-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "toilet",
 				label: "浴室1-馬桶1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet.png",
+				icon: "/images/fur-icon/toilet.png",
 				parentRoom: null,
 				size: { width: 40, height: 60 },
 			},
@@ -1697,13 +1620,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "shower-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/shower-gr.png",
+			activeIcon: "/images/fur-icon/shower-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "shower",
 				label: "浴室1-淋浴1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/shower.png",
+				icon: "/images/fur-icon/shower.png",
 				parentRoom: null,
 				size: { width: 80, height: 80 },
 			},
@@ -1716,13 +1638,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "bathtub-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub-gr.png",
+			activeIcon: "/images/fur-icon/bathtub-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bathtub",
 				label: "浴室1-浸浴1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/bathtub.png",
+				icon: "/images/fur-icon/bathtub.png",
 				parentRoom: null,
 				size: { width: 120, height: 60 },
 			},
@@ -1735,13 +1656,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "sink-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink-gr.png",
+			activeIcon: "/images/fur-icon/sink-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sink",
 				label: "浴室1-锌盘1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/sink.png",
+				icon: "/images/fur-icon/sink.png",
 				parentRoom: null,
 				size: { width: 60, height: 40 },
 			},
@@ -1754,13 +1674,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "door-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "浴室1-門1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				parentRoom: null,
 				size: { width: 40, height: 40 },
 			},
@@ -1773,13 +1692,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "door-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "飯廳1-門1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				parentRoom: null,
 				size: { width: 40, height: 40 },
 			},
@@ -1792,13 +1710,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "window-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "飯廳1-窗1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				parentRoom: null,
 				size: { width: 8, height: 56 },
 			},
@@ -1811,13 +1728,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "table-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table-gr.png",
+			activeIcon: "/images/fur-icon/table-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "table",
 				label: "飯廳1-枱1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/table.png",
+				icon: "/images/fur-icon/table.png",
 				parentRoom: null,
 				size: { width: 44, height: 120 },
 			},
@@ -1830,13 +1746,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "fridge-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/fridge-gr.png",
+			activeIcon: "/images/fur-icon/fridge-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "fridge",
 				label: "廚房1-冰箱1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/fridge.png",
+				icon: "/images/fur-icon/fridge.png",
 				parentRoom: null,
 				size: { width: 40, height: 43 },
 			},
@@ -1849,13 +1764,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "door-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "廚房1-門1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				parentRoom: null,
 				size: { width: 40, height: 40 },
 			},
@@ -1868,13 +1782,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "wardrobe-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "飯廳1-櫃1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				parentRoom: null,
 				size: { width: 40, height: 129 },
 			},
@@ -1887,13 +1800,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "bed-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed-gr.png",
+			activeIcon: "/images/fur-icon/bed-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bed",
 				label: "睡房2-床1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/bed.png",
+				icon: "/images/fur-icon/bed.png",
 				parentRoom: null,
 				size: { width: 89, height: 128 },
 			},
@@ -1906,13 +1818,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "window-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "睡房2-窗1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				parentRoom: null,
 				size: { width: 8, height: 56 },
 			},
@@ -1925,13 +1836,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "window-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "睡房2-窗2",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				parentRoom: null,
 				size: { width: 8, height: 56 },
 			},
@@ -1944,13 +1854,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "bookshelf-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bookshelf-gr.png",
+			activeIcon: "/images/fur-icon/bookshelf-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bookshelf",
 				label: "客廳1-茶几1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/bookshelf.png",
+				icon: "/images/fur-icon/bookshelf.png",
 				parentRoom: null,
 				size: { width: 44, height: 44 },
 			},
@@ -1963,13 +1872,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "bed-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed-gr.png",
+			activeIcon: "/images/fur-icon/bed-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bed",
 				label: "睡房1-床1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/bed.png",
+				icon: "/images/fur-icon/bed.png",
 				parentRoom: null,
 				size: { width: 89, height: 128 },
 			},
@@ -1982,13 +1890,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "stove-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/stove-gr.png",
+			activeIcon: "/images/fur-icon/stove-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "stove",
 				label: "廚房1-爐具1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/stove.png",
+				icon: "/images/fur-icon/stove.png",
 				parentRoom: null,
 				size: { width: 62, height: 32 },
 			},
@@ -2001,13 +1908,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "sink-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink-gr.png",
+			activeIcon: "/images/fur-icon/sink-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sink",
 				label: "廚房1-锌盘1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/sink.png",
+				icon: "/images/fur-icon/sink.png",
 				parentRoom: null,
 				size: { width: 60, height: 40 },
 			},
@@ -2020,13 +1926,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "tv-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/tv-gr.png",
+			activeIcon: "/images/fur-icon/tv-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "tv",
 				label: "客廳1-電視1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/tv.png",
+				icon: "/images/fur-icon/tv.png",
 				parentRoom: null,
 				size: { width: 134, height: 32 },
 			},
@@ -2039,13 +1944,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "sofa-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sofa-gr.png",
+			activeIcon: "/images/fur-icon/sofa-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sofa",
 				label: "客廳1-沙發1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/sofa.png",
+				icon: "/images/fur-icon/sofa.png",
 				parentRoom: null,
 				size: { width: 67, height: 123 },
 			},
@@ -2058,13 +1962,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "door-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "睡房2-門1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				parentRoom: null,
 				size: { width: 40, height: 40 },
 			},
@@ -2077,13 +1980,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "door-5",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "睡房1-門1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				parentRoom: null,
 				size: { width: 40, height: 40 },
 			},
@@ -2096,13 +1998,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "wardrobe-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "睡房2-櫃1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				parentRoom: null,
 				size: { width: 40, height: 129 },
 			},
@@ -2115,13 +2016,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "wardrobe-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "睡房1-櫃1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				parentRoom: null,
 				size: { width: 40, height: 129 },
 			},
@@ -2134,13 +2034,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "window-5",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "未分配-窗",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				parentRoom: null,
 				size: { width: 8, height: 56 },
 			},
@@ -2153,13 +2052,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "window-6",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "未分配-窗",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				parentRoom: null,
 				size: { width: 8, height: 56 },
 			},
@@ -2172,13 +2070,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "wardrobe-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "廚房1-櫃1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				parentRoom: null,
 				size: { width: 40, height: 129 },
 			},
@@ -2191,13 +2088,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "table-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table-gr.png",
+			activeIcon: "/images/fur-icon/table-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "table",
 				label: "睡房2-枱1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/table.png",
+				icon: "/images/fur-icon/table.png",
 				parentRoom: null,
 				size: { width: 44, height: 120 },
 			},
@@ -2210,13 +2106,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "chair-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "飯廳1-椅子1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				parentRoom: null,
 				size: { width: 28, height: 35 },
 			},
@@ -2229,13 +2124,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "chair-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "飯廳1-椅子3",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				parentRoom: null,
 				size: { width: 28, height: 35 },
 			},
@@ -2248,13 +2142,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "chair-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "飯廳1-椅子2",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				parentRoom: null,
 				size: { width: 28, height: 35 },
 			},
@@ -2267,13 +2160,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "chair-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "飯廳1-椅子4",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				parentRoom: null,
 				size: { width: 28, height: 35 },
 			},
@@ -2286,13 +2178,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "wardrobe-5",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "客廳1-櫃1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				parentRoom: null,
 				size: { width: 40, height: 129 },
 			},
@@ -2305,13 +2196,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "tv-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/tv-gr.png",
+			activeIcon: "/images/fur-icon/tv-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "tv",
 				label: "睡房2-電視1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/tv.png",
+				icon: "/images/fur-icon/tv.png",
 				parentRoom: null,
 				size: { width: 134, height: 32 },
 			},
@@ -2324,13 +2214,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "plant-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/plant-gr.png",
+			activeIcon: "/images/fur-icon/plant-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "plant",
 				label: "陽台1-植物1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/plant.png",
+				icon: "/images/fur-icon/plant.png",
 				parentRoom: null,
 				size: { width: 36, height: 36 },
 			},
@@ -2343,13 +2232,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "plant-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/plant-gr.png",
+			activeIcon: "/images/fur-icon/plant-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "plant",
 				label: "陽台1-植物2",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/plant.png",
+				icon: "/images/fur-icon/plant.png",
 				parentRoom: null,
 				size: { width: 36, height: 36 },
 			},
@@ -2362,13 +2250,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "door-6",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "陽台1-門1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				parentRoom: null,
 				size: { width: 40, height: 40 },
 			},
@@ -2381,13 +2268,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "bed-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed-gr.png",
+			activeIcon: "/images/fur-icon/bed-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bed",
 				label: "睡房3-床1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/bed.png",
+				icon: "/images/fur-icon/bed.png",
 				parentRoom: null,
 				size: { width: 89, height: 128 },
 			},
@@ -2399,13 +2285,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "wardrobe-6",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "睡房3-櫃1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				parentRoom: null,
 				size: { width: 40, height: 129 },
 			},
@@ -2417,13 +2302,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "door-7",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "未分配-門",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				parentRoom: null,
 				size: { width: 40, height: 40 },
 			},
@@ -2435,13 +2319,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "table-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table-gr.png",
+			activeIcon: "/images/fur-icon/table-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "table",
 				label: "睡房3-枱1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/table.png",
+				icon: "/images/fur-icon/table.png",
 				parentRoom: null,
 				size: { width: 44, height: 120 },
 			},
@@ -2453,13 +2336,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "chair-5",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "未分配-椅子",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				parentRoom: null,
 				size: { width: 28, height: 35 },
 			},
@@ -2471,13 +2353,12 @@ export const LAYOUT2_TW = {
 		{
 			id: "wardrobe-7",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "未分配-櫃",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				parentRoom: null,
 				size: { width: 40, height: 129 },
 			},
@@ -2529,7 +2410,7 @@ export const LAYOUT3_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bathroom",
 				label: "浴室1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bathroom.png",
+				icon: "/images/room-icon/bathroom.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 300, height: 300 },
@@ -2545,7 +2426,7 @@ export const LAYOUT3_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "dining_room",
 				label: "飯廳1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/dining_room.png",
+				icon: "/images/room-icon/dining_room.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 313, height: 292 },
@@ -2561,7 +2442,7 @@ export const LAYOUT3_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "living_room",
 				label: "客廳1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/living_room.png",
+				icon: "/images/room-icon/living_room.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 303, height: 288 },
@@ -2577,7 +2458,7 @@ export const LAYOUT3_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bedroom",
 				label: "睡房1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+				icon: "/images/room-icon/bedroom.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 367, height: 304 },
@@ -2593,7 +2474,7 @@ export const LAYOUT3_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "balcony",
 				label: "陽台1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/balcony.png",
+				icon: "/images/room-icon/balcony.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 113, height: 288 },
@@ -2605,13 +2486,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "toilet-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet-gr.png",
+			activeIcon: "/images/fur-icon/toilet-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "toilet",
 				label: "浴室1-馬桶1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet.png",
+				icon: "/images/fur-icon/toilet.png",
 				size: { width: 40, height: 60 },
 			},
 			size: { width: 40, height: 60 },
@@ -2623,13 +2503,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "shower-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/shower-gr.png",
+			activeIcon: "/images/fur-icon/shower-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "shower",
 				label: "浴室1-淋浴1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/shower.png",
+				icon: "/images/fur-icon/shower.png",
 				size: { width: 80, height: 80 },
 			},
 			size: { width: 80, height: 80 },
@@ -2641,13 +2520,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "bathtub-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub-gr.png",
+			activeIcon: "/images/fur-icon/bathtub-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bathtub",
 				label: "浴室1-浸浴1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub.png",
+				icon: "/images/fur-icon/bathtub.png",
 				size: { width: 120, height: 60 },
 			},
 			size: { width: 70, height: 35 },
@@ -2659,13 +2537,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "sink-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink-gr.png",
+			activeIcon: "/images/fur-icon/sink-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sink",
 				label: "浴室1-锌盘1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink.png",
+				icon: "/images/fur-icon/sink.png",
 				size: { width: 60, height: 40 },
 			},
 			size: { width: 60, height: 40 },
@@ -2677,13 +2554,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "door-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "浴室1-門1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -2695,13 +2571,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "window-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "浴室1-窗2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -2713,13 +2588,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "door-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "飯廳1-門1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -2731,13 +2605,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "window-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "浴室1-窗1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -2749,13 +2622,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "table-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table-gr.png",
+			activeIcon: "/images/fur-icon/table-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "table",
 				label: "飯廳1-枱1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table.png",
+				icon: "/images/fur-icon/table.png",
 				size: { width: 44, height: 120 },
 			},
 			size: { width: 44, height: 120 },
@@ -2767,13 +2639,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "fridge-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/fridge-gr.png",
+			activeIcon: "/images/fur-icon/fridge-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "fridge",
 				label: "廚房1-冰箱1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/fridge.png",
+				icon: "/images/fur-icon/fridge.png",
 				size: { width: 40, height: 43 },
 			},
 			size: { width: 40, height: 43 },
@@ -2785,13 +2656,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "wardrobe-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "飯廳1-櫃1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 			},
 			size: { width: 40, height: 129 },
@@ -2803,13 +2673,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "bookshelf-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bookshelf-gr.png",
+			activeIcon: "/images/fur-icon/bookshelf-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bookshelf",
 				label: "客廳1-茶几1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bookshelf.png",
+				icon: "/images/fur-icon/bookshelf.png",
 				size: { width: 44, height: 44 },
 			},
 			size: { width: 44, height: 44 },
@@ -2821,13 +2690,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "bed-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed-gr.png",
+			activeIcon: "/images/fur-icon/bed-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bed",
 				label: "睡房1-床1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed.png",
+				icon: "/images/fur-icon/bed.png",
 				size: { width: 89, height: 128 },
 			},
 			size: { width: 89, height: 128 },
@@ -2839,13 +2707,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "stove-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/stove-gr.png",
+			activeIcon: "/images/fur-icon/stove-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "stove",
 				label: "飯廳1-爐具1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/stove.png",
+				icon: "/images/fur-icon/stove.png",
 				size: { width: 62, height: 32 },
 			},
 			size: { width: 62, height: 32 },
@@ -2857,13 +2724,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "sink-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink-gr.png",
+			activeIcon: "/images/fur-icon/sink-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sink",
 				label: "飯廳1-锌盘1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink.png",
+				icon: "/images/fur-icon/sink.png",
 				size: { width: 60, height: 40 },
 			},
 			size: { width: 60, height: 40 },
@@ -2875,13 +2741,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "tv-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/tv-gr.png",
+			activeIcon: "/images/fur-icon/tv-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "tv",
 				label: "客廳1-電視1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/tv.png",
+				icon: "/images/fur-icon/tv.png",
 				size: { width: 134, height: 32 },
 			},
 			size: { width: 134, height: 32 },
@@ -2893,13 +2758,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "sofa-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sofa-gr.png",
+			activeIcon: "/images/fur-icon/sofa-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sofa",
 				label: "客廳1-沙發1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sofa.png",
+				icon: "/images/fur-icon/sofa.png",
 				size: { width: 67, height: 123 },
 			},
 			size: { width: 67, height: 123 },
@@ -2911,13 +2775,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "door-5",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "睡房1-門1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -2929,13 +2792,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "wardrobe-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "睡房1-櫃1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 			},
 			size: { width: 40, height: 129 },
@@ -2947,13 +2809,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "window-5",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "未分配-窗",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -2965,13 +2826,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "chair-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "飯廳1-椅子1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				size: { width: 28, height: 35 },
 			},
 			size: { width: 28, height: 35 },
@@ -2983,13 +2843,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "chair-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "飯廳1-椅子2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				size: { width: 28, height: 35 },
 			},
 			size: { width: 28, height: 35 },
@@ -3001,13 +2860,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "plant-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/plant-gr.png",
+			activeIcon: "/images/fur-icon/plant-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "plant",
 				label: "陽台1-植物1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/plant.png",
+				icon: "/images/fur-icon/plant.png",
 				size: { width: 36, height: 36 },
 			},
 			size: { width: 36, height: 36 },
@@ -3019,13 +2877,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "plant-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/plant-gr.png",
+			activeIcon: "/images/fur-icon/plant-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "plant",
 				label: "陽台1-植物2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/plant.png",
+				icon: "/images/fur-icon/plant.png",
 				size: { width: 36, height: 36 },
 			},
 			size: { width: 36, height: 36 },
@@ -3037,13 +2894,12 @@ export const LAYOUT3_TW = {
 		{
 			id: "door-6",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "陽台1-門1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -3097,7 +2953,7 @@ export const LAYOUT4_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "living_room",
 				label: "客厅1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/living_room.png",
+				icon: "/images/room-icon/living_room.png",
 				size: { width: 300, height: 300 },
 				parentRoom: null,
 			},
@@ -3114,7 +2970,7 @@ export const LAYOUT4_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "dining_room",
 				label: "饭厅1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/dining_room.png",
+				icon: "/images/room-icon/dining_room.png",
 				size: { width: 300, height: 300 },
 				parentRoom: null,
 			},
@@ -3131,7 +2987,7 @@ export const LAYOUT4_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "kitchen",
 				label: "厨房1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/kitchen.png",
+				icon: "/images/room-icon/kitchen.png",
 				size: { width: 300, height: 300 },
 				parentRoom: null,
 			},
@@ -3148,7 +3004,7 @@ export const LAYOUT4_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "balcony",
 				label: "阳台1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/balcony.png",
+				icon: "/images/room-icon/balcony.png",
 				size: { width: 300, height: 300 },
 				parentRoom: null,
 			},
@@ -3165,7 +3021,7 @@ export const LAYOUT4_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "corridor",
 				label: "走廊1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/corridor.png",
+				icon: "/images/room-icon/corridor.png",
 				size: { width: 300, height: 300 },
 				parentRoom: null,
 			},
@@ -3182,7 +3038,7 @@ export const LAYOUT4_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bedroom",
 				label: "睡房1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+				icon: "/images/room-icon/bedroom.png",
 				size: { width: 300, height: 300 },
 				parentRoom: null,
 			},
@@ -3199,7 +3055,7 @@ export const LAYOUT4_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bedroom",
 				label: "睡房2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+				icon: "/images/room-icon/bedroom.png",
 				size: { width: 300, height: 300 },
 				parentRoom: null,
 			},
@@ -3216,7 +3072,7 @@ export const LAYOUT4_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bedroom",
 				label: "睡房3",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+				icon: "/images/room-icon/bedroom.png",
 				size: { width: 300, height: 300 },
 				parentRoom: null,
 			},
@@ -3233,7 +3089,7 @@ export const LAYOUT4_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bathroom",
 				label: "浴室1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bathroom.png",
+				icon: "/images/room-icon/bathroom.png",
 				size: { width: 300, height: 300 },
 				parentRoom: null,
 			},
@@ -3250,7 +3106,7 @@ export const LAYOUT4_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bathroom",
 				label: "浴室2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bathroom.png",
+				icon: "/images/room-icon/bathroom.png",
 				size: { width: 300, height: 300 },
 				parentRoom: null,
 			},
@@ -3263,13 +3119,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "window-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "未分配-窗",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 				parentRoom: null,
 			},
@@ -3282,13 +3137,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "sink-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink-gr.png",
+			activeIcon: "/images/fur-icon/sink-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sink",
 				label: "未分配-锌盘",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink.png",
+				icon: "/images/fur-icon/sink.png",
 				size: { width: 60, height: 40 },
 				parentRoom: null,
 			},
@@ -3300,13 +3154,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "stove-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/stove-gr.png",
+			activeIcon: "/images/fur-icon/stove-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "stove",
 				label: "厨房1-炉具1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/stove.png",
+				icon: "/images/fur-icon/stove.png",
 				size: { width: 62, height: 32 },
 				parentRoom: {
 					id: "kitchen-1",
@@ -3315,7 +3168,7 @@ export const LAYOUT4_TW = {
 						type: "kitchen",
 						cateType: "room",
 						label: "厨房1",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/kitchen.png",
+						icon: "/images/room-icon/kitchen.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 210, height: 271 },
@@ -3331,13 +3184,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "fridge-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/fridge-gr.png",
+			activeIcon: "/images/fur-icon/fridge-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "fridge",
 				label: "厨房1-冰箱1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/fridge.png",
+				icon: "/images/fur-icon/fridge.png",
 				size: { width: 40, height: 43 },
 				parentRoom: {
 					id: "kitchen-1",
@@ -3346,7 +3198,7 @@ export const LAYOUT4_TW = {
 						type: "kitchen",
 						cateType: "room",
 						label: "厨房1",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/kitchen.png",
+						icon: "/images/room-icon/kitchen.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 210, height: 271 },
@@ -3362,13 +3214,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "table-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table-gr.png",
+			activeIcon: "/images/fur-icon/table-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "table",
 				label: "饭厅1-枱1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table.png",
+				icon: "/images/fur-icon/table.png",
 				size: { width: 44, height: 120 },
 				parentRoom: {
 					id: "dining_room-1",
@@ -3377,7 +3228,7 @@ export const LAYOUT4_TW = {
 						type: "dining_room",
 						cateType: "room",
 						label: "饭厅1",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/dining_room.png",
+						icon: "/images/room-icon/dining_room.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 211, height: 280 },
@@ -3393,13 +3244,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "door-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "厨房1-门1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 				parentRoom: {
 					id: "kitchen-1",
@@ -3408,7 +3258,7 @@ export const LAYOUT4_TW = {
 						type: "kitchen",
 						cateType: "room",
 						label: "厨房1",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/kitchen.png",
+						icon: "/images/room-icon/kitchen.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 210, height: 271 },
@@ -3424,13 +3274,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "door-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "未分配-门",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 				parentRoom: null,
 			},
@@ -3442,13 +3291,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "tv-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/tv-gr.png",
+			activeIcon: "/images/fur-icon/tv-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "tv",
 				label: "客厅1-电视1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/tv.png",
+				icon: "/images/fur-icon/tv.png",
 				size: { width: 134, height: 32 },
 				parentRoom: {
 					id: "living_room-1",
@@ -3457,7 +3305,7 @@ export const LAYOUT4_TW = {
 						type: "living_room",
 						cateType: "room",
 						label: "客厅1",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/living_room.png",
+						icon: "/images/room-icon/living_room.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 222, height: 301 },
@@ -3473,13 +3321,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "sofa-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sofa-gr.png",
+			activeIcon: "/images/fur-icon/sofa-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sofa",
 				label: "客厅1-沙发1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sofa.png",
+				icon: "/images/fur-icon/sofa.png",
 				size: { width: 67, height: 123 },
 				parentRoom: {
 					id: "living_room-1",
@@ -3488,7 +3335,7 @@ export const LAYOUT4_TW = {
 						type: "living_room",
 						cateType: "room",
 						label: "客厅1",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/living_room.png",
+						icon: "/images/room-icon/living_room.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 222, height: 301 },
@@ -3504,13 +3351,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "window-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "睡房2-窗1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 				parentRoom: {
 					id: "bedroom-2",
@@ -3519,7 +3365,7 @@ export const LAYOUT4_TW = {
 						type: "bedroom",
 						cateType: "room",
 						label: "睡房2",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+						icon: "/images/room-icon/bedroom.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 274, height: 297 },
@@ -3535,13 +3381,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "window-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "睡房2-窗2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 				parentRoom: {
 					id: "bedroom-2",
@@ -3550,7 +3395,7 @@ export const LAYOUT4_TW = {
 						type: "bedroom",
 						cateType: "room",
 						label: "睡房2",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+						icon: "/images/room-icon/bedroom.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 274, height: 297 },
@@ -3566,13 +3411,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "door-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "未分配-门",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 				parentRoom: null,
 			},
@@ -3584,13 +3428,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "door-5",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "未分配-门",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 				parentRoom: null,
 			},
@@ -3602,13 +3445,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "door-6",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "未分配-门",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 				parentRoom: null,
 			},
@@ -3620,13 +3462,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "door-7",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "未分配-门",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 				parentRoom: null,
 			},
@@ -3638,13 +3479,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "door-8",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "睡房1-门1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 				parentRoom: {
 					id: "bedroom-1",
@@ -3653,7 +3493,7 @@ export const LAYOUT4_TW = {
 						type: "bedroom",
 						cateType: "room",
 						label: "睡房1",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+						icon: "/images/room-icon/bedroom.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 373, height: 378 },
@@ -3669,13 +3509,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "window-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "走廊1-窗1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 				parentRoom: {
 					id: "corridor-1",
@@ -3684,7 +3523,7 @@ export const LAYOUT4_TW = {
 						type: "corridor",
 						cateType: "room",
 						label: "走廊1",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/corridor.png",
+						icon: "/images/room-icon/corridor.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 573, height: 109 },
@@ -3701,13 +3540,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "bed-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed-gr.png",
+			activeIcon: "/images/fur-icon/bed-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bed",
 				label: "未分配-床",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed.png",
+				icon: "/images/fur-icon/bed.png",
 				size: { width: 89, height: 128 },
 				parentRoom: null,
 			},
@@ -3719,13 +3557,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "lamp-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/lamp-gr.png",
+			activeIcon: "/images/fur-icon/lamp-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "lamp",
 				label: "睡房2-儿童床1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/lamp.png",
+				icon: "/images/fur-icon/lamp.png",
 				size: { width: 70, height: 128 },
 				parentRoom: {
 					id: "bedroom-2",
@@ -3734,7 +3571,7 @@ export const LAYOUT4_TW = {
 						type: "bedroom",
 						cateType: "room",
 						label: "睡房2",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+						icon: "/images/room-icon/bedroom.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 274, height: 297 },
@@ -3750,13 +3587,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "lamp-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/lamp-gr.png",
+			activeIcon: "/images/fur-icon/lamp-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "lamp",
 				label: "睡房3-儿童床1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/lamp.png",
+				icon: "/images/fur-icon/lamp.png",
 				size: { width: 70, height: 128 },
 				parentRoom: {
 					id: "bedroom-3",
@@ -3765,7 +3601,7 @@ export const LAYOUT4_TW = {
 						type: "bedroom",
 						cateType: "room",
 						label: "睡房3",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+						icon: "/images/room-icon/bedroom.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 281, height: 299 },
@@ -3781,13 +3617,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "washbasin-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/washbasin-gr.png",
+			activeIcon: "/images/fur-icon/washbasin-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "washbasin",
 				label: "未分配-洗手盘",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/washbasin.png",
+				icon: "/images/fur-icon/washbasin.png",
 				size: { width: 50, height: 50 },
 				parentRoom: null,
 			},
@@ -3799,13 +3634,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "shower-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/shower-gr.png",
+			activeIcon: "/images/fur-icon/shower-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "shower",
 				label: "浴室1-淋浴1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/shower.png",
+				icon: "/images/fur-icon/shower.png",
 				size: { width: 80, height: 80 },
 				parentRoom: {
 					id: "bathroom-1",
@@ -3814,7 +3648,7 @@ export const LAYOUT4_TW = {
 						type: "bathroom",
 						cateType: "room",
 						label: "浴室1",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bathroom.png",
+						icon: "/images/room-icon/bathroom.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 215, height: 288 },
@@ -3830,13 +3664,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "toilet-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet-gr.png",
+			activeIcon: "/images/fur-icon/toilet-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "toilet",
 				label: "未分配-马桶",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet.png",
+				icon: "/images/fur-icon/toilet.png",
 				size: { width: 40, height: 60 },
 				parentRoom: null,
 			},
@@ -3848,13 +3681,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "toilet-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet-gr.png",
+			activeIcon: "/images/fur-icon/toilet-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "toilet",
 				label: "未分配-马桶",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet.png",
+				icon: "/images/fur-icon/toilet.png",
 				size: { width: 40, height: 60 },
 				parentRoom: null,
 			},
@@ -3866,13 +3698,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "washbasin-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/washbasin-gr.png",
+			activeIcon: "/images/fur-icon/washbasin-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "washbasin",
 				label: "未分配-洗手盘",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/washbasin.png",
+				icon: "/images/fur-icon/washbasin.png",
 				size: { width: 50, height: 50 },
 				parentRoom: null,
 			},
@@ -3884,13 +3715,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "bathtub-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub-gr.png",
+			activeIcon: "/images/fur-icon/bathtub-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bathtub",
 				label: "浴室2-浸浴1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub.png",
+				icon: "/images/fur-icon/bathtub.png",
 				size: { width: 120, height: 60 },
 				parentRoom: {
 					id: "bathroom-2",
@@ -3899,7 +3729,7 @@ export const LAYOUT4_TW = {
 						type: "bathroom",
 						cateType: "room",
 						label: "浴室2",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bathroom.png",
+						icon: "/images/room-icon/bathroom.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 300, height: 300 },
@@ -3915,13 +3745,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "wardrobe-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "未分配-柜",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 				parentRoom: null,
 			},
@@ -3933,13 +3762,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "wardrobe-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "睡房2-柜1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 				parentRoom: {
 					id: "bedroom-2",
@@ -3948,7 +3776,7 @@ export const LAYOUT4_TW = {
 						type: "bedroom",
 						cateType: "room",
 						label: "睡房2",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+						icon: "/images/room-icon/bedroom.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 274, height: 297 },
@@ -3964,13 +3792,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "wardrobe-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "未分配-柜",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 				parentRoom: null,
 			},
@@ -3982,13 +3809,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "wardrobe-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "未分配-柜",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 				parentRoom: null,
 			},
@@ -4000,13 +3826,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "bookshelf-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bookshelf-gr.png",
+			activeIcon: "/images/fur-icon/bookshelf-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bookshelf",
 				label: "未分配-茶几",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bookshelf.png",
+				icon: "/images/fur-icon/bookshelf.png",
 				size: { width: 44, height: 44 },
 				parentRoom: null,
 			},
@@ -4018,13 +3843,12 @@ export const LAYOUT4_TW = {
 		{
 			id: "bookshelf-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bookshelf-gr.png",
+			activeIcon: "/images/fur-icon/bookshelf-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bookshelf",
 				label: "未分配-茶几",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bookshelf.png",
+				icon: "/images/fur-icon/bookshelf.png",
 				size: { width: 44, height: 44 },
 				parentRoom: null,
 			},
@@ -4077,7 +3901,7 @@ export const LAYOUT5_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bathroom",
 				label: "浴室1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bathroom.png",
+				icon: "/images/room-icon/bathroom.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 300, height: 300 },
@@ -4091,7 +3915,7 @@ export const LAYOUT5_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "dining_room",
 				label: "飯廳1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/dining_room.png",
+				icon: "/images/room-icon/dining_room.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 441, height: 296 },
@@ -4105,7 +3929,7 @@ export const LAYOUT5_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "living_room",
 				label: "客廳1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/living_room.png",
+				icon: "/images/room-icon/living_room.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 443, height: 290 },
@@ -4119,7 +3943,7 @@ export const LAYOUT5_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bedroom",
 				label: "睡房1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+				icon: "/images/room-icon/bedroom.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 367, height: 304 },
@@ -4133,7 +3957,7 @@ export const LAYOUT5_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bedroom",
 				label: "睡房2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+				icon: "/images/room-icon/bedroom.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 421, height: 375 },
@@ -4147,7 +3971,7 @@ export const LAYOUT5_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "kitchen",
 				label: "廚房1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/kitchen.png",
+				icon: "/images/room-icon/kitchen.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 270, height: 363 },
@@ -4159,13 +3983,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "toilet-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet-gr.png",
+			activeIcon: "/images/fur-icon/toilet-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "toilet",
 				label: "浴室1-馬桶1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet.png",
+				icon: "/images/fur-icon/toilet.png",
 				size: { width: 40, height: 60 },
 			},
 			size: { width: 40, height: 60 },
@@ -4177,13 +4000,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "shower-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/shower-gr.png",
+			activeIcon: "/images/fur-icon/shower-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "shower",
 				label: "浴室1-淋浴1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/shower.png",
+				icon: "/images/fur-icon/shower.png",
 				size: { width: 80, height: 80 },
 			},
 			size: { width: 80, height: 80 },
@@ -4195,13 +4017,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "bathtub-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub-gr.png",
+			activeIcon: "/images/fur-icon/bathtub-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bathtub",
 				label: "浴室1-浸浴1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub.png",
+				icon: "/images/fur-icon/bathtub.png",
 				size: { width: 120, height: 60 },
 			},
 			size: { width: 70, height: 35 },
@@ -4213,13 +4034,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "sink-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink-gr.png",
+			activeIcon: "/images/fur-icon/sink-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sink",
 				label: "浴室1-锌盘1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink.png",
+				icon: "/images/fur-icon/sink.png",
 				size: { width: 60, height: 40 },
 			},
 			size: { width: 60, height: 40 },
@@ -4231,13 +4051,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "door-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "浴室1-門1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -4248,13 +4067,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "window-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "浴室1-窗2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -4265,13 +4083,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "door-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "飯廳1-門1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -4283,13 +4100,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "window-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "浴室1-窗1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -4301,13 +4117,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "table-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table-gr.png",
+			activeIcon: "/images/fur-icon/table-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "table",
 				label: "飯廳1-枱1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table.png",
+				icon: "/images/fur-icon/table.png",
 				size: { width: 44, height: 120 },
 			},
 			size: { width: 44, height: 120 },
@@ -4319,13 +4134,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "fridge-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/fridge-gr.png",
+			activeIcon: "/images/fur-icon/fridge-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "fridge",
 				label: "廚房1-冰箱1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/fridge.png",
+				icon: "/images/fur-icon/fridge.png",
 				size: { width: 40, height: 43 },
 			},
 			size: { width: 40, height: 43 },
@@ -4336,13 +4150,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "door-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "廚房1-門1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -4353,13 +4166,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "wardrobe-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "飯廳1-櫃1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 			},
 			size: { width: 40, height: 129 },
@@ -4371,13 +4183,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "bed-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed-gr.png",
+			activeIcon: "/images/fur-icon/bed-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bed",
 				label: "睡房2-床1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed.png",
+				icon: "/images/fur-icon/bed.png",
 				size: { width: 89, height: 128 },
 			},
 			size: { width: 89, height: 128 },
@@ -4388,13 +4199,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "window-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "睡房2-窗1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -4405,13 +4215,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "window-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "睡房2-窗2",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -4422,13 +4231,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "bookshelf-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bookshelf-gr.png",
+			activeIcon: "/images/fur-icon/bookshelf-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bookshelf",
 				label: "客廳1-茶几1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/bookshelf.png",
+				icon: "/images/fur-icon/bookshelf.png",
 				size: { width: 44, height: 44 },
 			},
 			size: { width: 44, height: 44 },
@@ -4439,13 +4247,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "bed-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed-gr.png",
+			activeIcon: "/images/fur-icon/bed-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bed",
 				label: "睡房1-床1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/bed.png",
+				icon: "/images/fur-icon/bed.png",
 				size: { width: 89, height: 128 },
 			},
 			size: { width: 89, height: 128 },
@@ -4456,13 +4263,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "stove-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/stove-gr.png",
+			activeIcon: "/images/fur-icon/stove-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "stove",
 				label: "廚房1-爐具1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/stove.png",
+				icon: "/images/fur-icon/stove.png",
 				size: { width: 62, height: 32 },
 			},
 			size: { width: 62, height: 32 },
@@ -4473,13 +4279,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "sink-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink-gr.png",
+			activeIcon: "/images/fur-icon/sink-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sink",
 				label: "廚房1-锌盘1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/sink.png",
+				icon: "/images/fur-icon/sink.png",
 				size: { width: 60, height: 40 },
 			},
 			size: { width: 60, height: 40 },
@@ -4490,13 +4295,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "tv-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/tv-gr.png",
+			activeIcon: "/images/fur-icon/tv-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "tv",
 				label: "客廳1-電視1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/tv.png",
+				icon: "/images/fur-icon/tv.png",
 				size: { width: 134, height: 32 },
 			},
 			size: { width: 134, height: 32 },
@@ -4507,13 +4311,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "sofa-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sofa-gr.png",
+			activeIcon: "/images/fur-icon/sofa-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sofa",
 				label: "客廳1-沙發1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sofa.png",
+				icon: "/images/fur-icon/sofa.png",
 				size: { width: 67, height: 123 },
 			},
 			size: { width: 67, height: 123 },
@@ -4525,13 +4328,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "door-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "睡房2-門1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -4542,13 +4344,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "door-5",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "睡房1-門1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -4559,13 +4360,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "wardrobe-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "睡房2-櫃1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 			},
 			size: { width: 40, height: 129 },
@@ -4576,13 +4376,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "wardrobe-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "睡房1-櫃1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 			},
 			size: { width: 40, height: 129 },
@@ -4593,13 +4392,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "window-5",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "未分配-窗",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -4610,13 +4408,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "window-6",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "廚房1-窗1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -4627,13 +4424,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "wardrobe-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "廚房1-櫃1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 			},
 			size: { width: 40, height: 129 },
@@ -4644,13 +4440,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "table-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table-gr.png",
+			activeIcon: "/images/fur-icon/table-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "table",
 				label: "睡房2-枱1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table.png",
+				icon: "/images/fur-icon/table.png",
 				size: { width: 44, height: 120 },
 			},
 			size: { width: 44, height: 120 },
@@ -4661,13 +4456,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "chair-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "飯廳1-椅子1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				size: { width: 28, height: 35 },
 			},
 			size: { width: 28, height: 35 },
@@ -4679,13 +4473,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "chair-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "飯廳1-椅子3",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				size: { width: 28, height: 35 },
 			},
 			size: { width: 28, height: 35 },
@@ -4697,13 +4490,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "chair-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "飯廳1-椅子2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				size: { width: 28, height: 35 },
 			},
 			size: { width: 28, height: 35 },
@@ -4715,13 +4507,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "chair-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "飯廳1-椅子4",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				size: { width: 28, height: 35 },
 			},
 			size: { width: 28, height: 35 },
@@ -4733,13 +4524,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "wardrobe-5",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "客廳1-櫃1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 			},
 			size: { width: 40, height: 129 },
@@ -4750,13 +4540,12 @@ export const LAYOUT5_TW = {
 		{
 			id: "tv-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/tv-gr.png",
+			activeIcon: "/images/fur-icon/tv-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "tv",
 				label: "睡房2-電視1",
-				icon: "https://d3cbeloe0vn1bb/cloudfront.net/images/fur-icon/tv.png",
+				icon: "/images/fur-icon/tv.png",
 				size: { width: 134, height: 32 },
 			},
 			size: { width: 134, height: 32 },
@@ -4807,7 +4596,7 @@ export const LAYOUT6_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "living_room",
 				label: "客厅1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/living_room.png",
+				icon: "/images/room-icon/living_room.png",
 				size: { width: 300, height: 300 },
 				parentRoom: null,
 			},
@@ -4824,7 +4613,7 @@ export const LAYOUT6_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "dining_room",
 				label: "饭厅1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/dining_room.png",
+				icon: "/images/room-icon/dining_room.png",
 				size: { width: 300, height: 300 },
 				parentRoom: null,
 			},
@@ -4841,7 +4630,7 @@ export const LAYOUT6_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "kitchen",
 				label: "厨房1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/kitchen.png",
+				icon: "/images/room-icon/kitchen.png",
 				size: { width: 300, height: 300 },
 				parentRoom: null,
 			},
@@ -4858,7 +4647,7 @@ export const LAYOUT6_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "corridor",
 				label: "走廊1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/corridor.png",
+				icon: "/images/room-icon/corridor.png",
 				size: { width: 300, height: 300 },
 				parentRoom: null,
 			},
@@ -4875,7 +4664,7 @@ export const LAYOUT6_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bedroom",
 				label: "睡房1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+				icon: "/images/room-icon/bedroom.png",
 				size: { width: 300, height: 300 },
 				parentRoom: null,
 			},
@@ -4892,7 +4681,7 @@ export const LAYOUT6_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bedroom",
 				label: "睡房2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+				icon: "/images/room-icon/bedroom.png",
 				size: { width: 300, height: 300 },
 				parentRoom: null,
 			},
@@ -4909,7 +4698,7 @@ export const LAYOUT6_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bedroom",
 				label: "睡房3",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+				icon: "/images/room-icon/bedroom.png",
 				size: { width: 300, height: 300 },
 				parentRoom: null,
 			},
@@ -4926,7 +4715,7 @@ export const LAYOUT6_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bathroom",
 				label: "浴室1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bathroom.png",
+				icon: "/images/room-icon/bathroom.png",
 				size: { width: 300, height: 300 },
 				parentRoom: null,
 			},
@@ -4943,7 +4732,7 @@ export const LAYOUT6_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bathroom",
 				label: "浴室2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bathroom.png",
+				icon: "/images/room-icon/bathroom.png",
 				size: { width: 300, height: 300 },
 				parentRoom: null,
 			},
@@ -4956,13 +4745,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "window-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "未分配-窗",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 				parentRoom: null,
 			},
@@ -4975,13 +4763,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "sink-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink-gr.png",
+			activeIcon: "/images/fur-icon/sink-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sink",
 				label: "未分配-锌盘",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink.png",
+				icon: "/images/fur-icon/sink.png",
 				size: { width: 60, height: 40 },
 				parentRoom: null,
 			},
@@ -4993,13 +4780,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "stove-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/stove-gr.png",
+			activeIcon: "/images/fur-icon/stove-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "stove",
 				label: "厨房1-炉具1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/stove.png",
+				icon: "/images/fur-icon/stove.png",
 				size: { width: 62, height: 32 },
 				parentRoom: {
 					id: "kitchen-1",
@@ -5008,7 +4794,7 @@ export const LAYOUT6_TW = {
 						type: "kitchen",
 						cateType: "room",
 						label: "厨房1",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/kitchen.png",
+						icon: "/images/room-icon/kitchen.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 210, height: 271 },
@@ -5024,13 +4810,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "fridge-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/fridge-gr.png",
+			activeIcon: "/images/fur-icon/fridge-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "fridge",
 				label: "厨房1-冰箱1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/fridge.png",
+				icon: "/images/fur-icon/fridge.png",
 				size: { width: 40, height: 43 },
 				parentRoom: {
 					id: "kitchen-1",
@@ -5039,7 +4824,7 @@ export const LAYOUT6_TW = {
 						type: "kitchen",
 						cateType: "room",
 						label: "厨房1",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/kitchen.png",
+						icon: "/images/room-icon/kitchen.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 210, height: 271 },
@@ -5055,13 +4840,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "table-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table-gr.png",
+			activeIcon: "/images/fur-icon/table-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "table",
 				label: "饭厅1-枱1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table.png",
+				icon: "/images/fur-icon/table.png",
 				size: { width: 44, height: 120 },
 				parentRoom: {
 					id: "dining_room-1",
@@ -5070,7 +4854,7 @@ export const LAYOUT6_TW = {
 						type: "dining_room",
 						cateType: "room",
 						label: "饭厅1",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/dining_room.png",
+						icon: "/images/room-icon/dining_room.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 211, height: 280 },
@@ -5086,13 +4870,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "door-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "厨房1-门1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 				parentRoom: {
 					id: "kitchen-1",
@@ -5101,7 +4884,7 @@ export const LAYOUT6_TW = {
 						type: "kitchen",
 						cateType: "room",
 						label: "厨房1",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/kitchen.png",
+						icon: "/images/room-icon/kitchen.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 210, height: 271 },
@@ -5117,13 +4900,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "door-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "未分配-门",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 				parentRoom: null,
 			},
@@ -5135,13 +4917,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "tv-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/tv-gr.png",
+			activeIcon: "/images/fur-icon/tv-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "tv",
 				label: "客厅1-电视1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/tv.png",
+				icon: "/images/fur-icon/tv.png",
 				size: { width: 134, height: 32 },
 				parentRoom: {
 					id: "living_room-1",
@@ -5150,7 +4931,7 @@ export const LAYOUT6_TW = {
 						type: "living_room",
 						cateType: "room",
 						label: "客厅1",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/living_room.png",
+						icon: "/images/room-icon/living_room.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 222, height: 301 },
@@ -5166,13 +4947,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "sofa-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sofa-gr.png",
+			activeIcon: "/images/fur-icon/sofa-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sofa",
 				label: "客厅1-沙发1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sofa.png",
+				icon: "/images/fur-icon/sofa.png",
 				size: { width: 67, height: 123 },
 				parentRoom: {
 					id: "living_room-1",
@@ -5181,7 +4961,7 @@ export const LAYOUT6_TW = {
 						type: "living_room",
 						cateType: "room",
 						label: "客厅1",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/living_room.png",
+						icon: "/images/room-icon/living_room.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 222, height: 301 },
@@ -5197,13 +4977,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "window-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "睡房2-窗1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 				parentRoom: {
 					id: "bedroom-2",
@@ -5212,7 +4991,7 @@ export const LAYOUT6_TW = {
 						type: "bedroom",
 						cateType: "room",
 						label: "睡房2",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+						icon: "/images/room-icon/bedroom.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 274, height: 297 },
@@ -5228,13 +5007,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "window-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "睡房2-窗2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 				parentRoom: {
 					id: "bedroom-2",
@@ -5243,7 +5021,7 @@ export const LAYOUT6_TW = {
 						type: "bedroom",
 						cateType: "room",
 						label: "睡房2",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+						icon: "/images/room-icon/bedroom.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 274, height: 297 },
@@ -5259,13 +5037,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "door-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "未分配-门",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 				parentRoom: null,
 			},
@@ -5277,13 +5054,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "door-5",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "未分配-门",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 				parentRoom: null,
 			},
@@ -5295,13 +5071,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "door-6",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "未分配-门",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 				parentRoom: null,
 			},
@@ -5313,13 +5088,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "door-7",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "未分配-门",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 				parentRoom: null,
 			},
@@ -5331,13 +5105,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "door-8",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "睡房1-门1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 				parentRoom: {
 					id: "bedroom-1",
@@ -5346,7 +5119,7 @@ export const LAYOUT6_TW = {
 						type: "bedroom",
 						cateType: "room",
 						label: "睡房1",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+						icon: "/images/room-icon/bedroom.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 373, height: 378 },
@@ -5362,13 +5135,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "window-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "走廊1-窗1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 				parentRoom: {
 					id: "corridor-1",
@@ -5377,7 +5149,7 @@ export const LAYOUT6_TW = {
 						type: "corridor",
 						cateType: "room",
 						label: "走廊1",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/corridor.png",
+						icon: "/images/room-icon/corridor.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 573, height: 109 },
@@ -5394,13 +5166,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "bed-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed-gr.png",
+			activeIcon: "/images/fur-icon/bed-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bed",
 				label: "未分配-床",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed.png",
+				icon: "/images/fur-icon/bed.png",
 				size: { width: 89, height: 128 },
 				parentRoom: null,
 			},
@@ -5412,13 +5183,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "lamp-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/lamp-gr.png",
+			activeIcon: "/images/fur-icon/lamp-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "lamp",
 				label: "睡房2-儿童床1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/lamp.png",
+				icon: "/images/fur-icon/lamp.png",
 				size: { width: 70, height: 128 },
 				parentRoom: {
 					id: "bedroom-2",
@@ -5427,7 +5197,7 @@ export const LAYOUT6_TW = {
 						type: "bedroom",
 						cateType: "room",
 						label: "睡房2",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+						icon: "/images/room-icon/bedroom.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 274, height: 297 },
@@ -5443,13 +5213,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "lamp-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/lamp-gr.png",
+			activeIcon: "/images/fur-icon/lamp-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "lamp",
 				label: "睡房3-儿童床1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/lamp.png",
+				icon: "/images/fur-icon/lamp.png",
 				size: { width: 70, height: 128 },
 				parentRoom: {
 					id: "bedroom-3",
@@ -5458,7 +5227,7 @@ export const LAYOUT6_TW = {
 						type: "bedroom",
 						cateType: "room",
 						label: "睡房3",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+						icon: "/images/room-icon/bedroom.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 281, height: 299 },
@@ -5474,13 +5243,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "washbasin-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/washbasin-gr.png",
+			activeIcon: "/images/fur-icon/washbasin-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "washbasin",
 				label: "未分配-洗手盘",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/washbasin.png",
+				icon: "/images/fur-icon/washbasin.png",
 				size: { width: 50, height: 50 },
 				parentRoom: null,
 			},
@@ -5492,13 +5260,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "shower-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/shower-gr.png",
+			activeIcon: "/images/fur-icon/shower-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "shower",
 				label: "浴室1-淋浴1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/shower.png",
+				icon: "/images/fur-icon/shower.png",
 				size: { width: 80, height: 80 },
 				parentRoom: {
 					id: "bathroom-1",
@@ -5507,7 +5274,7 @@ export const LAYOUT6_TW = {
 						type: "bathroom",
 						cateType: "room",
 						label: "浴室1",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bathroom.png",
+						icon: "/images/room-icon/bathroom.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 215, height: 288 },
@@ -5523,13 +5290,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "toilet-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet-gr.png",
+			activeIcon: "/images/fur-icon/toilet-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "toilet",
 				label: "未分配-马桶",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet.png",
+				icon: "/images/fur-icon/toilet.png",
 				size: { width: 40, height: 60 },
 				parentRoom: null,
 			},
@@ -5541,13 +5307,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "toilet-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet-gr.png",
+			activeIcon: "/images/fur-icon/toilet-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "toilet",
 				label: "未分配-马桶",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet.png",
+				icon: "/images/fur-icon/toilet.png",
 				size: { width: 40, height: 60 },
 				parentRoom: null,
 			},
@@ -5559,13 +5324,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "washbasin-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/washbasin-gr.png",
+			activeIcon: "/images/fur-icon/washbasin-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "washbasin",
 				label: "未分配-洗手盘",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/washbasin.png",
+				icon: "/images/fur-icon/washbasin.png",
 				size: { width: 50, height: 50 },
 				parentRoom: null,
 			},
@@ -5577,13 +5341,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "bathtub-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub-gr.png",
+			activeIcon: "/images/fur-icon/bathtub-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bathtub",
 				label: "浴室2-浸浴1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub.png",
+				icon: "/images/fur-icon/bathtub.png",
 				size: { width: 120, height: 60 },
 				parentRoom: {
 					id: "bathroom-2",
@@ -5592,7 +5355,7 @@ export const LAYOUT6_TW = {
 						type: "bathroom",
 						cateType: "room",
 						label: "浴室2",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bathroom.png",
+						icon: "/images/room-icon/bathroom.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 300, height: 300 },
@@ -5608,13 +5371,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "wardrobe-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "未分配-柜",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 				parentRoom: null,
 			},
@@ -5626,13 +5388,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "wardrobe-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "睡房2-柜1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 				parentRoom: {
 					id: "bedroom-2",
@@ -5641,7 +5402,7 @@ export const LAYOUT6_TW = {
 						type: "bedroom",
 						cateType: "room",
 						label: "睡房2",
-						icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+						icon: "/images/room-icon/bedroom.png",
 						size: { width: 300, height: 300 },
 					},
 					size: { width: 274, height: 297 },
@@ -5657,13 +5418,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "wardrobe-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "未分配-柜",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 				parentRoom: null,
 			},
@@ -5675,13 +5435,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "wardrobe-4",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "未分配-柜",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 				parentRoom: null,
 			},
@@ -5693,13 +5452,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "bookshelf-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bookshelf-gr.png",
+			activeIcon: "/images/fur-icon/bookshelf-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bookshelf",
 				label: "未分配-茶几",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bookshelf.png",
+				icon: "/images/fur-icon/bookshelf.png",
 				size: { width: 44, height: 44 },
 				parentRoom: null,
 			},
@@ -5711,13 +5469,12 @@ export const LAYOUT6_TW = {
 		{
 			id: "bookshelf-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bookshelf-gr.png",
+			activeIcon: "/images/fur-icon/bookshelf-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bookshelf",
 				label: "未分配-茶几",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bookshelf.png",
+				icon: "/images/fur-icon/bookshelf.png",
 				size: { width: 44, height: 44 },
 				parentRoom: null,
 			},
@@ -5770,7 +5527,7 @@ export const LAYOUT7_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bathroom",
 				label: "浴室1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bathroom.png",
+				icon: "/images/room-icon/bathroom.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 300, height: 300 },
@@ -5786,7 +5543,7 @@ export const LAYOUT7_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "dining_room",
 				label: "飯廳1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/dining_room.png",
+				icon: "/images/room-icon/dining_room.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 313, height: 292 },
@@ -5802,7 +5559,7 @@ export const LAYOUT7_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "living_room",
 				label: "客廳1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/living_room.png",
+				icon: "/images/room-icon/living_room.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 303, height: 288 },
@@ -5818,7 +5575,7 @@ export const LAYOUT7_TW = {
 				cateType: ITEM_TYPES.ROOM,
 				type: "bedroom",
 				label: "睡房1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+				icon: "/images/room-icon/bedroom.png",
 				size: { width: 300, height: 300 },
 			},
 			size: { width: 367, height: 304 },
@@ -5830,13 +5587,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "toilet-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet-gr.png",
+			activeIcon: "/images/fur-icon/toilet-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "toilet",
 				label: "浴室1-馬桶1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet.png",
+				icon: "/images/fur-icon/toilet.png",
 				size: { width: 40, height: 60 },
 			},
 			size: { width: 40, height: 60 },
@@ -5848,13 +5604,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "shower-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/shower-gr.png",
+			activeIcon: "/images/fur-icon/shower-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "shower",
 				label: "浴室1-淋浴1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/shower.png",
+				icon: "/images/fur-icon/shower.png",
 				size: { width: 80, height: 80 },
 			},
 			size: { width: 80, height: 80 },
@@ -5866,13 +5621,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "bathtub-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub-gr.png",
+			activeIcon: "/images/fur-icon/bathtub-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bathtub",
 				label: "浴室1-浸浴1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub.png",
+				icon: "/images/fur-icon/bathtub.png",
 				size: { width: 120, height: 60 },
 			},
 			size: { width: 70, height: 35 },
@@ -5884,13 +5638,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "sink-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink-gr.png",
+			activeIcon: "/images/fur-icon/sink-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sink",
 				label: "浴室1-锌盘1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink.png",
+				icon: "/images/fur-icon/sink.png",
 				size: { width: 60, height: 40 },
 			},
 			size: { width: 60, height: 40 },
@@ -5902,13 +5655,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "door-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "浴室1-門1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -5920,13 +5672,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "window-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "浴室1-窗2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -5938,13 +5689,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "door-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "飯廳1-門1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -5956,13 +5706,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "window-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "浴室1-窗1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -5974,13 +5723,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "table-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table-gr.png",
+			activeIcon: "/images/fur-icon/table-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "table",
 				label: "飯廳1-枱1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table.png",
+				icon: "/images/fur-icon/table.png",
 				size: { width: 44, height: 120 },
 			},
 			size: { width: 44, height: 120 },
@@ -5992,13 +5740,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "fridge-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/fridge-gr.png",
+			activeIcon: "/images/fur-icon/fridge-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "fridge",
 				label: "廚房1-冰箱1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/fridge.png",
+				icon: "/images/fur-icon/fridge.png",
 				size: { width: 40, height: 43 },
 			},
 			size: { width: 40, height: 43 },
@@ -6010,13 +5757,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "wardrobe-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "飯廳1-櫃1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 			},
 			size: { width: 40, height: 129 },
@@ -6028,13 +5774,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "bookshelf-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bookshelf-gr.png",
+			activeIcon: "/images/fur-icon/bookshelf-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bookshelf",
 				label: "客廳1-茶几1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bookshelf.png",
+				icon: "/images/fur-icon/bookshelf.png",
 				size: { width: 44, height: 44 },
 			},
 			size: { width: 44, height: 44 },
@@ -6046,13 +5791,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "bed-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed-gr.png",
+			activeIcon: "/images/fur-icon/bed-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "bed",
 				label: "睡房1-床1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed.png",
+				icon: "/images/fur-icon/bed.png",
 				size: { width: 89, height: 128 },
 			},
 			size: { width: 89, height: 128 },
@@ -6064,13 +5808,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "stove-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/stove-gr.png",
+			activeIcon: "/images/fur-icon/stove-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "stove",
 				label: "飯廳1-爐具1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/stove.png",
+				icon: "/images/fur-icon/stove.png",
 				size: { width: 62, height: 32 },
 			},
 			size: { width: 62, height: 32 },
@@ -6082,13 +5825,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "sink-2",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink-gr.png",
+			activeIcon: "/images/fur-icon/sink-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sink",
 				label: "飯廳1-锌盘1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink.png",
+				icon: "/images/fur-icon/sink.png",
 				size: { width: 60, height: 40 },
 			},
 			size: { width: 60, height: 40 },
@@ -6100,13 +5842,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "tv-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/tv-gr.png",
+			activeIcon: "/images/fur-icon/tv-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "tv",
 				label: "客廳1-電視1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/tv.png",
+				icon: "/images/fur-icon/tv.png",
 				size: { width: 134, height: 32 },
 			},
 			size: { width: 134, height: 32 },
@@ -6118,13 +5859,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "sofa-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sofa-gr.png",
+			activeIcon: "/images/fur-icon/sofa-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "sofa",
 				label: "客廳1-沙發1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sofa.png",
+				icon: "/images/fur-icon/sofa.png",
 				size: { width: 67, height: 123 },
 			},
 			size: { width: 67, height: 123 },
@@ -6136,13 +5876,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "door-5",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+			activeIcon: "/images/fur-icon/door-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "door",
 				label: "睡房1-門1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
+				icon: "/images/fur-icon/door.png",
 				size: { width: 40, height: 40 },
 			},
 			size: { width: 40, height: 40 },
@@ -6154,13 +5893,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "wardrobe-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+			activeIcon: "/images/fur-icon/wardrobe-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "wardrobe",
 				label: "睡房1-櫃1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png",
+				icon: "/images/fur-icon/wardrobe.png",
 				size: { width: 40, height: 129 },
 			},
 			size: { width: 40, height: 129 },
@@ -6172,13 +5910,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "window-5",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+			activeIcon: "/images/fur-icon/window-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "window",
 				label: "未分配-窗",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
+				icon: "/images/fur-icon/window.png",
 				size: { width: 8, height: 56 },
 			},
 			size: { width: 8, height: 56 },
@@ -6190,13 +5927,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "chair-1",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "飯廳1-椅子1",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				size: { width: 28, height: 35 },
 			},
 			size: { width: 28, height: 35 },
@@ -6208,13 +5944,12 @@ export const LAYOUT7_TW = {
 		{
 			id: "chair-3",
 			type: ITEM_TYPES.FURNITURE,
-			activeIcon:
-				"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+			activeIcon: "/images/fur-icon/chair-gr.png",
 			data: {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: "chair",
 				label: "飯廳1-椅子2",
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair.png",
+				icon: "/images/fur-icon/chair.png",
 				size: { width: 28, height: 35 },
 			},
 			size: { width: 28, height: 35 },

@@ -161,13 +161,103 @@ export function FreeChapter6({ locale }) {
 	useEffect(() => {
 		console.log("reportDocData", reportDocData);
 	}, [reportDocData]);
+
+	// Component for individual score item with responsive sizing
+	const ScoreItem = ({
+		item,
+		index,
+		isMobile = false,
+		containerClass = "",
+	}) => {
+		// More conservative sizing to ensure container fit
+		const baseCircleSize = isMobile
+			? "w-12 h-12 sm:w-14 sm:h-14"
+			: `w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 xl:w-18 xl:h-18 ${containerClass}`;
+
+		const baseTitleSize = isMobile
+			? "text-xs"
+			: "text-xs md:text-sm lg:text-sm xl:text-base";
+
+		const baseScoreSize = isMobile
+			? "text-sm sm:text-base"
+			: "text-sm md:text-base lg:text-lg xl:text-xl";
+
+		const baseScoreSubSize = isMobile
+			? "text-xs"
+			: "text-xs md:text-xs lg:text-sm xl:text-sm";
+
+		const iconSize = isMobile ? 16 : 18;
+
+		return (
+			<div className="flex flex-col items-center max-w-full">
+				{/* Title and icon */}
+				<p
+					className={`flex items-center mb-1 md:mb-2 font-bold leading-tight text-center ${baseTitleSize}`}
+					style={{
+						color:
+							sections?.[1]?.children?.[index]?.color ||
+							"#20B580",
+					}}
+				>
+					{index < 5 && (
+						<Image
+							src={`/images/report/icon${index}.png`}
+							width={iconSize}
+							height={iconSize}
+							alt=""
+							className="flex-shrink-0 mr-1"
+						/>
+					)}
+					<span className="max-w-full truncate">
+						{sections?.[1]?.children?.[index]?.title ||
+							`运势${index + 1}`}
+					</span>
+				</p>
+
+				{/* Score circle with enhanced shadow */}
+				<div
+					className={`flex flex-col items-center justify-center border-2 md:border-3 lg:border-4 rounded-full flex-shrink-0 ${baseCircleSize}`}
+					style={{
+						borderColor:
+							sections?.[1]?.children?.[index]?.color ||
+							"#20B580",
+						background: "#fff",
+						boxShadow:
+							"0 4px 15px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08)",
+					}}
+				>
+					<span
+						className={`font-extrabold leading-none ${baseScoreSize}`}
+						style={{
+							color:
+								sections?.[1]?.children?.[index]?.color ||
+								"#20B580",
+						}}
+					>
+						{item.zhishu?.split("/")[0]}
+					</span>
+					<span
+						className={`font-bold leading-none ${baseScoreSubSize}`}
+						style={{
+							color:
+								sections?.[1]?.children?.[index]?.color ||
+								"#20B580",
+						}}
+					>
+						/10
+					</span>
+				</div>
+			</div>
+		);
+	};
+
 	return (
 		<div className="flex items-start justify-center w-full min-h-screen ">
-			<div className="w-full max-w-full p-2 mx-auto bg-white lg:w-full sm:p-1 sm:mt-20 rounded-xl">
+			<div className="w-full max-w-full p-2 mx-auto bg-white lg:w-full sm:p-1 sm:mt-16 rounded-xl">
 				<div className="flex flex-col justify-start">
-					<p className=" text-lg px-9  text-[#25826c] flex items-center justify-center inline-block mb-5 max-w-full">
+					{/* <p className=" text-lg px-9  text-[#25826c] flex items-center justify-center inline-block mb-5 max-w-full">
 						{t("pro.scrollInstruction")}
-					</p>
+					</p> */}
 					<p className="font-bold text-4xl px-9 font-boldsm:text-lg text-[#25826c] flex items-center justify-center inline-block mb-5 max-w-full">
 						{t("pro.advancedAnalysisTitle")}
 					</p>
@@ -180,280 +270,233 @@ export function FreeChapter6({ locale }) {
 						{t("p2-2")}
 					</p>
 				</div>
-				{/* Card Section */}
-				<div className="flex-1 rounded-t-none rounded-b-[20px] mb-2 flex flex-col items-start justify-start pt-5 sm:pt-[20px] px-2 sm:px-[35px] pb-5 sm:pb-[37px] box-border gap-4 max-w-full z-[1] ">
-					{/* Intro */}
-					<section className="flex flex-col bg-[#f5faf7] rounded-[20px] p-3 sm:p-5 w-full shadow-md">
-						{/* 指數展示 */}
-						<div className="w-full mb-6 sm:mb-2 bg-[#f5faf7] pt-4 sm:pt-[31px] px-1 sm:px-[20px] pb-4 sm:pb-[37px] box-border rounded-t-none rounded-b-[20px] z-[1]">
-							{/* Mobile: Keep original 2-column grid */}
-							<div className="grid grid-cols-2 gap-4 sm:hidden">
-								{reportDocData?.yunchengData
-									?.slice(0, 5)
-									.map((item, index) => (
-										<div
-											key={index}
-											className="flex flex-col items-center w-full mb-2"
-										>
-											{/* Title and icon at the top */}
-											<p
-												className="flex items-center mb-2 text-sm font-bold leading-8"
-												style={{
-													color:
-														sections?.[1]
-															?.children?.[index]
-															?.color ||
-														"#20B580",
-												}}
-											>
-												{index < 5 && (
-													<Image
-														src={`/images/report/icon${index}.png`}
-														width={24}
-														height={24}
-														alt=""
-														className="mr-1"
-													/>
-												)}
-												{sections?.[1]?.children?.[
-													index
-												]?.title || `运势${index + 1}`}
-											</p>
-											{/* Score circle */}
-											<div
-												className="flex flex-col items-center justify-center w-16 h-16 mb-2 border-4 rounded-full"
-												style={{
-													borderColor:
-														sections?.[1]
-															?.children?.[index]
-															?.color ||
-														"#20B580",
-													background: "#fff",
-													boxShadow:
-														"0 6px 20px rgba(0, 0, 0, 0.4)",
-												}}
-											>
-												<span
-													className="text-xl font-extrabold"
-													style={{
-														color:
-															sections?.[1]
-																?.children?.[
-																index
-															]?.color ||
-															"#20B580",
-													}}
-												>
-													{item.zhishu?.split("/")[0]}
-												</span>
-												<span
-													className="text-xs font-bold"
-													style={{
-														color:
-															sections?.[1]
-																?.children?.[
-																index
-															]?.color ||
-															"#20B580",
-													}}
-												>
-													/10
-												</span>
-											</div>
-										</div>
-									))}
-							</div>
 
-							{/* Desktop: Two rows layout */}
-							<div className="hidden sm:block">
+				{/* Card Section */}
+				<div className="flex-1 rounded-t-none rounded-b-[20px] mb-2 flex flex-col items-start justify-start pt-5 sm:pt-[20px] px-2 sm:px-[35px] pb-5 sm:pb-[37px] box-border gap-4 max-w-full z-[1]">
+					{/* Intro */}
+					<section className="flex flex-col bg-[#f5faf7] rounded-[20px] p-3 sm:p-5 w-full shadow-lg">
+						{/* 指數展示 - Improved Layout */}
+						<div className="w-full mb-6 sm:mb-2 bg-[#f5faf7] pt-4 sm:pt-[31px] px-2 sm:px-[20px] pb-8 sm:pb-[50px] box-border rounded-t-none rounded-b-[20px] z-[1] overflow-hidden">
+							{/* Mobile Layout: Always 3+2 */}
+							<div className="block sm:hidden">
 								{/* First row: 3 items */}
-								<div className="flex items-center justify-between mb-6 px-30">
+								<div className="flex items-center justify-between px-1 mb-4">
 									{reportDocData?.yunchengData
 										?.slice(0, 3)
 										.map((item, index) => (
 											<div
 												key={index}
-												className="flex flex-col items-center"
+												className="flex-1 max-w-[30%] px-1"
 											>
-												{/* Title and icon at the top */}
-												<p
-													className="flex items-center mb-2 text-xl font-bold leading-8"
-													style={{
-														color:
-															sections?.[1]
-																?.children?.[
-																index
-															]?.color ||
-															"#20B580",
-													}}
-												>
-													<Image
-														src={`/images/report/icon${index}.png`}
-														width={24}
-														height={24}
-														alt=""
-														className="mr-1"
-													/>
-													{sections?.[1]?.children?.[
-														index
-													]?.title ||
-														`运势${index + 1}`}
-												</p>
-												{/* Score circle */}
-												<div
-													className="flex flex-col items-center justify-center w-24 h-24 mb-2 border-4 rounded-full"
-													style={{
-														borderColor:
-															sections?.[1]
-																?.children?.[
-																index
-															]?.color ||
-															"#20B580",
-														background: "#fff",
-														boxShadow:
-															"0 6px 20px rgba(0, 0, 0, 0.4)",
-													}}
-												>
-													<span
-														className="text-4xl font-extrabold"
-														style={{
-															color:
-																sections?.[1]
-																	?.children?.[
-																	index
-																]?.color ||
-																"#20B580",
-														}}
-													>
-														{
-															item.zhishu?.split(
-																"/"
-															)[0]
-														}
-													</span>
-													<span
-														className="text-base font-bold"
-														style={{
-															color:
-																sections?.[1]
-																	?.children?.[
-																	index
-																]?.color ||
-																"#20B580",
-														}}
-													>
-														/10
-													</span>
-												</div>
+												<ScoreItem
+													item={item}
+													index={index}
+													isMobile={true}
+												/>
 											</div>
 										))}
 								</div>
 
 								{/* Second row: 2 items */}
-								<div className="flex items-center px-20 justify-evenly">
+								<div className="flex items-center justify-center gap-8">
 									{reportDocData?.yunchengData
 										?.slice(3, 5)
 										.map((item, index) => (
 											<div
 												key={index + 3}
-												className="flex flex-col items-center"
+												className="flex-1 max-w-[40%] px-1"
 											>
-												{/* Title and icon at the top */}
-												<p
-													className="flex items-center mb-2 text-xl font-bold leading-8"
-													style={{
-														color:
-															sections?.[1]
-																?.children?.[
-																index + 3
-															]?.color ||
-															"#20B580",
-													}}
-												>
-													<Image
-														src={`/images/report/icon${index + 3}.png`}
-														width={24}
-														height={24}
-														alt=""
-														className="mr-1"
-													/>
-													{sections?.[1]?.children?.[
-														index + 3
-													]?.title ||
-														`运势${index + 4}`}
-												</p>
-												{/* Score circle */}
-												<div
-													className="flex flex-col items-center justify-center w-24 h-24 mb-2 border-4 rounded-full"
-													style={{
-														borderColor:
-															sections?.[1]
-																?.children?.[
-																index + 3
-															]?.color ||
-															"#20B580",
-														background: "#fff",
-														boxShadow:
-															"0 6px 20px rgba(0, 0, 0, 0.4)",
-													}}
-												>
-													<span
-														className="text-4xl font-extrabold"
-														style={{
-															color:
-																sections?.[1]
-																	?.children?.[
-																	index + 3
-																]?.color ||
-																"#20B580",
-														}}
-													>
-														{
-															item.zhishu?.split(
-																"/"
-															)[0]
-														}
-													</span>
-													<span
-														className="text-base font-bold"
-														style={{
-															color:
-																sections?.[1]
-																	?.children?.[
-																	index + 3
-																]?.color ||
-																"#20B580",
-														}}
-													>
-														/10
-													</span>
-												</div>
+												<ScoreItem
+													item={item}
+													index={index + 3}
+													isMobile={true}
+												/>
 											</div>
 										))}
 								</div>
 							</div>
+
+							{/* Desktop Layout: Responsive single row or two rows */}
+							<div className="hidden sm:block">
+								{/* Container with improved responsive logic */}
+								<div className="w-full scores-container">
+									{/* Single row layout for large screens */}
+									<div className="single-row-layout">
+										<div className="flex items-center justify-between gap-2 px-2 py-4 md:gap-3 lg:gap-4 xl:gap-6 md:px-4 md:py-6">
+											{reportDocData?.yunchengData
+												?.slice(0, 5)
+												.map((item, index) => (
+													<div
+														key={index}
+														className="flex-1 min-w-0 max-w-[18%] px-1"
+													>
+														<ScoreItem
+															item={item}
+															index={index}
+															isMobile={false}
+															containerClass="single-row-circle"
+														/>
+													</div>
+												))}
+										</div>
+									</div>
+
+									{/* Two rows layout for medium screens */}
+									<div
+										className="two-rows-layout"
+										style={{ display: "none" }}
+									>
+										{/* First row: 3 items */}
+										<div className="flex items-center justify-between gap-2 px-2 mb-4 md:gap-4 md:px-4 md:mb-6">
+											{reportDocData?.yunchengData
+												?.slice(0, 3)
+												.map((item, index) => (
+													<div
+														key={index}
+														className="flex-1 min-w-0 max-w-[30%] px-1"
+													>
+														<ScoreItem
+															item={item}
+															index={index}
+															isMobile={false}
+															containerClass="two-row-circle"
+														/>
+													</div>
+												))}
+										</div>
+
+										{/* Second row: 2 items */}
+										<div className="flex items-center justify-center gap-8 md:gap-12">
+											{reportDocData?.yunchengData
+												?.slice(3, 5)
+												.map((item, index) => (
+													<div
+														key={index + 3}
+														className="flex-1 min-w-0 max-w-[40%] px-1"
+													>
+														<ScoreItem
+															item={item}
+															index={index + 3}
+															isMobile={false}
+															containerClass="two-row-circle"
+														/>
+													</div>
+												))}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							{/* Enhanced CSS for responsive switching with container-based sizing */}
+							<style jsx>{`
+								.scores-container {
+									width: 100%;
+									max-width: 100%;
+									overflow: hidden;
+								}
+
+								/* Default: Show single row */
+								.single-row-layout {
+									display: block;
+								}
+
+								.two-rows-layout {
+									display: none;
+								}
+
+								/* Ensure circles fit within their containers */
+								.single-row-circle {
+									max-width: 100%;
+									max-height: 100%;
+								}
+
+								.two-row-circle {
+									max-width: 100%;
+									max-height: 100%;
+								}
+
+								/* Switch to two rows for medium screens where single row might be cramped */
+								@media (min-width: 640px) and (max-width: 1199px) {
+									.single-row-layout {
+										display: none !important;
+									}
+
+									.two-rows-layout {
+										display: block !important;
+									}
+								}
+
+								/* For large screens, ensure single row is shown */
+								@media (min-width: 1200px) {
+									.single-row-layout {
+										display: block !important;
+									}
+
+									.two-rows-layout {
+										display: none !important;
+									}
+								}
+
+								/* Additional responsive adjustments for very small desktop screens */
+								@media (min-width: 640px) and (max-width: 768px) {
+									.single-row-layout .flex {
+										gap: 0.25rem !important;
+									}
+									.two-rows-layout .flex {
+										gap: 0.5rem !important;
+									}
+								}
+
+								/* Ensure no overflow on any screen size */
+								@media (max-width: 639px) {
+									.scores-container {
+										padding: 0 0.25rem;
+									}
+								}
+							`}</style>
 						</div>
 					</section>
-					{/* 运势详细内容 */}
 
+					{/* 运势详细内容 */}
 					<div className="flex flex-col w-full gap-4">
-						{reportDocData?.yunchengData
-							?.slice(0, 3) // Changed from slice(0, 2) to slice(0, 3)
-							.map((item, index) => (
-								<div key={index} className="relative w-full">
-									<section
-										style={{
-											backgroundColor:
-												sections?.[1]?.children?.[index]
-													?.bgColor || "#F7FAF9",
-											overflow: "hidden",
-											position: "relative",
-										}}
-										className={`rounded-[20px] p-5 ${index === 0 ? "shadow-md" : ""}`}
-									>
-										<div className="flex items-center justify-between">
+						{reportDocData?.yunchengData?.map((item, index) => (
+							<div key={index} className="relative w-full">
+								<section
+									style={{
+										backgroundColor:
+											sections?.[1]?.children?.[index]
+												?.bgColor || "#F7FAF9",
+										overflow: "hidden",
+										position: "relative",
+										...(index > 0 && { height: "250px" }),
+									}}
+									className={`rounded-[20px] p-5 ${index === 0 ? "shadow-lg" : "shadow-md"}`}
+								>
+									<div className="flex items-center justify-between mb-3">
+										<p
+											className="flex items-center text-xl font-bold leading-8"
+											style={{
+												color:
+													sections?.[1]?.children?.[
+														index
+													]?.color || "#20B580",
+											}}
+										>
+											{index < 5 && (
+												<Image
+													src={`/images/report/icon${index}.png`}
+													width={24}
+													height={24}
+													alt=""
+													className="mr-1"
+												/>
+											)}
+											{sections?.[1]?.children?.[index]
+												?.title || `运势${index + 1}`}
+										</p>
+										{index < 5 && (
 											<p
-												className="flex items-center text-xl font-bold leading-8"
+												className="flex items-end leading-8"
 												style={{
 													color:
 														sections?.[1]
@@ -462,108 +505,38 @@ export function FreeChapter6({ locale }) {
 														"#20B580",
 												}}
 											>
-												{index < 5 && (
-													<Image
-														src={`/images/report/icon${index}.png`}
-														width={24}
-														height={24}
-														alt=""
-														className="mr-1"
-													/>
-												)}
-												{sections?.[1]?.children?.[
-													index
-												]?.title || `运势${index + 1}`}
+												<span className="text-xl font-bold">
+													{item.zhishu?.split("/")[0]}
+												</span>
+												<span className="text-sm">
+													/10
+												</span>
 											</p>
-											{index < 5 && (
-												<p
-													className="flex items-end leading-8"
-													style={{
-														color:
-															sections?.[1]
-																?.children?.[
-																index
-															]?.color ||
-															"#20B580",
-													}}
-												>
-													<span className="text-xl font-bold">
-														{
-															item.zhishu?.split(
-																"/"
-															)[0]
-														}
-													</span>
-													<span className="text-sm">
-														/10
-													</span>
-												</p>
-											)}
-										</div>
-										<p className="leading-8 text-justify">
-											{
-												index === 1
-													? (() => {
-															// Show first two sentences for second section
-															const sentences =
-																item.content.split(
-																	"。"
-																);
-															if (
-																sentences.length >=
-																2
-															) {
-																return (
-																	sentences[0] +
-																	"。" +
-																	sentences[1] +
-																	"。"
-																);
-															} else {
-																return (
-																	sentences[0] +
-																	"。"
-																);
-															}
-														})()
-													: item.content // Show full content for first section and third section
-											}
-										</p>
-										{/* Blur overlay for second section - half height */}
-										{/* {index === 1 && (
-											<div className="absolute left-0 bottom-[-15px] w-full h-1/2 pointer-events-none rounded-b-[20px] bg-gradient-to-t from-white/90 via-white/60 to-transparent backdrop-blur-sm flex items-center justify-center"></div>
-										)} */}
-										{/* Blur overlay for third section - full height */}
-										{index === 2 && (
-											<div className="absolute left-0 bottom-0 w-full h-full pointer-events-none rounded-b-[20px] bg-gradient-to-t from-white/95 via-white/70 to-transparent backdrop-blur-sm flex items-center justify-center">
-												<Link href="/price">
-													<button
-														className="pointer-events-auto px-6 py-2 rounded-full bg-[rgba(49,129,97)] text-white font-bold text-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
-														style={{
-															position:
-																"absolute",
-															left: "50%",
-															top: "50%",
-															transform:
-																"translate(-50%, -50%)",
-															boxShadow:
-																"0 4px 15px rgba(0, 0, 0, 0.4)",
-														}}
-													>
-														{t(
-															"pro.unlockAdvancedAnalysis"
-														)}
-													</button>
-												</Link>
-											</div>
 										)}
-									</section>
-								</div>
-							))}
+									</div>
+									<p className="leading-8 text-justify">
+										{item.content}
+									</p>
+
+									{/* Enhanced blur overlay for sections after the first one */}
+									{index > 0 && (
+										<div
+											className="absolute left-0 bottom-0 w-full pointer-events-none rounded-b-[20px]"
+											style={{
+												height: "60%",
+												background:
+													"linear-gradient(to top, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.95) 20%, rgba(255,255,255,0.8) 40%, rgba(255,255,255,0.4) 60%, rgba(255,255,255,0.1) 80%, transparent 100%)",
+												backdropFilter: "blur(4px)",
+												WebkitBackdropFilter:
+													"blur(4px)",
+											}}
+										/>
+									)}
+								</section>
+							</div>
+						))}
 					</div>
 				</div>
-				{/* Promo Section */}
-				<Promo />
 			</div>
 		</div>
 	);

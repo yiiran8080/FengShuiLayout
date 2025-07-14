@@ -17,7 +17,16 @@ import {
 	FURNITURE_TYPES,
 } from "@/types/room";
 
-import { Trash2, Save, Minus, Plus, RotateCcwSquare } from "lucide-react";
+import {
+	Trash2,
+	Save,
+	Minus,
+	Plus,
+	RotateCcwSquare,
+	Undo2,
+	Redo2,
+	Copy,
+} from "lucide-react";
 import Image from "next/image";
 import Undo from "./canvasComp/Undo";
 import { useTranslations } from "next-intl";
@@ -70,10 +79,10 @@ export const Canvas = forwardRef(
 		const [activeRoom, setActiveRoom] = useState(null);
 		const [canvasSize, setCanvasSize] = useState(() => {
 			if (typeof window !== "undefined" && window.innerWidth < 768) {
-				// Mobile: make canvas 1.5x viewport size
+				// Mobile: make canvas much larger - 3x viewport size instead of 1.5x
 				return {
-					width: window.innerWidth * 1.5,
-					height: window.innerHeight * 1.5,
+					width: window.innerWidth * 3,
+					height: window.innerHeight * 3,
 				};
 			}
 			// Desktop: keep large canvas
@@ -86,7 +95,7 @@ export const Canvas = forwardRef(
 		const [isResizing, setIsResizing] = useState(false);
 		const [resizeStart, setResizeStart] = useState({ x: 0, y: 0 });
 		const [resizeCorner, setResizeCorner] = useState(null);
-		const [scale, setScale] = useState(isMobile ? 30 : 60); // Desktop 60%, Mobile 30%
+		const [scale, setScale] = useState(isMobile ? 35 : 60); // Changed from 30 to 35 for mobile
 		const [touchStore, setTouchStore] = useState({
 			originScale: 100,
 			isMoving: false,
@@ -105,7 +114,22 @@ export const Canvas = forwardRef(
 		const longPressTimeout = useRef();
 		const tapTimeout = useRef();
 
-		// Enhanced mobile touch handling for select-then-drag behavior
+		// New state variables (around line 99)
+		const [dragState, setDragState] = useState({
+			mode: "none", // "none", "preparing", "dragging", "selecting"
+			startTime: 0,
+			startPosition: { x: 0, y: 0 },
+			currentPosition: { x: 0, y: 0 },
+			item: null,
+		});
+
+		const [mobileHints, setMobileHints] = useState({
+			showDragHint: true,
+			showZoomHint: true,
+			showRotateHint: true,
+		});
+
+		// Enhanced mobile touch handling - REPLACE your handleItemTouchStart
 		const handleItemTouchStart = (e, item) => {
 			if (!isMobile) return;
 
@@ -132,7 +156,7 @@ export const Canvas = forwardRef(
 					}
 				});
 				toast.info(t("multiSelectToast"), {
-					autoClose: 600, // Reduced from 1200ms to 600ms (0.6 seconds)
+					autoClose: 600,
 				});
 			}, 500);
 
@@ -141,6 +165,29 @@ export const Canvas = forwardRef(
 			e.stopPropagation();
 		};
 
+		// Enhanced touch move with drag preview
+		const handleItemTouchMove = (e, item) => {
+			if (!isMobile || dragState.mode === "none") return;
+
+			const touch = e.touches[0];
+			const deltaX = touch.clientX - dragState.startPosition.x;
+			const deltaY = touch.clientY - dragState.startPosition.y;
+			const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+			// Update current position for drag preview
+			setDragState((prev) => ({
+				...prev,
+				currentPosition: { x: touch.clientX, y: touch.clientY },
+			}));
+
+			// Auto-start drag if user moves finger significantly
+			if (dragState.mode === "preparing" && distance > 10) {
+				setDragState((prev) => ({ ...prev, mode: "dragging" }));
+				handleRoomMouseDown(e, item);
+			}
+		};
+
+		// REPLACE your handleItemTouchEnd
 		const handleItemTouchEnd = (e, item) => {
 			if (!isMobile) return;
 
@@ -156,18 +203,19 @@ export const Canvas = forwardRef(
 					setMobileSelectedItem(item);
 					onHandleActiveRoom(item);
 					toast.info(t("itemSelected"), {
-						autoClose: 500, // Reduced from 1000ms to 500ms (0.5 seconds)
+						autoClose: 500,
 					});
 				}
 				tapTimeout.current = null;
 			}, 50);
 		};
 
-		// Clear mobile selection when touching canvas background
 		const handleCanvasTouch = (e) => {
 			if (!isMobile) return;
 			if (e.target.id === "canvas") {
 				setMobileSelectedItem(null);
+				setSelectedItems([]); // Also clear multi-selection
+				setActiveRoom(null); // Clear active room
 			}
 		};
 
@@ -227,6 +275,12 @@ export const Canvas = forwardRef(
 			const handleOffset = isMobile ? -16 : -12;
 			const borderWidth = isMobile ? 3 : 2;
 
+			// Get the rotation of the item - only apply to furniture
+			const rotation =
+				room.type === ITEM_TYPES.FURNITURE && room.rotation
+					? room.rotation
+					: 0;
+
 			const handleStyle = {
 				width: handleSize,
 				height: handleSize,
@@ -235,6 +289,11 @@ export const Canvas = forwardRef(
 				boxShadow: isMobile
 					? "0 2px 8px rgba(0,0,0,0.2)"
 					: "0 1px 3px rgba(0,0,0,0.12)",
+				// Apply rotation only if the item is furniture and has rotation
+				...(rotation !== 0 && {
+					transform: `rotate(${rotation}deg)`,
+					transformOrigin: "center",
+				}),
 			};
 
 			return (
@@ -326,11 +385,15 @@ export const Canvas = forwardRef(
 							style={{
 								top: "50%",
 								left: "50%",
-								transform: "translate(-50%, -50%)",
+								transform:
+									rotation !== 0
+										? `translate(-50%, -50%) rotate(${rotation}deg)`
+										: "translate(-50%, -50%)",
 								width: 24,
 								height: 24,
 								zIndex: 15,
 								cursor: "move",
+								transformOrigin: "center",
 							}}
 							onTouchStart={(e) => handleRoomMouseDown(e, room)}
 						>
@@ -952,8 +1015,8 @@ export const Canvas = forwardRef(
 			if (!isMobile) return;
 			const handleResize = () => {
 				setCanvasSize({
-					width: window.innerWidth * 1.5,
-					height: window.innerHeight * 1.5,
+					width: window.innerWidth * 3, // Changed from 1.5 to 3
+					height: window.innerHeight * 3, // Changed from 1.5 to 3
 				});
 			};
 			window.addEventListener("resize", handleResize);
@@ -984,7 +1047,7 @@ export const Canvas = forwardRef(
 							);
 							setLocalItems(newItems);
 							setActiveRoom(null);
-							// Notify demo of delete action
+							// Notify demo of delete action for BOTH room and furniture
 							onDemoAction("delete", itemToDelete);
 						}}
 						title={t("delete")}
@@ -1010,7 +1073,7 @@ export const Canvas = forwardRef(
 			} else if (type === "out" && scale > MIN_SCALE) {
 				newScale = scale - mobileStep;
 			} else if (type === "reset") {
-				newScale = isMobile ? 40 : 60; // Better default for mobile
+				newScale = isMobile ? 35 : 60; // Changed from 40 to 35 for mobile
 			} else {
 				return;
 			}
@@ -1178,6 +1241,292 @@ export const Canvas = forwardRef(
 			};
 		}, [debouncedHandleMouseMove]);
 
+		// Enhanced drag feedback and precision
+		const handleMobileDrag = (e, item) => {
+			// Add visual feedback during drag
+			const dragElement = e.target.closest('[data-room-element="true"]');
+			if (dragElement) {
+				dragElement.style.transform = "scale(1.05)";
+				dragElement.style.zIndex = "1000";
+				dragElement.style.boxShadow = "0 8px 32px rgba(0,0,0,0.3)";
+			}
+
+			// Snap to grid for better precision
+			const snappedPosition = {
+				x: snapToGrid(newX, 15), // 15px grid for mobile
+				y: snapToGrid(newY, 15),
+			};
+
+			// Provide haptic feedback for snapping
+			if (
+				navigator.vibrate &&
+				(Math.abs(snappedPosition.x - newX) < 5 ||
+					Math.abs(snappedPosition.y - newY) < 5)
+			) {
+				navigator.vibrate(5);
+			}
+		};
+
+		// Enhanced selection with selection rectangle
+		const [selectionBox, setSelectionBox] = useState(null);
+
+		const handleSelectionStart = (e) => {
+			if (e.target.id === "canvas" && e.button === 0) {
+				const startX = (e.clientX - position.x) / (scale / 100);
+				const startY = (e.clientY - position.y) / (scale / 100);
+
+				setSelectionBox({
+					startX,
+					startY,
+					currentX: startX,
+					currentY: startY,
+					active: true,
+				});
+			}
+		};
+
+		const handleSelectionMove = (e) => {
+			if (selectionBox?.active) {
+				const currentX = (e.clientX - position.x) / (scale / 100);
+				const currentY = (e.clientY - position.y) / (scale / 100);
+
+				setSelectionBox((prev) => ({
+					...prev,
+					currentX,
+					currentY,
+				}));
+
+				// Update selected items based on selection box
+				const selectedIds = localItems
+					.filter((item) => {
+						return isItemInSelectionBox(item, selectionBox);
+					})
+					.map((item) => item.id);
+
+				setSelectedItems(selectedIds);
+			}
+		};
+
+		// Selection box visualization
+		{
+			selectionBox?.active && (
+				<div
+					className="absolute border-2 border-blue-500 pointer-events-none bg-blue-100/20"
+					style={{
+						left: Math.min(
+							selectionBox.startX,
+							selectionBox.currentX
+						),
+						top: Math.min(
+							selectionBox.startY,
+							selectionBox.currentY
+						),
+						width: Math.abs(
+							selectionBox.currentX - selectionBox.startX
+						),
+						height: Math.abs(
+							selectionBox.currentY - selectionBox.startY
+						),
+						zIndex: 1000,
+					}}
+				/>
+			);
+		}
+
+		// Intelligent zoom system that adapts to content
+		const SmartZoomSystem = () => {
+			const [autoZoom, setAutoZoom] = useState(true);
+			const [zoomPresets] = useState([
+				{ label: t("overview"), value: 25 },
+				{ label: t("design"), value: 35 },
+				{ label: t("detail"), value: 50 },
+				{ label: t("precise"), value: 75 },
+			]);
+
+			// Auto-zoom to fit content
+			const fitToContent = useCallback(() => {
+				if (localItems.length === 0) return;
+
+				const bounds = calculateItemsBounds(localItems);
+				const containerWidth = window.innerWidth;
+				const containerHeight = window.innerHeight - 200; // Account for UI
+
+				const scaleX = containerWidth / bounds.width;
+				const scaleY = containerHeight / bounds.height;
+				const optimalScale = Math.min(scaleX, scaleY, 0.8) * 100;
+
+				setScale(
+					Math.max(MIN_SCALE, Math.min(MAX_SCALE, optimalScale))
+				);
+
+				// Center the content
+				const centerX = -(
+					bounds.left +
+					bounds.width / 2 -
+					containerWidth / 2
+				);
+				const centerY = -(
+					bounds.top +
+					bounds.height / 2 -
+					containerHeight / 2
+				);
+				setPosition({ x: centerX, y: centerY });
+			}, [localItems]);
+
+			return (
+				<div className="fixed z-50 flex flex-col gap-2 top-20 right-4">
+					{/* Zoom presets */}
+					<div className="p-2 shadow-lg bg-white/95 backdrop-blur rounded-2xl">
+						{zoomPresets.map((preset) => (
+							<button
+								key={preset.value}
+								className={`w-full px-3 py-2 text-sm rounded-xl transition-colors ${
+									Math.abs(scale - preset.value) < 5
+										? "bg-blue-500 text-white"
+										: "hover:bg-gray-100"
+								}`}
+								onClick={() => setScale(preset.value)}
+							>
+								{preset.label}
+							</button>
+						))}
+
+						<button
+							className="w-full px-3 py-2 mt-2 text-sm border-t border-gray-200 rounded-xl hover:bg-gray-100"
+							onClick={fitToContent}
+						>
+							<Maximize className="inline w-4 h-4 mr-2" />
+							{t("fitToContent")}
+						</button>
+					</div>
+				</div>
+			);
+		};
+
+		// Floating action button system
+		const MobileFloatingControls = () => {
+			const [expanded, setExpanded] = useState(false);
+			const [showHints, setShowHints] = useState(true);
+
+			return (
+				<>
+					{/* Main FAB */}
+					<div className="fixed z-50 bottom-32 right-6">
+						<button
+							className="flex items-center justify-center text-white bg-blue-500 rounded-full shadow-xl w-14 h-14"
+							onClick={() => setExpanded(!expanded)}
+						>
+							<Plus
+								className={`w-6 h-6 transition-transform ${
+									expanded ? "rotate-45" : ""
+								}`}
+							/>
+						</button>
+
+						{/* Expanded actions */}
+						<div
+							className={`absolute bottom-16 right-0 flex flex-col gap-3 transition-all ${
+								expanded
+									? "opacity-100 scale-100"
+									: "opacity-0 scale-75 pointer-events-none"
+							}`}
+						>
+							<ActionButton
+								icon={<Undo2 className="w-5 h-5" />}
+								label={t("undo")}
+								onClick={handleUndo}
+								disabled={historyIndex <= 0}
+							/>
+							<ActionButton
+								icon={<Redo2 className="w-5 h-5" />}
+								label={t("redo")}
+								onClick={handleRedo}
+								disabled={historyIndex >= history.length - 1}
+							/>
+							<ActionButton
+								icon={<Copy className="w-5 h-5" />}
+								label={t("duplicate")}
+								onClick={handleDuplicate}
+								disabled={!activeRoom}
+							/>
+							<ActionButton
+								icon={<Trash2 className="w-5 h-5" />}
+								label={t("delete")}
+								onClick={handleDelete}
+								disabled={!activeRoom}
+								variant="danger"
+							/>
+						</div>
+					</div>
+
+					{/* Gesture hints */}
+					{showHints && (
+						<MobileGestureHints
+							onDismiss={() => setShowHints(false)}
+						/>
+					)}
+				</>
+			);
+		};
+
+		const ActionButton = ({
+			icon,
+			label,
+			onClick,
+			disabled,
+			variant = "default",
+		}) => (
+			<button
+				className={`w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all ${
+					variant === "danger"
+						? "bg-red-500 text-white"
+						: "bg-white text-gray-700"
+				} ${disabled ? "opacity-50" : "active:scale-95"}`}
+				onClick={onClick}
+				disabled={disabled}
+			>
+				{icon}
+			</button>
+		);
+
+		// Comprehensive gesture handling
+		const MobileGestureHandler = () => {
+			const [gestures] = useState({
+				// Two-finger rotate for compass
+				rotateCompass: {
+					fingers: 2,
+					type: "rotate",
+					threshold: 15,
+					action: (angle) =>
+						setCompassRotation((prev) => prev + angle),
+				},
+
+				// Three-finger swipe for undo/redo
+				swipeUndo: {
+					fingers: 3,
+					type: "swipe",
+					direction: "left",
+					action: handleUndo,
+				},
+
+				swipeRedo: {
+					fingers: 3,
+					type: "swipe",
+					direction: "right",
+					action: handleRedo,
+				},
+
+				// Long press for context menu
+				contextMenu: {
+					type: "longpress",
+					duration: 600,
+					action: (position) => showContextMenu(position),
+				},
+			});
+
+			return null; // Gesture handler doesn't render UI
+		};
+
 		return (
 			<div
 				ref={(node) => {
@@ -1186,7 +1535,7 @@ export const Canvas = forwardRef(
 				}}
 				className="relative w-full min-h-[calc(100vh-64px)] overflow-hidden bg-background"
 				onDoubleClick={handleCanvasDoubleClick}
-				onTouchStart={handleCanvasTouch}
+				onTouchStart={handleCanvasTouch} // This should now work
 			>
 				{/* Enhanced Mobile Controls */}
 				<div
@@ -1482,7 +1831,7 @@ export const Canvas = forwardRef(
 						transformOrigin: "top left",
 						backgroundImage:
 							"radial-gradient(circle, #ddd 1px, transparent 1px)",
-						backgroundSize: isMobile ? "15px 15px" : "10px 10px",
+						backgroundSize: isMobile ? "20px 20px" : "10px 10px",
 						touchAction: "none",
 					}}
 				>
@@ -1534,6 +1883,11 @@ export const Canvas = forwardRef(
 												handleItemTouchStart(e, item);
 											} else {
 												handleRoomMouseDown(e, item);
+											}
+										}}
+										onTouchMove={(e) => {
+											if (isMobile) {
+												handleItemTouchMove(e, item);
 											}
 										}}
 										onTouchEnd={(e) => {
@@ -1605,6 +1959,8 @@ export const Canvas = forwardRef(
 														className="flex-shrink-0 text-red-500"
 														onClick={(e) => {
 															e.stopPropagation();
+															const itemToDelete =
+																activeRoom; // Store before deletion
 															const newItems =
 																localItems.filter(
 																	(item) =>
@@ -1615,6 +1971,11 @@ export const Canvas = forwardRef(
 																newItems
 															);
 															setActiveRoom(null);
+															// ADD THIS LINE - Missing onDemoAction call for room deletion
+															onDemoAction(
+																"delete",
+																itemToDelete
+															);
 														}}
 													>
 														<Trash2
@@ -1802,7 +2163,7 @@ export const Canvas = forwardRef(
 																newItems
 															);
 															setActiveRoom(null);
-															// Notify demo of delete action
+															// Ensure demo action is called for both furniture AND rooms
 															onDemoAction(
 																"delete",
 																itemToDelete
@@ -1866,36 +2227,25 @@ export const Canvas = forwardRef(
 									borderRadius: "2px",
 								}}
 							/>
-							<span className="text-sm font-bold text-gray-600">
+							<span className="font-bold text-gray-600">
 								{activeRoom.data.label}
 							</span>
 						</div>
-						{activeRoom.type === ITEM_TYPES.FURNITURE && (
-							<button
-								className="flex-shrink-0"
-								onClick={(e) => {
-									e.stopPropagation();
-									handleRotate();
-								}}
-							>
-								<RotateCcwSquare className="w-4 h-4" />
-							</button>
-						)}
 						<button
 							className="flex-shrink-0 text-red-500"
 							onClick={(e) => {
 								e.stopPropagation();
-								const itemToDelete = activeRoom;
+								const itemToDelete = activeRoom; // Store before deletion
 								const newItems = localItems.filter(
 									(item) => item.id !== activeRoom.id
 								);
 								setLocalItems(newItems);
 								setActiveRoom(null);
-								// Notify demo of delete action
+								// ADD THIS LINE - Missing onDemoAction call for room deletion
 								onDemoAction("delete", itemToDelete);
 							}}
 						>
-							<Trash2 className="w-4 h-4 text-red-500" />
+							<Trash2 className="w-4 h-4" />
 						</button>
 					</div>
 				)}
@@ -1957,6 +2307,38 @@ export const Canvas = forwardRef(
 						</span>
 					</button>
 				)}
+				{/* Common context menu for both room and furniture */}
+				<div
+					id="context-menu"
+					className="fixed z-50 hidden bg-white border border-gray-200 rounded-lg shadow-lg"
+					style={{
+						width: 200,
+						// Positioning will be controlled by JavaScript
+					}}
+				>
+					<div className="flex flex-col p-2">
+						<button
+							className="flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-100"
+							onClick={() => {
+								handleRotate();
+								hideContextMenu();
+							}}
+						>
+							<RotateCcwSquare className="w-4 h-4 mr-2" />
+							{t("rotate")}
+						</button>
+						<button
+							className="flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-100"
+							onClick={() => {
+								handleDelete();
+								hideContextMenu();
+							}}
+						>
+							<Trash2 className="w-4 h-4 mr-2" />
+							{t("delete")}
+						</button>
+					</div>
+				</div>
 			</div>
 		);
 	}

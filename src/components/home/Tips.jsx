@@ -212,7 +212,7 @@ export default function Tips() {
 											<div className="relative overflow-hidden border border-gray-200 shadow-2xl bg-gradient-to-br from-white via-white to-gray-50 rounded-xl">
 												{/* Responsive image */}
 												<Image
-													src={`https://d3cbeloe0vn1bb.cloudfront.net/images/tips/${index + 1}.png`}
+													src={`/images/tips/${index + 1}.png`}
 													alt={
 														t(`tip${index + 1}`) ||
 														`Tip ${index + 1}`

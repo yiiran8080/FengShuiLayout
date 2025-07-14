@@ -107,23 +107,23 @@ export default function UploadPic({ onResult }) {
 		setShowModal(false);
 	};
 
-	// Improved room detection function with balanced criteria
-	const detectRoomFeatures = async (file) => {
+	// Replace the existing isRoomImage function and related helper functions with this new comprehensive room detection logic:
+
+	const isRoomImage = (file) => {
 		return new Promise((resolve) => {
 			const img = document.createElement("img");
-			img.src = URL.createObjectURL(file);
-
 			img.onload = () => {
 				const canvas = document.createElement("canvas");
 				const ctx = canvas.getContext("2d");
 
-				const maxSize = 400;
-				const ratio = Math.min(
+				// Optimize image size for analysis
+				const maxSize = 512;
+				const scale = Math.min(
 					maxSize / img.width,
 					maxSize / img.height
 				);
-				canvas.width = img.width * ratio;
-				canvas.height = img.height * ratio;
+				canvas.width = img.width * scale;
+				canvas.height = img.height * scale;
 
 				ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 				const imageData = ctx.getImageData(
@@ -133,75 +133,14 @@ export default function UploadPic({ onResult }) {
 					canvas.height
 				);
 
-				// Early filter: relax color variance threshold
-				let colorVariance = 0;
-				const { data } = imageData;
-				let avgR = 0,
-					avgG = 0,
-					avgB = 0;
-				for (let i = 0; i < data.length; i += 32) {
-					avgR += data[i];
-					avgG += data[i + 1];
-					avgB += data[i + 2];
-				}
-				const samples = data.length / 32;
-				avgR /= samples;
-				avgG /= samples;
-				avgB /= samples;
-				for (let i = 0; i < data.length; i += 32) {
-					colorVariance +=
-						Math.abs(data[i] - avgR) +
-						Math.abs(data[i + 1] - avgG) +
-						Math.abs(data[i + 2] - avgB);
-				}
-				colorVariance /= samples;
-				if (colorVariance < 5) {
-					// Lowered from 10 to 5
-					URL.revokeObjectURL(img.src);
-					return resolve(false);
-				}
+				// Run comprehensive room detection
+				const roomAnalysis = analyzeRoomFeatures(imageData);
+				const isRoom = determineIfRoom(roomAnalysis);
 
-				const analysis = {
-					hasIndoorLighting: detectIndoorLighting(imageData),
-					hasStructuralLines: detectStructuralLines(imageData),
-					hasRoomGeometry: detectRoomGeometry(imageData),
-					hasIndoorColors: detectIndoorColors(imageData),
-					hasDepth: detectDepthIndicators(imageData),
-					aspectRatio: canvas.width / canvas.height,
-					lightingVariance: calculateLightingVariance(imageData),
-					edgeComplexity: calculateEdgeComplexity(imageData),
-				};
-
-				// Essentials: at least 2 out of 3
-				const essentialsCount =
-					(analysis.hasIndoorLighting ? 1 : 0) +
-					(analysis.hasStructuralLines ? 1 : 0) +
-					(analysis.hasRoomGeometry ? 1 : 0);
-
-				// Relaxed supporting features
-				let score = 0;
-				if (analysis.hasIndoorColors) score += 15;
-				if (analysis.hasDepth) score += 10;
-				if (analysis.aspectRatio > 0.5 && analysis.aspectRatio < 3.0)
-					score += 5;
-				if (
-					analysis.lightingVariance > 0.07 &&
-					analysis.lightingVariance < 0.8
-				)
-					score += 10;
-				if (
-					analysis.edgeComplexity > 0.1 &&
-					analysis.edgeComplexity < 0.9
-				)
-					score += 10;
-
-				const isRoom = essentialsCount >= 2 && score >= 10; // Lowered score threshold
-
-				console.log("Room detection analysis (relaxed):", {
-					analysis,
-					score,
-					essentialsCount,
-					isRoom,
+				console.log("Room Detection Analysis:", {
+					...roomAnalysis,
+					finalDecision: isRoom ? "ROOM DETECTED" : "NOT A ROOM",
+					confidence: roomAnalysis.overallScore,
 				});
 
 				URL.revokeObjectURL(img.src);
@@ -209,116 +148,1071 @@ export default function UploadPic({ onResult }) {
 			};
 
 			img.onerror = () => {
+				console.error("Failed to load image for room detection");
 				URL.revokeObjectURL(img.src);
 				resolve(false);
 			};
+
+			img.src = URL.createObjectURL(file);
 		});
 	};
 
-	// Detect indoor lighting patterns (more strict)
-	const detectIndoorLighting = (imageData) => {
+	// Main analysis function that checks all room indicators
+	const analyzeRoomFeatures = (imageData) => {
 		const { data, width, height } = imageData;
-		let veryBrightSpots = 0;
-		let moderateBrightSpots = 0;
-		let darkSpots = 0;
-		let totalPixels = 0;
 
-		// Sample every 8th pixel for better coverage
-		for (let i = 0; i < data.length; i += 32) {
-			const r = data[i];
-			const g = data[i + 1];
-			const b = data[i + 2];
+		return {
+			// Architectural features
+			wallDetection: detectWalls(imageData),
+			floorDetection: detectFloor(imageData),
+			ceilingDetection: detectCeiling(imageData),
+			cornersDetection: detectRoomCorners(imageData),
 
-			const brightness = (r + g + b) / 3;
-			if (brightness > 220) veryBrightSpots++;
-			else if (brightness > 150) moderateBrightSpots++;
-			else if (brightness < 60) darkSpots++;
-			totalPixels++;
-		}
+			// Openings and fixtures
+			doorDetection: detectDoors(imageData),
+			windowDetection: detectWindows(imageData),
 
-		const veryBrightRatio = veryBrightSpots / totalPixels;
-		const moderateBrightRatio = moderateBrightSpots / totalPixels;
-		const darkRatio = darkSpots / totalPixels;
+			// Lighting and atmosphere
+			lightingAnalysis: analyzeLighting(imageData),
+			shadowAnalysis: analyzeShadows(imageData),
 
-		// Indoor spaces have controlled lighting: some bright spots (lights/windows),
-		// moderate brightness areas, and some shadows
-		return (
-			veryBrightRatio > 0.02 &&
-			veryBrightRatio < 0.15 &&
-			moderateBrightRatio > 0.25 &&
-			darkRatio > 0.1 &&
-			darkRatio < 0.4
-		);
+			// Indoor elements
+			furnitureDetection: detectFurniture(imageData),
+			textureAnalysis: analyzeTextures(imageData),
+			colorAnalysis: analyzeIndoorColors(imageData),
+
+			// Spatial characteristics
+			perspectiveAnalysis: analyzePerspective(imageData),
+			depthAnalysis: analyzeDepth(imageData),
+			scaleAnalysis: analyzeScale(imageData),
+
+			// Calculate overall score
+			overallScore: 0, // Will be calculated in determineIfRoom
+		};
 	};
 
-	// Detect structural lines with better edge detection
-	const detectStructuralLines = (imageData) => {
-		const { data, width, height } = imageData;
-		let strongHorizontalEdges = 0;
-		let strongVerticalEdges = 0;
-		let totalChecks = 0;
+	// Determine if image is a room based on analysis
+	const determineIfRoom = (analysis) => {
+		let score = 0;
+		let maxScore = 0;
 
-		// More comprehensive edge detection
-		for (let y = 5; y < height - 5; y += 5) {
-			for (let x = 5; x < width - 5; x += 5) {
+		// Architectural features (high weight)
+		if (analysis.wallDetection.detected)
+			score += analysis.wallDetection.confidence * 25;
+		maxScore += 25;
+
+		if (analysis.floorDetection.detected)
+			score += analysis.floorDetection.confidence * 20;
+		maxScore += 20;
+
+		if (analysis.cornersDetection.detected)
+			score += analysis.cornersDetection.confidence * 15;
+		maxScore += 15;
+
+		// Openings (medium weight)
+		if (analysis.doorDetection.detected)
+			score += analysis.doorDetection.confidence * 15;
+		maxScore += 15;
+
+		if (analysis.windowDetection.detected)
+			score += analysis.windowDetection.confidence * 10;
+		maxScore += 10;
+
+		// Indoor atmosphere (medium weight)
+		if (analysis.lightingAnalysis.isIndoorLighting)
+			score += analysis.lightingAnalysis.confidence * 10;
+		maxScore += 10;
+
+		if (analysis.shadowAnalysis.hasIndoorShadows)
+			score += analysis.shadowAnalysis.confidence * 8;
+		maxScore += 8;
+
+		// Indoor elements (lower weight but important)
+		if (analysis.furnitureDetection.detected)
+			score += analysis.furnitureDetection.confidence * 12;
+		maxScore += 12;
+
+		if (analysis.textureAnalysis.hasIndoorTextures)
+			score += analysis.textureAnalysis.confidence * 8;
+		maxScore += 8;
+
+		if (analysis.colorAnalysis.hasIndoorColors)
+			score += analysis.colorAnalysis.confidence * 7;
+		maxScore += 7;
+
+		// Spatial characteristics (lower weight)
+		if (analysis.perspectiveAnalysis.hasIndoorPerspective)
+			score += analysis.perspectiveAnalysis.confidence * 5;
+		maxScore += 5;
+
+		if (analysis.depthAnalysis.hasIndoorDepth)
+			score += analysis.depthAnalysis.confidence * 5;
+		maxScore += 5;
+
+		analysis.overallScore = (score / maxScore) * 100;
+
+		// Updated room detection logic - simplified and more lenient
+		// Pass if score is higher than 40
+		const meetsScoreThreshold = analysis.overallScore > 37; // Changed from >= 45 to > 40
+
+		// More lenient essential features check
+		const hasBasicRoomFeatures =
+			analysis.wallDetection.detected ||
+			analysis.floorDetection.detected ||
+			analysis.cornersDetection.detected ||
+			analysis.lightingAnalysis.isIndoorLighting ||
+			analysis.furnitureDetection.detected;
+
+		// Room passes if it meets the score threshold AND has at least one basic room feature
+		return meetsScoreThreshold && hasBasicRoomFeatures;
+	};
+
+	// Wall detection - looks for vertical surfaces and wall-like textures
+	const detectWalls = (imageData) => {
+		const { data, width, height } = imageData;
+		let wallIndicators = 0;
+		let verticalLines = 0;
+		let wallTextures = 0;
+
+		// Scan for vertical edges and consistent textures
+		for (let x = 10; x < width - 10; x += 8) {
+			let verticalConsistency = 0;
+			let lastBrightness = null;
+
+			for (let y = 10; y < height - 10; y += 8) {
 				const index = (y * width + x) * 4;
-				const currentBrightness =
+				const brightness =
 					(data[index] + data[index + 1] + data[index + 2]) / 3;
 
-				// Check horizontal edges (walls, furniture tops)
-				const rightIndex = (y * width + (x + 5)) * 4;
-				const rightBrightness =
-					(data[rightIndex] +
-						data[rightIndex + 1] +
-						data[rightIndex + 2]) /
-					3;
+				// Check for vertical consistency (wall characteristic)
+				if (lastBrightness !== null) {
+					if (Math.abs(brightness - lastBrightness) < 30) {
+						verticalConsistency++;
+					}
+				}
+				lastBrightness = brightness;
 
-				// Check vertical edges (wall corners, furniture sides)
+				// Check for wall-like colors (neutral tones)
+				const r = data[index],
+					g = data[index + 1],
+					b = data[index + 2];
+				if (isWallColor(r, g, b)) {
+					wallTextures++;
+				}
+			}
+
+			if (verticalConsistency > (height / 8) * 0.6) {
+				verticalLines++;
+			}
+		}
+
+		// Check for horizontal wall boundaries
+		let horizontalBoundaries = 0;
+		for (let y = height * 0.2; y < height * 0.8; y += 15) {
+			let edgeStrength = 0;
+			for (let x = 10; x < width - 10; x += 10) {
+				const topIndex = ((y - 5) * width + x) * 4;
 				const bottomIndex = ((y + 5) * width + x) * 4;
-				const bottomBrightness =
-					(data[bottomIndex] +
-						data[bottomIndex + 1] +
-						data[bottomIndex + 2]) /
-					3;
 
-				// Stronger threshold for room edges
-				if (Math.abs(currentBrightness - rightBrightness) > 40)
-					strongHorizontalEdges++;
-				if (Math.abs(currentBrightness - bottomBrightness) > 40)
-					strongVerticalEdges++;
+				if (topIndex >= 0 && bottomIndex < data.length) {
+					const topBright =
+						(data[topIndex] +
+							data[topIndex + 1] +
+							data[topIndex + 2]) /
+						3;
+					const bottomBright =
+						(data[bottomIndex] +
+							data[bottomIndex + 1] +
+							data[bottomIndex + 2]) /
+						3;
+
+					if (Math.abs(topBright - bottomBright) > 25) {
+						edgeStrength++;
+					}
+				}
+			}
+			if (edgeStrength > (width / 10) * 0.3) {
+				horizontalBoundaries++;
+			}
+		}
+
+		const wallScore =
+			(verticalLines / (width / 8)) * 0.5 +
+			(wallTextures / ((width * height) / 64)) * 0.3 +
+			(horizontalBoundaries / 10) * 0.2;
+
+		return {
+			detected: wallScore > 0.3,
+			confidence: Math.min(wallScore, 1.0),
+			verticalLines,
+			wallTextures,
+			horizontalBoundaries,
+		};
+	};
+
+	// Floor detection - looks for horizontal surfaces at bottom of image
+	const detectFloor = (imageData) => {
+		const { data, width, height } = imageData;
+		const floorRegionStart = Math.floor(height * 0.6); // Bottom 40% of image
+		let floorTextures = 0;
+		let horizontalPatterns = 0;
+		let totalChecks = 0;
+
+		// Analyze bottom portion for floor characteristics
+		for (let y = floorRegionStart; y < height - 5; y += 6) {
+			for (let x = 5; x < width - 5; x += 8) {
+				const index = (y * width + x) * 4;
+				const r = data[index],
+					g = data[index + 1],
+					b = data[index + 2];
+
+				// Check for floor-like colors and textures
+				if (isFloorColor(r, g, b)) {
+					floorTextures++;
+				}
+
+				// Check for horizontal consistency (floor perspective)
+				const rightIndex = (y * width + (x + 8)) * 4;
+				if (rightIndex < data.length) {
+					const currentBright = (r + g + b) / 3;
+					const rightBright =
+						(data[rightIndex] +
+							data[rightIndex + 1] +
+							data[rightIndex + 2]) /
+						3;
+
+					if (Math.abs(currentBright - rightBright) < 25) {
+						horizontalPatterns++;
+					}
+				}
 				totalChecks++;
 			}
 		}
 
-		const horizontalEdgeRatio = strongHorizontalEdges / totalChecks;
-		const verticalEdgeRatio = strongVerticalEdges / totalChecks;
+		const floorScore =
+			(floorTextures / totalChecks) * 0.7 +
+			(horizontalPatterns / totalChecks) * 0.3;
 
-		// Rooms have significant architectural lines
-		return horizontalEdgeRatio > 0.15 && verticalEdgeRatio > 0.15;
+		return {
+			detected: floorScore > 0.25,
+			confidence: Math.min(floorScore * 2, 1.0),
+			floorTextures,
+			horizontalPatterns,
+		};
 	};
 
-	// New function to detect room geometry (corners, rectangular shapes)
-	const detectRoomGeometry = (imageData) => {
+	// Ceiling detection - looks for horizontal surfaces at top of image
+	const detectCeiling = (imageData) => {
+		const { data, width, height } = imageData;
+		const ceilingRegionEnd = Math.floor(height * 0.4); // Top 40% of image
+		let ceilingTextures = 0;
+		let uniformAreas = 0;
+		let totalChecks = 0;
+
+		for (let y = 5; y < ceilingRegionEnd; y += 8) {
+			for (let x = 5; x < width - 5; x += 8) {
+				const index = (y * width + x) * 4;
+				const r = data[index],
+					g = data[index + 1],
+					b = data[index + 2];
+
+				// Check for ceiling-like colors (usually light/white)
+				if (isCeilingColor(r, g, b)) {
+					ceilingTextures++;
+				}
+
+				// Check for uniform areas (typical of ceilings)
+				let uniformity = 0;
+				for (let dx = -4; dx <= 4; dx += 4) {
+					for (let dy = -4; dy <= 4; dy += 4) {
+						const checkX = x + dx,
+							checkY = y + dy;
+						if (
+							checkX >= 0 &&
+							checkX < width &&
+							checkY >= 0 &&
+							checkY < height
+						) {
+							const checkIndex = (checkY * width + checkX) * 4;
+							const checkBright =
+								(data[checkIndex] +
+									data[checkIndex + 1] +
+									data[checkIndex + 2]) /
+								3;
+							const currentBright = (r + g + b) / 3;
+
+							if (Math.abs(checkBright - currentBright) < 20) {
+								uniformity++;
+							}
+						}
+					}
+				}
+
+				if (uniformity >= 6) {
+					uniformAreas++;
+				}
+				totalChecks++;
+			}
+		}
+
+		const ceilingScore =
+			(ceilingTextures / totalChecks) * 0.6 +
+			(uniformAreas / totalChecks) * 0.4;
+
+		return {
+			detected: ceilingScore > 0.2,
+			confidence: Math.min(ceilingScore * 2.5, 1.0),
+			ceilingTextures,
+			uniformAreas,
+		};
+	};
+
+	// Room corners detection - looks for corner formations
+	const detectRoomCorners = (imageData) => {
 		const { data, width, height } = imageData;
 		let corners = 0;
-		let rectangularShapes = 0;
 
-		// Look for corner-like patterns (L-shapes in brightness)
+		// Check potential corner areas
+		const cornerRegions = [
+			{ x: 0, y: 0, w: width * 0.3, h: height * 0.3 }, // Top-left
+			{ x: width * 0.7, y: 0, w: width * 0.3, h: height * 0.3 }, // Top-right
+			{ x: 0, y: height * 0.7, w: width * 0.3, h: height * 0.3 }, // Bottom-left
+			{
+				x: width * 0.7,
+				y: height * 0.7,
+				w: width * 0.3,
+				h: height * 0.3,
+			}, // Bottom-right
+		];
+
+		cornerRegions.forEach((region) => {
+			let cornerStrength = 0;
+			const samples = 20;
+
+			for (let i = 0; i < samples; i++) {
+				const x = region.x + Math.random() * region.w;
+				const y = region.y + Math.random() * region.h;
+
+				if (x >= 5 && x < width - 5 && y >= 5 && y < height - 5) {
+					cornerStrength += analyzeCornerPoint(
+						data,
+						width,
+						height,
+						Math.floor(x),
+						Math.floor(y)
+					);
+				}
+			}
+
+			if (cornerStrength / samples > 0.3) {
+				corners++;
+			}
+		});
+
+		return {
+			detected: corners >= 2,
+			confidence: corners / 4,
+			cornersFound: corners,
+		};
+	};
+
+	// Analyze a point for corner characteristics
+	const analyzeCornerPoint = (data, width, height, x, y) => {
+		const directions = [
+			[-1, -1],
+			[0, -1],
+			[1, -1],
+			[-1, 0],
+			[1, 0],
+			[-1, 1],
+			[0, 1],
+			[1, 1],
+		];
+
+		const centerIndex = (y * width + x) * 4;
+		const centerBright =
+			(data[centerIndex] +
+				data[centerIndex + 1] +
+				data[centerIndex + 2]) /
+			3;
+
+		let edgeCount = 0;
+		let brightnessDiffs = [];
+
+		directions.forEach(([dx, dy]) => {
+			const nx = x + dx * 3,
+				ny = y + dy * 3;
+			if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+				const neighborIndex = (ny * width + nx) * 4;
+				const neighborBright =
+					(data[neighborIndex] +
+						data[neighborIndex + 1] +
+						data[neighborIndex + 2]) /
+					3;
+				const diff = Math.abs(centerBright - neighborBright);
+				brightnessDiffs.push(diff);
+
+				if (diff > 30) {
+					edgeCount++;
+				}
+			}
+		});
+
+		// Corner should have multiple edge directions
+		return edgeCount >= 4 ? edgeCount / 8 : 0;
+	};
+
+	// Door detection - looks for door-like rectangular openings
+	const detectDoors = (imageData) => {
+		const { data, width, height } = imageData;
+		let doorShapes = 0;
+
+		// Scan for door-like rectangles (tall and narrow)
+		for (let y = height * 0.1; y < height * 0.9; y += 12) {
+			for (let x = 10; x < width - 40; x += 12) {
+				const doorScore = analyzeDoorRegion(data, width, height, x, y);
+				if (doorScore > 0.5) {
+					doorShapes++;
+				}
+			}
+		}
+
+		return {
+			detected: doorShapes > 0,
+			confidence: Math.min(doorShapes / 3, 1.0),
+			doorShapes,
+		};
+	};
+
+	// Analyze region for door characteristics
+	const analyzeDoorRegion = (data, width, height, startX, startY) => {
+		const doorWidth = 30,
+			doorHeight = 60;
+
+		if (startX + doorWidth >= width || startY + doorHeight >= height) {
+			return 0;
+		}
+
+		let darkInterior = 0;
+		let frameEdges = 0;
+		let totalChecks = 0;
+
+		// Check interior darkness and frame edges
+		for (let y = startY; y < startY + doorHeight; y += 6) {
+			for (let x = startX; x < startX + doorWidth; x += 6) {
+				const index = (y * width + x) * 4;
+				const brightness =
+					(data[index] + data[index + 1] + data[index + 2]) / 3;
+
+				// Door interior should be darker
+				if (brightness < 80) {
+					darkInterior++;
+				}
+
+				// Check if we're at the edge
+				const isEdge =
+					x === startX ||
+					x === startX + doorWidth - 6 ||
+					y === startY ||
+					y === startY + doorHeight - 6;
+
+				if (isEdge && brightness > 100) {
+					frameEdges++;
+				}
+
+				totalChecks++;
+			}
+		}
+
+		const darkRatio = darkInterior / totalChecks;
+		const frameRatio = frameEdges / (totalChecks * 0.3); // Approximate edge pixels
+
+		return darkRatio * 0.7 + frameRatio * 0.3;
+	};
+
+	// Window detection - looks for bright rectangular areas
+	const detectWindows = (imageData) => {
+		const { data, width, height } = imageData;
+		let windowShapes = 0;
+
+		for (let y = height * 0.1; y < height * 0.7; y += 15) {
+			for (let x = 10; x < width - 50; x += 15) {
+				const windowScore = analyzeWindowRegion(
+					data,
+					width,
+					height,
+					x,
+					y
+				);
+				if (windowScore > 0.4) {
+					windowShapes++;
+				}
+			}
+		}
+
+		return {
+			detected: windowShapes > 0,
+			confidence: Math.min(windowShapes / 2, 1.0),
+			windowShapes,
+		};
+	};
+
+	// Analyze region for window characteristics
+	const analyzeWindowRegion = (data, width, height, startX, startY) => {
+		const windowWidth = 50,
+			windowHeight = 40;
+
+		if (startX + windowWidth >= width || startY + windowHeight >= height) {
+			return 0;
+		}
+
+		let brightInterior = 0;
+		let totalChecks = 0;
+
+		for (let y = startY + 5; y < startY + windowHeight - 5; y += 6) {
+			for (let x = startX + 5; x < startX + windowWidth - 5; x += 6) {
+				const index = (y * width + x) * 4;
+				const brightness =
+					(data[index] + data[index + 1] + data[index + 2]) / 3;
+
+				if (brightness > 150) {
+					brightInterior++;
+				}
+				totalChecks++;
+			}
+		}
+
+		return brightInterior / totalChecks;
+	};
+
+	// Lighting analysis - checks for indoor lighting characteristics
+	const analyzeLighting = (imageData) => {
+		const { data } = imageData;
+		let brightPixels = 0,
+			darkPixels = 0,
+			mediumPixels = 0;
+		let totalPixels = 0;
+
+		for (let i = 0; i < data.length; i += 12) {
+			const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
+
+			if (brightness > 180) brightPixels++;
+			else if (brightness < 70) darkPixels++;
+			else mediumPixels++;
+
+			totalPixels++;
+		}
+
+		const brightRatio = brightPixels / totalPixels;
+		const darkRatio = darkPixels / totalPixels;
+		const mediumRatio = mediumPixels / totalPixels;
+
+		// Indoor lighting has balanced bright/medium/dark areas
+		const isIndoorLighting =
+			brightRatio > 0.05 &&
+			brightRatio < 0.4 &&
+			darkRatio > 0.1 &&
+			darkRatio < 0.5 &&
+			mediumRatio > 0.3;
+
+		return {
+			isIndoorLighting,
+			confidence: isIndoorLighting ? 0.8 : 0.2,
+			brightRatio,
+			darkRatio,
+			mediumRatio,
+		};
+	};
+
+	// Shadow analysis - looks for indoor shadow patterns
+	const analyzeShadows = (imageData) => {
+		const { data, width, height } = imageData;
+		let shadowAreas = 0;
+		let shadowTransitions = 0;
+		let totalChecks = 0;
+
 		for (let y = 10; y < height - 10; y += 10) {
 			for (let x = 10; x < width - 10; x += 10) {
-				const centerIndex = (y * width + x) * 4;
-				const centerBright =
-					(data[centerIndex] +
-						data[centerIndex + 1] +
-						data[centerIndex + 2]) /
-					3;
+				const index = (y * width + x) * 4;
+				const brightness =
+					(data[index] + data[index + 1] + data[index + 2]) / 3;
 
-				// Check surrounding pixels for corner patterns
-				const topIndex = ((y - 5) * width + x) * 4;
-				const bottomIndex = ((y + 5) * width + x) * 4;
-				const leftIndex = (y * width + (x - 5)) * 4;
-				const rightIndex = (y * width + (x + 5)) * 4;
+				if (brightness < 60) {
+					shadowAreas++;
 
+					// Check for shadow transitions (edges)
+					const rightIndex = (y * width + (x + 10)) * 4;
+					if (rightIndex < data.length) {
+						const rightBright =
+							(data[rightIndex] +
+								data[rightIndex + 1] +
+								data[rightIndex + 2]) /
+							3;
+						if (rightBright > brightness + 40) {
+							shadowTransitions++;
+						}
+					}
+				}
+				totalChecks++;
+			}
+		}
+
+		const shadowRatio = shadowAreas / totalChecks;
+		const transitionRatio = shadowTransitions / totalChecks;
+		const hasIndoorShadows =
+			shadowRatio > 0.05 && shadowRatio < 0.4 && transitionRatio > 0.02;
+
+		return {
+			hasIndoorShadows,
+			confidence: hasIndoorShadows ? 0.7 : 0.3,
+			shadowRatio,
+			transitionRatio,
+		};
+	};
+
+	// Furniture detection - looks for furniture-like shapes and colors
+	const detectFurniture = (imageData) => {
+		const { data, width, height } = imageData;
+		let furnitureShapes = 0;
+		let furnitureColors = 0;
+		let totalChecks = 0;
+
+		for (let y = height * 0.3; y < height - 20; y += 15) {
+			for (let x = 20; x < width - 20; x += 15) {
+				const index = (y * width + x) * 4;
+				const r = data[index],
+					g = data[index + 1],
+					b = data[index + 2];
+
+				// Check for furniture colors (wood, fabric, etc.)
+				if (isFurnitureColor(r, g, b)) {
+					furnitureColors++;
+				}
+
+				// Check for furniture-like rectangular shapes
+				if (
+					analyzeRectangularShape(data, width, height, x, y, 25, 20)
+				) {
+					furnitureShapes++;
+				}
+
+				totalChecks++;
+			}
+		}
+
+		const furnitureScore =
+			(furnitureColors / totalChecks) * 0.6 +
+			(furnitureShapes / totalChecks) * 0.4;
+
+		return {
+			detected: furnitureScore > 0.15,
+			confidence: Math.min(furnitureScore * 3, 1.0),
+			furnitureColors,
+			furnitureShapes,
+		};
+	};
+
+	// Texture analysis - checks for indoor surface textures
+	const analyzeTextures = (imageData) => {
+		const { data, width, height } = imageData;
+		let smoothTextures = 0;
+		let patternedTextures = 0;
+		let totalChecks = 0;
+
+		for (let y = 10; y < height - 10; y += 12) {
+			for (let x = 10; x < width - 10; x += 12) {
+				const textureType = analyzeLocalTexture(
+					data,
+					width,
+					height,
+					x,
+					y
+				);
+
+				if (textureType === "smooth") smoothTextures++;
+				else if (textureType === "patterned") patternedTextures++;
+
+				totalChecks++;
+			}
+		}
+
+		const smoothRatio = smoothTextures / totalChecks;
+		const patternedRatio = patternedTextures / totalChecks;
+		const hasIndoorTextures = smoothRatio > 0.2 || patternedRatio > 0.1;
+
+		return {
+			hasIndoorTextures,
+			confidence: hasIndoorTextures ? 0.6 : 0.4,
+			smoothRatio,
+			patternedRatio,
+		};
+	};
+
+	// Analyze local texture at a point
+	const analyzeLocalTexture = (data, width, height, x, y) => {
+		let variance = 0;
+		let samples = 0;
+		let brightnesses = [];
+
+		// Sample 3x3 area
+		for (let dy = -3; dy <= 3; dy += 3) {
+			for (let dx = -3; dx <= 3; dx += 3) {
+				const nx = x + dx,
+					ny = y + dy;
+				if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+					const index = (ny * width + nx) * 4;
+					const brightness =
+						(data[index] + data[index + 1] + data[index + 2]) / 3;
+					brightnesses.push(brightness);
+					samples++;
+				}
+			}
+		}
+
+		if (samples > 0) {
+			const mean = brightnesses.reduce((a, b) => a + b, 0) / samples;
+			variance =
+				brightnesses.reduce(
+					(sum, b) => sum + Math.pow(b - mean, 2),
+					0
+				) / samples;
+		}
+
+		if (variance < 200) return "smooth";
+		else if (variance > 800) return "rough";
+		else return "patterned";
+	};
+
+	// Indoor color analysis
+	const analyzeIndoorColors = (imageData) => {
+		const { data } = imageData;
+		let neutralColors = 0;
+		let warmColors = 0;
+		let vibrantColors = 0;
+		let totalPixels = 0;
+
+		for (let i = 0; i < data.length; i += 16) {
+			const r = data[i],
+				g = data[i + 1],
+				b = data[i + 2];
+
+			if (isNeutralColor(r, g, b)) neutralColors++;
+			else if (isWarmColor(r, g, b)) warmColors++;
+			else if (isVibrantColor(r, g, b)) vibrantColors++;
+
+			totalPixels++;
+		}
+
+		const neutralRatio = neutralColors / totalPixels;
+		const warmRatio = warmColors / totalPixels;
+		const vibrantRatio = vibrantColors / totalPixels;
+
+		const hasIndoorColors = neutralRatio > 0.3 && vibrantRatio < 0.3;
+
+		return {
+			hasIndoorColors,
+			confidence: hasIndoorColors ? 0.7 : 0.3,
+			neutralRatio,
+			warmRatio,
+			vibrantRatio,
+		};
+	};
+
+	// Perspective analysis - checks for indoor perspective cues
+	const analyzePerspective = (imageData) => {
+		const { data, width, height } = imageData;
+		let convergeingLines = 0;
+		let horizontalLines = 0;
+
+		// Check for perspective lines
+		for (let y = height * 0.3; y < height * 0.7; y += 20) {
+			let lineStrength = 0;
+			for (let x = 10; x < width - 10; x += 10) {
+				const index = (y * width + x) * 4;
+				const rightIndex = (y * width + (x + 10)) * 4;
+
+				if (rightIndex < data.length) {
+					const brightness1 =
+						(data[index] + data[index + 1] + data[index + 2]) / 3;
+					const brightness2 =
+						(data[rightIndex] +
+							data[rightIndex + 1] +
+							data[rightIndex + 2]) /
+						3;
+
+					if (Math.abs(brightness1 - brightness2) > 25) {
+						lineStrength++;
+					}
+				}
+			}
+
+			if (lineStrength > (width / 10) * 0.3) {
+				horizontalLines++;
+			}
+		}
+
+		const hasIndoorPerspective = horizontalLines >= 2;
+
+		return {
+			hasIndoorPerspective,
+			confidence: hasIndoorPerspective ? 0.6 : 0.4,
+			horizontalLines,
+		};
+	};
+
+	// Depth analysis - looks for depth cues
+	const analyzeDepth = (imageData) => {
+		const { data, width, height } = imageData;
+		let depthCues = 0;
+
+		// Check for size variation (things get smaller with distance)
+		const foregroundBrightness = getRegionBrightness(
+			data,
+			width,
+			height,
+			0,
+			height * 0.7,
+			width,
+			height
+		);
+		const backgroundBrightness = getRegionBrightness(
+			data,
+			width,
+			height,
+			0,
+			0,
+			width,
+			height * 0.3
+		);
+
+		if (Math.abs(foregroundBrightness - backgroundBrightness) > 20) {
+			depthCues++;
+		}
+
+		// Check for overlapping objects
+		let overlaps = 0;
+		for (let y = height * 0.2; y < height * 0.8; y += 25) {
+			for (let x = width * 0.2; x < width * 0.8; x += 25) {
+				if (analyzeObjectOverlap(data, width, height, x, y)) {
+					overlaps++;
+				}
+			}
+		}
+
+		if (overlaps > 2) depthCues++;
+
+		const hasIndoorDepth = depthCues >= 1;
+
+		return {
+			hasIndoorDepth,
+			confidence: hasIndoorDepth ? 0.5 : 0.3,
+			depthCues,
+		};
+	};
+
+	// Scale analysis - checks if objects are at indoor scale
+	const analyzeScale = (imageData) => {
+		const { data, width, height } = imageData;
+		let appropriateScale = 0;
+		let totalObjects = 0;
+
+		// Look for objects of appropriate indoor scale
+		for (let y = 20; y < height - 40; y += 30) {
+			for (let x = 20; x < width - 40; x += 30) {
+				const objectSize = measureObjectSize(data, width, height, x, y);
+				if (objectSize > 10 && objectSize < width * 0.3) {
+					appropriateScale++;
+				}
+				totalObjects++;
+			}
+		}
+
+		const scaleRatio = appropriateScale / totalObjects;
+		const hasAppropriateScale = scaleRatio > 0.3;
+
+		return {
+			hasAppropriateScale,
+			confidence: hasAppropriateScale ? 0.5 : 0.3,
+			scaleRatio,
+		};
+	};
+
+	// Helper functions for color classification
+	const isWallColor = (r, g, b) => {
+		const brightness = (r + g + b) / 3;
+		const saturation = Math.max(r, g, b) - Math.min(r, g, b);
+		return brightness > 120 && brightness < 240 && saturation < 40;
+	};
+
+	const isFloorColor = (r, g, b) => {
+		// Wood, tile, carpet colors
+		const isWood =
+			r > 80 && r < 180 && g > 60 && g < 140 && b > 30 && b < 100;
+		const isTile =
+			Math.abs(r - g) < 30 &&
+			Math.abs(g - b) < 30 &&
+			(r + g + b) / 3 > 100;
+		const isCarpet =
+			Math.max(r, g, b) - Math.min(r, g, b) > 20 && (r + g + b) / 3 > 60;
+		return isWood || isTile || isCarpet;
+	};
+
+	const isCeilingColor = (r, g, b) => {
+		const brightness = (r + g + b) / 3;
+		const saturation = Math.max(r, g, b) - Math.min(r, g, b);
+		return brightness > 180 && saturation < 30;
+	};
+
+	const isFurnitureColor = (r, g, b) => {
+		// Wood, fabric, leather, metal colors
+		const isWood =
+			r > 60 && r < 160 && g > 40 && g < 120 && b > 20 && b < 80;
+		const isFabric =
+			Math.max(r, g, b) - Math.min(r, g, b) > 15 && (r + g + b) / 3 > 50;
+		const isLeather =
+			r > 80 && r < 140 && g > 50 && g < 100 && b > 30 && b < 70;
+		return isWood || isFabric || isLeather;
+	};
+
+	const isNeutralColor = (r, g, b) => {
+		const avg = (r + g + b) / 3;
+		const maxDiff = Math.max(
+			Math.abs(r - avg),
+			Math.abs(g - avg),
+			Math.abs(b - avg)
+		);
+		return maxDiff < 30 && avg > 60 && avg < 200;
+	};
+
+	const isWarmColor = (r, g, b) => {
+		return r > g && r > b && r > 100;
+	};
+
+	const isVibrantColor = (r, g, b) => {
+		const saturation = Math.max(r, g, b) - Math.min(r, g, b);
+		return saturation > 60;
+	};
+
+	// Additional helper functions
+	const getRegionBrightness = (
+		data,
+		width,
+		height,
+		startX,
+		startY,
+		endX,
+		endY
+	) => {
+		let totalBrightness = 0;
+		let pixels = 0;
+
+		for (let y = startY; y < endY; y += 5) {
+			for (let x = startX; x < endX; x += 5) {
+				if (x >= 0 && x < width && y >= 0 && y < height) {
+					const index = (y * width + x) * 4;
+					totalBrightness +=
+						(data[index] + data[index + 1] + data[index + 2]) / 3;
+					pixels++;
+				}
+			}
+		}
+
+		return pixels > 0 ? totalBrightness / pixels : 0;
+	};
+
+	const analyzeObjectOverlap = (data, width, height, x, y) => {
+		// Simple overlap detection based on edge complexity
+		let edgeCount = 0;
+		const checkRadius = 8;
+
+		for (let dy = -checkRadius; dy <= checkRadius; dy += 4) {
+			for (let dx = -checkRadius; dx <= checkRadius; dx += 4) {
+				const nx = x + dx,
+					ny = y + dy;
+				if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+					const index = (ny * width + nx) * 4;
+					const centerIndex = (y * width + x) * 4;
+
+					const brightness1 =
+						(data[index] + data[index + 1] + data[index + 2]) / 3;
+					const brightness2 =
+						(data[centerIndex] +
+							data[centerIndex + 1] +
+							data[centerIndex + 2]) /
+						3;
+					if (Math.abs(brightness1 - brightness2) > 30) {
+						edgeCount++;
+					}
+				}
+			}
+		}
+
+		return edgeCount > 8; // High edge density suggests overlapping objects
+	};
+
+	const measureObjectSize = (data, width, height, startX, startY) => {
+		// Measure connected region size
+		const visited = new Set();
+		const stack = [[startX, startY]];
+		const startIndex = (startY * width + startX) * 4;
+		const startBrightness =
+			(data[startIndex] + data[startIndex + 1] + data[startIndex + 2]) /
+			3;
+		let size = 0;
+
+		while (stack.length > 0 && size < 100) {
+			// Limit to prevent excessive computation
+			const [x, y] = stack.pop();
+			const key = `${x},${y}`;
+
+			if (
+				visited.has(key) ||
+				x < 0 ||
+				x >= width ||
+				y < 0 ||
+				y >= height
+			) {
+				continue;
+			}
+
+			visited.add(key);
+			const index = (y * width + x) * 4;
+			const brightness =
+				(data[index] + data[index + 1] + data[index + 2]) / 3;
+
+			if (Math.abs(brightness - startBrightness) < 25) {
+				size++;
+				// Add neighbors
+				stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+			}
+		}
+
+		return size;
+	};
+
+	const analyzeRectangularShape = (
+		data,
+		width,
+		height,
+		x,
+		y,
+		rectWidth,
+		rectHeight
+	) => {
+		if (x + rectWidth >= width || y + rectHeight >= height) {
+			return false;
+		}
+
+		let edgePixels = 0;
+		let totalEdgePixels = 0;
+
+		// Check perimeter for consistent edges
+		for (let i = 0; i < rectWidth; i += 3) {
+			// Top and bottom edges
+			const topIndex = (y * width + (x + i)) * 4;
+			const bottomIndex = ((y + rectHeight) * width + (x + i)) * 4;
+
+			if (bottomIndex < data.length) {
 				const topBright =
 					(data[topIndex] + data[topIndex + 1] + data[topIndex + 2]) /
 					3;
@@ -327,6 +1221,20 @@ export default function UploadPic({ onResult }) {
 						data[bottomIndex + 1] +
 						data[bottomIndex + 2]) /
 					3;
+
+				if (Math.abs(topBright - bottomBright) < 20) {
+					edgePixels++;
+				}
+				totalEdgePixels++;
+			}
+		}
+
+		for (let i = 0; i < rectHeight; i += 3) {
+			// Left and right edges
+			const leftIndex = ((y + i) * width + x) * 4;
+			const rightIndex = ((y + i) * width + (x + rectWidth)) * 4;
+
+			if (rightIndex < data.length) {
 				const leftBright =
 					(data[leftIndex] +
 						data[leftIndex + 1] +
@@ -338,197 +1246,17 @@ export default function UploadPic({ onResult }) {
 						data[rightIndex + 2]) /
 					3;
 
-				// Corner detection: significant brightness differences in perpendicular directions
-				const verticalDiff = Math.abs(topBright - bottomBright);
-				const horizontalDiff = Math.abs(leftBright - rightBright);
-
-				if (verticalDiff > 50 && horizontalDiff > 50) corners++;
-			}
-		}
-
-		// Rooms typically have multiple corners from walls, furniture, etc.
-		return corners > (width * height) / 2000; // Threshold based on image size
-	};
-
-	// Calculate lighting variance (rooms have varied lighting)
-	const calculateLightingVariance = (imageData) => {
-		const { data } = imageData;
-		let brightnesses = [];
-
-		for (let i = 0; i < data.length; i += 40) {
-			const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
-			brightnesses.push(brightness);
-		}
-
-		const mean =
-			brightnesses.reduce((sum, b) => sum + b, 0) / brightnesses.length;
-		const variance =
-			brightnesses.reduce((sum, b) => sum + Math.pow(b - mean, 2), 0) /
-			brightnesses.length;
-		const stdDev = Math.sqrt(variance);
-
-		return stdDev / 255; // Normalize to 0-1
-	};
-
-	// Calculate edge complexity (rooms have moderate complexity)
-	const calculateEdgeComplexity = (imageData) => {
-		const { data, width, height } = imageData;
-		let edgeCount = 0;
-		let totalPixels = 0;
-
-		for (let y = 1; y < height - 1; y += 2) {
-			for (let x = 1; x < width - 1; x += 2) {
-				const index = (y * width + x) * 4;
-				const currentBright =
-					(data[index] + data[index + 1] + data[index + 2]) / 3;
-
-				// Check all 8 neighbors
-				let maxDiff = 0;
-				for (let dy = -1; dy <= 1; dy++) {
-					for (let dx = -1; dx <= 1; dx++) {
-						if (dx === 0 && dy === 0) continue;
-						const neighborIndex = ((y + dy) * width + (x + dx)) * 4;
-						const neighborBright =
-							(data[neighborIndex] +
-								data[neighborIndex + 1] +
-								data[neighborIndex + 2]) /
-							3;
-						maxDiff = Math.max(
-							maxDiff,
-							Math.abs(currentBright - neighborBright)
-						);
-					}
+				if (Math.abs(leftBright - rightBright) < 20) {
+					edgePixels++;
 				}
-
-				if (maxDiff > 30) edgeCount++;
-				totalPixels++;
+				totalEdgePixels++;
 			}
 		}
 
-		return edgeCount / totalPixels;
+		return totalEdgePixels > 0 && edgePixels / totalEdgePixels > 0.6;
 	};
 
-	// Stricter indoor color detection
-	const detectIndoorColors = (imageData) => {
-		const { data } = imageData;
-		const colorCategories = {
-			neutral: 0,
-			wood: 0,
-			wall: 0,
-			fabric: 0,
-			vibrant: 0,
-		};
-
-		for (let i = 0; i < data.length; i += 32) {
-			const r = data[i];
-			const g = data[i + 1];
-			const b = data[i + 2];
-
-			if (isNeutralColor(r, g, b)) colorCategories.neutral++;
-			if (isWoodColor(r, g, b)) colorCategories.wood++;
-			if (isWallColor(r, g, b)) colorCategories.wall++;
-			if (isFabricColor(r, g, b)) colorCategories.fabric++;
-			if (isVibrantColor(r, g, b)) colorCategories.vibrant++;
-		}
-
-		const totalSamples = data.length / 32;
-		const neutralRatio = colorCategories.neutral / totalSamples;
-		const woodRatio = colorCategories.wood / totalSamples;
-		const wallRatio = colorCategories.wall / totalSamples;
-		const fabricRatio = colorCategories.fabric / totalSamples;
-		const vibrantRatio = colorCategories.vibrant / totalSamples;
-
-		// Rooms have high neutral/wall colors, some wood, some fabric, but not too vibrant
-		return (
-			neutralRatio + wallRatio > 0.5 &&
-			(woodRatio > 0.05 || fabricRatio > 0.1) &&
-			vibrantRatio < 0.3
-		);
-	};
-
-	// Enhanced color classification
-	const isNeutralColor = (r, g, b) => {
-		const avg = (r + g + b) / 3;
-		const variance =
-			Math.abs(r - avg) + Math.abs(g - avg) + Math.abs(b - avg);
-		return variance < 25 && avg > 80 && avg < 220; // More specific range
-	};
-
-	const isWoodColor = (r, g, b) => {
-		return (
-			r > 80 &&
-			r < 180 &&
-			g > 50 &&
-			g < 140 &&
-			b > 20 &&
-			b < 100 &&
-			r > g &&
-			g > b // Wood has this color progression
-		);
-	};
-
-	const isWallColor = (r, g, b) => {
-		const avg = (r + g + b) / 3;
-		return (
-			avg > 160 &&
-			avg < 240 &&
-			Math.abs(r - g) < 30 &&
-			Math.abs(g - b) < 30 &&
-			Math.abs(r - b) < 30
-		);
-	};
-
-	const isFabricColor = (r, g, b) => {
-		const saturation = Math.max(r, g, b) - Math.min(r, g, b);
-		const brightness = (r + g + b) / 3;
-		return (
-			saturation > 20 &&
-			saturation < 100 &&
-			brightness > 60 &&
-			brightness < 180
-		);
-	};
-
-	const isVibrantColor = (r, g, b) => {
-		const saturation = Math.max(r, g, b) - Math.min(r, g, b);
-		return saturation > 100;
-	};
-
-	// Improved depth detection
-	const detectDepthIndicators = (imageData) => {
-		const { data, width, height } = imageData;
-		let shadowAreas = 0;
-		let midtones = 0;
-		let highlights = 0;
-		let totalSamples = 0;
-
-		for (let i = 0; i < data.length; i += 120) {
-			const r = data[i];
-			const g = data[i + 1];
-			const b = data[i + 2];
-
-			const brightness = (r + g + b) / 3;
-			if (brightness < 60) shadowAreas++;
-			else if (brightness < 140) midtones++;
-			else if (brightness > 180) highlights++;
-			totalSamples++;
-		}
-
-		const shadowRatio = shadowAreas / totalSamples;
-		const midtoneRatio = midtones / totalSamples;
-		const highlightRatio = highlights / totalSamples;
-
-		// Rooms have good distribution of shadows, midtones, and highlights
-		return (
-			shadowRatio > 0.1 &&
-			shadowRatio < 0.35 &&
-			midtoneRatio > 0.3 &&
-			highlightRatio > 0.1 &&
-			highlightRatio < 0.3
-		);
-	};
-
-	// Update handleFileChange to include validation
+	// Update handleFileChange to use the new isRoomImage function
 	const handleFileChange = async (e) => {
 		const f = e.target.files[0];
 		if (
@@ -540,8 +1268,8 @@ export default function UploadPic({ onResult }) {
 			setValidationError(null); // Clear any previous error
 
 			try {
-				// Validate if image contains a room
-				const isRoom = await detectRoomFeatures(f);
+				// Validate if image contains a room - USE THE NEW FUNCTION
+				const isRoom = await isRoomImage(f); // Changed from detectRoomFeatures(f)
 
 				if (!isRoom) {
 					setValidationError(t("invalidRoomImage")); // Set validation error

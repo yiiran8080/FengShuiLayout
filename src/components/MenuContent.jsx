@@ -7,8 +7,9 @@ import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { handleSignOut } from "../app/actions";
+import { useSession, signOut } from "next-auth/react"; // Add signOut import
+import { useRouter } from "@/i18n/navigation"; // Add router for navigation
+// Remove this import: import { handleSignOut } from "../app/actions";
 import {
 	Select,
 	SelectContent,
@@ -17,36 +18,36 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { toast } from "react-toastify";
+
 export default function MenuBar({ className, isOpen, setIsOpen, from }) {
 	const t = useTranslations("home.hero");
 	const t2 = useTranslations("toast");
 	const pathname = usePathname();
+	const router = useRouter(); // Add router
 
 	const { data: session } = useSession();
 	const isLogined = session?.user?.userId;
-	// const [transStatus, setTransStatus] = useState(false)
 
-	// useEffect(() => {
-	//     function load(transStatus) {
-	//         console.log('翻译状态', transStatus)
-	//         setTransStatus(transStatus)
-	//     }
-	//     emitter.on(EVENT_TRANSLATE_STATUS, load)
-	//     return () => {
-	//         emitter.off(EVENT_TRANSLATE_STATUS, load)
-	//     }
-	// }, [])
-	// const onToggle = e => {
-	//     if (pathname.indexOf('report') > -1 && transStatus) {
-	//         e.preventDefault();
-	//         toast.info(t2('translating'));
-	//     }
-	// }
 	const onLoginClick = async () => {
 		setIsOpen(false);
-		toast.info(t2("loading"), { autoClose: 2000 });
+
 		if (isLogined) {
-			await handleSignOut();
+			toast.info(t2("loading"), { autoClose: 2000 });
+			try {
+				// Use client-side signOut instead of server action
+				await signOut({
+					redirect: false, // Don't redirect automatically
+				});
+
+				// Manually redirect after logout
+				router.push("/auth/login");
+
+				// Optional: Show success toast
+				toast.success("Logged out successfully", { autoClose: 1000 });
+			} catch (error) {
+				console.error("Logout error:", error);
+				toast.error("Logout failed", { autoClose: 2000 });
+			}
 		}
 	};
 
@@ -111,7 +112,6 @@ export default function MenuBar({ className, isOpen, setIsOpen, from }) {
 						</SelectTrigger>
 						<SelectContent className="border-none shadow-none">
 							<Link
-								// onClick={onToggle}
 								href={`/${pathname.split("/").slice(2).join("/")}`}
 								locale="zh-CN"
 								className={`block px-4 py-2 text-sm  rounded ${pathname.startsWith("/zh-CN") ? "bg-[#13AB87] text-white" : "text-[#888]"}`}
@@ -119,7 +119,6 @@ export default function MenuBar({ className, isOpen, setIsOpen, from }) {
 								简体中文
 							</Link>
 							<Link
-								// onClick={onToggle}
 								href={`/${pathname.split("/").slice(2).join("/")}`}
 								locale="zh-TW"
 								className={`block px-4 py-2 text-sm  rounded ${pathname.startsWith("/zh-TW") ? "bg-[#13AB87] text-white" : "text-[#888]"}`}

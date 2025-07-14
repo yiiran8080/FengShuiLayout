@@ -41,6 +41,9 @@ export default function Hero() {
 	// Hero images carousel state (separate)
 	const [heroIndex, setHeroIndex] = useState(0);
 
+	// New state for responsive layout detection
+	const [isMobileLayout, setIsMobileLayout] = useState(false);
+
 	useEffect(() => {
 		let timer;
 		let end = null;
@@ -72,6 +75,23 @@ export default function Hero() {
 		fetchEndTime();
 
 		return () => clearInterval(timer);
+	}, []);
+
+	// Responsive layout detection
+	useEffect(() => {
+		const checkLayout = () => {
+			// Switch to mobile layout when screen width is less than 1024px (lg breakpoint)
+			// or when the gap between elements becomes too small
+			const shouldUseMobileLayout = window.innerWidth < 1024;
+			setIsMobileLayout(shouldUseMobileLayout);
+		};
+
+		// Check on mount
+		checkLayout();
+
+		// Check on resize
+		window.addEventListener("resize", checkLayout);
+		return () => window.removeEventListener("resize", checkLayout);
 	}, []);
 
 	// Background overlay carousel effect
@@ -154,44 +174,41 @@ export default function Hero() {
 				}}
 			/>
 
-			{/* Carousel Dots for background overlay effects */}
-			{/* <div className="absolute z-20 flex gap-2 -translate-x-1/2 sm:gap-3 bottom-4 sm:bottom-6 md:bottom-8 left-1/2">
-				{backgroundOverlayEffects.map((overlay, idx) => (
-					<button
-						key={idx}
-						onClick={() => handleBgOverlayClick(idx)}
-						className={`w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full border-2 border-white transition-all duration-300 ${
-							bgOverlayIndex === idx ? "scale-110" : "scale-100"
-						}`}
-						style={{
-							backgroundColor:
-								bgOverlayIndex === idx
-									? overlay.color
-									: "transparent",
-							opacity: bgOverlayIndex === idx ? 1 : 0.6,
-						}}
-						aria-label={`Switch to background overlay ${idx + 1}`}
-					/>
-				))}
-			</div> */}
-
 			<div className="container relative z-10 flex flex-col items-center justify-center px-4 mx-auto md:px-8 max-w-7xl">
 				<div className="flex-1 flex items-center justify-center w-full min-h-[60vh]">
-					<div className="grid items-center w-full grid-cols-1 mx-auto max-w-7xl gap-y-15 gap-x-40 md:gap-x-40 lg:gap-x-40 md:grid-cols-2">
+					<div
+						className={`w-full mx-auto max-w-7xl ${
+							isMobileLayout
+								? "flex flex-col items-center gap-8"
+								: "grid grid-cols-2 items-center gap-x-8 xl:gap-x-16 2xl:gap-x-24"
+						}`}
+					>
 						{/* Left Side */}
 						<motion.div
 							initial={{ opacity: 0, x: -80 }}
 							whileInView={{ opacity: 1, x: 0 }}
 							viewport={{ once: true, amount: 0.3 }}
 							transition={{ duration: 0.8, ease: "easeOut" }}
-							className="flex flex-col items-center justify-center order-2 w-full min-w-0 md:items-start md:order-1"
+							className={`flex flex-col w-full min-w-0 ${
+								isMobileLayout
+									? "items-center order-2"
+									: "items-start justify-center order-1"
+							}`}
 						>
 							<div
-								className="flex flex-col items-center max-w-4xl text-white md:items-start"
+								className={`flex flex-col max-w-4xl text-white ${
+									isMobileLayout
+										? "items-center"
+										: "items-start"
+								}`}
 								style={{ fontFamily: "Noto Serif TC, serif" }}
 							>
 								<h1
-									className="text-2xl sm:text-3xl md:text-[52px] font-bold mb-3 sm:mb-6 md:mb-20 mt-3 sm:mt-6 md:mt-0 leading-tight flex flex-col items-center md:items-start gap-2 sm:gap-3 md:gap-4 w-full"
+									className={`text-2xl sm:text-3xl lg:text-4xl xl:text-[48px] 2xl:text-[52px] font-bold mb-3 sm:mb-6 lg:mb-12 xl:mb-16 2xl:mb-20 mt-3 sm:mt-6 lg:mt-0 leading-tight flex flex-col gap-2 sm:gap-3 lg:gap-4 w-full ${
+										isMobileLayout
+											? "items-center text-center"
+											: "items-start text-left"
+									}`}
 									style={{
 										fontFamily: "Noto Serif TC, serif",
 									}}
@@ -208,7 +225,7 @@ export default function Hero() {
 									>
 										{t("title")}
 									</span>
-									{isMobile ? (
+									{isMobileLayout ? (
 										<>
 											<span
 												className="text-center"
@@ -245,7 +262,7 @@ export default function Hero() {
 										</>
 									) : (
 										<span
-											className="w-full whitespace-nowrap"
+											className="w-full"
 											style={{
 												background:
 													"linear-gradient(135deg, #EDDAC1 0%,rgb(250, 247, 247) 100%)",
@@ -261,9 +278,19 @@ export default function Hero() {
 										</span>
 									)}
 								</h1>
-								<div className="flex justify-center w-full mb-1 md:justify-start sm:mb-2">
+								<div
+									className={`flex w-full mb-1 sm:mb-2 ${
+										isMobileLayout
+											? "justify-center"
+											: "justify-start"
+									}`}
+								>
 									<p
-										className="text-sm sm:text-base md:text-xl text-center md:text-left leading-relaxed max-w-[240px] sm:max-w-none md:max-w-none"
+										className={`text-sm sm:text-base lg:text-lg xl:text-xl leading-relaxed ${
+											isMobileLayout
+												? "text-center max-w-[240px] sm:max-w-none"
+												: "text-left max-w-none"
+										}`}
 										style={{
 											fontFamily: "Noto Serif TC, serif",
 										}}
@@ -271,9 +298,19 @@ export default function Hero() {
 										{t("subtitle1")}
 									</p>
 								</div>
-								<div className="flex justify-center w-full md:justify-start">
+								<div
+									className={`flex w-full ${
+										isMobileLayout
+											? "justify-center"
+											: "justify-start"
+									}`}
+								>
 									<p
-										className="text-sm sm:text-base md:text-xl text-center md:text-left leading-relaxed max-w-[240px] sm:max-w-none md:max-w-none"
+										className={`text-sm sm:text-base lg:text-lg xl:text-xl leading-relaxed ${
+											isMobileLayout
+												? "text-center max-w-[240px] sm:max-w-none"
+												: "text-left max-w-none"
+										}`}
 										style={{
 											fontFamily: "Noto Serif TC, serif",
 										}}
@@ -286,7 +323,9 @@ export default function Hero() {
 
 						{/* Right Side */}
 						<motion.div
-							className="flex flex-col items-center justify-center order-1 w-full min-w-0 md:order-2"
+							className={`flex flex-col items-center justify-center w-full min-w-0 ${
+								isMobileLayout ? "order-1" : "order-2"
+							}`}
 							initial={{ opacity: 0, x: 80 }}
 							whileInView={{ opacity: 1, x: 0 }}
 							viewport={{ once: true, amount: 0.3 }}
@@ -295,7 +334,11 @@ export default function Hero() {
 							<div className="flex flex-col items-center justify-center w-full">
 								{/* Container with 50% opacity and rounded corners */}
 								<div
-									className="relative w-full max-w-[250px] sm:max-w-xs md:max-w-sm p-4 sm:p-5 md:p-5 rounded-[16px] sm:rounded-[20px] md:rounded-[24px]"
+									className={`relative w-full p-4 sm:p-5 rounded-[16px] sm:rounded-[20px] md:rounded-[24px] ${
+										isMobileLayout
+											? "max-w-[280px] sm:max-w-xs"
+											: "max-w-[250px] lg:max-w-xs xl:max-w-sm"
+									}`}
 									style={{
 										backgroundColor:
 											"rgba(255, 255, 255, 0.5)",
@@ -304,7 +347,13 @@ export default function Hero() {
 								>
 									{/* Image Carousel */}
 									<div className="relative w-full mb-1 sm:mb-3 md:mb-2">
-										<div className="relative w-full h-45 sm:h-64 md:h-80 lg:h-[320px] rounded-[12px] sm:rounded-[16px] md:rounded-[20px] overflow-hidden">
+										<div
+											className={`relative w-full rounded-[12px] sm:rounded-[16px] md:rounded-[20px] overflow-hidden ${
+												isMobileLayout
+													? "h-48 sm:h-56"
+													: "h-45 sm:h-64 lg:h-72 xl:h-80 2xl:h-[320px]"
+											}`}
+										>
 											{/* Sliding container */}
 											<div
 												className="flex h-full transition-transform duration-700 ease-in-out"
@@ -325,7 +374,11 @@ export default function Hero() {
 																	fill
 																	alt={`Hero carousel ${idx + 1}`}
 																	src={image}
-																	sizes="(max-width: 640px) 250px, (max-width: 768px) 384px, 448px"
+																	sizes={
+																		isMobileLayout
+																			? "(max-width: 640px) 280px, 384px"
+																			: "(max-width: 640px) 250px, (max-width: 1024px) 384px, 448px"
+																	}
 																	priority={
 																		idx ===
 																		0
@@ -361,33 +414,17 @@ export default function Hero() {
 									<div className="flex justify-center">
 										<Link
 											href="/free"
-											className="inline-flex items-center justify-center gap-2 font-bold text-white transition-all duration-300 ease-in-out rounded-[16px] sm:rounded-[18px] md:rounded-[20px] shadow-[0_6px_24px_0_rgba(0,0,0,0.3)] sm:shadow-[0_8px_32px_0_rgba(0,0,0,0.35)] hover:-translate-y-1 hover:shadow-[0_8px_32px_0_rgba(0,0,0,0.4)] sm:hover:shadow-[0_12px_40px_0_rgba(0,0,0,0.45)]"
+											className={`inline-flex items-center justify-center gap-2 font-bold text-white transition-all duration-300 ease-in-out rounded-[16px] sm:rounded-[18px] md:rounded-[20px] shadow-[0_6px_24px_0_rgba(0,0,0,0.3)] sm:shadow-[0_8px_32px_0_rgba(0,0,0,0.35)] hover:-translate-y-1 hover:shadow-[0_8px_32px_0_rgba(0,0,0,0.4)] sm:hover:shadow-[0_12px_40px_0_rgba(0,0,0,0.45)] ${
+												isMobileLayout
+													? "h-[50px] w-[200px] text-lg"
+													: "h-[46px] w-[220px] text-base lg:h-[50px] lg:w-[240px] lg:text-lg xl:h-[54px] xl:w-[260px] xl:text-xl"
+											}`}
 											style={{
 												background:
 													"linear-gradient(135deg, #096E56 0%, #19AD6B 100%)",
-												height: "58px",
-												width: "220px",
-												fontSize: "20px",
 												fontFamily:
 													"Noto Serif TC, serif",
 												color: "white",
-												// Responsive styles for larger screens
-												...(typeof window !==
-													"undefined" &&
-													window.innerWidth >=
-														640 && {
-														height: "46px",
-														width: "260px",
-														fontSize: "16px",
-													}),
-												...(typeof window !==
-													"undefined" &&
-													window.innerWidth >=
-														768 && {
-														height: "50.51px",
-														width: "275px",
-														fontSize: "20px",
-													}),
 											}}
 											onMouseEnter={(e) => {
 												e.currentTarget.style.background =

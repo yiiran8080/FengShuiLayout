@@ -17,8 +17,10 @@ export default function Navbar({ from }) {
 	const pathname = usePathname();
 
 	const isMobile = useMobile();
-	const { data: session } = useSession();
-	const isLogined = session?.user?.userId;
+	const { data: session, status } = useSession();
+
+	const isLogined = status === "authenticated" && session?.user?.userId;
+	const isLoading = status === "loading";
 
 	const scrollToSection = (sectionId) => {
 		const element = document.getElementById(sectionId);
@@ -71,15 +73,6 @@ export default function Navbar({ from }) {
 						{/* Navigation Links */}
 						{!isMobile && from !== "report" && (
 							<div className="flex items-center gap-6 ml-6">
-								<button
-									onClick={() => navigateToSection("theory")}
-									className="text-white transition-colors cursor-pointer hover:text-gray-200"
-									style={{
-										fontFamily: "Noto Serif TC, serif",
-									}}
-								>
-									{t("about")}
-								</button>
 								<button
 									onClick={() => navigateToSection("share")}
 									className="text-white transition-colors cursor-pointer hover:text-gray-200"
@@ -140,7 +133,9 @@ export default function Navbar({ from }) {
 					<div className="flex items-center md:space-x-6">
 						{!isMobile && <LanguageToggle />}
 						{from == "report" && <UnlockButton />}
-						{isLogined && from !== "login" ? (
+						{isLoading ? (
+							<div className="w-6 h-6 border-2 border-white rounded-full border-t-transparent animate-spin"></div>
+						) : isLogined && from !== "login" ? (
 							<Avatar />
 						) : (
 							<Link

@@ -42,6 +42,7 @@ import { get, post, patch } from "@/lib/ajax";
 import getRoomDirection from "./getRoomDirection";
 import { useSession } from "next-auth/react";
 import UserInfoDialog from "@/components/UserInfoDialog";
+import TutorialWelcomeDialog from "@/components/TutorialWelcomeDialog"; // Add this import
 import { AntdSpin } from "antd-spin";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -478,9 +479,8 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: FURNITURE_TYPES.DOOR,
 				label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.DOOR],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door.png",
-				activeIcon:
-					"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/door-gr.png",
+				icon: "/images/fur-icon/door.png", // Changed from CloudFront URL
+				activeIcon: "/images/fur-icon/door-gr.png", // Changed from CloudFront URL
 				size: { width: 40, height: 40 },
 			},
 		},
@@ -491,9 +491,8 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: FURNITURE_TYPES.WINDOW,
 				label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.WINDOW],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window.png",
-				activeIcon:
-					"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/window-gr.png",
+				icon: "/images/fur-icon/window.png", // Changed from CloudFront URL
+				activeIcon: "/images/fur-icon/window-gr.png", // Changed from CloudFront URL
 				size: { width: 8, height: 56 },
 			},
 		},
@@ -504,9 +503,8 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: FURNITURE_TYPES.TABLE,
 				label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.TABLE],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table.png",
-				activeIcon:
-					"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/table-gr.png",
+				icon: "/images/fur-icon/table.png", // Changed from CloudFront URL
+				activeIcon: "/images/fur-icon/table-gr.png", // Changed from CloudFront URL
 				size: { width: 44, height: 120 },
 			},
 		},
@@ -517,9 +515,8 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: FURNITURE_TYPES.CHAIR,
 				label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.CHAIR],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair.png",
-				activeIcon:
-					"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/chair-gr.png",
+				icon: "/images/fur-icon/chair.png", // Changed from CloudFront URL
+				activeIcon: "/images/fur-icon/chair-gr.png", // Changed from CloudFront URL
 				size: { width: 28, height: 35 },
 			},
 		},
@@ -530,9 +527,8 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: FURNITURE_TYPES.SOFA,
 				label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.SOFA],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sofa.png",
-				activeIcon:
-					"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sofa-gr.png",
+				icon: "/images/fur-icon/sofa.png", // Changed from CloudFront URL
+				activeIcon: "/images/fur-icon/sofa-gr.png", // Changed from CloudFront URL
 				size: { width: 67, height: 123 },
 			},
 		},
@@ -543,9 +539,8 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: FURNITURE_TYPES.BED,
 				label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.BED],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed.png",
-				activeIcon:
-					"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bed-gr.png",
+				icon: "/images/fur-icon/bed.png", // Changed from CloudFront URL
+				activeIcon: "/images/fur-icon/bed-gr.png", // Changed from CloudFront URL
 				size: { width: 89, height: 128 },
 			},
 		},
@@ -556,23 +551,21 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: FURNITURE_TYPES.LAMP,
 				label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.LAMP],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/lamp.png",
-				activeIcon:
-					"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/lamp-gr.png",
+				icon: "/images/fur-icon/lamp.png", // Changed from CloudFront URL
+				activeIcon: "/images/fur-icon/lamp-gr.png", // Changed from CloudFront URL
 				size: { width: 70, height: 128 },
 			},
 		},
 		{
 			id: "tv-template",
-			type: ITEM_TYPES.FURNITURE,
-			data: {
-				cateType: ITEM_TYPES.FURNITURE,
-				type: FURNITURE_TYPES.TV,
-				label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.TV],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/tv.png",
-				activeIcon:
-					"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/tv-gr.png",
-				size: { width: 134, height: 32 },
+		 type: ITEM_TYPES.FURNITURE,
+		 data: {
+			 cateType: ITEM_TYPES.FURNITURE,
+			 type: FURNITURE_TYPES.TV,
+			 label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.TV],
+			 icon: "/images/fur-icon/tv.png", // Changed from CloudFront URL
+			 activeIcon: "/images/fur-icon/tv-gr.png", // Changed from CloudFront URL
+			 size: { width: 134, height: 32 },
 			},
 		},
 		{
@@ -582,9 +575,8 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: FURNITURE_TYPES.BOOKSHELF,
 				label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.BOOKSHELF],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bookshelf.png",
-				activeIcon:
-					"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bookshelf-gr.png",
+				icon: "/images/fur-icon/bookshelf.png", // Changed from CloudFront URL
+				activeIcon: "/images/fur-icon/bookshelf-gr.png", // Changed from CloudFront URL
 				size: { width: 44, height: 44 },
 			},
 		},
@@ -595,9 +587,8 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: FURNITURE_TYPES.WARDROBE,
 				label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.WARDROBE],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe.png",
-				activeIcon:
-					"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/wardrobe-gr.png",
+				icon: "/images/fur-icon/wardrobe.png", // Changed from CloudFront URL
+				activeIcon: "/images/fur-icon/wardrobe-gr.png", // Changed from CloudFront URL
 				size: { width: 40, height: 129 },
 			},
 		},
@@ -608,9 +599,8 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: FURNITURE_TYPES.PLANT,
 				label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.PLANT],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/plant.png",
-				activeIcon:
-					"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/plant-gr.png",
+				icon: "/images/fur-icon/plant.png", // Changed from CloudFront URL
+				activeIcon: "/images/fur-icon/plant-gr.png", // Changed from CloudFront URL
 				size: { width: 36, height: 36 },
 			},
 		},
@@ -621,9 +611,8 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: FURNITURE_TYPES.FRIDGE,
 				label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.FRIDGE],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/fridge.png",
-				activeIcon:
-					"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/fridge-gr.png",
+				icon: "/images/fur-icon/fridge.png", // Changed from CloudFront URL
+				activeIcon: "/images/fur-icon/fridge-gr.png", // Changed from CloudFront URL
 				size: { width: 40, height: 43 },
 			},
 		},
@@ -634,9 +623,8 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: FURNITURE_TYPES.STOVE,
 				label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.STOVE],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/stove.png",
-				activeIcon:
-					"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/stove-gr.png",
+				icon: "/images/fur-icon/stove.png", // Changed from CloudFront URL
+				activeIcon: "/images/fur-icon/stove-gr.png", // Changed from CloudFront URL
 				size: { width: 62, height: 32 },
 			},
 		},
@@ -647,9 +635,8 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: FURNITURE_TYPES.SINK,
 				label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.SINK],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink.png",
-				activeIcon:
-					"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/sink-gr.png",
+				icon: "/images/fur-icon/sink.png", // Changed from CloudFront URL
+				activeIcon: "/images/fur-icon/sink-gr.png", // Changed from CloudFront URL
 				size: { width: 60, height: 40 },
 			},
 		},
@@ -660,9 +647,8 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: FURNITURE_TYPES.WASHBASIN,
 				label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.WASHBASIN],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/washbasin.png",
-				activeIcon:
-					"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/washbasin-gr.png",
+				icon: "/images/fur-icon/washbasin.png", // Changed from CloudFront URL
+				activeIcon: "/images/fur-icon/washbasin-gr.png", // Changed from CloudFront URL
 				size: { width: 50, height: 50 },
 			},
 		},
@@ -673,9 +659,8 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: FURNITURE_TYPES.TOILET,
 				label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.TOILET],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet.png",
-				activeIcon:
-					"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/toilet-gr.png",
+				icon: "/images/fur-icon/toilet.png", // Changed from CloudFront URL
+				activeIcon: "/images/fur-icon/toilet-gr.png", // Changed from CloudFront URL
 				size: { width: 40, height: 60 },
 			},
 		},
@@ -686,23 +671,21 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.FURNITURE,
 				type: FURNITURE_TYPES.SHOWER,
 				label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.SHOWER],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/shower.png",
-				activeIcon:
-					"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/shower-gr.png",
+				icon: "/images/fur-icon/shower.png", // Changed from CloudFront URL
+				activeIcon: "/images/fur-icon/shower-gr.png", // Changed from CloudFront URL
 				size: { width: 80, height: 80 },
 			},
 		},
 		{
 			id: "bathtub-template",
-		 type: ITEM_TYPES.FURNITURE,
-		 data: {
-			 cateType: ITEM_TYPES.FURNITURE,
-			 type: FURNITURE_TYPES.BATHTUB,
-			 label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.BATHTUB],
-			 icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub.png",
-			 activeIcon:
-					"https://d3cbeloe0vn1bb.cloudfront.net/images/fur-icon/bathtub-gr.png",
-			 size: { width: 120, height: 60 },
+			type: ITEM_TYPES.FURNITURE,
+			data: {
+				cateType: ITEM_TYPES.FURNITURE,
+				type: FURNITURE_TYPES.BATHTUB,
+				label: FURNITURE_TYPES_LABEL[FURNITURE_TYPES.BATHTUB],
+				icon: "/images/fur-icon/bathtub.png", // Changed from CloudFront URL
+				activeIcon: "/images/fur-icon/bathtub-gr.png", // Changed from CloudFront URL
+				size: { width: 120, height: 60 },
 			},
 		},
 	];
@@ -725,6 +708,7 @@ export default function DesignPage({ params }) {
 	const [history, setHistory] = useState([[]]);
 	const [historyIndex, setHistoryIndex] = useState(0);
 	const [showUserInfoDialog, setShowUserInfoDialog] = useState(false);
+	const [showTutorialWelcome, setShowTutorialWelcome] = useState(false); // Add this state
 	const [userInfo, setuserInfo] = useState({});
 	const [loading, setLoading] = useState(false);
 	const canvasRef = useRef(null);
@@ -748,7 +732,7 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.ROOM,
 				type: ROOM_TYPES.LIVING_ROOM,
 				label: ROOM_TYPES_LABEL[ROOM_TYPES.LIVING_ROOM],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/living_room.png",
+				icon: "/images/room-icon/living_room.png", // Changed from CloudFront URL
 				size: defaultRoomSize,
 			},
 		},
@@ -759,7 +743,7 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.ROOM,
 				type: ROOM_TYPES.DINING_ROOM,
 				label: ROOM_TYPES_LABEL[ROOM_TYPES.DINING_ROOM],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/dining_room.png",
+				icon: "/images/room-icon/dining_room.png", // Changed from CloudFront URL
 				size: defaultRoomSize,
 			},
 		},
@@ -770,19 +754,19 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.ROOM,
 				type: ROOM_TYPES.STORAGE_ROOM,
 				label: ROOM_TYPES_LABEL[ROOM_TYPES.STORAGE_ROOM],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/storage_room.png",
+				icon: "/images/room-icon/storage_room.png", // Changed from CloudFront URL
 				size: defaultRoomSize,
 			},
 		},
 		{
 			id: "study-room",
-			type: ITEM_TYPES.ROOM,
-			data: {
-				cateType: ITEM_TYPES.ROOM,
-				type: ROOM_TYPES.STUDY_ROOM,
-				label: ROOM_TYPES_LABEL[ROOM_TYPES.STUDY_ROOM],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/study_room.png",
-				size: defaultRoomSize,
+		 type: ITEM_TYPES.ROOM,
+		 data: {
+			 cateType: ITEM_TYPES.ROOM,
+			 type: ROOM_TYPES.STUDY_ROOM,
+			 label: ROOM_TYPES_LABEL[ROOM_TYPES.STUDY_ROOM],
+			 icon: "/images/room-icon/study_room.png", // Changed from CloudFront URL
+			 size: defaultRoomSize,
 			},
 		},
 		{
@@ -792,7 +776,7 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.ROOM,
 				type: ROOM_TYPES.BEDROOM,
 				label: ROOM_TYPES_LABEL[ROOM_TYPES.BEDROOM],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bedroom.png",
+				icon: "/images/room-icon/bedroom.png", // Changed from CloudFront URL
 				size: defaultRoomSize,
 			},
 		},
@@ -803,7 +787,7 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.ROOM,
 				type: ROOM_TYPES.BATHROOM,
 				label: ROOM_TYPES_LABEL[ROOM_TYPES.BATHROOM],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/bathroom.png",
+				icon: "/images/room-icon/bathroom.png", // Changed from CloudFront URL
 				size: defaultRoomSize,
 			},
 		},
@@ -814,8 +798,8 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.ROOM,
 				type: ROOM_TYPES.KITCHEN,
 				label: ROOM_TYPES_LABEL[ROOM_TYPES.KITCHEN],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/kitchen.png",
-				size: defaultRoomSize,
+				icon: "/images/room-icon/kitchen.png", // Changed from CloudFront URL
+			 size: defaultRoomSize,
 			},
 		},
 		{
@@ -825,7 +809,7 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.ROOM,
 				type: ROOM_TYPES.BALCONY,
 				label: ROOM_TYPES_LABEL[ROOM_TYPES.BALCONY],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/balcony.png",
+				icon: "/images/room-icon/balcony.png", // Changed from CloudFront URL
 				size: defaultRoomSize,
 			},
 		},
@@ -836,7 +820,7 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.ROOM,
 				type: ROOM_TYPES.GARDEN,
 				label: ROOM_TYPES_LABEL[ROOM_TYPES.GARDEN],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/garden.png",
+				icon: "/images/room-icon/garden.png", // Changed from CloudFront URL
 				size: defaultRoomSize,
 			},
 		},
@@ -847,7 +831,7 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.ROOM,
 				type: ROOM_TYPES.GARAGE,
 				label: ROOM_TYPES_LABEL[ROOM_TYPES.GARAGE],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/garage.png",
+				icon: "/images/room-icon/garage.png", // Changed from CloudFront URL
 				size: defaultRoomSize,
 			},
 		},
@@ -858,7 +842,7 @@ export default function DesignPage({ params }) {
 				cateType: ITEM_TYPES.ROOM,
 				type: ROOM_TYPES.CORRIDOR,
 				label: ROOM_TYPES_LABEL[ROOM_TYPES.CORRIDOR],
-				icon: "https://d3cbeloe0vn1bb.cloudfront.net/images/room-icon/corridor.png",
+				icon: "/images/room-icon/corridor.png", // Changed from CloudFront URL
 				size: defaultRoomSize,
 			},
 		},
@@ -1146,6 +1130,10 @@ export default function DesignPage({ params }) {
 			if (status == 0) {
 				toast.success(t2("saveSuccess"));
 				setShowUserInfoDialog(false);
+
+				// Show tutorial welcome dialog after user info is saved
+				// Check if user is new (you might want to add a flag to check if it's their first time)
+				setShowTutorialWelcome(true);
 			}
 		} catch (error) {
 			toast.error(t2("saveFailed") + error);
@@ -1154,6 +1142,17 @@ export default function DesignPage({ params }) {
 			setLoading(false);
 		}
 	};
+
+	// Handle tutorial start
+	const handleStartTutorial = () => {
+		handleStartDemo(); // Use existing demo function
+	};
+
+	// Handle tutorial welcome close
+	const handleTutorialWelcomeClose = () => {
+		setShowTutorialWelcome(false);
+	};
+
 	const onModuleClick = (moduleId) => {
 		setModuleAlertOpen(true);
 	};
@@ -1292,6 +1291,14 @@ export default function DesignPage({ params }) {
 						onSubmit={handleUserInfoSubmit}
 						userInfo={userInfo}
 					/>
+
+					{/* Add Tutorial Welcome Dialog */}
+					<TutorialWelcomeDialog
+						open={showTutorialWelcome}
+						onClose={handleTutorialWelcomeClose}
+						onStartTutorial={handleStartTutorial}
+					/>
+
 					{isMobile ? (
 						<NavbarDesignMobile
 							onSaveProject={onSaveProject}
@@ -1501,7 +1508,9 @@ export default function DesignPage({ params }) {
 						open={moduleAlertOpen}
 						onOpenChange={setModuleAlertOpen}
 					>
-						<AlertDialogContent style={{ fontFamily: '"Noto Serif TC", serif' }}>
+						<AlertDialogContent
+							style={{ fontFamily: '"Noto Serif TC", serif' }}
+						>
 							<AlertDialogHeader>
 								<AlertDialogTitle>
 									{t("useModuleAlert")}
