@@ -1048,19 +1048,11 @@ export default function DesignPage({ params }) {
 			});
 			return;
 		}
-		try {
-			const { status, data } = await get(
-				`/api/reportUserDoc/${userId}/${locale == "zh-CN" ? "zh" : "tw"}`
-			);
-			if (data) {
-				setAlertOpen(true);
-			} else {
-				await onSaveProject();
-				router.push(`/report`);
-			}
-		} catch (e) {}
-	};
 
+		// Remove the report check - just go directly to report generation
+		await onSaveProject();
+		router.push(`/report`);
+	};
 	const onCoverReport = async () => {
 		if (!session?.user?.userId) {
 			redirect("/auth/login");
@@ -1480,7 +1472,7 @@ export default function DesignPage({ params }) {
 						</DndContext>
 					</div>
 
-					<AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
+					{/* <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
 						<AlertDialogContent>
 							<AlertDialogHeader>
 								<AlertDialogTitle>
@@ -1502,7 +1494,7 @@ export default function DesignPage({ params }) {
 								</AlertDialogAction>
 							</AlertDialogFooter>
 						</AlertDialogContent>
-					</AlertDialog>
+					</AlertDialog> */}
 
 					<AlertDialog
 						open={moduleAlertOpen}
