@@ -29,7 +29,7 @@ export async function POST(request) {
 		],
 		model: "deepseek-chat",
 		frequency_penalty: 0,
-		max_tokens: body.jsonResult ? null : 300,
+		max_tokens: body.jsonResult ? null : 500, // Increase from 300 to 500
 		presence_penalty: 0,
 		response_format: {
 			type: body.jsonResult ? "json_object" : "text",

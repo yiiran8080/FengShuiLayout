@@ -244,7 +244,20 @@ export default function Chapter3({
 		}
 
 		if (hasJiajuProData && activeRoom && jiajuProData[activeRoom.id]) {
-			return jiajuProData[activeRoom.id][activeTab];
+			const tabValue = jiajuProData[activeRoom.id][activeTab];
+			return (
+				<div className="mt-3">
+					{(tabValue || "")
+						.toString()
+						.replace(/\\n/g, "\n") // Convert literal \\n to actual \n
+						.split("\n")
+						.map((line, index) => (
+							<div key={index} className="mb-1">
+								{line.trim() || "\u00A0"}
+							</div>
+						))}
+				</div>
+			);
 		}
 
 		return null;
@@ -313,13 +326,13 @@ export default function Chapter3({
 
 						<div className="mt-8">
 							{/* Mobile Dropdown */}
-							<div className="block md:hidden mb-5">
+							<div className="block mb-5 md:hidden">
 								<div className="relative">
 									<button
 										onClick={() =>
 											setShowDropdown(!showDropdown)
 										}
-										className="w-full flex items-center justify-between px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm font-medium"
+										className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium bg-white border border-gray-200 rounded-lg"
 									>
 										<span>{getCurrentTabLabel()}</span>
 										<ChevronDown
@@ -330,7 +343,7 @@ export default function Chapter3({
 									</button>
 
 									{showDropdown && (
-										<div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+										<div className="absolute left-0 right-0 z-10 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg top-full">
 											<button
 												onClick={() =>
 													handleTabChange("tab0")
@@ -552,14 +565,38 @@ export default function Chapter3({
 										</p>
 										{Object.entries(roomTabObj).map(
 											([tabKey, tabValue]) => (
-												<div key={roomId + tabKey}>
+												<div
+													key={roomId + tabKey}
+													className="mb-4"
+												>
 													<p className="font-bold whitespace-nowrap">
 														{t(tabKey)}：
 													</p>
-													<span className="whitespace-pre-wrap">
-														{" "}
-														{tabValue}
-													</span>
+													<div className="mt-1">
+														{(tabValue || "")
+															.toString()
+															.replace(
+																/\\n/g,
+																"\n"
+															) // Convert literal \\n to actual \n
+															.split("\n")
+															.map(
+																(
+																	line,
+																	index
+																) => (
+																	<div
+																		key={
+																			index
+																		}
+																		className="mb-1"
+																	>
+																		{line.trim() ||
+																			"\u00A0"}
+																	</div>
+																)
+															)}
+													</div>
 												</div>
 											)
 										)}

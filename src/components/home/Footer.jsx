@@ -16,11 +16,11 @@ export default function Footer() {
 		social: [
 			{
 				icon: "/images/footer/Facebook.png",
-				href: "https://www.facebook.com/profile.php?id=61571723604958",
+				href: "https://www.facebook.com/profile.php?id=61578389876952",
 			},
 			{
 				icon: "/images/footer/Instagram.png",
-				href: "https://www.instagram.com/harmoniq.fengshui/",
+				href: "https://www.instagram.com/harmoniq_fengshui/",
 			},
 		],
 	};
