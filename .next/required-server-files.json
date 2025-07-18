@@ -288,33 +288,7 @@
     },
     "htmlLimitedBots": "Mediapartners-Google|Slurp|DuckDuckBot|baiduspider|yandex|sogou|bitlybot|tumblr|vkShare|quora link preview|redditbot|ia_archiver|Bingbot|BingPreview|applebot|facebookexternalhit|facebookcatalog|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|SkypeUriPreview",
     "bundlePagesRouterDependencies": false,
-    "configFileName": "next.config.ts",
-    "_originalRedirects": [
-      {
-        "source": "/zh-TW/price",
-        "destination": "/zh-TW",
-        "permanent": false,
-        "has": [
-          {
-            "type": "header",
-            "key": "user-agent",
-            "value": ".*facebookexternalhit.*"
-          }
-        ]
-      },
-      {
-        "source": "/zh-CN/price",
-        "destination": "/zh-CN",
-        "permanent": false,
-        "has": [
-          {
-            "type": "header",
-            "key": "user-agent",
-            "value": ".*facebookexternalhit.*"
-          }
-        ]
-      }
-    ]
+    "configFileName": "next.config.ts"
   },
   "appDir": "/Users/michaelng/Desktop/HarmoniqFengShui/FengShuiLayout",
   "relativeAppDir": "",
