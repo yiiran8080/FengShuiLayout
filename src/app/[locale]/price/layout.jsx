@@ -19,7 +19,7 @@ export const metadata = {
 		siteName: "HarmoniQ 風水分析",
 		images: [
 			{
-				url: "https://www.harmoniqfengshui.com/images/hero/Facebookpost.jpg", // 使用首頁主圖
+				url: "https://www.harmoniqfengshui.com/images/hero/Facebookpost.jpg", // 使用 Facebook 專用圖片
 				width: 1200,
 				height: 630,
 				alt: "HarmoniQ 風水分析 - 專業家居布局優化",
@@ -36,7 +36,9 @@ export const metadata = {
 		title: "HarmoniQ 風水分析 - 打造和諧家居布局",
 		description:
 			"🏠✨ 發現了一個超棒的風水分析網站！HarmoniQ幫我優化家居布局，讓生活更和諧幸福！現在還有特別優惠，快來試試看吧！我在HarmoniQ風水測算領取專屬家居風水報告，分享或發佈貼文到Facebook領取優惠碼即可獲得市場價一折限時優惠，立即分享給親朋好友一起享受專屬折扣價格🙌🏻",
-		images: ["https://www.harmoniqfengshui.com/images/hero/01.png"], // 使用首頁主圖
+		images: [
+			"https://www.harmoniqfengshui.com/images/hero/Facebookpost.jpg",
+		], // 修正為使用同一張圖片
 	},
 };
 
