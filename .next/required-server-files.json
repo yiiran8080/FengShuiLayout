@@ -293,12 +293,26 @@
       {
         "source": "/zh-TW/price",
         "destination": "/zh-TW",
-        "permanent": false
+        "permanent": false,
+        "has": [
+          {
+            "type": "header",
+            "key": "user-agent",
+            "value": ".*facebookexternalhit.*"
+          }
+        ]
       },
       {
         "source": "/zh-CN/price",
         "destination": "/zh-CN",
-        "permanent": false
+        "permanent": false,
+        "has": [
+          {
+            "type": "header",
+            "key": "user-agent",
+            "value": ".*facebookexternalhit.*"
+          }
+        ]
       }
     ]
   },

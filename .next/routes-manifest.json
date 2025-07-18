@@ -14,12 +14,26 @@
     {
       "source": "/zh-TW/price",
       "destination": "/zh-TW",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*facebookexternalhit.*"
+        }
+      ],
       "statusCode": 307,
       "regex": "^(?!/_next)/zh-TW/price(?:/)?$"
     },
     {
       "source": "/zh-CN/price",
       "destination": "/zh-CN",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*facebookexternalhit.*"
+        }
+      ],
       "statusCode": 307,
       "regex": "^(?!/_next)/zh-CN/price(?:/)?$"
     }

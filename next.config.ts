@@ -24,21 +24,42 @@ const nextConfig: NextConfig = {
 	},
 	reactStrictMode: false,
 
-	// 添加重定向規則
+	// 添加重定向規則 - 只對來自 Facebook 的訪問重定向
 	async redirects() {
 		return [
 			{
 				source: "/zh-TW/price",
 				destination: "/zh-TW",
-				permanent: false, // 使用 307 臨時重定向
+				permanent: false,
+				has: [
+					{
+						type: "header",
+						key: "user-agent",
+						value: ".*facebookexternalhit.*", // Facebook 爬蟲
+					},
+				],
 			},
 			{
 				source: "/zh-CN/price",
 				destination: "/zh-CN",
 				permanent: false,
+				has: [
+					{
+						type: "header",
+						key: "user-agent",
+						value: ".*facebookexternalhit.*", // Facebook 爬蟲
+					},
+				],
 			},
 		];
 	},
+	// experimental: {
+	//   turbo: {
+	//     resolveAlias: {
+	//       html2canvas: "html2canvas-pro",
+	//     },
+	//   },
+	// },
 };
 
 const withNextIntl = createNextIntlPlugin();
