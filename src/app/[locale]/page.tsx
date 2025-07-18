@@ -29,7 +29,7 @@ export const metadata = {
 		images: [
 			{
 				url: "https://www.harmoniqfengshui.com/images/hero/Facebookpost.jpg", // 使用 Facebook 專用圖片
-				width: 1200,
+				width: 1500,
 				height: 630,
 				alt: "HarmoniQ 風水分析 - 專業家居布局優化",
 			},
