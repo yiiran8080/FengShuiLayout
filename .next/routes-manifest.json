@@ -10,6 +10,18 @@
       "internal": true,
       "statusCode": 308,
       "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    },
+    {
+      "source": "/zh-TW/price",
+      "destination": "/zh-TW",
+      "statusCode": 307,
+      "regex": "^(?!/_next)/zh-TW/price(?:/)?$"
+    },
+    {
+      "source": "/zh-CN/price",
+      "destination": "/zh-CN",
+      "statusCode": 307,
+      "regex": "^(?!/_next)/zh-CN/price(?:/)?$"
     }
   ],
   "headers": [],

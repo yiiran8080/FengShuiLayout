@@ -23,13 +23,22 @@ const nextConfig: NextConfig = {
 		],
 	},
 	reactStrictMode: false,
-	// experimental: {
-	//   turbo: {
-	//     resolveAlias: {
-	//       html2canvas: "html2canvas-pro",
-	//     },
-	//   },
-	// },
+
+	// 添加重定向規則
+	async redirects() {
+		return [
+			{
+				source: "/zh-TW/price",
+				destination: "/zh-TW",
+				permanent: false, // 使用 307 臨時重定向
+			},
+			{
+				source: "/zh-CN/price",
+				destination: "/zh-CN",
+				permanent: false,
+			},
+		];
+	},
 };
 
 const withNextIntl = createNextIntlPlugin();
