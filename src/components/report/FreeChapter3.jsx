@@ -19,7 +19,49 @@ export function FreeChapter3({ roomType, direction, data }) {
 	const [randomEntry, setRandomEntry] = useState(null);
 	const [activeTab, setActiveTab] = useState("base");
 	const [currentSlide, setCurrentSlide] = useState(0);
+	const [randomCareerContent, setRandomCareerContent] = useState("");
+	const [randomRelationshipContent, setRandomRelationshipContent] =
+		useState("");
+	const [randomWealthContent, setRandomWealthContent] = useState("");
 	const { preview } = useImage();
+
+	// Get content options from i18n
+	const careerContentOptions = t.raw("careerContentOptions") || [];
+	const relationshipContentOptions =
+		t.raw("relationshipContentOptions") || [];
+	const wealthContentOptions = t.raw("wealthContentOptions") || [];
+
+	// Initialize random career content on component mount
+	useEffect(() => {
+		if (careerContentOptions.length > 0) {
+			const randomIndex = Math.floor(
+				Math.random() * careerContentOptions.length
+			);
+			setRandomCareerContent(careerContentOptions[randomIndex]);
+		}
+	}, [careerContentOptions]);
+
+	// Initialize random relationship content on component mount
+	useEffect(() => {
+		if (relationshipContentOptions.length > 0) {
+			const randomIndex = Math.floor(
+				Math.random() * relationshipContentOptions.length
+			);
+			setRandomRelationshipContent(
+				relationshipContentOptions[randomIndex]
+			);
+		}
+	}, [relationshipContentOptions]);
+
+	// Initialize random wealth content on component mount
+	useEffect(() => {
+		if (wealthContentOptions.length > 0) {
+			const randomIndex = Math.floor(
+				Math.random() * wealthContentOptions.length
+			);
+			setRandomWealthContent(wealthContentOptions[randomIndex]);
+		}
+	}, [wealthContentOptions]);
 
 	// Tab list with translations
 	const tabList = [
@@ -29,25 +71,25 @@ export function FreeChapter3({ roomType, direction, data }) {
 		{ label: t("tabs.wuxing"), key: "wuxing" },
 	];
 
-	// Carousel data with translations
+	// Carousel data with translations - using random content
 	const carouselData = [
 		{
 			title: t("risks.career"),
-			content: t("careerContent"),
+			content: randomCareerContent || t("careerContent"), // fallback to translation if random content not set
 			titleColor: "text-blue-600",
 			contentColor: "text-blue-700",
 			bgColor: "bg-blue-50",
 		},
 		{
 			title: t("risks.relationship"),
-			content: t("relationshipContent"),
+			content: randomRelationshipContent || t("relationshipContent"), // fallback to translation if random content not set
 			titleColor: "text-red-600",
 			contentColor: "text-red-700",
 			bgColor: "bg-red-50",
 		},
 		{
 			title: t("risks.wealth"),
-			content: t("wealthContent"),
+			content: randomWealthContent || t("wealthContent"), // fallback to translation if random content not set
 			titleColor: "text-yellow-600",
 			contentColor: "text-yellow-700",
 			bgColor: "bg-yellow-50",
@@ -264,7 +306,7 @@ export function FreeChapter3({ roomType, direction, data }) {
 						</div>
 
 						{/* Carousel Container */}
-						<div className="w-full rounded-2xl mb-3 sm:mb-5 flex flex-col items-center justify-center pt-0 sm:pt-[31px] lg:pt-[41px] px-0 pb-3 sm:pb-5 box-border relative gap-2 sm:gap-4 lg:gap-[26px] max-w-full z-[2] text-xs sm:text-sm text-[#0a58a6] font-Font-Family">
+						<div className="w-full rounded-2xl mb-3 sm:mb-5 flex flex-col items-center justify-center pt-0 sm:pt-[31px] lg:pt-[10px] px-0 pb-3 sm:pb-5 box-border relative gap-2 sm:gap-4 lg:gap-[26px] max-w-full z-[2] text-xs sm:text-sm text-[#0a58a6] font-Font-Family">
 							{/* Carousel */}
 							<div className="relative w-full max-w-sm sm:max-w-2xl md:max-w-4xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-full">
 								{/* Carousel Content */}
@@ -326,67 +368,155 @@ export function FreeChapter3({ roomType, direction, data }) {
 												className="flex justify-center flex-shrink-0 w-full px-3 py-2 sm:px-6 lg:px-12 sm:py-4"
 											>
 												<div
-													className={`p-3 sm:p-4 lg:p-6 rounded-lg ${item.bgColor} relative shadow-[0_6px_20px_rgba(0,0,0,0.12)] hover:shadow-[0_8px_25px_rgba(0,0,0,0.18)] transition-shadow duration-300 max-w-full sm:max-w-xl lg:max-w-2xl w-full`}
+													className={`p-3 sm:p-4 lg:p-6 rounded-lg bg-transparent relative   max-w-full sm:max-w-xl lg:max-w-2xl w-full`}
 													style={{
 														fontFamily:
 															'"Noto Serif TC", serif',
 													}}
 												>
-													<div
-														className={`mb-2 sm:mb-3 lg:mb-4 text-base sm:text-lg lg:text-xl font-bold ${item.titleColor}`}
-														style={{
-															fontFamily:
-																'"Noto Serif TC", serif',
-														}}
-													>
-														{item.title}:
-													</div>
-													<div
-														className={`text-sm sm:text-base lg:text-lg leading-relaxed ${item.contentColor} ${
-															item.title ===
-																t(
-																	"risks.relationship"
-																) ||
-															item.title ===
-																t(
-																	"risks.wealth"
+													<div className="relative">
+														<div
+															className={`text-sm sm:text-base lg:text-lg leading-relaxed font-medium p-5 sm:p-6 lg:p-7 rounded-2xl backdrop-blur-lg border-2 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] ${
+																// Dynamic background and border colors based on item type
+																item.titleColor.includes(
+																	"blue"
 																)
-																? "blur-sm"
-																: ""
-														}`}
-														style={{
-															fontFamily:
-																'"Noto Serif TC", serif',
-														}}
-													>
-														{item.content}
-													</div>
+																	? "bg-gradient-to-br from-blue-100/90 to-blue-200/70 border-blue-300/60"
+																	: item.titleColor.includes(
+																				"red"
+																		  )
+																		? "bg-gradient-to-br from-red-100/90 to-red-200/70 border-red-300/60"
+																		: "bg-gradient-to-br from-yellow-100/90 to-yellow-200/70 border-yellow-300/60"
+															}`}
+															style={{
+																fontFamily:
+																	'"Noto Serif TC", serif',
+																backdropFilter:
+																	"blur(20px)",
+																boxShadow: `
+                0 8px 32px rgba(0,0,0,0.15), 
+                inset 0 1px 1px rgba(255,255,255,0.8),
+                0 0 0 1px ${
+					item.titleColor.includes("blue")
+						? "rgba(59, 130, 246, 0.3)"
+						: item.titleColor.includes("red")
+							? "rgba(239, 68, 68, 0.3)"
+							: "rgba(245, 158, 11, 0.3)"
+				}
+            `,
+															}}
+														>
+															{/* Title inside container */}
+															<div
+																className={`mb-3 sm:mb-4 lg:mb-5 text-lg sm:text-xl lg:text-2xl font-extrabold ${item.titleColor} relative z-20`}
+																style={{
+																	fontFamily:
+																		'"Noto Serif TC", serif',
+																	fontWeight:
+																		"800",
+																}}
+															>
+																{item.title}:
+															</div>
 
-													{/* Unlock overlay for blurred content */}
-													{(item.title ===
-														t(
-															"risks.relationship"
-														) ||
-														item.title ===
-															t(
-																"risks.wealth"
-															)) && (
-														<div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/10">
-															<Link href="/price">
-																<button
-																	className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-bold text-white transition-shadow duration-300 rounded-full bg-[rgba(49,129,97)] hover:shadow-xl"
-																	style={{
-																		boxShadow:
-																			"0 4px 15px rgba(0, 0, 0, 0.3)",
-																	}}
-																>
+															{/* Content */}
+															<div
+																className={`relative z-10 font-semibold mb-4 sm:mb-5 ${
+																	item.titleColor.includes(
+																		"blue"
+																	)
+																		? "text-blue-900"
+																		: item.titleColor.includes(
+																					"red"
+																			  )
+																			? "text-red-900"
+																			: "text-yellow-900"
+																}`}
+															>
+																{item.content}
+															</div>
+
+															{/* Call to action text inside container */}
+															<div
+																className={`text-sm sm:text-base lg:text-lg leading-relaxed mb-4 sm:mb-5 relative z-10 ${
+																	item.titleColor.includes(
+																		"blue"
+																	)
+																		? "text-blue-800"
+																		: item.titleColor.includes(
+																					"red"
+																			  )
+																			? "text-red-800"
+																			: "text-yellow-800"
+																}`}
+															>
+																<p>
 																	{t(
-																		"unlockDetail"
+																		"callToAction"
 																	)}
-																</button>
-															</Link>
+																</p>
+															</div>
+
+															{/* Button inside container */}
+															<div className="relative z-10 flex justify-center">
+																<Link href="/price">
+																	<button
+																		className={`px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-bold text-white transition-all duration-300 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transform ${
+																			item.titleColor.includes(
+																				"blue"
+																			)
+																				? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+																				: item.titleColor.includes(
+																							"red"
+																					  )
+																					? "bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800"
+																					: "bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800"
+																		}`}
+																		style={{
+																			fontFamily:
+																				'"Noto Serif TC", serif',
+																			boxShadow:
+																				"0 6px 20px rgba(0, 0, 0, 0.15)",
+																		}}
+																	>
+																		{t(
+																			"unlockDetailButton"
+																		)}
+																	</button>
+																</Link>
+															</div>
+
+															{/* Decorative elements */}
+															<div
+																className={`absolute bottom-3 left-3 w-2 h-2 rounded-full ${
+																	item.titleColor.includes(
+																		"blue"
+																	)
+																		? "bg-blue-300/40"
+																		: item.titleColor.includes(
+																					"red"
+																			  )
+																			? "bg-red-300/40"
+																			: "bg-yellow-300/40"
+																}`}
+															></div>
+
+															{/* Vibrant gradient overlay */}
+															<div
+																className={`absolute inset-0 rounded-2xl pointer-events-none ${
+																	item.titleColor.includes(
+																		"blue"
+																	)
+																		? "bg-gradient-to-br from-blue-200/20 via-transparent to-blue-300/10"
+																		: item.titleColor.includes(
+																					"red"
+																			  )
+																			? "bg-gradient-to-br from-red-200/20 via-transparent to-red-300/10"
+																			: "bg-gradient-to-br from-yellow-200/20 via-transparent to-yellow-300/10"
+																}`}
+															></div>
 														</div>
-													)}
+													</div>
 												</div>
 											</div>
 										))}

@@ -536,12 +536,12 @@ export function FreeChapter6({ locale }) {
 										<div
 											className="absolute left-0 bottom-0 w-full pointer-events-none rounded-b-[20px]"
 											style={{
-												height: "60%",
+												height: "64%",
 												background:
 													"linear-gradient(to top, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.95) 20%, rgba(255,255,255,0.8) 40%, rgba(255,255,255,0.4) 60%, rgba(255,255,255,0.1) 80%, transparent 100%)",
-												backdropFilter: "blur(4px)",
+												backdropFilter: "blur(2.6px)",
 												WebkitBackdropFilter:
-													"blur(4px)",
+													"blur(2.6px)",
 											}}
 										/>
 									)}
