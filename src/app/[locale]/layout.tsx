@@ -5,6 +5,7 @@ import { Inter, Lora } from "next/font/google";
 import AuthProvider from "@/components/AuthProvider";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import PageTracker from "@/components/PageTracker";
+import AutoButtonTracker from "@/components/AutoButtonTracker"; // Add this import
 import "../globals.css";
 import { setRequestLocale } from "next-intl/server";
 import { ToastContainer, toast } from "react-toastify";
@@ -32,6 +33,7 @@ export default async function LocaleLayout({
 			</head>
 			<body className={lora.className}>
 				<PageTracker />
+				<AutoButtonTracker /> {/* Add this component */}
 				<ToastContainer
 					position="top-center"
 					autoClose={1000}
