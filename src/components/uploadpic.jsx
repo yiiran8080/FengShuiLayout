@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { getJiajuPrompt } from "./report/utilsZh";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -36,6 +36,29 @@ const directionMap = {
 	northWest: "northWest",
 };
 
+// Helper function to convert file to base64
+const fileToBase64 = (file) => {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload = () => resolve(reader.result);
+		reader.onerror = (error) => reject(error);
+	});
+};
+
+// Helper function to convert base64 back to file
+const base64ToFile = (base64, filename, type) => {
+	const arr = base64.split(",");
+	const mime = arr[0].match(/:(.*?);/)[1];
+	const bstr = atob(arr[1]);
+	let n = bstr.length;
+	const u8arr = new Uint8Array(n);
+	while (n--) {
+		u8arr[n] = bstr.charCodeAt(n);
+	}
+	return new File([u8arr], filename, { type: mime });
+};
+
 export default function UploadPic({ onResult }) {
 	const t = useTranslations("upload");
 	const [file, setLocalFile] = useState(null);
@@ -52,22 +75,220 @@ export default function UploadPic({ onResult }) {
 	const [result, setResult] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [validating, setValidating] = useState(false);
-	const [validationError, setValidationError] = useState(null); // New state for validation error
+	const [validationError, setValidationError] = useState(null);
+	const [isInitialized, setIsInitialized] = useState(false); // Add this state
 	const fileInputRef = useRef(null);
 	const router = useRouter();
 	const { setPreview: setGlobalPreview, setFile: setGlobalFile } = useImage();
-	const { data: session } = useSession();
+	const { data: session, status } = useSession();
 
 	// Get room types and directions from translations
 	const roomTypes = Object.keys(roomTypeMap);
 	const directions = Object.keys(directionMap);
 
+	// Save form data to localStorage
+	const saveFormData = () => {
+		try {
+			const formData = {
+				gender,
+				year,
+				month,
+				day,
+				hour,
+				roomType,
+				direction,
+				validationError,
+			};
+			localStorage.setItem("uploadPicFormData", JSON.stringify(formData));
+			console.log("Form data saved to localStorage");
+		} catch (error) {
+			console.error("Error saving form data:", error);
+		}
+	};
+
+	// Load form data from localStorage
+	const loadFormData = () => {
+		try {
+			const savedData = localStorage.getItem("uploadPicFormData");
+			if (savedData) {
+				const formData = JSON.parse(savedData);
+				setGender(formData.gender || "");
+				setYear(formData.year || "");
+				setMonth(formData.month || "");
+				setDay(formData.day || "");
+				setHour(formData.hour || "");
+				setRoomType(formData.roomType || "");
+				setDirection(formData.direction || "");
+				setValidationError(formData.validationError || null);
+				console.log("Form data loaded from localStorage");
+			}
+		} catch (error) {
+			console.error("Error loading form data:", error);
+		}
+	};
+
+	// Save file data to sessionStorage
+	const saveFileData = async (fileObj) => {
+		try {
+			if (fileObj) {
+				const base64 = await fileToBase64(fileObj);
+				const fileData = {
+					base64,
+					name: fileObj.name,
+					size: fileObj.size,
+					type: fileObj.type,
+					lastModified: fileObj.lastModified,
+					timestamp: Date.now(), // Add timestamp to track freshness
+				};
+				sessionStorage.setItem(
+					"uploadPicFileData",
+					JSON.stringify(fileData)
+				);
+				console.log("File data saved to sessionStorage:", fileObj.name);
+			}
+		} catch (error) {
+			console.error("Error saving file data:", error);
+		}
+	};
+
+	// Load file data from sessionStorage
+	const loadFileData = async () => {
+		try {
+			const savedFileData = sessionStorage.getItem("uploadPicFileData");
+			if (savedFileData) {
+				const fileData = JSON.parse(savedFileData);
+
+				// Check if file data is not too old (optional: 1 hour expiry)
+				const isDataFresh =
+					!fileData.timestamp ||
+					Date.now() - fileData.timestamp < 60 * 60 * 1000;
+
+				if (isDataFresh) {
+					const restoredFile = base64ToFile(
+						fileData.base64,
+						fileData.name,
+						fileData.type
+					);
+
+					// Create proper blob URL for preview instead of using base64 directly
+					const previewUrl = URL.createObjectURL(restoredFile);
+
+					setLocalFile(restoredFile);
+					setPreview(previewUrl);
+					setGlobalFile(restoredFile);
+					setGlobalPreview(previewUrl);
+
+					console.log(
+						"File restored from sessionStorage:",
+						fileData.name
+					);
+					console.log("Preview URL created:", previewUrl);
+
+					return true; // Indicates file was restored
+				} else {
+					// Clear old data
+					sessionStorage.removeItem("uploadPicFileData");
+					console.log("Cleared old file data from sessionStorage");
+				}
+			}
+		} catch (error) {
+			console.error("Error loading file data:", error);
+			// Clear corrupted data
+			sessionStorage.removeItem("uploadPicFileData");
+		}
+		return false;
+	};
+
+	// Clear saved data
+	const clearSavedData = () => {
+		localStorage.removeItem("uploadPicFormData");
+		sessionStorage.removeItem("uploadPicFileData");
+		console.log("Saved data cleared");
+	};
+
+	// Enhanced initialization effect
+	useEffect(() => {
+		const initializeData = async () => {
+			if (isInitialized) return; // Prevent multiple initializations
+
+			console.log("Initializing component, loading saved data...");
+			console.log("Session status:", status);
+
+			// Always load form data
+			loadFormData();
+
+			// Try to restore file data
+			const fileLoaded = await loadFileData();
+			if (fileLoaded) {
+				console.log("File successfully restored from storage");
+			} else {
+				console.log("No saved file found");
+			}
+
+			setIsInitialized(true);
+		};
+
+		initializeData();
+
+		// Cleanup blob URLs on unmount
+		return () => {
+			if (preview && preview.startsWith("blob:")) {
+				URL.revokeObjectURL(preview);
+			}
+		};
+	}, []); // Remove session dependency to ensure it runs immediately
+
+	// Additional effect to handle session changes
+	useEffect(() => {
+		if (status !== "loading" && isInitialized) {
+			// If user just logged in and we have saved data, ensure the file is still displayed
+			const recheckSavedData = async () => {
+				if (!file && !preview) {
+					console.log(
+						"Session loaded, rechecking saved file data..."
+					);
+					const fileLoaded = await loadFileData();
+					if (fileLoaded) {
+						console.log("File restored after login");
+					}
+				}
+			};
+			recheckSavedData();
+		}
+	}, [status, isInitialized, file, preview]);
+
+	// Save form data whenever it changes (but don't save on first render with empty values)
+	useEffect(() => {
+		if (
+			isInitialized &&
+			(gender || year || month || day || hour || roomType || direction)
+		) {
+			saveFormData();
+		}
+	}, [
+		gender,
+		year,
+		month,
+		day,
+		hour,
+		roomType,
+		direction,
+		validationError,
+		isInitialized,
+	]);
+
 	const handleDelete = () => {
+		// Cleanup blob URL if it exists
+		if (preview && preview.startsWith("blob:")) {
+			URL.revokeObjectURL(preview);
+		}
+
 		setLocalFile(null);
 		setPreview(null);
 		setGlobalFile(null);
 		setGlobalPreview(null);
-		setValidationError(null); // Clear validation error
+		setValidationError(null);
+		clearSavedData(); // Clear saved data when user deletes
 		if (fileInputRef.current) fileInputRef.current.value = "";
 	};
 
@@ -75,10 +296,32 @@ export default function UploadPic({ onResult }) {
 		const engRoomType = roomTypeMap[roomType];
 		const engDirection = directionMap[direction];
 
-		if (!session?.user?.userId) {
-			router.replace("/auth/login");
+		// Check if user is authenticated
+		if (status === "loading") {
+			// Still loading session, wait a bit
+			toast.info(t("checkingAuth") || "Checking authentication...");
 			return;
 		}
+
+		if (status === "unauthenticated" || !session?.user?.userId) {
+			// Save current form data before redirecting
+			saveFormData();
+			if (file) {
+				await saveFileData(file);
+			}
+
+			// User is not authenticated, redirect to login with callback URL
+			const callbackUrl = `/freereport?roomType=${encodeURIComponent(engRoomType)}&direction=${encodeURIComponent(engDirection)}`;
+			const loginUrl = `/auth/login?callbackUrl=${encodeURIComponent(callbackUrl)}`;
+
+			toast.info(
+				t("redirectingToLogin") || "Please log in to continue..."
+			);
+			router.push(loginUrl);
+			return;
+		}
+
+		// User is authenticated, proceed with saving user info
 		setLoading(true);
 		try {
 			// Compose birthDateTime string
@@ -89,6 +332,9 @@ export default function UploadPic({ onResult }) {
 			});
 			if (status === 0) {
 				toast.success("保存成功！");
+				// Clear saved data after successful submission
+				clearSavedData();
+				// Redirect to freereport with room parameters
 				router.push(
 					`/freereport?roomType=${encodeURIComponent(engRoomType)}&direction=${encodeURIComponent(engDirection)}`
 				);
@@ -779,6 +1025,7 @@ export default function UploadPic({ onResult }) {
 
 		for (let y = height * 0.3; y < height - 20; y += 15) {
 			for (let x = 20; x < width - 20; x += 15) {
+				// Fixed: removed comma, added semicolon
 				const index = (y * width + x) * 4;
 				const r = data[index],
 					g = data[index + 1],
@@ -1256,7 +1503,7 @@ export default function UploadPic({ onResult }) {
 		return totalEdgePixels > 0 && edgePixels / totalEdgePixels > 0.6;
 	};
 
-	// Update handleFileChange to use the new isRoomImage function
+	// Update handleFileChange to save file data and create proper preview
 	const handleFileChange = async (e) => {
 		const f = e.target.files[0];
 		if (
@@ -1265,34 +1512,43 @@ export default function UploadPic({ onResult }) {
 			f.size <= 10 * 1024 * 1024
 		) {
 			setValidating(true);
-			setValidationError(null); // Clear any previous error
+			setValidationError(null);
 
 			try {
-				// Validate if image contains a room - USE THE NEW FUNCTION
-				const isRoom = await isRoomImage(f); // Changed from detectRoomFeatures(f)
+				// Validate if image contains a room
+				const isRoom = await isRoomImage(f);
+
+				// Create preview URL
+				const previewUrl = URL.createObjectURL(f);
 
 				if (!isRoom) {
-					setValidationError(t("invalidRoomImage")); // Set validation error
-					setLocalFile(f); // Still show the file
-					setPreview(URL.createObjectURL(f));
+					setValidationError(t("invalidRoomImage"));
+					setLocalFile(f);
+					setPreview(previewUrl);
 					setGlobalFile(f);
-					setGlobalPreview(URL.createObjectURL(f));
-					toast.error(t("invalidRoomImage")); // Keep toast as well
+					setGlobalPreview(previewUrl);
+					toast.error(t("invalidRoomImage"));
 				} else {
 					setLocalFile(f);
-					setPreview(URL.createObjectURL(f));
+					setPreview(previewUrl);
 					setGlobalFile(f);
-					setGlobalPreview(URL.createObjectURL(f));
+					setGlobalPreview(previewUrl);
 					toast.success(t("roomDetected"));
 				}
+
+				// Save file data regardless of validation result
+				await saveFileData(f);
+				console.log("File uploaded and saved:", f.name);
 			} catch (error) {
 				console.error("Room validation error:", error);
 				// If validation fails, allow the upload anyway
+				const previewUrl = URL.createObjectURL(f);
 				setLocalFile(f);
-				setPreview(URL.createObjectURL(f));
+				setPreview(previewUrl);
 				setGlobalFile(f);
-				setGlobalPreview(URL.createObjectURL(f));
-				setValidationError(null); // No error if validation fails due to technical issues
+				setGlobalPreview(previewUrl);
+				setValidationError(null);
+				await saveFileData(f);
 			}
 
 			setValidating(false);
@@ -1310,12 +1566,6 @@ export default function UploadPic({ onResult }) {
 			<h1 className="mb-4 text-xl font-normal mt-10 mb-30 text-[#004f44] sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl leading-tight sm:leading-normal">
 				{t("title")}
 			</h1>
-
-			{/* Description */}
-			{/* <div className="w-full max-w-3xl mb-8 text-sm leading-relaxed text-[#004f44] sm:text-base md:text-lg lg:text-xl sm:mb-10 md:mb-12">
-				<p className="mb-2">{t("description1")}</p>
-				<p className="m-0">{t("description2")}</p>
-			</div> */}
 
 			{/* Upload section */}
 			<div className="flex flex-col items-center justify-center w-full max-w-6xl gap-6 md:flex-row md:items-start lg:gap-8">
@@ -1386,14 +1636,23 @@ export default function UploadPic({ onResult }) {
 									: "bg-white border-gray-100"
 							}`}
 						>
-							<Image
-								className="object-cover w-12 h-12 rounded sm:w-14 sm:h-14 md:w-16 md:h-16"
-								loading="lazy"
-								width={64}
-								height={64}
-								alt=""
-								src={preview}
-							/>
+							{preview && (
+								<Image
+									className="object-cover w-12 h-12 rounded sm:w-14 sm:h-14 md:w-16 md:h-16"
+									loading="lazy"
+									width={64}
+									height={64}
+									alt=""
+									src={preview}
+									onError={(e) => {
+										console.error(
+											"Image failed to load:",
+											preview
+										);
+										console.log("File object:", file);
+									}}
+								/>
+							)}
 							<div className="flex flex-col justify-center min-w-0">
 								<div className="text-sm font-medium truncate sm:text-base text-[#004f44] max-w-32 sm:max-w-40">
 									{file.name}
@@ -1444,18 +1703,17 @@ export default function UploadPic({ onResult }) {
 			</div>
 
 			{/* Next Step Button */}
-			{file &&
-				!validationError && ( // Only show if no validation error
-					<div className="flex justify-center w-full mt-8 sm:mt-10">
-						<button
-							type="button"
-							className="w-full max-w-xs px-6 py-3 text-base font-medium text-white transition-all duration-200 rounded-lg shadow-lg sm:w-auto sm:px-8 sm:py-4 sm:text-lg bg-gradient-to-r from-[#7BB8A9] to-[#318177] hover:scale-105 hover:shadow-xl active:scale-95"
-							onClick={() => setShowModal(true)}
-						>
-							{t("nextStep")}
-						</button>
-					</div>
-				)}
+			{file && !validationError && (
+				<div className="flex justify-center w-full mt-8 sm:mt-10">
+					<button
+						type="button"
+						className="w-full max-w-xs px-6 py-3 text-base font-medium text-white transition-all duration-200 rounded-lg shadow-lg sm:w-auto sm:px-8 sm:py-4 sm:text-lg bg-gradient-to-r from-[#7BB8A9] to-[#318177] hover:scale-105 hover:shadow-xl active:scale-95"
+						onClick={() => setShowModal(true)}
+					>
+						{t("nextStep")}
+					</button>
+				</div>
+			)}
 
 			{/* Error message for non-room images */}
 			{file && validationError && (
@@ -1659,11 +1917,13 @@ export default function UploadPic({ onResult }) {
 								<button
 									className="w-full py-3 text-base font-bold text-white transition-all duration-200 rounded-lg shadow-lg sm:text-lg bg-gradient-to-r from-[#7BB8A9] to-[#318177] hover:scale-105 hover:shadow-xl active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
 									onClick={handleStart}
-									disabled={loading}
+									disabled={loading || status === "loading"}
 								>
 									{loading
 										? t("calculating")
-										: t("startAnalysis")}
+										: status === "loading"
+											? t("checkingAuth") || "Checking..."
+											: t("startAnalysis")}
 								</button>
 								<button
 									className="w-full px-3 py-2 text-sm text-gray-500 transition-colors bg-transparent rounded hover:text-gray-700 hover:bg-gray-50"

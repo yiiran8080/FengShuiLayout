@@ -23,7 +23,7 @@ export function FreeChapter3({ roomType, direction, data }) {
 	const [randomRelationshipContent, setRandomRelationshipContent] =
 		useState("");
 	const [randomWealthContent, setRandomWealthContent] = useState("");
-	const { preview } = useImage();
+	const { preview, setPreview, file, setFile } = useImage();
 
 	// Get content options from i18n
 	const careerContentOptions = t.raw("careerContentOptions") || [];
@@ -138,6 +138,73 @@ export function FreeChapter3({ roomType, direction, data }) {
 			(prev) => (prev - 1 + carouselData.length) % carouselData.length
 		);
 	};
+
+	// Fallback image restoration if not available in context
+	useEffect(() => {
+		const restoreImageIfNeeded = async () => {
+			// Only try to restore if preview is not available and context is initialized
+			if (!preview) {
+				try {
+					const savedFileData =
+						sessionStorage.getItem("uploadPicFileData");
+					if (savedFileData) {
+						const fileData = JSON.parse(savedFileData);
+
+						// Check if file data is fresh
+						const isDataFresh =
+							!fileData.timestamp ||
+							Date.now() - fileData.timestamp < 60 * 60 * 1000;
+
+						if (isDataFresh) {
+							// Helper function to convert base64 back to file
+							const base64ToFile = (base64, filename, type) => {
+								const arr = base64.split(",");
+								const mime = arr[0].match(/:(.*?);/)[1];
+								const bstr = atob(arr[1]);
+								let n = bstr.length;
+								const u8arr = new Uint8Array(n);
+								while (n--) {
+									u8arr[n] = bstr.charCodeAt(n);
+								}
+								return new File([u8arr], filename, {
+									type: mime,
+								});
+							};
+
+							const restoredFile = base64ToFile(
+								fileData.base64,
+								fileData.name,
+								fileData.type
+							);
+							const previewUrl =
+								URL.createObjectURL(restoredFile);
+
+							// Update the context with restored data
+							setFile(restoredFile);
+							setPreview(previewUrl);
+
+							console.log(
+								"FreeChapter3: Image restored from fallback mechanism"
+							);
+						} else {
+							// Clear old data
+							sessionStorage.removeItem("uploadPicFileData");
+						}
+					}
+				} catch (error) {
+					console.error(
+						"FreeChapter3: Error in fallback image restoration:",
+						error
+					);
+				}
+			}
+		};
+
+		// Wait a bit for the context to initialize, then try restoration
+		const timeoutId = setTimeout(restoreImageIfNeeded, 500);
+
+		return () => clearTimeout(timeoutId);
+	}, [preview]); // Depend on preview to avoid unnecessary re-runs
 
 	if (!jiajuData || !jiajuData[roomType] || !jiajuData[roomType][direction])
 		return <div>{t("noData")}</div>;

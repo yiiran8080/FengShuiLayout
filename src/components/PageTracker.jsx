@@ -25,26 +25,39 @@ export default function PageTracker() {
 	const pathname = usePathname();
 
 	useEffect(() => {
-		if (typeof window !== "undefined" && window.gtag) {
-			const pageName = pageNames[pathname] || `Page: ${pathname}`;
+		const trackPage = () => {
+			if (typeof window !== "undefined" && window.gtag) {
+				const pageName = pageNames[pathname] || `Page: ${pathname}`;
 
-			// Send page view with custom title
-			window.gtag("event", "page_view", {
-				page_title: pageName,
-				page_location: window.location.href,
-				page_path: pathname,
-				custom_page_name: pageName,
-			});
+				// Send page view with custom title
+				window.gtag("event", "page_view", {
+					page_title: pageName,
+					page_location: window.location.href,
+					page_path: pathname,
+					custom_page_name: pageName,
+					send_to: "G-FSF2H5X9S4", // Explicitly specify tracking ID
+					page_referrer: document.referrer || "(direct)",
+				});
 
-			// Send custom event for easier filtering
-			window.gtag("event", "route_change", {
-				event_category: "Navigation",
-				event_label: pageName,
-				page_path: pathname,
-			});
+				console.log(`Page tracked: ${pageName} at ${pathname}`);
+				return true;
+			}
+			return false;
+		};
 
-			console.log(`Page tracked: ${pageName} at ${pathname}`);
-		}
+		// Retry logic for gtag availability
+		let attempts = 0;
+		const maxAttempts = 50; // 5 seconds max wait
+
+		const tryTracking = () => {
+			if (trackPage() || attempts >= maxAttempts) {
+				return;
+			}
+			attempts++;
+			setTimeout(tryTracking, 100);
+		};
+
+		tryTracking();
 	}, [pathname]);
 
 	return null; // This component doesn't render anything

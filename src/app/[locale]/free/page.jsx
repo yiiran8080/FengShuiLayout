@@ -35,15 +35,15 @@ export default function Free() {
 	const [birthDateTime, setBirthDateTime] = useState("1990-01-01T08:00");
 	const fileInputRef = useRef(null);
 
-	React.useEffect(() => {
-		if (status === "unauthenticated") {
-			router.replace("/auth/login");
-		}
-	}, [status, router]);
+	// React.useEffect(() => {
+	// 	if (status === "unauthenticated") {
+	// 		router.replace("/auth/login");
+	// 	}
+	// }, [status, router]);
 
-	if (status === "loading") {
-		return null; // or a loading spinner
-	}
+	// if (status === "loading") {
+	// 	return null; // or a loading spinner
+	// }
 
 	const handleFileChange = (e) => {
 		const f = e.target.files[0];
