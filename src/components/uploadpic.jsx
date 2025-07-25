@@ -331,6 +331,14 @@ export default function UploadPic({ onResult }) {
 				birthDateTime,
 			});
 			if (status === 0) {
+				// Track the successful generation BEFORE redirecting
+				await trackFreeReportGeneration(
+					engRoomType, 
+					engDirection,
+					{ gender, birthDateTime },
+					null // We don't have analysis result yet, will be tracked on report page
+				);
+
 				toast.success("保存成功！");
 				// Clear saved data after successful submission
 				clearSavedData();
@@ -1554,6 +1562,50 @@ export default function UploadPic({ onResult }) {
 			setValidating(false);
 		} else {
 			toast.error(t("invalidFileFormat"));
+		}
+	};
+
+	// Add this function to track successful report generation
+	const trackFreeReportGeneration = async (roomType, direction, userInfo, analysisResult) => {
+		try {
+			const trackingData = {
+				roomType,
+				direction,
+				userInfo: {
+					gender,
+					birthDateTime: `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}T${hour.padStart(2, "0")}:00`
+				},
+				hasUploadedImage: !!file,
+				imageFileName: file?.name || null,
+				analysisResult,
+				locale: pathname.split("/")[1] || 'zh-TW',
+				timeSpentOnPage: Math.round((Date.now() - (window.pageStartTime || Date.now())) / 1000),
+				referrer: document.referrer,
+				sessionId: sessionStorage.getItem('ga_session_id')
+			};
+
+			const response = await fetch('/api/track-free-report-generation', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(trackingData)
+			});
+
+			if (response.ok) {
+				const result = await response.json();
+				console.log('✅ Free report generation tracked:', result);
+				
+				// Show user their progress
+				if (result.totalGenerated > 1) {
+					toast.success(`報告生成成功！這是您的第 ${result.totalGenerated} 份免費報告。`);
+				} else {
+					toast.success('首份免費報告生成成功！');
+				}
+			}
+		} catch (error) {
+			console.error('Error tracking free report generation:', error);
+			// Don't show error to user, just log it
 		}
 	};
 

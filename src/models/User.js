@@ -31,11 +31,29 @@ const UserSchema = new mongoose.Schema({
 		enum: ["none", "waiting", "done"],
 		required: false,
 	},
-	// provider: {
-	//     type: String,
-	//     enum: ['google', 'apple'],
-	//     required: true,
-	// },
+	// Add free report tracking
+	freeReportStats: {
+		totalGenerated: {
+			type: Number,
+			default: 0,
+		},
+		lastGeneratedAt: {
+			type: Date,
+			default: null,
+		},
+		firstGeneratedAt: {
+			type: Date,
+			default: null,
+		},
+		favoriteRoomType: {
+			type: String,
+			default: null,
+		},
+		favoriteDirection: {
+			type: String,
+			default: null,
+		},
+	},
 	createdAt: {
 		type: Date,
 		default: Date.now,
@@ -44,6 +62,13 @@ const UserSchema = new mongoose.Schema({
 		type: Date,
 		default: Date.now,
 	},
+});
+
+// Virtual relationship to free report activities
+UserSchema.virtual("freeReportActivities", {
+	ref: "FreeReportActivity",
+	localField: "userId",
+	foreignField: "userId",
 });
 
 // Modify Project references
