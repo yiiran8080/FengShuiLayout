@@ -336,7 +336,10 @@ export function FreeChapter3({ roomType, direction, data }) {
 										{/* Blur overlay and unlock button */}
 										<div className="absolute top-0 left-0 z-10 flex items-center justify-center w-full h-full rounded-2xl bg-[#f5faf7]/80 backdrop-blur-xs">
 											<Link href="/price">
-												<button className="pointer-events-auto px-4 sm:px-6 py-2 rounded-full bg-[rgba(49,129,97)] text-white font-bold text-sm sm:text-lg shadow-[0_8px_16px_rgba(0,0,0,0.25)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.3)] transition-shadow duration-300">
+												<button
+													data-track={`unlock-tab-${activeTab}-chapter3`}
+													className="pointer-events-auto px-4 sm:px-6 py-2 rounded-full bg-[rgba(49,129,97)] text-white font-bold text-sm sm:text-lg shadow-[0_8px_16px_rgba(0,0,0,0.25)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.3)] transition-shadow duration-300"
+												>
 													{t("unlockButton")}
 												</button>
 											</Link>
@@ -528,6 +531,7 @@ export function FreeChapter3({ roomType, direction, data }) {
 															<div className="relative z-10 flex justify-center">
 																<Link href="/price">
 																	<button
+																		data-track={`unlock-${item.title.toLowerCase().replace(/\s+/g, "-")}-chapter3`}
 																		className={`px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-bold text-white transition-all duration-300 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transform ${
 																			item.titleColor.includes(
 																				"blue"
