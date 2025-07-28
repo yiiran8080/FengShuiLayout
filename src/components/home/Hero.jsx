@@ -245,10 +245,10 @@ export default function Hero() {
 									}`}
 								>
 									<p
-										className={`text-sm sm:text-base lg:text-lg xl:text-xl leading-relaxed whitespace-nowrap ${
+										className={`text-sm sm:text-base lg:text-lg xl:text-xl leading-relaxed ${
 											isMobileLayout
 												? "text-center max-w-[240px] sm:max-w-none"
-												: "text-left max-w-none"
+												: "text-left max-w-none whitespace-nowrap"
 										}`}
 										style={{
 											fontFamily: "Noto Serif TC, serif",
