@@ -54,7 +54,11 @@ export default function AutoButtonTracker() {
 		waitForGtag();
 
 		const trackButtonClick = (e) => {
-			const button = e.target.closest('button, a[role="button"], .btn');
+			// FIXED: Expand selector to include all clickable elements
+			const button = e.target.closest(
+				'button, a, .btn, [role="button"], [data-track], input[type="submit"], input[type="button"]'
+			);
+
 			if (button) {
 				// Get button identifier
 				const buttonText = button.textContent?.trim() || "";
@@ -62,43 +66,67 @@ export default function AutoButtonTracker() {
 				const buttonClass = button.className || "";
 				const buttonAriaLabel = button.getAttribute("aria-label") || "";
 				const buttonDataTrack = button.getAttribute("data-track") || "";
+				const href = button.getAttribute("href") || "";
 
-				// Create a meaningful button name
-				const buttonName =
-					buttonDataTrack ||
-					buttonAriaLabel ||
-					buttonId ||
-					buttonText ||
-					`button-${buttonClass.split(" ")[0]}`;
+				// Determine if this is a trackable element
+				const isButton = button.tagName === "BUTTON";
+				const isInput =
+					button.tagName === "INPUT" &&
+					["submit", "button"].includes(button.type);
+				const isClickableLink =
+					button.tagName === "A" &&
+					(buttonText.includes("免費開始測算") ||
+						buttonText.includes("立即") ||
+						buttonText.includes("開始") ||
+						buttonText.includes("測算") ||
+						buttonText.includes("分析") ||
+						buttonClass.includes("btn") ||
+						buttonClass.includes("button") ||
+						buttonClass.includes("cta") ||
+						buttonDataTrack ||
+						buttonAriaLabel);
 
-				// Get page context
-				const pageUrl = window.location.pathname;
-				const pageTitle = document.title;
+				// Only track if it's a button, input, or meaningful clickable link
+				if (isButton || isInput || isClickableLink) {
+					// Create a meaningful button name
+					const buttonName =
+						buttonDataTrack ||
+						buttonAriaLabel ||
+						buttonId ||
+						buttonText ||
+						(href ? `link-${href.split("/").pop()}` : null) ||
+						`${button.tagName.toLowerCase()}-${buttonClass.split(" ")[0]}`;
 
-				// Track the button click
-				event({
-					action: "button_click",
-					category: "UI_Interaction",
-					label: `${buttonName} | ${pageUrl}`,
-					value: 1,
-				});
+					// Get page context
+					const pageUrl = window.location.pathname;
+					const pageTitle = document.title;
 
-				// Additional detailed tracking
-				event({
-					action: "detailed_button_click",
-					category: "Button_Analytics",
-					label: buttonName,
-					custom_parameters: {
-						button_text: buttonText,
-						button_id: buttonId,
-						button_classes: buttonClass,
-						page_url: pageUrl,
-						page_title: pageTitle,
-						timestamp: new Date().toISOString(),
-					},
-				});
+					// Track the button click using your existing event function
+					event({
+						action: "button_click",
+						category: "UI_Interaction",
+						label: `${buttonName} | ${pageUrl}`,
+						value: 1,
+					});
 
-				console.log(`🔘 Button tracked: "${buttonName}" on ${pageUrl}`);
+					// Additional detailed tracking with direct gtag call
+					if (window.gtag) {
+						window.gtag("event", "button_click", {
+							event_category: "Button_Click",
+							event_label: buttonName,
+							button_text: buttonText,
+							button_href: href,
+							page_path: pageUrl,
+							page_title: pageTitle,
+							button_type: button.tagName.toLowerCase(),
+							timestamp: new Date().toISOString(),
+						});
+					}
+
+					console.log(
+						`🔘 Button/Link tracked: "${buttonName}" (${buttonText}) -> ${href || "no-href"} on ${pageUrl}`
+					);
+				}
 			}
 		};
 
