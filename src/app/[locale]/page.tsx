@@ -9,7 +9,8 @@ import FAQ from "@/components/home/FAQ";
 import Message from "@/components/home/Message";
 import Footer from "@/components/home/Footer";
 import Desire from "@/components/home/Desire";
-import Theory from "@/components/free/theory"; // Changed import
+import Theory from "@/components/free/theory";
+import AutoButtonTracker from "@/components/AutoButtonTracker"; // Add this import
 
 import { get } from "@/lib/ajax";
 
@@ -54,6 +55,7 @@ export const metadata = {
 export default function Home() {
 	return (
 		<>
+			<AutoButtonTracker /> {/* Add this line */}
 			<Navbar />
 			<main>
 				<section id="hero">
@@ -66,8 +68,7 @@ export default function Home() {
 				</section>
 				<BeforeAfter />
 				<section id="theory">
-					<Theory bgColor="bg-white" />{" "}
-					{/* Use Theory with white background */}
+					<Theory bgColor="bg-white" />
 				</section>
 				{/* Hide Tips component on mobile devices */}
 				<div className="hidden md:block">
