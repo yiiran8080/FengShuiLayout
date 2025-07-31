@@ -54,7 +54,6 @@ export default function AutoButtonTracker() {
 		waitForGtag();
 
 		const trackButtonClick = (e) => {
-			// FIXED: Expand selector to include all clickable elements
 			const button = e.target.closest(
 				'button, a, .btn, [role="button"], [data-track], input[type="submit"], input[type="button"]'
 			);
@@ -67,6 +66,69 @@ export default function AutoButtonTracker() {
 				const buttonAriaLabel = button.getAttribute("aria-label") || "";
 				const buttonDataTrack = button.getAttribute("data-track") || "";
 				const href = button.getAttribute("href") || "";
+
+				// Better button identification for buttons without text
+				let contextualName = "";
+				if (
+					!buttonText &&
+					!buttonId &&
+					!buttonAriaLabel &&
+					!buttonDataTrack
+				) {
+					// Look for context clues
+					const parentText =
+						button.closest("div")?.textContent?.trim() || "";
+					const siblingText =
+						button.parentElement?.textContent?.trim() || "";
+					const imageAlt = button.querySelector("img")?.alt || "";
+					const iconClass =
+						button.querySelector('[class*="icon"]')?.className ||
+						"";
+
+					// Check for specific patterns
+					if (
+						imageAlt.includes("trash") ||
+						iconClass.includes("trash") ||
+						button.querySelector('[src*="trash"]')
+					) {
+						contextualName = "delete_button";
+					} else if (
+						button.querySelector("svg") &&
+						parentText.includes("照片")
+					) {
+						contextualName = "file_upload_area";
+					} else if (
+						button.classList.contains("rounded-full") &&
+						button.querySelector("img")
+					) {
+						contextualName = "icon_button";
+					} else if (
+						parentText.includes("瀏覽") ||
+						siblingText.includes("瀏覽")
+					) {
+						contextualName = "browse_area";
+					} else {
+						// Last resort - use a more descriptive class-based name
+						const meaningfulClasses = buttonClass
+							.split(" ")
+							.find((cls) =>
+								[
+									"btn",
+									"button",
+									"upload",
+									"delete",
+									"close",
+									"submit",
+									"cta",
+								].some((keyword) =>
+									cls.toLowerCase().includes(keyword)
+								)
+							);
+						contextualName = meaningfulClasses
+							? `button_${meaningfulClasses}`
+							: "unknown_button";
+					}
+				}
 
 				// Determine if this is a trackable element
 				const isButton = button.tagName === "BUTTON";
@@ -88,14 +150,15 @@ export default function AutoButtonTracker() {
 
 				// Only track if it's a button, input, or meaningful clickable link
 				if (isButton || isInput || isClickableLink) {
-					// Create a meaningful button name
+					// Create a meaningful button name with better fallbacks
 					const buttonName =
 						buttonDataTrack ||
 						buttonAriaLabel ||
 						buttonId ||
 						buttonText ||
-						(href ? `link-${href.split("/").pop()}` : null) ||
-						`${button.tagName.toLowerCase()}-${buttonClass.split(" ")[0]}`;
+						contextualName || // Use our contextual name
+						(href ? `link_${href.split("/").pop()}` : null) ||
+						"unidentified_button";
 
 					// Get page context
 					const pageUrl = window.location.pathname;
@@ -119,12 +182,13 @@ export default function AutoButtonTracker() {
 							page_path: pageUrl,
 							page_title: pageTitle,
 							button_type: button.tagName.toLowerCase(),
+							button_context: contextualName,
 							timestamp: new Date().toISOString(),
 						});
 					}
 
 					console.log(
-						`🔘 Button/Link tracked: "${buttonName}" (${buttonText}) -> ${href || "no-href"} on ${pageUrl}`
+						`🔘 Button/Link tracked: "${buttonName}" (text: "${buttonText}", context: "${contextualName}") -> ${href || "no-href"} on ${pageUrl}`
 					);
 				}
 			}

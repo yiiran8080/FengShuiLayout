@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import UnlockButton from "../UnlockButton";
 import RoomCanvas from "./RoomCanvas";
 import DonutChart from "../DonutChart";
+import PricingModal from "../PricingModal"; // Add this import
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
 import { useImage } from "../../context/ImageContext";
 
@@ -23,6 +24,7 @@ export function FreeChapter3({ roomType, direction, data }) {
 	const [randomRelationshipContent, setRandomRelationshipContent] =
 		useState("");
 	const [randomWealthContent, setRandomWealthContent] = useState("");
+	const [isPricingModalOpen, setIsPricingModalOpen] = useState(false); // Add this state
 	const { preview, setPreview, file, setFile } = useImage();
 
 	// Get content options from i18n
@@ -206,6 +208,11 @@ export function FreeChapter3({ roomType, direction, data }) {
 		return () => clearTimeout(timeoutId);
 	}, [preview]); // Depend on preview to avoid unnecessary re-runs
 
+	// Add function to handle unlock button clicks
+	const handleUnlockClick = () => {
+		setIsPricingModalOpen(true);
+	};
+
 	if (!jiajuData || !jiajuData[roomType] || !jiajuData[roomType][direction])
 		return <div>{t("noData")}</div>;
 
@@ -335,14 +342,13 @@ export function FreeChapter3({ roomType, direction, data }) {
 										</div>
 										{/* Blur overlay and unlock button */}
 										<div className="absolute top-0 left-0 z-10 flex items-center justify-center w-full h-full rounded-2xl bg-[#f5faf7]/80 backdrop-blur-xs">
-											<Link href="/price">
-												<button
-													data-track={`unlock-tab-${activeTab}-chapter3`}
-													className="pointer-events-auto px-4 sm:px-6 py-2 rounded-full bg-[rgba(49,129,97)] text-white font-bold text-sm sm:text-lg shadow-[0_8px_16px_rgba(0,0,0,0.25)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.3)] transition-shadow duration-300"
-												>
-													{t("unlockButton")}
-												</button>
-											</Link>
+											<button
+												data-track={`unlock-tab-${activeTab}-chapter3`}
+												className="pointer-events-auto px-4 sm:px-6 py-2 rounded-full bg-[rgba(49,129,97)] text-white font-bold text-sm sm:text-lg shadow-[0_8px_16px_rgba(0,0,0,0.25)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.3)] transition-shadow duration-300"
+												onClick={handleUnlockClick}
+											>
+												{t("unlockButton")}
+											</button>
 										</div>
 									</div>
 								</div>
@@ -529,32 +535,33 @@ export function FreeChapter3({ roomType, direction, data }) {
 
 															{/* Button inside container */}
 															<div className="relative z-10 flex justify-center">
-																<Link href="/price">
-																	<button
-																		data-track={`unlock-${item.title.toLowerCase().replace(/\s+/g, "-")}-chapter3`}
-																		className={`px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-bold text-white transition-all duration-300 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transform ${
-																			item.titleColor.includes(
-																				"blue"
-																			)
-																				? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
-																				: item.titleColor.includes(
-																							"red"
-																					  )
-																					? "bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800"
-																					: "bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800"
-																		}`}
-																		style={{
-																			fontFamily:
-																				'"Noto Serif TC", serif',
-																			boxShadow:
-																				"0 6px 20px rgba(0, 0, 0, 0.15)",
-																		}}
-																	>
-																		{t(
-																			"unlockDetailButton"
-																		)}
-																	</button>
-																</Link>
+																<button
+																	data-track={`unlock-${item.title.toLowerCase().replace(/\s+/g, "-")}-chapter3`}
+																	className={`px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-bold text-white transition-all duration-300 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transform ${
+																		item.titleColor.includes(
+																			"blue"
+																		)
+																			? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+																			: item.titleColor.includes(
+																						"red"
+																				  )
+																				? "bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800"
+																				: "bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800"
+																	}`}
+																	style={{
+																		fontFamily:
+																			'"Noto Serif TC", serif',
+																		boxShadow:
+																			"0 6px 20px rgba(0, 0, 0, 0.15)",
+																	}}
+																	onClick={
+																		handleUnlockClick
+																	}
+																>
+																	{t(
+																		"unlockDetailButton"
+																	)}
+																</button>
 															</div>
 
 															{/* Decorative elements */}
@@ -598,6 +605,12 @@ export function FreeChapter3({ roomType, direction, data }) {
 					</section>
 				</>
 			</div>
+
+			{/* Add PricingModal */}
+			<PricingModal
+				isOpen={isPricingModalOpen}
+				onClose={() => setIsPricingModalOpen(false)}
+			/>
 		</div>
 	);
 }

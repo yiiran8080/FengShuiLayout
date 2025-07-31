@@ -6,8 +6,8 @@ import Footer from "@/components/home/Footer";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Theory from "../../../components/free/theory";
-import Uploadpic from "../../../components/uploadpic";
-
+import UploadFormTracker from "@/components/UploadFormTracker";
+import Uploadpic2 from "@/components/uploadpic2";
 const directionOptions = [
 	{ value: "north", label: "正北" },
 	{ value: "south", label: "正南" },
@@ -162,7 +162,8 @@ export default function Free() {
 	return (
 		<div>
 			<Navbar />
-			<Uploadpic />
+			<UploadFormTracker />
+			<Uploadpic2 />
 			<Theory />
 			<Footer />
 		</div>

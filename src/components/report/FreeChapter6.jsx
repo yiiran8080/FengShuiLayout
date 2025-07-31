@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { get, post, patch } from "@/lib/ajax";
 import Promo from "@/components/Promo";
+import PricingModal from "@/components/PricingModal"; // Add this import
 
 export function FreeChapter6({ locale }) {
 	const [userInfo, setUserInfo] = useState(null);
@@ -14,6 +15,7 @@ export function FreeChapter6({ locale }) {
 	const [isLock, setIsLock] = useState(true);
 	const [sections, setSections] = useState([]);
 	const [anchorList, setAnchorList] = useState([]);
+	const [isPricingModalOpen, setIsPricingModalOpen] = useState(false); // Add this state
 
 	useEffect(() => {
 		let sections = [
@@ -162,6 +164,11 @@ export function FreeChapter6({ locale }) {
 		console.log("reportDocData", reportDocData);
 	}, [reportDocData]);
 
+	// Add function to handle unlock button clicks
+	const handleUnlockClick = () => {
+		setIsPricingModalOpen(true);
+	};
+
 	// Component for individual score item with responsive sizing
 	const ScoreItem = ({
 		item,
@@ -256,8 +263,8 @@ export function FreeChapter6({ locale }) {
 			<div className="w-full max-w-full p-2 mx-auto bg-white lg:w-full sm:p-1 sm:mt-16 rounded-xl">
 				<div className="flex flex-row justify-between md:mr-10 sm:mr-0">
 					{/* <p className=" text-lg px-9  text-[#25826c] flex items-center justify-center inline-block mb-5 max-w-full">
-						{t("pro.scrollInstruction")}
-					</p> */}
+                        {t("pro.scrollInstruction")}
+                    </p> */}
 					<div className="flex flex-col items-center w-full gap-3 mb-5 sm:flex-row sm:justify-between sm:gap-0">
 						{/* <p className=" text-lg px-9  text-[#25826c] flex items-center justify-center inline-block mb-5 max-w-full">
 							{t("pro.scrollInstruction")}
@@ -265,14 +272,16 @@ export function FreeChapter6({ locale }) {
 						<p className="font-bold text-2xl sm:text-4xl px-4 sm:px-9 text-[#25826c] flex items-center justify-center inline-block max-w-full mb-2 sm:mb-0">
 							{t("pro.advancedAnalysisTitle")}
 						</p>
-						<Link
-							href="/price"
-							className="flex justify-center w-full sm:w-auto"
-						>
-							<button className="w-full sm:w-auto pointer-events-auto px-3 sm:px-3 py-2 rounded-full bg-[rgba(49,129,97)] hover:bg-green-600 text-white font-bold text-sm sm:text-lg shadow-[0_8px_16px_rgba(0,0,0,0.25)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.3)] transition-all duration-300">
+						{/* Replace Link with button */}
+						<div className="flex justify-center w-full sm:w-auto">
+							<button
+								data-track="unlock-advanced-analysis-chapter6" // Add this line
+								className="w-full sm:w-auto pointer-events-auto px-3 sm:px-3 py-2 rounded-full bg-[rgba(49,129,97)] hover:bg-green-600 text-white font-bold text-sm sm:text-lg shadow-[0_8px_16px_rgba(0,0,0,0.25)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.3)] transition-all duration-300"
+								onClick={handleUnlockClick}
+							>
 								{t("unlockButton")}
 							</button>
-						</Link>
+						</div>
 					</div>
 				</div>
 				<div className="flex items-center justify-center mb-5">
@@ -551,6 +560,12 @@ export function FreeChapter6({ locale }) {
 					</div>
 				</div>
 			</div>
+
+			{/* Add PricingModal */}
+			<PricingModal
+				isOpen={isPricingModalOpen}
+				onClose={() => setIsPricingModalOpen(false)}
+			/>
 		</div>
 	);
 }
