@@ -21,26 +21,28 @@ export async function POST(request) {
 			timeSpentOnPage,
 			referrer,
 			sessionId,
+			isAnonymous, // Add this flag
 		} = body;
 
-		// Get user identification
-		const userId =
-			session?.user?.email || session?.user?.userId || "anonymous";
+		// Get user identification - ALLOW ANONYMOUS
+		const userId = session?.user?.email || session?.user?.userId || null;
 		const email = session?.user?.email || null;
 
 		console.log("📊 Tracking request received:", {
-			userId,
+			userId: userId || "anonymous",
 			roomType,
 			direction,
+			isAnonymous: !userId,
 		});
 
-		if (!userId || userId === "anonymous") {
-			console.log("❌ User not authenticated");
-			return NextResponse.json(
-				{ error: "User must be authenticated to track free reports" },
-				{ status: 401 }
-			);
-		}
+		// REMOVE THIS CHECK - Allow anonymous tracking
+		// if (!userId || userId === "anonymous") {
+		//     console.log("❌ User not authenticated");
+		//     return NextResponse.json(
+		//         { error: "User must be authenticated to track free reports" },
+		//         { status: 401 }
+		//     );
+		// }
 
 		// Get request info
 		const ipAddress =
@@ -52,10 +54,10 @@ export async function POST(request) {
 		await connectDB();
 		console.log("📁 Database connected");
 
-		// Create free report activity record
+		// Create free report activity record - HANDLE ANONYMOUS
 		const freeReportActivity = new FreeReportActivity({
-			userId,
-			email,
+			userId: userId || null, // Allow null for anonymous
+			email: email || null,
 			sessionId,
 			roomType,
 			direction,
@@ -75,74 +77,75 @@ export async function POST(request) {
 			timeSpentOnPage,
 			referrer,
 			status: "success",
+			isAnonymous: !userId, // Track if anonymous
 		});
 
 		await freeReportActivity.save();
 		console.log("✅ Activity saved:", freeReportActivity._id);
 
-		// Update user statistics
-		let user = await User.findOne({ userId });
-		console.log("👤 Found user:", !!user);
+		// Update user statistics ONLY if authenticated
+		if (userId) {
+			let user = await User.findOne({ userId });
+			console.log("👤 Found user:", !!user);
 
-		if (!user) {
-			// Create new user if doesn't exist
-			user = new User({
-				userId,
-				email,
-				gender: userInfo?.gender || "female",
-				birthDateTime: userInfo?.birthDateTime
-					? new Date(userInfo.birthDateTime)
-					: new Date(1996, 2, 12, 22),
-				freeReportStats: {
-					totalGenerated: 1,
-					firstGeneratedAt: new Date(),
-					lastGeneratedAt: new Date(),
-					favoriteRoomType: roomType,
-					favoriteDirection: direction,
-				},
-			});
-			console.log("🆕 Creating new user");
-		} else {
-			// Update existing user stats
-			if (!user.freeReportStats) {
-				user.freeReportStats = {};
+			if (!user) {
+				// Create new user if doesn't exist
+				user = new User({
+					userId,
+					email,
+					gender: userInfo?.gender || "female",
+					birthDateTime: userInfo?.birthDateTime
+						? new Date(userInfo.birthDateTime)
+						: new Date(1996, 2, 12, 22),
+					freeReportStats: {
+						totalGenerated: 1,
+						firstGeneratedAt: new Date(),
+						lastGeneratedAt: new Date(),
+						favoriteRoomType: roomType,
+						favoriteDirection: direction,
+					},
+				});
+				console.log("🆕 Creating new user");
+			} else {
+				// Update existing user stats
+				if (!user.freeReportStats) {
+					user.freeReportStats = {};
+				}
+
+				const currentTotal = user.freeReportStats.totalGenerated || 0;
+				user.freeReportStats.totalGenerated = currentTotal + 1;
+				user.freeReportStats.lastGeneratedAt = new Date();
+
+				if (!user.freeReportStats.firstGeneratedAt) {
+					user.freeReportStats.firstGeneratedAt = new Date();
+				}
+
+				user.freeReportStats.favoriteRoomType = roomType;
+				user.freeReportStats.favoriteDirection = direction;
+				user.updatedAt = new Date();
+
+				console.log(
+					"📈 Updating user stats. New total:",
+					user.freeReportStats.totalGenerated
+				);
 			}
 
-			const currentTotal = user.freeReportStats.totalGenerated || 0;
-			user.freeReportStats.totalGenerated = currentTotal + 1;
-			user.freeReportStats.lastGeneratedAt = new Date();
-
-			if (!user.freeReportStats.firstGeneratedAt) {
-				user.freeReportStats.firstGeneratedAt = new Date();
-			}
-
-			// Update favorite room type and direction based on most recent usage
-			user.freeReportStats.favoriteRoomType = roomType;
-			user.freeReportStats.favoriteDirection = direction;
-			user.updatedAt = new Date();
-
-			console.log(
-				"📈 Updating user stats. New total:",
-				user.freeReportStats.totalGenerated
-			);
+			await user.save();
+			console.log("💾 User saved successfully");
 		}
-
-		await user.save();
-		console.log("💾 User saved successfully");
 
 		return NextResponse.json({
 			success: true,
 			activityId: freeReportActivity._id,
-			totalGenerated: user.freeReportStats.totalGenerated,
+			totalGenerated:
+				userId &&
+				(await User.findOne({ userId }))?.freeReportStats
+					?.totalGenerated,
 			message: "Free report generation tracked successfully",
+			isAnonymous: !userId,
 		});
 	} catch (error) {
 		console.error("❌ Error tracking free report generation:", error);
-
-		// Log more details about the error
-		console.error("Error stack:", error.stack);
-		console.error("Error name:", error.name);
-		console.error("Error message:", error.message);
 
 		return NextResponse.json(
 			{

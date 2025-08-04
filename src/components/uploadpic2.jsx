@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { getJiajuPrompt } from "./report/utilsZh";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, useParams } from "next/navigation";
 import { useImage } from "../context/ImageContext";
 import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 import { post } from "@/lib/ajax";
 import { toast } from "react-toastify";
+import { useUser } from "@/context/UserContext";
+import getWuxingData from "@/lib/nayin"; // Add this import
 
 const years = Array.from({ length: 2025 - 1926 + 1 }, (_, i) => 1926 + i);
 const months = Array.from({ length: 12 }, (_, i) => i + 1);
@@ -59,8 +61,10 @@ const base64ToFile = (base64, filename, type) => {
 	return new File([u8arr], filename, { type: mime });
 };
 
-export default function UploadPic2({ onResult }) {
+const UploadPic = () => {
 	const t = useTranslations("upload");
+	const params = useParams();
+	const locale = params?.locale || "zh-TW";
 	const [file, setLocalFile] = useState(null);
 	const [preview, setPreview] = useState(null);
 	const [showModal, setShowModal] = useState(false);
@@ -77,10 +81,12 @@ export default function UploadPic2({ onResult }) {
 	const [validating, setValidating] = useState(false);
 	const [validationError, setValidationError] = useState(null);
 	const [isInitialized, setIsInitialized] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const fileInputRef = useRef(null);
 	const router = useRouter();
 	const { setPreview: setGlobalPreview, setFile: setGlobalFile } = useImage();
 	const { data: session, status } = useSession();
+	const { userData, forceRefresh } = useUser(); // Add forceRefresh
 
 	// Get room types and directions from translations
 	const roomTypes = Object.keys(roomTypeMap);
@@ -305,66 +311,102 @@ export default function UploadPic2({ onResult }) {
 		if (fileInputRef.current) fileInputRef.current.value = "";
 	};
 
-	async function handleStart() {
-		// Validate form before proceeding
-		if (!validateForm()) {
-			return;
-		}
+	const handleStart = async () => {
+		if (isSubmitting) return; // Prevent double submission
+		setIsSubmitting(true);
+		setLoading(true);
 
-		const engRoomType = roomTypeMap[roomType];
-		const engDirection = directionMap[direction];
-
-		if (status === "loading") {
-			toast.info(t("checkingAuth") || "Checking authentication...");
-			return;
-		}
-
-		if (status === "unauthenticated" || !session?.user?.userId) {
-			saveFormData();
-			if (file) {
-				await saveFileData(file);
+		try {
+			// Validate form first
+			if (!validateForm()) {
+				return;
 			}
 
-			const callbackUrl = `/freereport?roomType=${encodeURIComponent(engRoomType)}&direction=${encodeURIComponent(engDirection)}`;
-			const loginUrl = `/auth/login?callbackUrl=${encodeURIComponent(callbackUrl)}`;
+			// CLEAR ALL OLD DATA to prevent conflicts
+			console.log("🧹 Clearing all old saved data...");
+			localStorage.removeItem("uploadPicFormData");
+			sessionStorage.removeItem("freeReportUserData");
 
-			toast.info(
-				t("redirectingToLogin") || "Please log in to continue..."
-			);
-			router.push(loginUrl);
-			return;
-		}
-
-		setLoading(true);
-		try {
 			const birthDateTime = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}T${hour.padStart(2, "0")}:00`;
-			const { status } = await post(`/api/users/${session.user.userId}`, {
+
+			// Generate fresh user data with current form input
+			const userData = {
 				gender,
 				birthDateTime,
-			});
-			if (status === 0) {
-				await trackFreeReportGeneration(
-					engRoomType,
-					engDirection,
-					{ gender, birthDateTime },
-					null
-				);
+				roomType: roomTypeMap[roomType],
+				direction: directionMap[direction],
+				furniture: furniture || "",
+			};
 
-				toast.success(t("saveSuccess"));
-				clearSavedData();
-				router.push(
-					`/freereport?roomType=${encodeURIComponent(engRoomType)}&direction=${encodeURIComponent(engDirection)}`
-				);
-			} else {
-				toast.error(t("saveFailed"));
+			// Save FRESH data to sessionStorage (UserContext will prioritize this)
+			sessionStorage.setItem(
+				"freeReportUserData",
+				JSON.stringify(userData)
+			);
+			console.log("💾 Saved FRESH userData to sessionStorage:", userData);
+
+			// Force UserContext to refresh with new data
+			if (forceRefresh) {
+				forceRefresh();
 			}
+
+			// Get English room type and direction for URL
+			const engRoomType = roomTypeMap[roomType];
+			const engDirection = directionMap[direction];
+
+			// Calculate actual wuxing data using the same function as the report
+			const wuxingData = getWuxingData(birthDateTime, gender);
+			console.log("🔮 Calculated wuxing data:", wuxingData);
+
+			// Generate report data to save in analysisResult with ACTUAL calculated values
+			const analysisResult = {
+				roomType: engRoomType,
+				direction: engDirection,
+				userInfo: userData,
+				generatedAt: new Date().toISOString(),
+				reportType: "free_report",
+				birthYear: year,
+				nayin: wuxingData.nayin, // Use calculated nayin instead of hardcoded
+				wuxingJu: wuxingData.wuxingJu, // Add calculated wuxing ju
+				bazi: {
+					year: wuxingData.year,
+					month: wuxingData.month,
+					day: wuxingData.day,
+					hour: wuxingData.hour,
+				},
+				mingPalace: wuxingData.mingPalace,
+				bodyPalace: wuxingData.bodyPalace,
+				wuxingScale: wuxingData.wuxingScale,
+				// Add any other relevant calculated data
+			};
+
+			console.log(
+				"📊 Analysis result with calculated data:",
+				analysisResult
+			);
+
+			// Track free report generation with the actual calculated analysis result
+			await trackFreeReportGeneration(
+				engRoomType,
+				engDirection,
+				{ gender, birthDateTime },
+				analysisResult // Pass the actual calculated report data
+			);
+
+			toast.success(t("reportGenerating") || "正在生成您的免費報告...");
+
+			// Redirect to free report page
+			router.push(
+				`/freereport?roomType=${encodeURIComponent(engRoomType)}&direction=${encodeURIComponent(engDirection)}&generated=true`
+			);
 		} catch (error) {
-			toast.error(t("saveFailed") + error);
-			console.error("Error saving user info:", error);
+			console.error("Error in handleStart:", error);
+			toast.error(t("errorGeneratingReport") || "生成報告時發生錯誤");
 		} finally {
 			setLoading(false);
+			setIsSubmitting(false);
 		}
-	}
+	};
 
 	const handleBack = () => {
 		setShowModal(false);
@@ -378,36 +420,36 @@ export default function UploadPic2({ onResult }) {
 		analysis
 	) => {
 		try {
-			const response = await fetch("/api/track-free-report", {
+			const response = await fetch("/api/track-free-report-generation", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
-					userId: session?.user?.userId,
 					roomType,
 					direction,
 					userInfo,
-					analysis,
+					hasUploadedImage: !!file,
+					imageFileName: file?.name || null,
+					analysisResult: analysis,
+					locale: locale || "zh-TW",
+					timeSpentOnPage: 0,
+					referrer: document.referrer || "",
+					sessionId:
+						sessionStorage.getItem("ga_session_id") ||
+						`session_${Date.now()}`,
+					isAnonymous: true,
 				}),
 			});
 
 			if (response.ok) {
 				const result = await response.json();
 				console.log("✅ Free report generation tracked:", result);
-
-				if (result.totalGenerated > 1) {
-					toast.success(
-						t("reportGeneratedCount", {
-							count: result.totalGenerated,
-						})
-					);
-				} else {
-					toast.success(t("firstReportGenerated"));
-				}
+			} else {
+				console.error("❌ Failed to track free report generation");
 			}
 		} catch (error) {
-			console.error("Error tracking free report generation:", error);
+			console.error("❌ Error tracking free report generation:", error);
 		}
 	};
 
@@ -755,12 +797,12 @@ export default function UploadPic2({ onResult }) {
 									? t("checkingAuth") || "Checking..."
 									: t("startAnalysis")}
 						</button>
-						<button
+						{/* <button
 							className="w-full max-w-[200px] px-3 py-2 text-sm text-gray-500 transition-colors bg-transparent rounded hover:text-gray-700 hover:bg-gray-50"
 							onClick={handleBack}
 						>
 							{t("back")}
-						</button>
+						</button> */}
 					</div>
 				</div>
 			</div>
@@ -778,4 +820,6 @@ export default function UploadPic2({ onResult }) {
 			)}
 		</div>
 	);
-}
+};
+
+export default UploadPic;

@@ -2,20 +2,21 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import useReportDoc from "@/app/hooks/useReportDoc";
-import { useSession } from "next-auth/react";
+import useFreeReportDoc from "@/app/hooks/useFreeReportDoc"; // Changed: Import free report hook
+import { useUser } from "@/context/UserContext"; // Changed: Import UserContext
 import { useTranslations } from "next-intl";
 import { get, post, patch } from "@/lib/ajax";
 import Promo from "@/components/Promo";
-import PricingModal from "@/components/PricingModal"; // Add this import
+import PricingModal from "@/components/PricingModal";
 
 export function FreeChapter6({ locale }) {
-	const [userInfo, setUserInfo] = useState(null);
+	// Changed: Use UserContext instead of session-based userInfo
+	const { userData, isInitialized } = useUser();
 	const t = useTranslations("report");
 	const [isLock, setIsLock] = useState(true);
 	const [sections, setSections] = useState([]);
 	const [anchorList, setAnchorList] = useState([]);
-	const [isPricingModalOpen, setIsPricingModalOpen] = useState(false); // Add this state
+	const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
 
 	useEffect(() => {
 		let sections = [
@@ -129,40 +130,37 @@ export function FreeChapter6({ locale }) {
 				},
 			]);
 		}
-	}, [isLock]);
+	}, [isLock, t]);
 
-	const { loading, reportDocData, assistantData } = useReportDoc(
-		locale,
-		userInfo
-	);
-	const { data: session } = useSession();
+	// Changed: Use free report hook instead of session-based hook
+	const { loading, reportDocData } = useFreeReportDoc(locale, userData);
 
+	// Changed: Remove session-based userInfo loading since we're using free reports
+	// useEffect(() => {
+	// 	const userId = session?.user?.userId;
+	// 	if (userId) {
+	// 		const loadData = async () => {
+	// 			const {
+	// 				status,
+	// 				message,
+	// 				data: userInfo,
+	// 			} = await get(`/api/users/${userId}`);
+	// 			if (status == 0) {
+	// 				setUserInfo(userInfo);
+	// 				setIsLock(userInfo.isLock);
+	// 			}
+	// 		};
+	// 		loadData();
+	// 	}
+	// }, [session?.user?.userId]);
+
+	// Changed: Debug logs to show free report data
 	useEffect(() => {
-		const userId = session?.user?.userId;
-		if (userId) {
-			const loadData = async () => {
-				const {
-					status,
-					message,
-					data: userInfo,
-				} = await get(`/api/users/${userId}`);
-				if (status == 0) {
-					setUserInfo(userInfo);
-					setIsLock(userInfo.isLock);
-				}
-			};
-			loadData();
-		}
-	}, [session?.user?.userId]);
-
-	useEffect(() => {
-		console.log("userInfo", userInfo);
-		console.log("locale", locale);
-	}, [userInfo, locale]);
-
-	useEffect(() => {
-		console.log("reportDocData", reportDocData);
-	}, [reportDocData]);
+		console.log("FreeChapter6 - userData:", userData);
+		console.log("FreeChapter6 - locale:", locale);
+		console.log("FreeChapter6 - reportDocData:", reportDocData);
+		console.log("FreeChapter6 - loading:", loading);
+	}, [userData, locale, reportDocData, loading]);
 
 	// Add function to handle unlock button clicks
 	const handleUnlockClick = () => {
@@ -258,24 +256,64 @@ export function FreeChapter6({ locale }) {
 		);
 	};
 
+	// Changed: Show loading only when actually loading, not when data exists
+	if (loading || (!userData && !isInitialized)) {
+		return (
+			<div className="flex items-center justify-center w-full min-h-screen">
+				<div className="w-full max-w-full p-2 mx-auto bg-white lg:w-full sm:p-1 sm:mt-16 rounded-xl">
+					<div className="flex items-center justify-center p-8">
+						<div className="text-lg text-gray-600">
+							{locale === "zh-CN"
+								? "正在生成免费报告..."
+								: "正在生成免費報告..."}
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
+
+	if (!userData) {
+		return (
+			<div className="flex items-center justify-center w-full min-h-screen">
+				<div className="w-full max-w-full p-2 mx-auto bg-white lg:w-full sm:p-1 sm:mt-16 rounded-xl">
+					<div className="p-8 text-center">
+						<h3 className="mb-4 text-lg font-semibold text-gray-800">
+							{locale === "zh-CN"
+								? "请先填写个人信息"
+								: "請先填寫個人資訊"}
+						</h3>
+						<p className="text-gray-600">
+							{locale === "zh-CN"
+								? "请在左侧填写您的个人信息以生成免费报告"
+								: "請在左側填寫您的個人資訊以生成免費報告"}
+						</p>
+					</div>
+				</div>
+			</div>
+		);
+	}
+
+	// Add debug logs to see the state
+	console.log("FreeChapter6 - Render condition check:", {
+		loading,
+		userData: !!userData,
+		isInitialized,
+		reportDocData: !!reportDocData,
+	});
+
 	return (
 		<div className="flex items-start justify-center w-full min-h-screen ">
 			<div className="w-full max-w-full p-2 mx-auto bg-white lg:w-full sm:p-1 sm:mt-16 rounded-xl">
 				<div className="flex flex-row justify-between md:mr-10 sm:mr-0">
-					{/* <p className=" text-lg px-9  text-[#25826c] flex items-center justify-center inline-block mb-5 max-w-full">
-                        {t("pro.scrollInstruction")}
-                    </p> */}
 					<div className="flex flex-col items-center w-full gap-3 mb-5 sm:flex-row sm:justify-between sm:gap-0">
-						{/* <p className=" text-lg px-9  text-[#25826c] flex items-center justify-center inline-block mb-5 max-w-full">
-							{t("pro.scrollInstruction")}
-						</p> */}
 						<p className="font-bold text-2xl sm:text-4xl px-4 sm:px-9 text-[#25826c] flex items-center justify-center inline-block max-w-full mb-2 sm:mb-0">
 							{t("pro.advancedAnalysisTitle")}
 						</p>
 						{/* Replace Link with button */}
 						<div className="flex justify-center w-full sm:w-auto">
 							<button
-								data-track="unlock-advanced-analysis-chapter6" // Add this line
+								data-track="unlock-advanced-analysis-chapter6"
 								className="w-full sm:w-auto pointer-events-auto px-3 sm:px-3 py-2 rounded-full bg-[rgba(49,129,97)] hover:bg-green-600 text-white font-bold text-sm sm:text-lg shadow-[0_8px_16px_rgba(0,0,0,0.25)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.3)] transition-all duration-300"
 								onClick={handleUnlockClick}
 							>

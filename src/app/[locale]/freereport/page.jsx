@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSearchParams, usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic"; // Add this import
-import UploadPic from "@/components/uploadpic";
+import UploadPic from "@/components/uploadpic2";
 import { getReportDocData } from "./action";
 import { FreeChapter3 } from "@/components/report/FreeChapter3";
 import Footer from "@/components/home/Footer";
@@ -11,6 +11,7 @@ import Navbar from "@/components/Navbar";
 import DonutChart from "@/components/DonutChart";
 import { FreeChapter6 } from "@/components/report/FreeChapter6";
 import Promo from "@/components/Promo";
+import { useUser } from "@/context/UserContext";
 
 // Full-Width Floating Promo Component
 const FloatingPromo = ({ locale, onClose }) => {
@@ -164,8 +165,9 @@ export default function FreeReportPage() {
 	const [error, setError] = useState(null);
 	const [showFloating, setShowFloating] = useState(false);
 	const [floatingClosed, setFloatingClosed] = useState(false);
-	const [reportTracked, setReportTracked] = useState(false);
 	const [mounted, setMounted] = useState(false); // Add mounted state
+
+	const { userData, isInitialized } = useUser(); // Add this line
 
 	const promoSectionRef = useRef(null);
 	const contentRef = useRef(null);
@@ -175,110 +177,6 @@ export default function FreeReportPage() {
 	useEffect(() => {
 		setMounted(true);
 	}, []);
-
-	// Function to track free report generation
-	const trackFreeReportGeneration = async () => {
-		if (
-			reportTracked ||
-			!roomType ||
-			!direction ||
-			!session?.user ||
-			!mounted
-		)
-			return;
-
-		try {
-			console.log("🎯 Starting to track free report generation...");
-
-			// Get user info from localStorage/sessionStorage
-			const savedFormData = localStorage.getItem("uploadPicFormData");
-			const savedFileData = sessionStorage.getItem("uploadPicFileData");
-
-			let userInfo = {};
-			let hasUploadedImage = false;
-			let imageFileName = null;
-
-			if (savedFormData) {
-				const formData = JSON.parse(savedFormData);
-				userInfo = {
-					gender: formData.gender || "female",
-					birthDateTime:
-						formData.year &&
-						formData.month &&
-						formData.day &&
-						formData.hour
-							? `${formData.year}-${formData.month.padStart(
-									2,
-									"0"
-								)}-${formData.day.padStart(2, "0")}T${formData.hour.padStart(
-									2,
-									"0"
-								)}:00`
-							: new Date().toISOString(),
-				};
-			}
-
-			if (savedFileData) {
-				const fileData = JSON.parse(savedFileData);
-				hasUploadedImage = true;
-				imageFileName = fileData.name;
-			}
-
-			const trackingData = {
-				roomType,
-				direction,
-				userInfo,
-				hasUploadedImage,
-				imageFileName,
-				analysisResult: data,
-				locale: locale || "zh-TW",
-				timeSpentOnPage: Math.round(
-					(Date.now() - pageStartTime.current) / 1000
-				),
-				referrer: document.referrer,
-				sessionId:
-					sessionStorage.getItem("ga_session_id") ||
-					`session_${Date.now()}`,
-			};
-
-			console.log("📤 Sending tracking data:", trackingData);
-
-			const response = await fetch("/api/track-free-report-generation", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(trackingData),
-			});
-
-			if (response.ok) {
-				const result = await response.json();
-				console.log("✅ Free report generation tracked:", result);
-				setReportTracked(true);
-
-				// Track in Google Analytics only if mounted
-				if (mounted && typeof window !== "undefined" && window.gtag) {
-					window.gtag("event", "free_report_generated", {
-						event_category: "Free_Report",
-						event_label: `${roomType}_${direction}`,
-						user_id: session.user.email || session.user.userId,
-						custom_parameters: {
-							room_type: roomType,
-							direction: direction,
-							has_image: hasUploadedImage,
-							locale: locale,
-							total_generated: result.totalGenerated,
-						},
-					});
-				}
-			} else {
-				const errorData = await response.json();
-				console.error("❌ Failed to track:", errorData);
-			}
-		} catch (error) {
-			console.error("❌ Error tracking free report generation:", error);
-		}
-	};
 
 	useEffect(() => {
 		if (!roomType || !direction) return;
@@ -292,18 +190,6 @@ export default function FreeReportPage() {
 			.catch(() => setError("Failed to fetch data"))
 			.finally(() => setLoading(false));
 	}, [roomType, direction]);
-
-	// Track when user becomes authenticated and data is loaded
-	useEffect(() => {
-		if (mounted && session?.user && data && !reportTracked) {
-			// Add a small delay to ensure everything is properly loaded
-			const timeoutId = setTimeout(() => {
-				trackFreeReportGeneration();
-			}, 1000);
-
-			return () => clearTimeout(timeoutId);
-		}
-	}, [mounted, session, data, reportTracked]);
 
 	// In your scroll/observer logic, only update showFloating if not closed
 	useEffect(() => {

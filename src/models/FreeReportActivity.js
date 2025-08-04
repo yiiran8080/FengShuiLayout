@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const FreeReportActivitySchema = new mongoose.Schema({
 	userId: {
 		type: String,
-		required: true,
+		required: false, // Changed: Allow null for anonymous users
 		index: true,
 	},
 	email: {
@@ -14,6 +14,12 @@ const FreeReportActivitySchema = new mongoose.Schema({
 	sessionId: {
 		type: String,
 		required: false,
+	},
+	// Anonymous user tracking
+	isAnonymous: {
+		type: Boolean,
+		default: false,
+		index: true,
 	},
 	// Report generation details
 	roomType: {
@@ -114,6 +120,11 @@ const FreeReportActivitySchema = new mongoose.Schema({
 FreeReportActivitySchema.index({ userId: 1, generatedAt: -1 });
 FreeReportActivitySchema.index({ generatedAt: -1 });
 FreeReportActivitySchema.index({ email: 1, generatedAt: -1 });
+FreeReportActivitySchema.index({ isAnonymous: 1, generatedAt: -1 }); // Added: Index for anonymous tracking
 
-export default mongoose.models.FreeReportActivity ||
-	mongoose.model("FreeReportActivity", FreeReportActivitySchema);
+// Force delete cached model and recreate to ensure schema changes are applied
+if (mongoose.models.FreeReportActivity) {
+	delete mongoose.models.FreeReportActivity;
+}
+
+export default mongoose.model("FreeReportActivity", FreeReportActivitySchema);

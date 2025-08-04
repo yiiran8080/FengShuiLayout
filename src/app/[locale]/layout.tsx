@@ -12,6 +12,7 @@ import { ToastContainer, toast } from "react-toastify";
 const lora = Lora({ subsets: ["latin", "symbols"] });
 import { ImageProvider } from "@/context/ImageContext";
 import { event } from "@/components/GoogleAnalytics";
+import { UserProvider } from "@/context/UserContext";
 
 export default async function LocaleLayout({
 	children,
@@ -47,11 +48,15 @@ export default async function LocaleLayout({
 					className={"text:sm"}
 				/>
 				<AuthProvider>
-					<ImageProvider>
-						<NextIntlClientProvider locale={locale}>
-							{children}
-						</NextIntlClientProvider>
-					</ImageProvider>
+					<UserProvider>
+						{" "}
+						{/* Add UserProvider wrapper */}
+						<ImageProvider>
+							<NextIntlClientProvider locale={locale}>
+								{children}
+							</NextIntlClientProvider>
+						</ImageProvider>
+					</UserProvider>
 				</AuthProvider>
 			</body>
 		</html>
