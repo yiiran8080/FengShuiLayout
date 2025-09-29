@@ -1,8 +1,12 @@
+"use client";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { useResponsiveScale } from "../../hooks/useResponsiveScale";
 
 export default function Features() {
 	const t = useTranslations("home.features");
+	const { scaleRatio, isMobileLayout } = useResponsiveScale();
+
 	const features = [
 		{
 			title: t("title1"),
@@ -26,39 +30,66 @@ export default function Features() {
 		},
 	];
 
-	return (
-		<section
-			className="py-10 bg-white md:py-20"
-			style={{ fontFamily: "Noto Serif TC, serif" }}
-		>
-			<div className="container w-full px-4 md:p-0">
+	if (isMobileLayout) {
+		// Mobile layout - optimized for small screens
+		return (
+			<section
+				className="w-full px-4 py-6 sm:px-6 sm:py-8"
+				style={{ fontFamily: "Noto Serif TC, serif" }}
+			>
+				{/* Green line above title - responsive width */}
+				<div
+					className="mb-4 sm:mb-6"
+					style={{
+						width: "clamp(150px, 50vw, 200px)",
+						height: "2px",
+						backgroundColor: "#374A37",
+					}}
+				/>
+
 				<h3
-					className="mb-12 text-2xl font-bold text-center md:text-3xl lg:text-4xl md:mb-25 text-hero"
-					style={{ fontFamily: "Noto Serif TC, serif" }}
+					className="mb-6 text-left sm:mb-8"
+					style={{
+						fontFamily: "Noto Serif TC, serif",
+						fontWeight: 800,
+						fontSize: "clamp(28px, 8vw, 36px)", // Responsive font size
+						color: "#635D3B",
+						fontStyle: "normal",
+						lineHeight: "1.2",
+					}}
 				>
 					{t("title")}
 				</h3>
 
-				{/* Mobile: 4 features with icons, titles and descriptions in a row */}
-				<div className="grid max-w-full grid-cols-4 gap-1 px-1 mx-auto mb-8 md:hidden">
+				{/* Mobile grid - responsive 2 columns with better spacing */}
+				<div className="grid w-full grid-cols-2 gap-4 my-6 sm:gap-6 sm:my-8">
 					{features.map((feature, index) => (
 						<div
 							key={index}
-							className="flex flex-col items-center p-1 text-center"
+							className="flex flex-col items-center p-3 text-center transition-transform duration-200 rounded-lg bg-white/50 hover:scale-105 sm:p-4"
 						>
-							<img
-								src={feature.icon}
-								alt={feature.title}
-								className="w-[35px] h-[35px] object-contain mb-1"
-							/>
+							<div className="flex items-center justify-center mb-3 sm:mb-4">
+								<Image
+									src={feature.icon}
+									alt={feature.title}
+									width={50}
+									height={50}
+									className="object-contain"
+									style={{
+										width: "clamp(32px, 8vw, 50px)",
+										height: "clamp(32px, 8vw, 50px)",
+									}}
+								/>
+							</div>
 							<h3
-								className="mb-1 text-center"
+								className="mb-2 text-center"
 								style={{
-									color: "#004F44",
-									fontWeight: 600,
-									fontSize: "10px",
-									lineHeight: "1.1",
-									fontFamily: "Noto Serif TC, serif",
+									fontFamily: "Acme, sans-serif",
+									fontWeight: 400,
+									fontSize: "clamp(14px, 4vw, 18px)", // Responsive font size
+									color: "#000",
+									fontStyle: "normal",
+									lineHeight: "1.3",
 								}}
 							>
 								{feature.title}
@@ -66,11 +97,12 @@ export default function Features() {
 							<p
 								className="text-center"
 								style={{
+									fontFamily: "ABeeZee, sans-serif",
 									fontWeight: 400,
-									fontSize: "8px",
+									fontSize: "clamp(11px, 3vw, 14px)", // Responsive font size
 									color: "#073E31",
-									lineHeight: "1.2",
-									fontFamily: "Noto Serif TC, serif",
+									fontStyle: "normal",
+									lineHeight: "1.4",
 								}}
 							>
 								{feature.description}
@@ -79,48 +111,187 @@ export default function Features() {
 					))}
 				</div>
 
-				{/* Desktop: Original layout */}
-				<div className="hidden gap-8 mx-auto md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-12 lg:gap-14 max-w-7xl">
+				{/* Mobile read more - responsive */}
+				<div className="flex justify-start w-full mb-4 sm:mb-6">
+					<span
+						className="transition-colors duration-200 cursor-pointer hover:text-gray-600"
+						style={{
+							fontFamily: "Noto Sans HK, sans-serif",
+							fontWeight: 400,
+							fontSize: "clamp(16px, 4.5vw, 20px)", // Responsive font size
+							color: "#000",
+							textDecoration: "underline",
+							fontStyle: "normal",
+						}}
+					>
+						{t("readMore")}
+					</span>
+				</div>
+
+				{/* Mobile social icons - responsive spacing */}
+				<div className="flex items-center justify-start w-full gap-4 sm:gap-6">
+					<a
+						href="https://www.facebook.com/profile.php?id=61578389876952"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="transition-all duration-200 hover:opacity-80 hover:scale-110"
+					>
+						<Image
+							src="/images/footer/Facebook.png"
+							alt={t("facebookAlt")}
+							width={32}
+							height={32}
+							className="w-6 h-6 sm:w-7 sm:h-7"
+							style={{
+								filter: "brightness(0) saturate(100%)",
+							}}
+						/>
+					</a>
+					<a
+						href="https://www.instagram.com/harmoniq_fengshui/"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="transition-all duration-200 hover:opacity-80 hover:scale-110"
+					>
+						<Image
+							src="/images/footer/Instagram.png"
+							alt={t("instagramAlt")}
+							width={32}
+							height={32}
+							className="w-6 h-6 sm:w-7 sm:h-7"
+							style={{
+								filter: "brightness(0) saturate(100%)",
+							}}
+						/>
+					</a>
+				</div>
+			</section>
+		);
+	}
+
+	// Desktop layout - original with scaling applied by parent container
+	return (
+		<section
+			className="w-full p-15"
+			style={{ fontFamily: "Noto Serif TC, serif" }}
+		>
+			{/* Green line above title - original dimensions */}
+			<div
+				className="mb-18"
+				style={{
+					width: "343px",
+					height: "2px",
+					backgroundColor: "#374A37",
+				}}
+			/>
+
+			<h3
+				className="mb-12 ml-10 text-6xl text-left"
+				style={{
+					fontFamily: "Noto Serif TC, serif",
+					fontWeight: 800,
+					color: "#635D3B",
+					fontStyle: "normal",
+				}}
+			>
+				{t("title")}
+			</h3>
+
+			{/* Content moved to the right */}
+			<div className="ml-1">
+				<div className="grid w-full grid-cols-4 my-10">
 					{features.map((feature, index) => (
 						<div
 							key={index}
 							className="flex flex-col items-center text-center"
 						>
-							{/* Desktop: Side-by-side layout */}
-							<div className="flex items-start gap-4 lg:gap-6">
-								<img
-									src={feature.icon}
-									alt={feature.title}
-									className="w-[61px] h-[61px] object-contain flex-shrink-0"
-								/>
-								<div className="flex flex-col text-left">
-									<h3
-										className="mb-2"
-										style={{
-											color: "#004F44",
-											fontWeight: 600,
-											fontSize: "32px",
-											lineHeight: "1.2",
-											fontFamily: "Noto Serif TC, serif",
-										}}
-									>
-										{feature.title}
-									</h3>
-									<p
-										style={{
-											fontWeight: 400,
-											fontSize: "22px",
-											color: "#073E31",
-											lineHeight: "1.4",
-											fontFamily: "Noto Serif TC, serif",
-										}}
-									>
-										{feature.description}
-									</p>
-								</div>
-							</div>
+							<Image
+								src={feature.icon}
+								alt={feature.title}
+								width={45}
+								height={45}
+								className="object-contain mb-4"
+							/>
+							<h3
+								className="mb-1 text-center"
+								style={{
+									fontFamily: "Acme, sans-serif",
+									fontWeight: 400,
+									fontSize: "20px",
+									color: "#000",
+									fontStyle: "normal",
+								}}
+							>
+								{feature.title}
+							</h3>
+							<p
+								className="text-center"
+								style={{
+									fontFamily: "ABeeZee, sans-serif",
+									fontWeight: 400,
+									fontSize: "15px",
+									color: "#073E31",
+									fontStyle: "normal",
+								}}
+							>
+								{feature.description}
+							</p>
 						</div>
 					))}
+				</div>
+
+				{/* First row: Read more */}
+				<div className="flex justify-start w-full mb-7">
+					<span
+						style={{
+							fontFamily: "Noto Sans HK, sans-serif",
+							fontWeight: 400,
+							fontSize: "20px",
+							color: "#000",
+							textDecoration: "underline",
+							fontStyle: "normal",
+						}}
+					>
+						{t("readMore")}
+					</span>
+				</div>
+
+				{/* Second row: Facebook Instagram */}
+				<div className="flex items-center justify-start w-full gap-8">
+					<a
+						href="https://www.facebook.com/profile.php?id=61578389876952"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="transition-opacity hover:opacity-80"
+					>
+						<Image
+							src="/images/footer/Facebook.png"
+							alt={t("facebookAlt")}
+							width={32}
+							height={32}
+							className="w-10 h-10"
+							style={{
+								filter: "brightness(0) saturate(100%)",
+							}}
+						/>
+					</a>
+					<a
+						href="https://www.instagram.com/harmoniq_fengshui/"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="transition-opacity hover:opacity-80"
+					>
+						<Image
+							src="/images/footer/Instagram.png"
+							alt={t("instagramAlt")}
+							width={32}
+							height={32}
+							className="w-10 h-10"
+							style={{
+								filter: "brightness(0) saturate(100%)",
+							}}
+						/>
+					</a>
 				</div>
 			</div>
 		</section>

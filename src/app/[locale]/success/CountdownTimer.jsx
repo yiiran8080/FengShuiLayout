@@ -17,7 +17,6 @@ const CountdownTimer = ({ time, status }) => {
 			redirect("/design"); // 倒计时结束后跳转到报告页
 		}
 	}, [countdown]);
-	// console.log(status);
 	return (
 		<div className="mt-10 text-4xl text-center">
 			{status == "open" && <p>{t("open")}</p>}

@@ -1,0 +1,31 @@
+(()=>{var e={};e.id=6136,e.ids=[6136],e.modules={3295:e=>{"use strict";e.exports=require("next/dist/server/app-render/after-task-async-storage.external.js")},10846:e=>{"use strict";e.exports=require("next/dist/compiled/next-server/app-page.runtime.prod.js")},29294:e=>{"use strict";e.exports=require("next/dist/server/app-render/work-async-storage.external.js")},44870:e=>{"use strict";e.exports=require("next/dist/compiled/next-server/app-route.runtime.prod.js")},63033:e=>{"use strict";e.exports=require("next/dist/server/app-render/work-unit-async-storage.external.js")},71602:(e,t,r)=>{"use strict";r.r(t),r.d(t,{patchFetch:()=>h,routeModule:()=>u,serverHooks:()=>g,workAsyncStorage:()=>d,workUnitAsyncStorage:()=>p});var a={};r.r(a),r.d(a,{POST:()=>c});var n=r(96559),o=r(48088),s=r(37719),i=r(32190);function l(e){try{let t=new Date(e),r=t.getFullYear(),a=t.getMonth()+1;t.getDate();let n=["甲","乙","丙","丁","戊","己","庚","辛","壬","癸"],o=["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"],s=(r-4)%10,i=n[s]+o[(r-4)%12],l=n[(2*s+a)%10]+o[(a+1)%12],c=Math.floor(t.getTime()/864e5),u=n[(c+4)%10]+o[(c+4)%12];return{year:i,month:l,day:u,hour:"甲子"}}catch(e){return console.error("BaZi calculation error:",e),null}}async function c(e){try{let{femaleUser:t,maleUser:r,femaleBazi:a,maleBazi:n,requestType:o}=await e.json();if(!t||!r)return i.NextResponse.json({error:"Missing user data"},{status:400});let s=a||l(t.birthDate),c=n||l(r.birthDate);if(!s||!c)return i.NextResponse.json({error:"Failed to calculate BaZi data"},{status:400});let u=`
+作為專業星盤命理師，請為這對情侶提供「星盤指引」分析。
+
+女方八字：${s.year} ${s.month} ${s.day} ${s.hour}
+男方八字：${c.year} ${c.month} ${c.day} ${c.hour}
+
+請提供3個宮位分析：
+
+1. **遷移宮聯動**：
+   - 分析女方時柱與男方時柱的互動
+   - 描述雙方能量如何互補與潛在衝突
+   - 解釋衝突如何影響溝通，給出緩解建議
+
+2. **夫妻宮信號**：
+   - 分析女方日支與男方月支的互動
+   - 描述雙方情感需求的差異
+   - 聚焦合盤衝突對情感交流的影響
+
+3. **關鍵法則**：
+   - 總結雙方星盤的吸引力與挑戰
+   - 提供實用建議（選擇適合溝通的時段）
+   - 強調雙方如何合作化解衝突
+
+要求：
+- 分析要具體深入，結合實際八字
+- 重點關注溝通問題的星盤根源
+- 提供可操作的時間與方式建議
+- 內容專業但易於理解
+
+請直接提供分析：
+`,d=await fetch("https://api.deepseek.com/chat/completions",{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${process.env.DEEPSEEK_API_KEY}`},body:JSON.stringify({model:"deepseek-chat",messages:[{role:"system",content:"你是專業的星盤命理師，擅長分析八字合盤與宮位互動。回答要專業深入、實用有效。"},{role:"user",content:u}],temperature:.7,max_tokens:1500})});if(!d.ok)throw Error(`DeepSeek API error: ${d.status}`);let p=await d.json(),g=p.choices?.[0]?.message?.content;if(!g)throw Error("No content received from AI");console.log("\uD83E\uDD16 Star Chart AI Response:",g),console.log("\uD83D\uDCCA BaZi data before parsing:",{femaleBaziData:s,maleBaziData:c});let h=function(e,t,r){try{let a,n,o,s,i,l;if(!e||"string"!=typeof e)return console.log("⚠️ Invalid content provided to star chart parser"),null;console.log("\uD83D\uDD0D Parsing star chart content:",e.substring(0,200)+"..."),console.log("\uD83D\uDD0D BaZi Data Check:",{femaleBaziData:t,maleBaziData:r,femaleDataType:typeof t,maleDataType:typeof r}),t&&"object"==typeof t?(a=t.hour||t.hourPillar||"丙午",o=t.day||t.dayPillar||"寅木",i=t.month||t.monthPillar||"甲寅"):(a="丙午",o="寅木",i="甲寅"),r&&"object"==typeof r?(n=r.hour||r.hourPillar||"庚子",s=r.day||r.dayPillar||"申金",l=r.month||r.monthPillar||"壬申"):(n="庚子",s="申金",l="壬申"),console.log("✅ Extracted Star Chart BaZi:",{femaleHour:a,maleHour:n,femaleDay:o,maleDay:s,femaleMonth:i,maleMonth:l});let c=[{title:"遷移宮聯動",analysis:`女方${a}火時柱與男方${n}水時柱形成水火既濟格局，火暖寒水創造強烈吸引力，但子午相沖易導致時差煩躁與溝通延遲。`,impact:"通訊時間差異容易引發誤解，火急水緩的節奏不同造成情感表達錯位，特別在深夜或清晨時段最為明顯。",solution:"建議選擇午時（11-13點）或戌時（19-21點）進行重要溝通，避開子時深夜通話，利用火水調和的最佳時機。",gradient:"linear-gradient(135deg, #C74772 0%, #D09900 100%)"},{title:"夫妻宮信號",analysis:`女方${o}日支渴望溫暖表達與情感滋養，男方${s}月支偏向理性克制與邏輯思維，寅申相沖形成情感需求的根本差異。`,impact:"視頻通話中容易因表達方式差異產生爭吵，木氣敏感遇金氣直接易受傷，情感傳遞常出現失真現象。",solution:"建議通話前先進行文字預熱，女方表達更簡潔直接，男方回應更溫暖柔和，避開申時（15-17點）敏感時段。",gradient:"linear-gradient(135deg, #C74772 0%, #D09900 100%)"},{title:"關鍵法則",analysis:"雙方星盤呈現火水木金的複雜互動，既有相生吸引也有相沖挑戰，核心問題在於溝通節奏與表達方式的差異。",impact:"溝通障礙主要源於時間選擇不當與情感表達模式不匹配，需要精準的時機把握才能達到最佳效果。",solution:"利用木氣日（周四）進行深度交流，避開金水日（周六）討論敏感話題，雙方協調表達強度與回應溫度。",gradient:"linear-gradient(135deg, #C74772 0%, #D09900 100%)"}],u=`根據你們的星盤配置，${a}與${n}的時柱互動帶來火水相濟的激情，但需要調和節奏差異。${o}與${s}的日月配置要求精準時機選擇。建議女方在表達時更加柔和漸進，男方在回應時更加溫暖主動。選擇合適的溝通時段與表達方式，化沖突為互補，讓星盤能量為感情服務而非製造障礙。`;return{guidances:c,keyPrinciples:u}}catch(e){return console.error("Star chart parsing error:",e),null}}(g,s,c);if(console.log("\uD83D\uDCCA Star Chart Parsed Data:",h),!h)return i.NextResponse.json({guidances:[{title:"時柱宮位互動",analysis:"根據你們的時柱配置，存在火水相遇的強烈化學反應，這種對比創造吸引力但也帶來溝通節奏的差異。",impact:"不同的生理時鐘與表達習慣容易造成溝通時機錯失，影響情感交流的深度與效果。",solution:"建議選擇雙方都精神狀態良好的時段進行深度對話，避開疲憊或情緒低潮期。",gradient:"linear-gradient(135deg, #C74772 0%, #D09900 100%)"},{title:"日月宮位解讀",analysis:"日支月支的互動顯示你們在情感表達與接受方式上存在根本性差異，需要更多的理解與適應。",impact:"表達方式的不匹配可能導致情感傳遞失真，產生不必要的誤解與爭執。",solution:"學習對方的情感語言，調整自己的表達方式，用對方能理解的方式傳達愛意。",gradient:"linear-gradient(135deg, #C74772 0%, #D09900 100%)"},{title:"和諧共振原理",analysis:"你們的星盤配置既有互補優勢也有沖突挑戰，關鍵在於如何發揮優勢化解劣勢。",impact:"未善用星盤優勢會讓溝通變得困難，但正確運用則能讓感情更加深厚穩固。",solution:"根據每日五行能量調整溝通策略，在適合的時機討論重要話題，避開容易產生衝突的時段。",gradient:"linear-gradient(135deg, #C74772 0%, #D09900 100%)"}],keyPrinciples:"星盤指引的核心在於順應天時地利人和，了解彼此的能量週期與表達特質。建議在溝通中保持彈性，善用星象優勢，化解天然衝突，讓宇宙能量成為你們感情的助力而非阻力。"});return i.NextResponse.json(h)}catch(e){return console.error("Star Chart Guidance API error:",e),i.NextResponse.json({guidances:[{title:"生成指引中",analysis:"正在分析您的星盤配置",impact:"計算宮位互動影響",solution:"請稍候片刻",gradient:"linear-gradient(135deg, #C74772 0%, #D09900 100%)"}],keyPrinciples:"系統正在為您生成個人化的星盤指引，請稍後..."},{status:200})}}let u=new n.AppRouteRouteModule({definition:{kind:o.RouteKind.APP_ROUTE,page:"/api/star-chart-guidance/route",pathname:"/api/star-chart-guidance",filename:"route",bundlePath:"app/api/star-chart-guidance/route"},resolvedPagePath:"/Users/michaelng/Desktop/HarmoniqFengShui/FengShuiLayout/src/app/api/star-chart-guidance/route.js",nextConfigOutput:"",userland:a}),{workAsyncStorage:d,workUnitAsyncStorage:p,serverHooks:g}=u;function h(){return(0,s.patchFetch)({workAsyncStorage:d,workUnitAsyncStorage:p})}},78335:()=>{},96487:()=>{}};var t=require("../../../webpack-runtime.js");t.C(e);var r=e=>t(t.s=e),a=t.X(0,[7719,580],()=>r(71602));module.exports=a})();

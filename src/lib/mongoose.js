@@ -33,25 +33,20 @@ async function dbConnect() {
         };
 
         cached.promise = mongoose.connect(MONGODB_URI, opts)
-            .then((mongoose) => {
-                console.log('MongoDB connected successfully');
-                return mongoose;
+            .then((mongoose) => {return mongoose;
             })
-            .catch((e) => {
-                console.error('MongoDB connection error:', e);
-                throw e;
+            .catch((e) => {throw e;
             });
     }
 
     try {
         cached.conn = await cached.promise;
-    } catch (e) {
-        console.error("MongoDB connection failed:", e);
-        cached.promise = null;
+    } catch (e) {cached.promise = null;
         throw e;
     }
 
     return cached.conn;
 }
 
-export default dbConnect; 
+export default dbConnect;
+export { dbConnect as connectDB }; 

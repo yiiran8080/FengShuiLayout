@@ -104,15 +104,6 @@ function AccessControlWrapper({ children, locale }) {
 				const { status: apiStatus, data: userInfo } = await get(
 					`/api/users/${session.user.userId}`
 				);
-
-				console.log("🔍 FULL USER INFO:", {
-					userId: session.user.userId,
-					isLock: userInfo?.isLock,
-					genStatus: userInfo?.genStatus,
-					createdAt: userInfo?.createdAt,
-					updatedAt: userInfo?.updatedAt,
-				});
-
 				if (apiStatus === 0) {
 					if (userInfo.isLock) {
 						router.push(`/${locale}/price?redirect=design`);
@@ -125,7 +116,6 @@ function AccessControlWrapper({ children, locale }) {
 					return;
 				}
 			} catch (error) {
-				console.error("Access check error:", error);
 				router.push(`/${locale}/price`);
 				return;
 			} finally {
@@ -140,33 +130,20 @@ function AccessControlWrapper({ children, locale }) {
 	useEffect(() => {
 		const userId = session?.user?.userId;
 		if (!userId || hasAccess) return;
-
-		console.log("🔍 Design page: Starting webhook polling...");
-
 		const pollInterval = setInterval(async () => {
 			try {
 				const { status: apiStatus, data: userInfo } = await get(
 					`/api/users/${userId}`
 				);
-
-				console.log(
-					"🔍 Polling check - User lock status:",
-					userInfo?.isLock
-				);
-
 				if (apiStatus === 0 && !userInfo.isLock) {
-					console.log("🎉 Design page: Webhook unlock detected!");
 					setHasAccess(true);
 					setLoading(false);
 					clearInterval(pollInterval);
 				}
-			} catch (error) {
-				console.error("Design polling error:", error);
-			}
+			} catch (error) {}
 		}, 2000);
 
 		return () => {
-			console.log("🛑 Design page: Stopping webhook polling");
 			clearInterval(pollInterval);
 		};
 	}, [session?.user?.userId, hasAccess]);
@@ -178,7 +155,6 @@ function AccessControlWrapper({ children, locale }) {
 		const sessionId = urlParams.get("session_id");
 
 		if (paymentStatus === "success" && sessionId && !hasAccess) {
-			console.log("💳 Design page: Payment success URL detected");
 			setLoading(true);
 
 			const recheckAccess = async () => {
@@ -193,17 +169,10 @@ function AccessControlWrapper({ children, locale }) {
 						const { status: apiStatus, data: userInfo } = await get(
 							`/api/users/${userId}`
 						);
-
-						console.log(
-							"💳 URL recheck - User lock status:",
-							userInfo?.isLock
-						);
-
 						if (apiStatus === 0 && !userInfo.isLock) {
 							setHasAccess(true);
 						}
 					} catch (error) {
-						console.error("Payment recheck error:", error);
 					} finally {
 						setLoading(false);
 						// Clean up URL
@@ -708,6 +677,7 @@ export default function DesignPage({ params }) {
 	const [history, setHistory] = useState([[]]);
 	const [historyIndex, setHistoryIndex] = useState(0);
 	const [showUserInfoDialog, setShowUserInfoDialog] = useState(false);
+	const [pendingBazhaiReport, setPendingBazhaiReport] = useState(false);
 	const [showTutorialWelcome, setShowTutorialWelcome] = useState(false); // Add this state
 	const [userInfo, setuserInfo] = useState({});
 	const [loading, setLoading] = useState(false);
@@ -874,8 +844,6 @@ export default function DesignPage({ params }) {
 			if (!userId) {
 				return;
 			}
-
-			//console.log('session', session?.user?.userId)
 			try {
 				setLoading(true);
 				const {
@@ -888,7 +856,6 @@ export default function DesignPage({ params }) {
 					message: message1,
 					data: designData,
 				} = await get(`/api/design/${userId}`);
-				// console.log('designData', status0, message0)
 				if (status0 !== 0) {
 					toast.error("查询用户错误:" + message0);
 					return;
@@ -897,7 +864,6 @@ export default function DesignPage({ params }) {
 					toast.error("查询布局错误:" + message1);
 					return;
 				}
-				// console.log('data', userInfo, localItems)
 				setuserInfo(userInfo);
 				setShowUserInfoDialog(true);
 				const {
@@ -924,7 +890,6 @@ export default function DesignPage({ params }) {
 			} catch (error) {
 				setLoading(false);
 				toast.error("加载布局错误:" + error);
-				console.error("Error loading design:", error);
 			}
 		};
 		loadDesign();
@@ -984,11 +949,10 @@ export default function DesignPage({ params }) {
 	};
 	const handleDragMove = (event) => {
 		if (!isMobile) return;
-		// console.log('y', event.delta.y);
-		if (event.delta.y < -120) {
-			initOverCanvas(event, { x: 0, y: 50 });
-		}
+		//if (event.delta.y < -120) {
+		initOverCanvas(event, { x: 0, y: 50 });
 	};
+
 	const handleDragOver = (event) => {
 		if (isMobile) return;
 		initOverCanvas(event, { x: sidebarWidth, y: draggingItemSize });
@@ -1017,7 +981,6 @@ export default function DesignPage({ params }) {
 			}
 		} catch (error) {
 			toast.error(t2("saveFailed") + error);
-			console.error("Error saving design:", error);
 		} finally {
 			setLoading(false);
 		}
@@ -1052,6 +1015,89 @@ export default function DesignPage({ params }) {
 		// Remove the report check - just go directly to report generation
 		await onSaveProject();
 		router.push(`/report`);
+	};
+
+	const onBazhaiReport = async () => {
+		if (!session?.user?.userId) {
+			redirect("/auth/login");
+		}
+
+		const items = canvasRef.current.getLocalItems();
+
+		// Check if there are any rooms
+		const rooms = items.filter((item) => item.type === "room");
+		if (rooms.length === 0) {
+			toast.error("請先添加房間後再進行八宅風水分析", {
+				autoClose: 3000,
+			});
+			return;
+		}
+
+		// Get user profile from session or userInfo state
+		let userProfile = {
+			gender: session.user.gender || userInfo?.gender,
+			birthYear: session.user.birthYear || userInfo?.birthYear,
+			birthMonth: session.user.birthMonth || userInfo?.birthMonth,
+			birthDay: session.user.birthDay || userInfo?.birthDay,
+			birthHour: session.user.birthHour || userInfo?.birthHour,
+		};
+
+		// If userInfo has birthDateTime string, parse it
+		if (!userProfile.birthYear && userInfo?.birthDateTime) {
+			const birthDate = new Date(userInfo.birthDateTime);
+			userProfile.birthYear = birthDate.getFullYear();
+			userProfile.birthMonth = birthDate.getMonth() + 1;
+			userProfile.birthDay = birthDate.getDate();
+			userProfile.birthHour = birthDate.getHours();
+		}
+
+		// Convert gender format if needed ('male' -> '男', 'female' -> '女')
+		if (userProfile.gender === "male") {
+			userProfile.gender = "男";
+		} else if (userProfile.gender === "female") {
+			userProfile.gender = "女";
+		} // If missing critical info, show user info dialog
+		if (!userProfile.gender || !userProfile.birthYear) {
+			toast.error("進行八宅風水分析需要您的出生年份和性別資訊", {
+				autoClose: 3000,
+			});
+			setPendingBazhaiReport(true); // Set flag to continue with report after user info
+			setShowUserInfoDialog(true);
+			return;
+		}
+
+		try {
+			setLoading(true);
+			await onSaveProject(); // Save current design first
+
+			// Get enhanced room direction data
+			const designData = getRoomDirection({
+				localItems: canvasRef.current.getLocalItems(),
+				canvasPosition: canvasRef.current.getPosition(),
+				compassRotation: canvasRef.current.getCompassRotation(),
+				scale: canvasRef.current.getScale(),
+			});
+
+			// Store data in sessionStorage to avoid URL length limits
+			const analysisData = {
+				designData,
+				userProfile,
+				timestamp: Date.now(),
+			};
+
+			sessionStorage.setItem(
+				"bazhaiAnalysisData",
+				JSON.stringify(analysisData)
+			);
+
+			// Navigate to 八宅風水 report page
+			const reportUrl = `/${locale}/bazhai-report`;
+			window.open(reportUrl, "_blank");
+		} catch (error) {
+			toast.error("八宅風水分析失敗: " + error.message);
+		} finally {
+			setLoading(false);
+		}
 	};
 	const onCoverReport = async () => {
 		if (!session?.user?.userId) {
@@ -1107,29 +1153,81 @@ export default function DesignPage({ params }) {
 	};
 
 	// 处理用户信息提交 TODO
-	const handleUserInfoSubmit = async (userInfo) => {
-		if (!session?.user?.userId) {
-			redirect("/auth/login");
-		}
-		setLoading(true);
-		setuserInfo(userInfo);
-
+	const handleUserInfoSubmit = async (data) => {
 		try {
-			const { status } = await post(`/api/users/${session.user.userId}`, {
-				gender: userInfo.gender,
-				birthDateTime: userInfo.birthDateTime.toISOString(),
-			});
-			if (status == 0) {
-				toast.success(t2("saveSuccess"));
-				setShowUserInfoDialog(false);
+			setLoading(true);
 
-				// Show tutorial welcome dialog after user info is saved
-				// Check if user is new (you might want to add a flag to check if it's their first time)
-				setShowTutorialWelcome(true);
+			// Debug: Log the session and data// Prepare API data
+			const apiData = {
+				userId: session.user.userId,
+				gender: data.user.gender,
+				birthYear: data.user.birthDateTime.getFullYear(),
+				birthMonth: data.user.birthDateTime.getMonth() + 1,
+				birthDay: data.user.birthDateTime.getDate(),
+				birthHour: data.user.birthDateTime.getHours(),
+				email: session.user.email,
+				provider: session.user.provider || "google", // Default to google if provider is missing
+			};
+
+			// Add family member data if provided
+			if (data.familyMember) {
+				apiData.familyMember = {
+					gender: data.familyMember.gender,
+					birthYear: data.familyMember.birthYear,
+					birthMonth: data.familyMember.birthMonth,
+					birthDay: data.familyMember.birthDay,
+					birthHour: data.familyMember.birthHour,
+				};
+			}
+
+			// Add pet data if provided
+			if (data.pet) {
+				apiData.pet = {
+					type: data.pet.type,
+					name: data.pet.name,
+					gender: data.pet.gender,
+					birthYear: data.pet.birthYear,
+					birthMonth: data.pet.birthMonth,
+					birthDay: data.pet.birthDay,
+				};
+			} // Save user, family member, and pet data
+			const response = await post("/api/auth/complete-profile", apiData);
+
+			if (response.success) {
+				// Update userInfo state with the correct format for bazhai analysis
+				const updatedUserInfo = {
+					gender: data.user.gender,
+					birthYear: data.user.birthDateTime.getFullYear(),
+					birthMonth: data.user.birthDateTime.getMonth() + 1,
+					birthDay: data.user.birthDateTime.getDate(),
+					birthHour: data.user.birthDateTime.getHours(),
+				};
+				setuserInfo(updatedUserInfo);
+				setShowUserInfoDialog(false);
+				toast.success("用戶信息保存成功！");
+
+				if (data.familyMember && response.familyMember) {
+					toast.success("家庭成員信息也已保存到數據庫！");
+				}
+
+				if (data.pet && response.pet) {
+					toast.success("寵物信息也已保存到數據庫！");
+				}
+
+				// Check if we need to continue with 八宅風水 report
+				if (pendingBazhaiReport) {
+					setPendingBazhaiReport(false);
+					// Wait a moment for the dialog to close, then proceed with bazhai report
+					setTimeout(() => {
+						onBazhaiReport();
+					}, 500);
+				} else {
+				}
+			} else {
+				toast.error("保存失敗，請重試。");
 			}
 		} catch (error) {
-			toast.error(t2("saveFailed") + error);
-			console.error("Error saving user info:", error);
+			toast.error("保存失敗，請重試。");
 		} finally {
 			setLoading(false);
 		}
@@ -1239,6 +1337,7 @@ export default function DesignPage({ params }) {
 		// Optional: Add specific handling for each demo step
 		console.log("Demo step:", step);
 	};
+	// Optional: Add specific handling for each demo step};
 
 	// ADD THIS NEW FUNCTION:
 	const handleDemoAction = (action, item) => {
@@ -1304,6 +1403,7 @@ export default function DesignPage({ params }) {
 						<NavbarDesign
 							onSaveProject={onSaveProject}
 							onGenReport={onGenReport}
+							onBazhaiReport={onBazhaiReport}
 							onUserOpen={setShowUserInfoDialog}
 						/>
 					)}
@@ -1367,6 +1467,17 @@ export default function DesignPage({ params }) {
 													>
 														{t("smartSelection")}
 													</button>
+
+													{/* 八宅風水分析按鈕 */}
+													<button
+														onClick={onBazhaiReport}
+														className="px-3 py-1.5 text-white cursor-pointer bg-amber-600 rounded-lg hover:bg-amber-700 transition-colors text-xs flex items-center gap-1"
+														title="基於傳統八宅風水理論分析"
+													>
+														<span>🧭</span>
+														八宅風水
+													</button>
+
 													{/* Add demo button */}
 													<button
 														onClick={

@@ -21,9 +21,7 @@ export default function LanguageToggle({ className, trigger }) {
   // const [transStatus, setTransStatus] = useState(false)
   const t = useTranslations('toast');
   // useEffect(() => {
-  //   function load(transStatus) {
-  //     console.log('翻译状态', transStatus)
-  //     setTransStatus(transStatus)
+  //   function load(transStatus) {  //     setTransStatus(transStatus)
   //   }
   //   emitter.on(EVENT_TRANSLATE_STATUS, load)
   //   return () => {

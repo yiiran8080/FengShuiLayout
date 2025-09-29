@@ -28,8 +28,6 @@ export async function PATCH(request, { params }) {
         }));
         await ReportUserDoc.bulkWrite(updates);
         return NextResponse.json(genSuccessData())
-    } catch (error) {
-        console.error('Error update reportUserDoc:', error);
-        return NextResponse.json(genErrorData('Internal Server Error'));
+    } catch (error) {return NextResponse.json(genErrorData('Internal Server Error'));
     }
 } 

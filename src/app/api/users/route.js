@@ -17,9 +17,7 @@ export async function GET() {
 		const users = await User.find({}).select("-__v");
 
 		return NextResponse.json({ users });
-	} catch (error) {
-		console.error("Error fetching users:", error);
-		return NextResponse.json(
+	} catch (error) {return NextResponse.json(
 			{ message: "Failed to fetch users", error: error.message },
 			{ status: 500 }
 		);

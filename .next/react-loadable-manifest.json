@@ -1,1 +1,49 @@
-{}
+{
+  "../node_modules/jspdf/dist/jspdf.es.min.js -> canvg": {
+    "id": 34137,
+    "files": [
+      "static/chunks/bc98253f.b4e66dfc08abe763.js",
+      "static/chunks/8255.79b28ffc69cca581.js"
+    ]
+  },
+  "../node_modules/jspdf/dist/jspdf.es.min.js -> dompurify": {
+    "id": 10822,
+    "files": [
+      "static/chunks/822.0cf0f2d45431ad99.js"
+    ]
+  },
+  "../node_modules/jspdf/dist/jspdf.es.min.js -> html2canvas": {
+    "id": 52699,
+    "files": []
+  },
+  "app/[locale]/chat/page.jsx -> @/lib/personalResponseSystem": {
+    "id": 30677,
+    "files": [
+      "static/chunks/677.d2dd829ae101e27e.js"
+    ]
+  },
+  "app/[locale]/demo/page.jsx -> @stripe/stripe-js": {
+    "id": 7368,
+    "files": [
+      "static/chunks/7368.92c392fdbaf20bfe.js"
+    ]
+  },
+  "app/[locale]/page.tsx -> @stripe/stripe-js": {
+    "id": 7368,
+    "files": [
+      "static/chunks/7368.92c392fdbaf20bfe.js"
+    ]
+  },
+  "app/[locale]/price/page.jsx -> @stripe/stripe-js": {
+    "id": 7368,
+    "files": [
+      "static/chunks/7368.92c392fdbaf20bfe.js"
+    ]
+  },
+  "app/[locale]/smart-chat2/page.jsx -> @stripe/stripe-js": {
+    "id": 7368,
+    "files": [
+      "static/chunks/7368.92c392fdbaf20bfe.js"
+    ]
+  }
+}

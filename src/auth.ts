@@ -2,9 +2,11 @@ import NextAuth, { customFetch } from "next-auth";
 import type { NextAuthConfig } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import AppleProvider from "next-auth/providers/apple";
+import CredentialsProvider from "next-auth/providers/credentials";
 import dbConnect from "@/lib/mongoose";
 import User from "@/models/User";
 import { createUserIfNotExists } from "@/lib/userUtils";
+import { verifyPassword } from "@/lib/password";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
 	trustHost: true,
@@ -17,6 +19,56 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			clientId: process.env.APPLE_ID as string,
 			clientSecret: process.env.APPLE_CLIENT_SECRET as string,
 		}),
+		CredentialsProvider({
+			name: "credentials",
+			credentials: {
+				email: { label: "Email", type: "email" },
+				password: { label: "Password", type: "password" },
+			},
+			async authorize(credentials) {
+				if (!credentials?.email || !credentials?.password) {
+					return null;
+				}
+
+				try {
+					await dbConnect();
+
+					// Find user by email
+					const user = await User.findOne({
+						$or: [
+							{ email: credentials.email },
+							{ userId: credentials.email },
+						],
+						provider: "credentials",
+					});
+
+					if (!user || !user.password) {
+						return null;
+					}
+
+					// Verify password
+					const isPasswordValid = await verifyPassword(
+						credentials.password as string,
+						user.password
+					);
+
+					if (!isPasswordValid) {
+						return null;
+					}
+
+					// Return user object
+					return {
+						id: user._id.toString(),
+						email: user.email,
+						name: user.name,
+						userId: user.userId,
+					};
+				} catch (error) {
+					console.error("Authentication error:", error);
+					return null;
+				}
+			},
+		}),
 	],
 	secret: process.env.NEXTAUTH_SECRET as string,
 	callbacks: {
@@ -25,7 +77,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 				const userId = user.email;
 				if (!userId) return false;
 
-				await createUserIfNotExists(userId, user.email);
+				// For OAuth providers, create user if not exists
+				if (
+					account?.provider === "google" ||
+					account?.provider === "apple"
+				) {
+					await createUserIfNotExists(userId, user.email);
+				}
+
 				return true;
 			} catch (error) {
 				console.error("Error in signIn callback:", error);
@@ -36,6 +95,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			if (account && user) {
 				token.accessToken = account.access_token;
 				token.id = user.id;
+				token.userId = user.userId || user.email;
 			}
 			return token;
 		},
@@ -44,14 +104,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 				(session.user as any) = {
 					...session.user,
 					id: token.sub,
-					userId: session.user.email, // using Google email as unique userId
+					userId: token.userId || session.user.email,
 				};
 			}
 			return session;
 		},
 	},
 	pages: {
-		// error: "/error",
-		// signIn: '/auth/login',
+		signIn: "/auth/login",
 	},
 } satisfies NextAuthConfig);

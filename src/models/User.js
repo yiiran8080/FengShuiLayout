@@ -6,6 +6,22 @@ const UserSchema = new mongoose.Schema({
 		required: true,
 		unique: true,
 	},
+	// Add password field for email/password auth
+	password: {
+		type: String,
+		required: false, // Not required for OAuth users
+	},
+	// Add authentication provider field
+	provider: {
+		type: String,
+		default: "credentials",
+		required: false,
+	},
+	// Add name field for registration
+	name: {
+		type: String,
+		required: false,
+	},
 	gender: {
 		type: String,
 		enum: ["female", "male"],
@@ -29,6 +45,15 @@ const UserSchema = new mongoose.Schema({
 	genStatus: {
 		type: String,
 		enum: ["none", "waiting", "done"],
+		required: false,
+	},
+	// Add email verification fields
+	emailVerified: {
+		type: Boolean,
+		default: false,
+	},
+	verificationToken: {
+		type: String,
 		required: false,
 	},
 	// Add free report tracking
@@ -82,4 +107,12 @@ UserSchema.virtual("projects", {
 UserSchema.set("toJSON", { virtuals: true });
 UserSchema.set("toObject", { virtuals: true });
 
-export default mongoose.models.User || mongoose.model("User", UserSchema);
+// Force schema refresh to avoid enum validation conflicts
+if (mongoose.models.User) {
+	delete mongoose.models.User;
+}
+if (mongoose.modelSchemas && mongoose.modelSchemas.User) {
+	delete mongoose.modelSchemas.User;
+}
+
+export default mongoose.model("User", UserSchema);

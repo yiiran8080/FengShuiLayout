@@ -15,9 +15,6 @@ export default async function main() {
         response_format: {
             'type': 'json_object'
         }
-    });
-
-    console.log(completion.choices[0].message.content);
-}
+    });}
 
 main();

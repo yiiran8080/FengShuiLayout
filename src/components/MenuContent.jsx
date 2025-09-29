@@ -45,7 +45,6 @@ export default function MenuBar({ className, isOpen, setIsOpen, from }) {
 				// Optional: Show success toast
 				toast.success("Logged out successfully", { autoClose: 1000 });
 			} catch (error) {
-				console.error("Logout error:", error);
 				toast.error("Logout failed", { autoClose: 2000 });
 			}
 		}
@@ -81,7 +80,7 @@ export default function MenuBar({ className, isOpen, setIsOpen, from }) {
 				<>
 					<Link
 						className="block text-base focus:bg-secondary focus:text-primary py-3.5 px-4"
-						href="/"
+						href="/home"
 					>
 						{t("home")}
 					</Link>

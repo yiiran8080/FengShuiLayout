@@ -2,7 +2,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "@/i18n/navigation";
 import { useRouter, usePathname } from "@/i18n/navigation";
+import Image from "next/image";
 import LanguageToggle from "./LanguageToggle";
+import RegionLanguageSelector from "./RegionLanguageSelector";
 import useMobile from "../app/hooks/useMobile";
 import { useSession } from "next-auth/react";
 import { Separator } from "@/components/ui/separator";
@@ -10,7 +12,7 @@ import { useTranslations } from "next-intl";
 import UnlockButton from "./UnlockButton";
 import Avatar from "./Avatar";
 
-export default function Navbar({ from }) {
+export default function Navbar({ from, backgroundColor = "transparent" }) {
 	const t = useTranslations("Navigation");
 	const t2 = useTranslations("home.hero");
 	const router = useRouter();
@@ -18,9 +20,13 @@ export default function Navbar({ from }) {
 
 	const isMobile = useMobile();
 	const { data: session, status } = useSession();
+	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
 	const isLogined = status === "authenticated" && session?.user?.userId;
 	const isLoading = status === "loading";
+
+	const isHome = pathname === "/home";
+	const navTextColor = isHome ? "#fff" : "#000";
 
 	const scrollToSection = (sectionId) => {
 		const element = document.getElementById(sectionId);
@@ -31,11 +37,11 @@ export default function Navbar({ from }) {
 
 	const navigateToSection = (sectionId) => {
 		// If we're on the home page, just scroll
-		if (pathname === "/" || pathname === "") {
+		if (pathname === "/home") {
 			scrollToSection(sectionId);
 		} else {
 			// If we're on another page, navigate to home page with hash
-			router.push(`/#${sectionId}`);
+			router.push(`/home#${sectionId}`);
 		}
 	};
 
@@ -54,94 +60,164 @@ export default function Navbar({ from }) {
 
 	return (
 		<nav
-			className="bg-[#004F44] h-16 hidden-on-print"
-			style={{ fontFamily: "Noto Serif TC, serif" }}
+			className={`absolute top-0 left-0 right-0 z-[70] h-16 ${
+				!isHome ? "bg-white shadow-sm" : ""
+			}`}
+			style={{
+				fontFamily: "Noto Serif TC, serif",
+				backgroundColor:
+					backgroundColor === "transparent"
+						? "transparent"
+						: `#${backgroundColor.replace("#", "")}`,
+			}}
 		>
 			<div className="h-full px-4">
-				<div className="md:max-w-[80%] mx-auto flex items-center justify-between h-full">
+				<div className="max-w-7xl mx-auto flex items-center justify-between h-full">
 					<div className="flex items-center gap-6">
-						{(!isMobile || from !== "report") && (
-							<Link
-								href="/"
-								className="text-2xl font-bold text-white"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
+						<Link href="/home" className="flex items-center gap-2">
+							<Image
+								src={
+									isHome
+										? "/images/logo/logo-white.png"
+										: "/images/logo/logo-black.png"
+								}
+								alt="HarmoniQ Logo"
+								width={32}
+								height={32}
+								className="w-8 h-8 mx-2"
+							/>
+							<span
+								className="text-2xl font-bold mr-15"
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									color: navTextColor,
+								}}
 							>
 								HarmoniQ
-							</Link>
-						)}
+							</span>
+						</Link>
 
 						{/* Navigation Links */}
-						{!isMobile && from !== "report" && (
-							<div className="flex items-center gap-6 ml-6">
-								<button
-									onClick={() => navigateToSection("share")}
-									className="text-white transition-colors cursor-pointer hover:text-gray-200"
+						{!isMobile && (
+							<div className="flex items-center gap-10 ml-6">
+								<Link
+									href="/home"
+									className="transition-colors hover:opacity-80"
 									style={{
 										fontFamily: "Noto Serif TC, serif",
+										color: navTextColor,
 									}}
 								>
-									{t("process")}
-								</button>
-								<button
-									onClick={() => navigateToSection("theory")}
-									className="text-white transition-colors cursor-pointer hover:text-gray-200"
+									{t("home")}
+								</Link>
+								<Link
+									href="/"
+									className="transition-colors hover:opacity-80"
 									style={{
 										fontFamily: "Noto Serif TC, serif",
+										color: navTextColor,
+									}}
+								>
+									{t("smartChat")}
+								</Link>
+								{/* <button
+									onClick={() => navigateToSection("theory")}
+									className="transition-colors cursor-pointer hover:opacity-80"
+									style={{
+										fontFamily: "Noto Serif TC, serif",
+										color: navTextColor,
 									}}
 								>
 									{t("theory")}
-								</button>
+								</button> */}
 								<Link
 									href="/price"
-									className="text-white transition-colors hover:text-gray-200"
+									className="transition-colors hover:opacity-80"
 									style={{
 										fontFamily: "Noto Serif TC, serif",
+										color: navTextColor,
 									}}
 								>
 									{t("pricing")}
 								</Link>
 								<button
 									onClick={() => navigateToSection("faq")}
-									className="text-white transition-colors cursor-pointer hover:text-gray-200"
+									className="transition-colors cursor-pointer hover:opacity-80"
 									style={{
 										fontFamily: "Noto Serif TC, serif",
+										color: navTextColor,
 									}}
 								>
 									{t("faq")}
 								</button>
 							</div>
 						)}
-
-						{from == "report" && (
-							<>
-								<Separator
-									orientation="vertical"
-									className="hidden h-6 md:block"
-								/>
-								<span
-									className="font-bold text-white md:text-xl"
-									style={{
-										fontFamily: "Noto Serif TC, serif",
-									}}
-								>
-									{t("yourReport")}
-								</span>
-							</>
-						)}
 					</div>
 
 					<div className="flex items-center md:space-x-6">
-						{!isMobile && <LanguageToggle />}
-						{from == "report" && <UnlockButton />}
+						{/* Mobile Menu Button */}
+						{isMobile && (
+							<button
+								onClick={() =>
+									setIsMobileMenuOpen(!isMobileMenuOpen)
+								}
+								className="p-2 rounded-md hover:bg-gray-100 mr-2"
+								style={{ color: navTextColor }}
+							>
+								{isMobileMenuOpen ? (
+									<svg
+										className="w-6 h-6"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth={2}
+											d="M6 18L18 6M6 6l12 12"
+										/>
+									</svg>
+								) : (
+									<svg
+										className="w-6 h-6"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth={2}
+											d="M4 6h16M4 12h16M4 18h16"
+										/>
+									</svg>
+								)}
+							</button>
+						)}
+
+						{!isMobile && (
+							<div className="flex items-center space-x-4">
+								<RegionLanguageSelector
+									navTextColor={navTextColor}
+								/>
+							</div>
+						)}
 						{isLoading ? (
-							<div className="w-6 h-6 border-2 border-white rounded-full border-t-transparent animate-spin"></div>
+							<div
+								className="w-6 h-6 border-2 rounded-full border-t-transparent animate-spin"
+								style={{ borderColor: navTextColor }}
+							></div>
 						) : isLogined && from !== "login" ? (
 							<Avatar />
 						) : (
 							<Link
-								className="block text-base focus:text-primary text-[white]"
+								className="block text-base focus:text-primary"
 								href={"/auth/login"}
-								style={{ fontFamily: "Noto Serif TC, serif" }}
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									color: navTextColor,
+								}}
 							>
 								{t2("login")}
 							</Link>
@@ -149,6 +225,59 @@ export default function Navbar({ from }) {
 					</div>
 				</div>
 			</div>
+
+			{/* Mobile Menu Dropdown */}
+			{isMobile && isMobileMenuOpen && (
+				<div className="absolute top-16 left-0 right-0 bg-white border-b shadow-lg z-[80]">
+					<div className="px-4 py-2 space-y-2">
+						<Link
+							href="/home"
+							className="block py-2 px-4 text-gray-800 hover:bg-gray-100 rounded transition-colors"
+							onClick={() => setIsMobileMenuOpen(false)}
+							style={{ fontFamily: "Noto Serif TC, serif" }}
+						>
+							{t("home")}
+						</Link>
+						<Link
+							href="/"
+							className="block py-2 px-4 text-gray-800 hover:bg-gray-100 rounded transition-colors"
+							onClick={() => setIsMobileMenuOpen(false)}
+							style={{ fontFamily: "Noto Serif TC, serif" }}
+						>
+							{t("smartChat")}
+						</Link>
+						<Link
+							href="/price"
+							className="block py-2 px-4 text-gray-800 hover:bg-gray-100 rounded transition-colors"
+							onClick={() => setIsMobileMenuOpen(false)}
+							style={{ fontFamily: "Noto Serif TC, serif" }}
+						>
+							{t("pricing")}
+						</Link>
+						<button
+							onClick={() => {
+								navigateToSection("faq");
+								setIsMobileMenuOpen(false);
+							}}
+							className="block w-full text-left py-2 px-4 text-gray-800 hover:bg-gray-100 rounded transition-colors"
+							style={{ fontFamily: "Noto Serif TC, serif" }}
+						>
+							{t("faq")}
+						</button>
+						<div className="border-t pt-2 mt-2">
+							<RegionLanguageSelector navTextColor="#000" />
+						</div>
+					</div>
+				</div>
+			)}
+
+			{/* Mobile Menu Overlay */}
+			{isMobile && isMobileMenuOpen && (
+				<div
+					className="fixed inset-0 bg-black bg-opacity-25 z-[75]"
+					onClick={() => setIsMobileMenuOpen(false)}
+				></div>
+			)}
 		</nav>
 	);
 }

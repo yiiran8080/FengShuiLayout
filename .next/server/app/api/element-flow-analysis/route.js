@@ -1,0 +1,58 @@
+(()=>{var e={};e.id=4070,e.ids=[4070],e.modules={3295:e=>{"use strict";e.exports=require("next/dist/server/app-render/after-task-async-storage.external.js")},10846:e=>{"use strict";e.exports=require("next/dist/compiled/next-server/app-page.runtime.prod.js")},29294:e=>{"use strict";e.exports=require("next/dist/server/app-render/work-async-storage.external.js")},44870:e=>{"use strict";e.exports=require("next/dist/compiled/next-server/app-route.runtime.prod.js")},63033:e=>{"use strict";e.exports=require("next/dist/server/app-render/work-unit-async-storage.external.js")},74474:(e,t,a)=>{"use strict";a.d(t,{Ay:()=>x});var r=a(44794),n=a(42457),o=a(81540),s=a(14250),i=a(96002),m=a.n(i),h=a(22246);s.A.extend(r.t).extend(n.sM).extend(o.z0);let c=(0,s.A)(m()().format("YYYY-MM-DD")).char8.year.toString(),{LYGanzhiMap:l,LYzhiMap:d,LYStarMap:u,LYSihuaMap:p,spouseStarMap:y,spouseSihuaMap:S}=function(){let e=m()().format("YYYY"),t={},a={},r={},n={},o={},s={};for(let i=1;i<=12;i++){let m=e+"-"+(i<10?"0"+i:""+i)+"-15",c=h.astro.bySolar(m,0,"男",!0,"zh-CN").horoscope(m);a[i]=c.monthly.earthlyBranch,t[i]=c.monthly.heavenlyStem+c.monthly.earthlyBranch,r[i]=c.palace("命宫","monthly").majorStars.map(e=>e.name).toString(),o[i]=c.palace("夫妻","monthly").majorStars.map(e=>e.name).toString(),n[i]=c.palace("命宫","monthly").mutagedPlaces().map(e=>e.name).toString(),s[i]=c.palace("夫妻","monthly").mutagedPlaces().map(e=>e.name).toString()}return{LYGanzhiMap:t,LYzhiMap:a,LYStarMap:r,LYSihuaMap:n,spouseStarMap:o,spouseSihuaMap:s}}();(function(){let e=m()().format("YYYY-MM-DD");(0,s.A)(e).char8.month.toString()})(),function(){let e=m()().format("YYYY-MM-DD");h.astro.bySolar(e,0,"男",!0,"zh-CN").horoscope(e,0).palace("夫妻","yearly").majorStars.map(e=>e.name).toString()}();let g={};function x(e,t){var a;let r=m()(e).format("YYYY-MM-DD HH:mm:ss");if(console.log("birthStr",r),g[r+"-"+t])return g[r+"-"+t];let n=Math.floor(m()(e).hour()/2),o=m()(e).format("YYYY-MM-DD"),i=h.astro.bySolar(o,n,"female"==t?"女":"男",!0,"zh-CN"),l=i.palace("命宫"),d=i.palace("身宫"),u=i.palace("迁移").majorStars.map(e=>e.name).toString(),p=i.horoscope(o,n),y=(0,s.A)(r),S=function(e,t,a,r,n,o,s,i){let m={金:0,木:0,水:0,火:0,土:0},h=[e,t,a,r,n,o,s,i];h.forEach(e=>{["金","木","水","火","土"].includes(e)&&m[e]++});let c=h.length;return`金:${(m.金/c*100).toFixed(2)}%，木:${(m.木/c*100).toFixed(2)}%，水:${(m.水/c*100).toFixed(2)}%，火:${(m.火/c*100).toFixed(2)}%，土:${(m.土/c*100).toFixed(2)}%`}(y.char8.year.stem.e5.name,y.char8.year.branch.e5.name,y.char8.month.stem.e5.name,y.char8.month.branch.e5.name,y.char8.day.stem.e5.name,y.char8.day.branch.e5.name,y.char8.hour.stem.e5.name,y.char8.hour.branch.e5.name),x=y.char8.day.branch.hiddenStems.map(e=>e.name).toString(),$=y.char8.year.branch.hiddenStems,b=y.char8.month.branch.hiddenStems,B=y.char8.day.branch.hiddenStems,k=y.char8.hour.branch.hiddenStems,v=y.char8ex(+("female"!==t)),w=v.year,j=v.month,Y=v.day,D=v.hour,N={nayin:y.char8.year.takeSound,wuxingJu:(a=y.char8.year.takeSoundE5.toString(),`${a}${f[a]}局`),year:y.char8.year.toString(),month:y.char8.month.toString(),day:y.char8.day.toString(),hour:y.char8.hour.toString(),wuxingScale:S,rizhiCanggan:x,mingPalace:`{主星：${l.majorStars.map(e=>e.name).toString()},主星亮度：${l.majorStars.map(e=>e.brightness||"").toString()}, 辅星： ${l.minorStars.map(e=>e.name).toString()}, 四化：${l.mutagedPlaces().map(e=>e.name).toString()}}`,bodyPalace:`{主星：${d.majorStars.map(e=>e.name).toString()},主星亮度：${d.majorStars.map(e=>e.brightness||"").toString()}, 辅星： ${d.minorStars.map(e=>e.name).toString()}, 四化：${d.mutagedPlaces().map(e=>e.name).toString()}}`,qianyiPalace:u,dayunGanzhi:p.decadal.heavenlyStem+p.decadal.earthlyBranch,liunianGanzhi:c,yearStemTenGod:w.stemTenGod.name,yearBranchTenGod:w.branchTenGod.map(e=>e.name).toString(),monthStemTenGod:j.stemTenGod.name,monthBranchTenGod:j.branchTenGod.map(e=>e.name).toString(),dayStemTenGod:Y.stemTenGod.name,dayBranchTenGod:Y.branchTenGod.map(e=>e.name).toString(),hourStemTenGod:D.stemTenGod.name,hourBranchTenGod:D.branchTenGod.map(e=>e.name).toString(),yearGods:w.gods.map(e=>e.name).toString(),monthGods:j.gods.map(e=>e.name).toString(),dayGods:Y.gods.map(e=>e.name).toString(),yearStem:y.char8.year.stem.name,yearStemWuxing:y.char8.year.stem.e5.name,yearBranch:y.char8.year.branch.name,yearBranchWuxing:y.char8.year.branch.e5.name,monthStem:y.char8.month.stem.name,monthStemWuxing:y.char8.month.stem.e5.name,monthBranch:y.char8.month.branch.name,monthBranchWuxing:y.char8.month.branch.e5.name,dayStem:y.char8.day.stem.name,dayStemWuxing:y.char8.day.stem.e5.name,dayBranch:y.char8.day.branch.name,dayBranchWuxing:y.char8.day.branch.e5.name,hourStem:y.char8.hour.stem.name,hourStemWuxing:y.char8.hour.stem.e5.name,hourBranch:y.char8.hour.branch.name,hourBranchWuxing:y.char8.hour.branch.e5.name,yearNayin:y.char8.year.takeSound,monthNayin:y.char8.month.takeSound,dayNayin:y.char8.day.takeSound,hourNayin:y.char8.hour.takeSound,yearNayinWuxing:y.char8.year.takeSoundE5.toString(),monthNayinWuxing:y.char8.month.takeSoundE5.toString(),dayNayinWuxing:y.char8.day.takeSoundE5.toString(),hourNayinWuxing:y.char8.hour.takeSoundE5.toString(),yearBranchHiddenStems:$.map(e=>({stem:e.name,element:e.e5.name,strength:e.value})),monthBranchHiddenStems:b.map(e=>({stem:e.name,element:e.e5.name,strength:e.value})),dayBranchHiddenStems:B.map(e=>({stem:e.name,element:e.e5.name,strength:e.value})),hourBranchHiddenStems:k.map(e=>({stem:e.name,element:e.e5.name,strength:e.value}))};return g[r+"-"+t]=N,console.log("result",N),N}let f={水:"二",木:"三",金:"四",土:"五",火:"六"}},78335:()=>{},89433:(e,t,a)=>{"use strict";a.r(t),a.d(t,{patchFetch:()=>y,routeModule:()=>l,serverHooks:()=>p,workAsyncStorage:()=>d,workUnitAsyncStorage:()=>u});var r={};a.r(r),a.d(r,{POST:()=>h});var n=a(96559),o=a(48088),s=a(37719),i=a(32190),m=a(74474);async function h(e){try{let t;let{userInfo:a}=await e.json();if(!a)return i.NextResponse.json({error:"Missing user information"},{status:400});let r=(e=>{if(!e?.birthDateTime)return null;try{let t=(0,m.Ay)(new Date(e.birthDateTime),e.gender),a={金:0,木:0,水:0,火:0,土:0};return[t.yearStemWuxing,t.monthStemWuxing,t.dayStemWuxing,t.hourStemWuxing].forEach(e=>{void 0!==a[e]&&(a[e]+=3)}),[t.yearBranchWuxing,t.monthBranchWuxing,t.dayBranchWuxing,t.hourBranchWuxing].forEach(e=>{void 0!==a[e]&&(a[e]+=2)}),[{key:"yearBranchHiddenStems",data:t.yearBranchHiddenStems},{key:"monthBranchHiddenStems",data:t.monthBranchHiddenStems},{key:"dayBranchHiddenStems",data:t.dayBranchHiddenStems},{key:"hourBranchHiddenStems",data:t.hourBranchHiddenStems}].forEach(({data:e})=>{Array.isArray(e)&&e.forEach(e=>{e.element&&void 0!==a[e.element]&&(a[e.element]+=1)})}),{elementCounts:a,wuxingData:t}}catch(e){return console.error("Error calculating element distribution:",e),null}})(a);if(!r)return i.NextResponse.json({error:"Failed to calculate element distribution"},{status:500});let{elementCounts:n,wuxingData:o}=r;if(!process.env.API_KEY)return console.error("API_KEY environment variable is not set"),i.NextResponse.json({error:"API configuration error"},{status:500});let s=`
+請根據以下用戶完整八字信息和五行分佈，深度分析五行流通阻礙點。
+
+用戶信息：
+- 性別: ${a.gender}
+- 出生年月日: ${a.year||new Date(a.birthDateTime).getFullYear()}年${a.month||new Date(a.birthDateTime).getMonth()+1}月${a.day||new Date(a.birthDateTime).getDate()}日
+- 出生時間: ${a.hour||new Date(a.birthDateTime).getHours()}時
+
+完整八字信息：
+- 年柱: ${o.year} (${o.yearStem}${o.yearBranch})
+- 月柱: ${o.month} (${o.monthStem}${o.monthBranch})  
+- 日柱: ${o.day} (${o.dayStem}${o.dayBranch}) - 日主：${o.dayStem}${o.dayStemWuxing}
+- 時柱: ${o.hour} (${o.hourStem}${o.hourBranch})
+
+五行分佈（綜合天干、地支、藏干）：
+- 金: ${n.金.toFixed(2)}
+- 木: ${n.木.toFixed(2)} 
+- 水: ${n.水.toFixed(2)}
+- 火: ${n.火.toFixed(2)}
+- 土: ${n.土.toFixed(2)}
+
+請基於以上真實數據，分析五行流通的具體阻礙點：
+
+1. **分析五行生克關係**：根據實際五行強弱，找出能量流通的瓶頸
+2. **識別關鍵問題**：哪些五行過旺或不足造成流通不暢
+3. **生活化影響**：如何在實際生活中表現這些阻礙
+
+請返回精準的JSON格式分析，包含3個主要阻礙點：
+
+{
+  "flowObstacles": [
+    {
+      "title": "阻礙點標題（如：金水相剋導致思維阻滯）",
+      "description": "詳細描述該阻礙點的五行機理和影響（150字左右）",
+      "lifeImpact": "在現實生活中的具體表現和影響（100字左右）",
+      "color": "red"
+    },
+    {
+      "title": "第二個阻礙點標題",
+      "description": "詳細分析",
+      "lifeImpact": "生活影響",
+      "color": "purple"
+    },
+    {
+      "title": "第三個阻礙點標題", 
+      "description": "詳細分析",
+      "lifeImpact": "生活影響",
+      "color": "orange"
+    }
+  ]
+}
+
+要求：
+1. 必須基於提供的真實五行數據進行分析
+2. 避免通用化描述，要個人化和具體
+3. 結合日主${o.dayStem}${o.dayStemWuxing}的特質
+4. 返回有效JSON格式，不包含markdown標記
+`;console.log("Making request to DeepSeek API for element flow analysis...");let h=await fetch("https://api.deepseek.com/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${process.env.API_KEY}`},body:JSON.stringify({model:"deepseek-chat",messages:[{role:"system",content:"你是一位專業的命理分析師，精通八字命理和五行流通分析。請根據用戶的真實八字數據分析五行流通阻礙點。返回有效的JSON格式，不要包含任何markdown標記。"},{role:"user",content:s}],temperature:.7,max_tokens:2e3,response_format:{type:"json_object"}})});if(console.log("DeepSeek API response status:",h.status),!h.ok){let e=await h.text();return console.error("DeepSeek API Error:",h.status,h.statusText,e),i.NextResponse.json({error:"Failed to get AI analysis",details:e},{status:500})}let l=await h.json(),d=l.choices?.[0]?.message?.content;if(!d)return console.error("No content received from DeepSeek API"),i.NextResponse.json({error:"No analysis content received"},{status:500});console.log("Received flow analysis content, length:",d.length),(d=d.trim()).startsWith("```json")?d=d.replace(/^```json\s*/,"").replace(/\s*```$/,""):d.startsWith("```")&&(d=d.replace(/^```\s*/,"").replace(/\s*```$/,""));try{t=JSON.parse(d)}catch(e){return console.error("JSON Parse Error:",e),i.NextResponse.json({success:!0,analysis:{flowObstacles:c(n)},elementCounts:n,timestamp:new Date().toISOString()})}if(!t.flowObstacles||!Array.isArray(t.flowObstacles))return console.error("Invalid analysis structure:",t),i.NextResponse.json({success:!0,analysis:{flowObstacles:c(n)},elementCounts:n,timestamp:new Date().toISOString()});return i.NextResponse.json({success:!0,analysis:t,elementCounts:n,timestamp:new Date().toISOString()})}catch(e){return console.error("Element Flow Analysis API Error:",e),i.NextResponse.json({error:"Internal server error",details:e.message},{status:500})}}function c(e){let t=[],a=Object.entries(e).sort(([,e],[,t])=>t-e),r=a[0],n=a[4];return r&&r[1]>15&&t.push({title:`${r[0]}元素過盛阻礙`,description:`${r[0]}元素過於強勢（${r[1].toFixed(1)}），壓制其他元素的正常流通，造成五行循環不暢，影響整體能量平衡。`,lifeImpact:`在生活中容易表現為過度專注某一領域，缺乏靈活性和適應能力，需要適當調節和平衡。`,color:"red"}),n&&n[1]<5&&t.push({title:`${n[0]}元素不足障礙`,description:`${n[0]}元素嚴重不足（${n[1].toFixed(1)}），無法發揮應有的調節作用，導致相關生克關係失衡。`,lifeImpact:`影響與${n[0]}元素相關的生活領域，建議通過外在方式補強該元素的能量。`,color:"purple"}),t.push({title:"五行流通節奏失調",description:"整體五行分佈不均衡，生克制化關係未能形成良性循環，需要調整以促進能量順暢流通。",lifeImpact:"可能在決策和行動上出現猶豫不決或過於衝動的情況，建議培養更好的節奏感。",color:"orange"}),t.slice(0,3)}let l=new n.AppRouteRouteModule({definition:{kind:o.RouteKind.APP_ROUTE,page:"/api/element-flow-analysis/route",pathname:"/api/element-flow-analysis",filename:"route",bundlePath:"app/api/element-flow-analysis/route"},resolvedPagePath:"/Users/michaelng/Desktop/HarmoniqFengShui/FengShuiLayout/src/app/api/element-flow-analysis/route.js",nextConfigOutput:"",userland:r}),{workAsyncStorage:d,workUnitAsyncStorage:u,serverHooks:p}=l;function y(){return(0,s.patchFetch)({workAsyncStorage:d,workUnitAsyncStorage:u})}},96487:()=>{}};var t=require("../../../webpack-runtime.js");t.C(e);var a=e=>t(t.s=e),r=t.X(0,[7719,580,6219],()=>a(89433));module.exports=r})();

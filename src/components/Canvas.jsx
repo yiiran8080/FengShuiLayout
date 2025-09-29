@@ -73,6 +73,7 @@ export const Canvas = forwardRef(
 				: FURNITURE_TYPES_LABEL_CN;
 		const t = useTranslations("design");
 		const isMobile = useMobile();
+		const canvasRef = useRef(null); // Add canvas ref
 		const [position, setPosition] = useState({ x: 0, y: 0 });
 		const [isDragging, setIsDragging] = useState(false);
 		const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -128,6 +129,23 @@ export const Canvas = forwardRef(
 			showZoomHint: true,
 			showRotateHint: true,
 		});
+
+		// Debug position changes and test transforms
+		useEffect(() => {const canvas = document.getElementById("canvas");
+			if (canvas) {
+				const computedStyle = window.getComputedStyle(canvas);// Test if we can set a simple transform
+				canvas.style.setProperty(
+					"transform",
+					`translate(${position.x}px, ${position.y}px) scale(${scale / 100})`,
+					"important"
+				);// Check if it actually applied
+				setTimeout(() => {
+					const newComputedStyle = window.getComputedStyle(canvas);}, 100);
+			}
+		}, [position, scale]);
+
+		// Debug scale changes
+		useEffect(() => {}, [scale]);
 
 		// Enhanced mobile touch handling - REPLACE your handleItemTouchStart
 		const handleItemTouchStart = (e, item) => {
@@ -412,14 +430,23 @@ export const Canvas = forwardRef(
 		// Improved canvas mouse/touch down with better mobile support
 		const handleCanvasMouseDown = useCallback(
 			(e) => {
-				if (e.target.closest('[data-room-element="true"]')) {
+				// Allow events on the canvas element or its container (for panning)
+				const isCanvasElement =
+					e.target.id === "canvas" ||
+					e.target.closest("#canvas") ||
+					e.target === containerRef.current;
+
+				// Skip if clicking on room elements or UI controls
+				if (
+					e.target.closest('[data-room-element="true"]') ||
+					e.target.closest(".compass-btn") ||
+					e.target.closest("button")
+				) {
 					return;
 				}
-				if (e.target.id !== "canvas") return;
 
-				if (e.button !== 0 && !e.touches) return;
-
-				// Clear mobile selection when touching canvas
+				// Only handle left mouse button or touch
+				if (e.button !== 0 && !e.touches) return;// Clear mobile selection when touching canvas
 				if (isMobile) {
 					setMobileSelectedItem(null);
 				}
@@ -450,6 +477,7 @@ export const Canvas = forwardRef(
 					return;
 				}
 
+				// Start canvas panning
 				setActiveRoom(null);
 				setIsDragging(true);
 				if (e.touches?.length === 1) {
@@ -462,8 +490,7 @@ export const Canvas = forwardRef(
 						x: e.clientX - position.x,
 						y: e.clientY - position.y,
 					});
-				}
-			},
+				}},
 			[position, scale, isMobile]
 		);
 
@@ -596,6 +623,11 @@ export const Canvas = forwardRef(
 
 		const handleMouseMove = (e) => {
 			e.preventDefault();
+
+			// Update containerRect for accurate calculations
+			if (containerRef.current) {
+				containerRect = containerRef.current.getBoundingClientRect();
+			}
 
 			// Improved pinch-to-zoom
 			if (e.touches?.length === 2 && isPinching) {
@@ -816,9 +848,7 @@ export const Canvas = forwardRef(
 				if (newX > 0) newX = 0;
 				if (newY > 0) newY = 0;
 				if (newX < -1000) newX = -1000;
-				if (newY < -1000) newY = -1000;
-
-				let canvasWidth, canvasHeight;
+				if (newY < -1000) newY = -1000;let canvasWidth, canvasHeight;
 				if (2000 + newX < containerRect.width / (scale / 100)) {
 					canvasWidth = (2000 - newX) / (scale / 100);
 				}
@@ -826,9 +856,8 @@ export const Canvas = forwardRef(
 					canvasHeight = (2000 - newY) / (scale / 100);
 				}
 
-				setPosition({
-					x: newX,
-					y: newY,
+				setPosition((prevPosition) => {
+					const newPosition = { x: newX, y: newY };return newPosition;
 				});
 				setCanvasSize({
 					width: canvasWidth || canvasSize.width,
@@ -1064,36 +1093,38 @@ export const Canvas = forwardRef(
 		};
 
 		// Mobile-optimized zoom function
-		function handleZoom(type, step = 5) {
-			let newScale;
-			const mobileStep = isMobile ? 10 : step; // Larger steps for mobile
+		const handleZoom = useCallback(
+			(type, step = 5) => {
+				let newScale;
+				const mobileStep = isMobile ? 10 : step; // Larger steps for mobile
 
-			if (type === "in" && scale < MAX_SCALE) {
-				newScale = scale + mobileStep;
-			} else if (type === "out" && scale > MIN_SCALE) {
-				newScale = scale - mobileStep;
-			} else if (type === "reset") {
-				newScale = isMobile ? 35 : 60; // Changed from 40 to 35 for mobile
-			} else {
-				return;
-			}
+				if (type === "in" && scale < MAX_SCALE) {
+					newScale = Math.min(scale + mobileStep, MAX_SCALE);
+				} else if (type === "out" && scale > MIN_SCALE) {
+					newScale = Math.max(scale - mobileStep, MIN_SCALE);
+				} else if (type === "reset") {
+					newScale = isMobile ? 35 : 60; // Changed from 40 to 35 for mobile
+				} else {
+					return;
+				}if (type === "out") {
+					setCanvasSize({
+						width:
+							(canvasSize.width -
+								(position.x < 0 ? position.x : 0)) *
+							(1 + (scale - newScale) / 100),
+						height:
+							(canvasSize.height -
+								(position.y < 0 ? position.y : 0)) *
+							(1 + (scale - newScale) / 100),
+					});
+				}
+				setScale(newScale);
 
-			if (type === "out") {
-				setCanvasSize({
-					width:
-						(canvasSize.width - (position.x < 0 ? position.x : 0)) *
-						(1 + (scale - newScale) / 100),
-					height:
-						(canvasSize.height -
-							(position.y < 0 ? position.y : 0)) *
-						(1 + (scale - newScale) / 100),
-				});
-			}
-			setScale(newScale);
-
-			// Notify demo of zoom action
-			onDemoAction("zoom", { type, scale: newScale });
-		}
+				// Notify demo of zoom action
+				onDemoAction("zoom", { type, scale: newScale });
+			},
+			[scale, isMobile, canvasSize, position.x, position.y, onDemoAction]
+		);
 
 		const handleRotate = useCallback(() => {
 			if (!activeRoom) return;
@@ -1527,6 +1558,33 @@ export const Canvas = forwardRef(
 			return null; // Gesture handler doesn't render UI
 		};
 
+		// Add wheel zoom functionality using useEffect for proper event listener
+		useEffect(() => {
+			const container = containerRef.current;
+			if (!container) return;
+
+			const handleWheel = (e) => {
+				if (e.ctrlKey || e.metaKey) {
+					e.preventDefault();
+					const delta = e.deltaY;
+					if (delta < 0) {
+						handleZoom("in", 5);
+					} else {
+						handleZoom("out", 5);
+					}
+				}
+			};
+
+			// Add wheel listener with passive: false to allow preventDefault
+			container.addEventListener("wheel", handleWheel, {
+				passive: false,
+			});
+
+			return () => {
+				container.removeEventListener("wheel", handleWheel);
+			};
+		}, [handleZoom]);
+
 		return (
 			<div
 				ref={(node) => {
@@ -1567,7 +1625,10 @@ export const Canvas = forwardRef(
 							<div className="flex items-center gap-1 px-3 py-2 border border-gray-200 rounded-full shadow-lg bg-white/90 backdrop-blur-sm">
 								<button
 									className="p-2 text-gray-600 rounded-full hover:bg-gray-100 active:bg-gray-200"
-									onClick={(e) => handleZoom("out")}
+									onClick={(e) => {
+										e.preventDefault();
+										e.stopPropagation();handleZoom("out");
+									}}
 									disabled={scale <= MIN_SCALE}
 								>
 									<Minus className="w-4 h-4" />
@@ -1577,7 +1638,10 @@ export const Canvas = forwardRef(
 								</span>
 								<button
 									className="p-2 text-gray-600 rounded-full hover:bg-gray-100 active:bg-gray-200"
-									onClick={(e) => handleZoom("in")}
+									onClick={(e) => {
+										e.preventDefault();
+										e.stopPropagation();handleZoom("in");
+									}}
 									disabled={scale >= 120}
 								>
 									<Plus className="w-4 h-4" />
@@ -1661,7 +1725,10 @@ export const Canvas = forwardRef(
 							<div className="flex items-center gap-2">
 								<button
 									className="p-2 text-gray-600 rounded-full hover:bg-gray-100 active:bg-gray-200"
-									onClick={(e) => handleZoom("out")}
+									onClick={(e) => {
+										e.preventDefault();
+										e.stopPropagation();handleZoom("out");
+									}}
 									disabled={scale <= MIN_SCALE}
 								>
 									<Minus className="w-4 h-4" />
@@ -1671,7 +1738,10 @@ export const Canvas = forwardRef(
 								</span>
 								<button
 									className="p-2 text-gray-600 rounded-full hover:bg-gray-100 active:bg-gray-200"
-									onClick={(e) => handleZoom("in")}
+									onClick={(e) => {
+										e.preventDefault();
+										e.stopPropagation();handleZoom("in");
+									}}
 									disabled={scale >= 120}
 								>
 									<Plus className="w-4 h-4" />
@@ -1820,20 +1890,23 @@ export const Canvas = forwardRef(
 					)}
 				</div>
 
-				{/* translate(${position.x}px, ${position.y}px) */}
+				{/* Canvas with debugging */}
 				<div
+					ref={canvasRef}
 					id="canvas"
-					className="absolute cursor-move"
+					className="absolute cursor-move canvas-transform"
 					style={{
 						width: `${canvasSize.width}px`,
 						height: `${canvasSize.height}px`,
-						transform: `translate(${position.x}px, ${position.y}px)  scale(${scale / 100})`,
+						transform: `translate(${position.x}px, ${position.y}px) scale(${scale / 100})`,
 						transformOrigin: "top left",
 						backgroundImage:
 							"radial-gradient(circle, #ddd 1px, transparent 1px)",
 						backgroundSize: isMobile ? "20px 20px" : "10px 10px",
 						touchAction: "none",
+						willChange: "transform", // Force GPU acceleration
 					}}
+					onMouseDown={(e) => {}}
 				>
 					<div className="relative">
 						{localItems.map((item) => {

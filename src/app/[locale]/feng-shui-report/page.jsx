@@ -1,0 +1,1175 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { BaziAnalysisSystem } from "@/lib/newConversationFlow";
+import { ArrowLeft, Calendar, User, Target, AlertCircle } from "lucide-react";
+import FiveElement from "@/components/FiveElement";
+import Zodiac from "@/components/Zodiac";
+import LiuNianKeyWord from "@/components/LiuNianKeyWord";
+import { MingJu } from "@/components/MingJu";
+import LiuNianGanZhi from "@/components/LiuNianGanZhi";
+import GanZhi from "@/components/GanZhi";
+import JiXiong from "@/components/JiXiong";
+import Season from "@/components/Season";
+import CoreSuggestion from "@/components/CoreSuggestion";
+import SpecificSuggestion from "@/components/SpecificSuggestion";
+import QuestionFocus from "@/components/QuestionFocus";
+import SavedReportDisplay from "@/components/SavedReportDisplay";
+import getWuxingData from "@/lib/nayin";
+import { LoadingProvider } from "@/utils/LoadingStateManagement";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/home/Footer";
+import ReportStatusBanner from "@/components/ReportStatusBanner";
+import { getConcernColor } from "@/utils/colorTheme";
+
+export default function FengShuiReportPage() {
+	const [reportData, setReportData] = useState(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
+	const searchParams = useSearchParams();
+	const router = useRouter();
+
+	// Helper function to get concern-specific section titles
+	const getSectionTitle = (concern) => {
+		const titleMap = {
+			財運: "流年財運總結",
+			财运: "流年財運總結", // Simplified Chinese support
+			感情: "流年感情總結",
+			健康: "流年健康總結",
+			事業: "流年事業總結",
+			事业: "流年事業總結", // Simplified Chinese support
+		};
+		return titleMap[concern] || "流年運勢總結";
+	};
+
+	// Five Elements analysis functions
+	const calculateWuxingAnalysis = (userInfo) => {
+		if (!userInfo?.birthDateTime) return null;
+
+		const wuxingData = getWuxingData(
+			userInfo.birthDateTime,
+			userInfo.gender || "male"
+		);
+
+		if (!wuxingData) return null;
+
+		// Count elements in the four pillars
+		const elementCounts = { 金: 0, 木: 0, 水: 0, 火: 0, 土: 0 };
+
+		// Count year stem and branch
+		if (wuxingData.yearStemWuxing)
+			elementCounts[wuxingData.yearStemWuxing]++;
+		if (wuxingData.yearBranchWuxing)
+			elementCounts[wuxingData.yearBranchWuxing]++;
+
+		// Count month stem and branch
+		if (wuxingData.monthStemWuxing)
+			elementCounts[wuxingData.monthStemWuxing]++;
+		if (wuxingData.monthBranchWuxing)
+			elementCounts[wuxingData.monthBranchWuxing]++;
+
+		// Count day stem and branch
+		if (wuxingData.dayStemWuxing) elementCounts[wuxingData.dayStemWuxing]++;
+		if (wuxingData.dayBranchWuxing)
+			elementCounts[wuxingData.dayBranchWuxing]++;
+
+		// Count hour stem and branch
+		if (wuxingData.hourStemWuxing)
+			elementCounts[wuxingData.hourStemWuxing]++;
+		if (wuxingData.hourBranchWuxing)
+			elementCounts[wuxingData.hourBranchWuxing]++;
+
+		// Find missing elements
+		const missingElements = Object.entries(elementCounts)
+			.filter(([_, count]) => count === 0)
+			.map(([element, _]) => element);
+
+		return {
+			wuxingData,
+			elementCounts,
+			missingElements,
+		};
+	};
+
+	const analyzeWuxingStrength = (elementCounts) => {
+		const total = Object.values(elementCounts).reduce(
+			(sum, count) => sum + count,
+			0
+		);
+		const strongElements = [];
+		const weakElements = [];
+
+		Object.entries(elementCounts).forEach(([element, count]) => {
+			const percentage = (count / total) * 100;
+			if (percentage >= 25) {
+				strongElements.push(element);
+			} else if (count === 0) {
+				weakElements.push(element);
+			}
+		});
+
+		// Generate strength description
+		let strengthDesc = "";
+		if (strongElements.length === 1) {
+			strengthDesc = `${strongElements[0]}旺`;
+		} else if (strongElements.length === 2) {
+			strengthDesc = `${strongElements.join("")}兩旺`;
+		} else if (strongElements.length >= 3) {
+			strengthDesc = `${strongElements.slice(0, 2).join("")}等多旺`;
+		} else {
+			const maxCount = Math.max(...Object.values(elementCounts));
+			const dominant = Object.entries(elementCounts).find(
+				([_, count]) => count === maxCount
+			)?.[0];
+			strengthDesc = dominant ? `${dominant}為主` : "五行平衡";
+		}
+
+		return {
+			strongElements,
+			weakElements,
+			strengthDesc,
+			elementCounts,
+		};
+	};
+
+	const determineUsefulGods = (strengthAnalysis) => {
+		const { strongElements, weakElements, elementCounts } =
+			strengthAnalysis;
+		const elementCycle = ["木", "火", "土", "金", "水"];
+
+		let primaryGod = "";
+		let auxiliaryGod = "";
+		let strategy = "";
+
+		// Strategy 1: If there are missing elements, they become useful gods
+		if (weakElements.length > 0) {
+			primaryGod = weakElements[0];
+			if (weakElements.length > 1) {
+				auxiliaryGod = weakElements[1];
+			} else {
+				const primaryIndex = elementCycle.indexOf(primaryGod);
+				const generatorIndex = (primaryIndex - 1 + 5) % 5;
+				auxiliaryGod = elementCycle[generatorIndex];
+			}
+			strategy = "補缺";
+		}
+		// Strategy 2: If elements are relatively balanced, support the weakest
+		else if (strongElements.length === 0) {
+			const minCount = Math.min(...Object.values(elementCounts));
+			const weakestElements = Object.entries(elementCounts)
+				.filter(([_, count]) => count === minCount)
+				.map(([element, _]) => element);
+
+			primaryGod = weakestElements[0];
+			const primaryIndex = elementCycle.indexOf(primaryGod);
+			const generatorIndex = (primaryIndex - 1 + 5) % 5;
+			auxiliaryGod = elementCycle[generatorIndex];
+			strategy = "扶弱";
+		}
+		// Strategy 3: If there are overly strong elements, use restraining elements
+		else if (strongElements.length >= 2) {
+			const strongestElement = strongElements[0];
+			const strongestIndex = elementCycle.indexOf(strongestElement);
+			const restrainingIndex = (strongestIndex + 1) % 5;
+			primaryGod = elementCycle[restrainingIndex];
+
+			const secondaryRestrainingIndex = (restrainingIndex + 1) % 5;
+			auxiliaryGod = elementCycle[secondaryRestrainingIndex];
+			strategy = "抑強";
+		}
+		// Strategy 4: Single strong element - moderate restraint
+		else if (strongElements.length === 1) {
+			const strongElement = strongElements[0];
+			const strongIndex = elementCycle.indexOf(strongElement);
+
+			const drainingIndex = (strongIndex + 1) % 5;
+			primaryGod = elementCycle[drainingIndex];
+
+			const restrainingIndex = (strongIndex + 2) % 5;
+			auxiliaryGod = elementCycle[restrainingIndex];
+			strategy = "瀉強";
+		}
+
+		return {
+			primaryGod,
+			auxiliaryGod,
+			strategy,
+		};
+	};
+
+	useEffect(() => {
+		checkAndGenerateReport();
+	}, []);
+
+	const checkAndGenerateReport = async () => {
+		try {
+			// Get session ID from URL parameters
+			const sessionId = searchParams.get("session_id");
+
+			if (!sessionId) {
+				setError("缺少支付會話ID，請重新進行支付");
+				setLoading(false);
+				return;
+			}
+
+			console.log("Checking report for session:", sessionId);
+
+			// Get URL parameters to pass to the API
+			const birthday = searchParams.get("birthday");
+			const gender = searchParams.get("gender");
+			const concern = searchParams.get("concern");
+			const problem = searchParams.get("problem");
+			const partnerBirthday = searchParams.get("partnerBirthday");
+
+			// Create URL with parameters for the API call
+			const apiUrl = new URL(
+				"/api/fortune-report",
+				window.location.origin
+			);
+			if (birthday) apiUrl.searchParams.set("birthday", birthday);
+			if (gender) apiUrl.searchParams.set("gender", gender);
+			if (concern) apiUrl.searchParams.set("concern", concern);
+			if (problem) apiUrl.searchParams.set("problem", problem);
+			if (partnerBirthday)
+				apiUrl.searchParams.set("partnerBirthday", partnerBirthday);
+
+			// Check if report already exists and payment is verified
+			const checkResponse = await fetch(apiUrl.toString(), {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ sessionId }),
+			});
+
+			const checkData = await checkResponse.json();
+
+			console.log("API Response received:");
+			console.log("- status:", checkData.status);
+			console.log("- reportExists:", checkData.reportExists);
+			console.log("- reportGenerated:", checkData.reportGenerated);
+			console.log("- canGenerateNew:", checkData.data?.canGenerateNew);
+			console.log("- sessionId:", sessionId);
+			console.log("- Full response:", JSON.stringify(checkData, null, 2));
+
+			if (checkData.status !== 0) {
+				if (checkData.paymentRequired) {
+					setError("支付未完成，請完成支付後再試");
+				} else {
+					setError("檢查報告狀態失敗：" + checkData.error);
+				}
+				setLoading(false);
+				return;
+			}
+
+			// Check if we should show existing report or generate fresh content
+			const showHistorical =
+				searchParams.get("showHistorical") === "true";
+
+			if (
+				checkData.reportExists &&
+				checkData.reportGenerated &&
+				checkData.data?.reportContent &&
+				showHistorical
+			) {
+				// Show saved historical content
+				console.log("✅ Displaying saved historical report content");
+				await displaySavedReport(checkData.data);
+			} else if (checkData.data?.canGenerateNew) {
+				// Generate fresh content (default behavior)
+				console.log("✅ Generating fresh content for this session");
+				await generateNewReport(sessionId, checkData.data.userInputs);
+			} else {
+				console.error("❌ Cannot generate report!");
+				console.error(
+					"- Full checkData:",
+					JSON.stringify(checkData, null, 2)
+				);
+				setError("報告生成失敗，請聯繫客服");
+				setLoading(false);
+			}
+		} catch (err) {
+			console.error("Report check error:", err);
+			setError("檢查報告時出現錯誤");
+			setLoading(false);
+		}
+	};
+
+	const displaySavedReport = async (savedData) => {
+		try {
+			console.log("📖 Displaying saved report content:", savedData);
+
+			// Create report data structure from saved content
+			const reportData = {
+				birthday: savedData.userInputs.birthday,
+				gender: savedData.userInputs.gender,
+				concern: savedData.userInputs.concern,
+				problem: savedData.userInputs.problem,
+				partnerBirthday: savedData.userInputs.partnerBirthday,
+				// Use saved content instead of generating new
+				savedReportContent: savedData.reportContent,
+				isHistoricalReport: true,
+			};
+
+			setReportData(reportData);
+			setLoading(false);
+		} catch (err) {
+			console.error("Error displaying saved report:", err);
+			setError("顯示已儲存報告時出現錯誤");
+			setLoading(false);
+		}
+	};
+
+	const generateNewReport = async (sessionId, userInputs) => {
+		try {
+			// Get parameters from URL or use stored user inputs
+			const birthday =
+				searchParams.get("birthday") || userInputs.birthday;
+			const gender = searchParams.get("gender") || userInputs.gender;
+			const concern = searchParams.get("concern") || userInputs.concern;
+			const problem = searchParams.get("problem") || userInputs.problem;
+			const partnerBirthday =
+				searchParams.get("partnerBirthday") ||
+				userInputs.partnerBirthday;
+
+			// Debug logging
+			console.log("Generating new report with params:");
+			console.log("- birthday:", birthday);
+			console.log("- gender:", gender);
+			console.log("- concern:", concern);
+			console.log("- problem:", problem);
+			console.log("- partnerBirthday:", partnerBirthday);
+
+			if (!birthday || !concern || !problem) {
+				setError("缺少必要的分析參數");
+				setLoading(false);
+				return;
+			}
+
+			const birthdayDate = new Date(birthday);
+			console.log(
+				"🔍 Calling BaziAnalysisSystem.generatePersonalAnalysisV2..."
+			);
+
+			// Instead of relying on BaziAnalysisSystem, we'll collect data from components directly
+			const analysisPromises = [];
+			const analysisResults = {};
+
+			// Create a promise-based approach to collect all component data
+			const collectComponentData = async () => {
+				return new Promise((resolve) => {
+					// Set up observers for each component
+					const componentData = {
+						fiveElementAnalysis: null,
+						zodiacAnalysis: null,
+						liuNianKeyWordAnalysis: null,
+						mingJuAnalysis: null,
+						ganZhiAnalysis: null,
+						jiXiongAnalysis: null,
+						seasonAnalysis: null,
+						coreSuggestionAnalysis: null,
+						specificSuggestionAnalysis: null,
+					};
+
+					let completedComponents = 0;
+					const totalComponents = Object.keys(componentData).length;
+
+					// Function to check if all components are loaded
+					const checkCompletion = () => {
+						if (completedComponents >= totalComponents) {
+							console.log(
+								"🎉 All components loaded successfully!"
+							);
+							resolve(componentData);
+						}
+					};
+
+					// Set up component data collection with timeout
+					const collectWithTimeout = async () => {
+						// Wait for components to initialize and load
+						await new Promise((resolve) =>
+							setTimeout(resolve, 5000)
+						); // 5 second timeout
+
+						// Try to collect data from global component states or localStorage
+						// This is a fallback approach since we can't directly await component loading
+						completedComponents = totalComponents; // Force completion for now
+						resolve(componentData);
+					};
+
+					collectWithTimeout();
+				});
+			};
+
+			// For now, let's use the original analysis but with better structure detection
+			const analysis =
+				await BaziAnalysisSystem.generatePersonalAnalysisV2(
+					birthdayDate,
+					concern,
+					problem
+				);
+
+			console.log("📊 Analysis result:");
+			console.log("- analysis:", analysis);
+			console.log(
+				"- analysis keys:",
+				analysis ? Object.keys(analysis) : "null"
+			);
+
+			// Log all properties to see the actual structure
+			if (analysis) {
+				Object.keys(analysis).forEach((key) => {
+					console.log(`- analysis.${key}:`, analysis[key]);
+				});
+			}
+
+			let coupleAnalysis = null;
+			if (partnerBirthday && concern === "感情") {
+				const partnerBirthdayDate = new Date(partnerBirthday);
+				coupleAnalysis = BaziAnalysisSystem.generateCoupleAnalysis(
+					birthdayDate,
+					partnerBirthdayDate
+				);
+				console.log("💑 Couple analysis result:", coupleAnalysis);
+			}
+
+			const reportData = {
+				birthday,
+				gender,
+				concern,
+				problem,
+				partnerBirthday,
+				analysis,
+				coupleAnalysis,
+			};
+
+			// Prepare initial report content (basic info from generatePersonalAnalysisV2)
+			const reportContentToSave = {
+				// Map the actual analysis structure
+				basicAnalysis: analysis,
+				coupleAnalysis: coupleAnalysis,
+				initialSaveTime: new Date().toISOString(),
+				// Component-specific analyses will be saved later
+				fiveElementAnalysis: null,
+				zodiacAnalysis: null,
+				liuNianKeyWordAnalysis: null,
+				mingJuAnalysis: null, // Note: MingJu handles its own internal analysis
+				ganZhiAnalysis: null,
+				jiXiongAnalysis: null,
+				seasonAnalysis: null,
+				coreSuggestionAnalysis: null,
+				specificSuggestionAnalysis: null,
+			};
+
+			console.log("💾 Saving report content to database:");
+			console.log(
+				"- reportContentToSave:",
+				JSON.stringify(reportContentToSave, null, 2)
+			);
+
+			// Save the generated report to database
+			const saveResponse = await fetch("/api/fortune-report", {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					sessionId,
+					reportContent: reportContentToSave,
+				}),
+			});
+
+			const saveData = await saveResponse.json();
+			console.log("💾 Save response:", saveData);
+			if (saveData.status === 0) {
+				console.log("✅ Report saved successfully to database");
+			} else {
+				console.warn(
+					"❌ Failed to save report to database:",
+					saveData.error
+				);
+			}
+
+			setReportData(reportData);
+			setLoading(false);
+
+			// Start background process to save complete content after components load
+			setTimeout(() => {
+				saveCompleteReportContent(
+					sessionId,
+					birthdayDate,
+					concern,
+					problem,
+					partnerBirthday,
+					gender
+				);
+			}, 20000); // Wait 20 seconds for components to load
+		} catch (err) {
+			console.error("Report generation error:", err);
+			setError("生成報告時出現錯誤");
+			setLoading(false);
+		}
+	};
+
+	const saveCompleteReportContent = async (
+		sessionId,
+		birthdayDate,
+		concern,
+		problem,
+		partnerBirthday,
+		gender
+	) => {
+		try {
+			console.log(
+				"🔄 Starting background save of complete report content..."
+			);
+			console.log("📋 Session ID for background save:", sessionId);
+
+			// Wait a bit more to ensure all components are fully loaded
+			await new Promise((resolve) => setTimeout(resolve, 5000));
+
+			// Try to collect actual data from the loaded components
+			const completeReportContent = await collectLoadedComponentData(
+				birthdayDate,
+				concern,
+				problem,
+				gender
+			);
+
+			console.log(
+				"💾 Saving complete report content:",
+				completeReportContent
+			);
+
+			// Update the database with complete content
+			const updateResponse = await fetch("/api/fortune-report", {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					sessionId,
+					reportContent: completeReportContent,
+				}),
+			});
+
+			const updateData = await updateResponse.json();
+			if (updateData.status === 0) {
+				console.log("✅ Complete report content saved successfully!");
+			} else {
+				console.warn(
+					"❌ Failed to save complete content:",
+					updateData.error
+				);
+			}
+		} catch (error) {
+			console.error("❌ Error saving complete report content:", error);
+		}
+	};
+
+	const collectLoadedComponentData = async (
+		birthdayDate,
+		concern,
+		problem,
+		gender
+	) => {
+		// This function attempts to collect data from loaded components
+		// Since components load asynchronously, we need to make direct API calls
+		// to get the component-specific analysis data
+
+		const completeContent = {
+			fiveElementAnalysis: null,
+			zodiacAnalysis: null,
+			liuNianKeyWordAnalysis: null,
+			mingJuAnalysis: null, // MingJu component handles analysis internally
+			ganZhiAnalysis: null,
+			jiXiongAnalysis: null,
+			seasonAnalysis: null,
+			coreSuggestionAnalysis: null,
+			specificSuggestionAnalysis: null,
+			reportGeneratedAt: new Date().toISOString(),
+		};
+
+		try {
+			// Get user info structure for component API calls
+			// Convert Date object to string for API calls
+			const birthdayString =
+				birthdayDate instanceof Date
+					? birthdayDate.toISOString().split("T")[0]
+					: birthdayDate;
+
+			const userInfoForAPIs = {
+				birthDateTime: birthdayString,
+				birthday: birthdayString,
+				gender: gender || "male",
+				concern: concern,
+				problem: problem,
+				time: "00:00:00", // TODO: Should use actual user-selected birth time instead of hardcoded midnight
+			};
+
+			console.log(
+				"🔄 Collecting component data with userInfo:",
+				userInfoForAPIs
+			);
+
+			// Collect data from all component APIs in parallel
+			const componentPromises = [
+				// Five Element (WuXing) analysis
+				fetch("/api/wuxing-analysis", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						userInfo: {
+							birthDateTime: birthdayString,
+							gender: gender || "male",
+							concern: concern,
+							problem: problem,
+						},
+					}),
+				})
+					.then(async (res) => {
+						const data = await res.json();
+						console.log("🔍 Five Element API response:", data);
+						return {
+							type: "fiveElementAnalysis",
+							data: data.success ? data.data : null,
+						};
+					})
+					.catch((err) => {
+						console.error("❌ Five Element API failed:", err);
+						return { type: "fiveElementAnalysis", data: null };
+					}),
+
+				// Note: MingJu analysis is handled internally by the MingJu component
+				// No separate API endpoint exists for this component
+
+				// LiuNianKeyWord analysis
+				fetch("/api/ai-analysis", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						concern: concern,
+						userBirthday: birthdayString,
+						gender: gender || "male",
+					}),
+				})
+					.then(async (res) => {
+						const data = await res.json();
+						console.log("🔍 LiuNianKeyWord API response:", data);
+						return {
+							type: "liuNianKeyWordAnalysis",
+							data: data.success
+								? data.data || data.content
+								: null, // Handle both data and content fields
+						};
+					})
+					.catch((err) => {
+						console.error("❌ LiuNianKeyWord API failed:", err);
+						return { type: "liuNianKeyWordAnalysis", data: null };
+					}),
+
+				// GanZhi analysis
+				fetch("/api/ganzhi-analysis", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						userInfo: {
+							birthDateTime: birthdayString,
+							gender: gender || "male",
+							concern: concern,
+							problem: problem,
+						},
+					}),
+				})
+					.then(async (res) => {
+						const data = await res.json();
+						console.log("🔍 GanZhi API response:", data);
+						return {
+							type: "ganZhiAnalysis",
+							data: data.success
+								? data.data || data.analysis
+								: null, // Handle both data and analysis fields
+						};
+					})
+					.catch((err) => {
+						console.error("❌ GanZhi API failed:", err);
+						return { type: "ganZhiAnalysis", data: null };
+					}),
+
+				// JiXiong analysis (with fixed parameters)
+				fetch("/api/jixiong-analysis", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						userInfo: {
+							birthday: birthdayString, // Fixed: JiXiong expects birthday
+							gender: gender || "male",
+							time: "00:00:00",
+							concern: concern,
+						},
+					}),
+				})
+					.then(async (res) => {
+						const data = await res.json();
+						console.log("🔍 JiXiong API response:", data);
+						return {
+							type: "jiXiongAnalysis",
+							data: data.success ? data.analysis : null,
+						};
+					})
+					.catch((err) => {
+						console.error("❌ JiXiong API failed:", err);
+						return { type: "jiXiongAnalysis", data: null };
+					}),
+
+				// Season analysis (with fixed parameters)
+				fetch("/api/season-analysis", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						userInfo: {
+							birthday: birthdayString,
+							gender: gender || "male",
+							time: "00:00:00", // TODO: Use actual birth time
+							concern: concern,
+						},
+					}),
+				})
+					.then(async (res) => {
+						const data = await res.json();
+						console.log("🔍 Season API response:", data);
+						return {
+							type: "seasonAnalysis",
+							data: data.success ? data.analysis : null,
+						};
+					})
+					.catch((err) => {
+						console.error("❌ Season API failed:", err);
+						return { type: "seasonAnalysis", data: null };
+					}),
+
+				// Core Suggestion analysis
+				fetch("/api/core-suggestion-analysis", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						userInfo: {
+							birthday: birthdayString,
+							gender: gender || "male",
+							concern: concern,
+							time: "00:00:00",
+						},
+					}),
+				})
+					.then(async (res) => {
+						const data = await res.json();
+						console.log("🔍 Core Suggestion API response:", data);
+						return {
+							type: "coreSuggestionAnalysis",
+							data: data.success
+								? data.data || data.analysis
+								: null, // Handle both data and analysis fields
+						};
+					})
+					.catch((err) => {
+						console.error("❌ CoreSuggestion API failed:", err);
+						return { type: "coreSuggestionAnalysis", data: null };
+					}),
+
+				// Specific Suggestion analysis
+				fetch("/api/specific-suggestion-analysis", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						userInfo: {
+							birthDateTime: birthdayString, // Fixed: SpecificSuggestion expects birthDateTime
+							gender: gender || "male",
+							concern: concern,
+							problem: problem, // Fixed: Added problem parameter
+						},
+					}),
+				})
+					.then(async (res) => {
+						const data = await res.json();
+						console.log(
+							"🔍 Specific Suggestion API response:",
+							data
+						);
+						return {
+							type: "specificSuggestionAnalysis",
+							data: data.success ? data.data : null,
+						};
+					})
+					.catch((err) => {
+						console.error("❌ SpecificSuggestion API failed:", err);
+						return {
+							type: "specificSuggestionAnalysis",
+							data: null,
+						};
+					}),
+			];
+
+			// Wait for all component API calls to complete
+			const componentResults = await Promise.all(componentPromises);
+
+			// Map results to completeContent structure
+			componentResults.forEach((result) => {
+				if (result.data) {
+					completeContent[result.type] = result.data;
+					console.log(
+						`✅ Collected ${result.type}:`,
+						result.data ? "SUCCESS" : "NULL"
+					);
+				}
+			});
+
+			console.log("� Complete component data collection results:", {
+				liuNianKeyWordAnalysis: completeContent.liuNianKeyWordAnalysis
+					? "HAS_DATA"
+					: "NULL",
+				ganZhiAnalysis: completeContent.ganZhiAnalysis
+					? "HAS_DATA"
+					: "NULL",
+				jiXiongAnalysis: completeContent.jiXiongAnalysis
+					? "HAS_DATA"
+					: "NULL",
+				seasonAnalysis: completeContent.seasonAnalysis
+					? "HAS_DATA"
+					: "NULL",
+				coreSuggestionAnalysis: completeContent.coreSuggestionAnalysis
+					? "HAS_DATA"
+					: "NULL",
+				specificSuggestionAnalysis:
+					completeContent.specificSuggestionAnalysis
+						? "HAS_DATA"
+						: "NULL",
+			});
+		} catch (error) {
+			console.error("❌ Error collecting loaded component data:", error);
+		}
+
+		return completeContent;
+	};
+
+	if (loading) {
+		return (
+			<div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50">
+				<div className="text-center">
+					<div className="w-12 h-12 mx-auto mb-4 border-b-2 border-purple-600 rounded-full animate-spin"></div>
+					<p className="text-gray-600">
+						正在檢查你的專屬風水分析報告...
+					</p>
+					<p className="mt-2 text-sm text-gray-500">
+						如果報告已存在，將直接顯示
+					</p>
+				</div>
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50">
+				<div className="text-center">
+					<AlertCircle className="w-12 h-12 mx-auto mb-4 text-red-500" />
+					<p className="mb-4 text-red-600">{error}</p>
+					<button
+						onClick={() => router.back()}
+						className="px-6 py-2 text-white bg-purple-600 rounded-lg hover:bg-purple-700"
+					>
+						返回
+					</button>
+				</div>
+			</div>
+		);
+	}
+
+	// Handle new report request
+	const handleNewReportRequest = () => {
+		// Redirect to pricing page or main page for new analysis
+		router.push("/price?newReport=true");
+	};
+
+	// Check if this is a historical report display
+	if (reportData?.isHistoricalReport) {
+		return (
+			<div className="min-h-screen bg-[#EFEFEF]">
+				<Navbar from="report" />
+				<div
+					className="container w-full px-4 py-8 mx-auto"
+					style={{ paddingTop: "80px" }}
+				>
+					<div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+						<p className="text-yellow-800">
+							<strong>注意：</strong>
+							您正在查看已保存的歷史報告內容。
+							<a
+								href={`${window.location.pathname}${window.location.search.replace("showHistorical=true", "").replace("&showHistorical=true", "").replace("?showHistorical=true&", "?")}`}
+								className="ml-2 text-blue-600 hover:text-blue-800 underline"
+							>
+								點擊這裡生成新的報告
+							</a>
+						</p>
+					</div>
+					<SavedReportDisplay
+						savedContent={reportData.savedReportContent}
+						userInputs={{
+							birthday: reportData.birthday,
+							gender: reportData.gender,
+							concern: reportData.concern,
+							problem: reportData.problem,
+							partnerBirthday: reportData.partnerBirthday,
+						}}
+					/>
+				</div>
+				<Footer />
+			</div>
+		);
+	}
+
+	return (
+		<div className="min-h-screen bg-[#EFEFEF]">
+			<Navbar from="report" />
+			<LoadingProvider>
+				<div
+					className="container w-full px-4 py-8 mx-auto"
+					style={{ paddingTop: "80px" }}
+				>
+					{/* 頭部 */}
+					<div className="mb-8" style={{ marginLeft: "5%" }}>
+						<h1
+							className="mb-2 font-extrabold"
+							style={{
+								fontFamily: "Noto Serif TC, Serif",
+								fontWeight: 800,
+								fontSize: "60px",
+								color: getConcernColor({
+									concern: reportData?.concern,
+								}),
+							}}
+						>
+							命主基礎分析
+						</h1>
+					</div>
+
+					{/* Five Elements Analysis */}
+					{reportData && (
+						<div className="mb-6" style={{ width: "100%" }}>
+							<FiveElement
+								userInfo={{
+									birthDateTime: reportData.birthday,
+									gender: reportData.gender,
+								}}
+								calculateWuxingAnalysis={
+									calculateWuxingAnalysis
+								}
+								analyzeWuxingStrength={analyzeWuxingStrength}
+								determineUsefulGods={determineUsefulGods}
+							/>
+						</div>
+					)}
+
+					{/* Zodiac and Four Pillars Analysis */}
+					{reportData && (
+						<div className="mb-6">
+							<Zodiac
+								userInfo={{
+									birthDateTime: reportData.birthday,
+									gender: reportData.gender,
+									concern: reportData.concern,
+									problem: reportData.problem,
+								}}
+								calculateWuxingAnalysis={
+									calculateWuxingAnalysis
+								}
+								analyzeWuxingStrength={analyzeWuxingStrength}
+								determineUsefulGods={determineUsefulGods}
+							/>
+						</div>
+					)}
+
+					{/* Question Focus Section */}
+					{reportData && (
+						<div className="mb-6">
+							<QuestionFocus
+								userInfo={{
+									birthDateTime: reportData.birthday,
+									gender: reportData.gender,
+									concern: reportData.concern,
+									problem: reportData.problem,
+								}}
+							/>
+						</div>
+					)}
+
+					{/* Liu Nian Key Word Analysis */}
+					{reportData && (
+						<div className="mb-6">
+							<LiuNianKeyWord
+								userInfo={{
+									birthDateTime: reportData.birthday,
+									gender: reportData.gender,
+									concern: reportData.concern,
+									problem: reportData.problem,
+								}}
+								currentYear={new Date().getFullYear()}
+							/>
+						</div>
+					)}
+					<div className="mb-8" style={{ marginLeft: "5%" }}>
+						<h1
+							className="mb-2 font-extrabold"
+							style={{
+								fontFamily: "Noto Serif TC, Serif",
+								fontWeight: 800,
+								fontSize: "60px",
+								color: getConcernColor({
+									concern: reportData?.concern,
+								}),
+							}}
+						>
+							命局核心解析詳解
+						</h1>
+					</div>
+					{/* Ming Ju Core Analysis */}
+					{reportData && (
+						<div className="mb-6">
+							<MingJu
+								userInfo={{
+									birthDateTime: reportData.birthday,
+									gender: reportData.gender,
+									concern: reportData.concern,
+									problem: reportData.problem,
+								}}
+								currentYear={new Date().getFullYear()}
+							/>
+						</div>
+					)}
+					<div className="mb-8" style={{ marginLeft: "5%" }}>
+						<h1
+							className="mb-2 font-extrabold"
+							style={{
+								fontFamily: "Noto Serif TC, Serif",
+								fontWeight: 800,
+								fontSize: "60px",
+								color: getConcernColor({
+									concern: reportData?.concern,
+								}),
+							}}
+						>
+							2025乙巳流年詳解
+						</h1>
+					</div>
+					{/* Gan Zhi Detailed Analysis */}
+					{reportData && (
+						<div className="mb-6">
+							<GanZhi
+								userInfo={{
+									birthDateTime: reportData.birthday,
+									gender: reportData.gender,
+									concern: reportData.concern,
+									problem: reportData.problem,
+								}}
+								currentYear={new Date().getFullYear()}
+							/>
+						</div>
+					)}
+					<div className="mb-8" style={{ marginLeft: "5%" }}>
+						<h1
+							className="mb-2 font-extrabold"
+							style={{
+								fontFamily: "Noto Serif TC, Serif",
+								fontWeight: 800,
+								fontSize: "60px",
+								color: getConcernColor({
+									concern: reportData?.concern,
+								}),
+							}}
+						>
+							{getSectionTitle(reportData?.concern)}
+						</h1>
+					</div>
+					{/* Ji Xiong Analysis */}
+					{reportData && (
+						<div className="mb-6">
+							<JiXiong
+								userInfo={{
+									birthDateTime: reportData.birthday,
+									gender: reportData.gender,
+									concern: reportData.concern,
+									problem: reportData.problem,
+								}}
+								calculateWuxingAnalysis={
+									calculateWuxingAnalysis
+								}
+								analyzeWuxingStrength={analyzeWuxingStrength}
+								determineUsefulGods={determineUsefulGods}
+							/>
+						</div>
+					)}
+
+					{/* Season Analysis */}
+					{reportData && (
+						<div className="mb-6">
+							<Season
+								userInfo={{
+									birthDateTime: reportData.birthday,
+									gender: reportData.gender,
+									concern: reportData.concern,
+									problem: reportData.problem,
+								}}
+								currentYear={new Date().getFullYear()}
+							/>
+						</div>
+					)}
+					<div className="mb-8" style={{ marginLeft: "5%" }}>
+						<h1
+							className="mb-2 font-extrabold"
+							style={{
+								fontFamily: "Noto Serif TC, Serif",
+								fontWeight: 800,
+								fontSize: "60px",
+								color: getConcernColor({
+									concern: reportData?.concern,
+								}),
+							}}
+						>
+							開運建議
+						</h1>
+					</div>
+					{/* Core Suggestion Analysis */}
+					{reportData && (
+						<div className="mb-6">
+							<CoreSuggestion
+								userInfo={{
+									birthDateTime: reportData.birthday,
+									gender: reportData.gender,
+									concern: reportData.concern,
+									problem: reportData.problem,
+								}}
+								currentYear={new Date().getFullYear()}
+							/>
+						</div>
+					)}
+
+					{/* Specific Suggestion Analysis */}
+					{reportData && (
+						<div className="mb-6">
+							<SpecificSuggestion
+								userInfo={{
+									birthDateTime: reportData.birthday,
+									gender: reportData.gender,
+									concern: reportData.concern,
+									problem: reportData.problem,
+								}}
+								currentYear={new Date().getFullYear()}
+							/>
+						</div>
+					)}
+				</div>
+			</LoadingProvider>
+			<Footer />
+		</div>
+	);
+}

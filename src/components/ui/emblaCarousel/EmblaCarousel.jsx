@@ -1,48 +1,62 @@
 "use client";
 import React from "react";
-import { DotButton, useDotButton } from "./EmblaCarouselDotButton";
+import {
+	DotButton,
+	useDotButton,
+	CarouselControls,
+} from "./EmblaCarouselDotButton";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "@/lib/embla-carousel-autoplay/src";
-import { useAutoplay } from "./EmblaCarouselAutoplay";
 
 const EmblaCarousel = (props) => {
 	const { slides, options } = props;
 	const [emblaRef, emblaApi] = useEmblaCarousel(options, [
-		Autoplay({ playOnInit: true, delay: 5000 }),
+		Autoplay({ playOnInit: true, delay: 6000 }),
 	]);
-	const { selectedIndex, scrollSnaps, onDotButtonClick } =
-		useDotButton(emblaApi);
+	const {
+		selectedIndex,
+		scrollSnaps,
+		onDotButtonClick,
+		onPrevButtonClick,
+		onNextButtonClick,
+	} = useDotButton(emblaApi);
 
 	return (
-		<section className="flex flex-row items-center embla lg:left-60 lg:top-10 top-15">
-			{/* Vertical Dots */}
-			<div className="embla__controls flex flex-col gap-2.5 mr-4">
-				<div className="embla__dots flex flex-col gap-2.5">
-					{scrollSnaps.map((_, index) => (
-						<DotButton
-							key={index}
-							onClick={() => onDotButtonClick(index)}
-							className={"embla__dot lg:w-5 lg:h-5 h-2.5 w-2.5 rounded-full".concat(
-								index === selectedIndex
-									? " embla__dot--selected"
-									: ""
-							)}
-						/>
-					))}
-				</div>
-			</div>
-			{/* Carousel */}
-			<div className="embla__viewport" ref={emblaRef}>
+		<section
+			className="relative flex flex-row items-center h-full"
+			style={{ width: "668px", height: "1110px" }}
+		>
+			{/* Carousel on the left */}
+			<div
+				className="embla__viewport"
+				ref={emblaRef}
+				style={{ width: "700px", height: "1110px" }}
+			>
 				<div className="embla__container">
 					{slides.map((item, index) => (
 						<div
-							className="embla__slide max-w-75 lg:max-w-none"
+							className="embla__slide"
 							key={index}
+							style={{
+								flex: "0 0 100%",
+								minWidth: 0,
+							}}
 						>
 							{item}
 						</div>
 					))}
 				</div>
+			</div>
+
+			{/* Carousel controls positioned to the right and higher */}
+			<div className="absolute z-30 flex flex-col]">
+				<CarouselControls
+					selectedIndex={selectedIndex}
+					scrollSnaps={scrollSnaps}
+					onDotButtonClick={onDotButtonClick}
+					onPrevButtonClick={onPrevButtonClick}
+					onNextButtonClick={onNextButtonClick}
+				/>
 			</div>
 		</section>
 	);

@@ -92,9 +92,7 @@ export default function ({
 	// const handleClick = (key) => {
 	//     setActiveKey(key);
 	// }
-	const onGenerate = (userInfo, _wuxingData) => {
-		console.log("liunian gen");
-		setProgress(0);
+	const onGenerate = (userInfo, _wuxingData) => {setProgress(0);
 		const systemPrompt = getLiuNianPrompt();
 		const assistant = getLiuNianAssistant();
 		let transAssistantData = assistantDataString
@@ -130,9 +128,7 @@ export default function ({
 					}
 					return newDataMap;
 				});
-				setLiuNianData(newResults);
-				console.log("res 流年进阶", newResults);
-				onSaveData(newResults);
+				setLiuNianData(newResults);onSaveData(newResults);
 			})
 			.catch((e) => {
 				setLoading(false);
@@ -160,7 +156,7 @@ export default function ({
 						completed++;
 						const progress = completed / total;
 						setProgress(progress * 100);
-						//console.log(`Progress: ${progress * 100}%`); // 更新进度条
+						//// 更新进度条
 						if (completed === total) {
 							resolve(results);
 						}

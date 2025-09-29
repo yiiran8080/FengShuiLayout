@@ -14,10 +14,7 @@ export default function useTranslate(paramTransStatus, mingLiData, liuNianData, 
 
     //reportDocData是用来判断翻译失败的情况的，要重新翻译。正常情况下不会触发
     useEffect(() => {
-        const load = async (userId) => {
-
-            console.log('上次翻译错误，重新翻译进阶报告数据');
-            //先查另外一种语言的报告
+        const load = async (userId) => {//先查另外一种语言的报告
             const lang = locale === 'zh-CN' ? 'tw' : 'zh';
             const targetLang = locale === 'zh-CN' ? 'zh' : 'tw';
             const { status, data } = await get(`/api/reportUserDoc/${userId}/${lang}`)

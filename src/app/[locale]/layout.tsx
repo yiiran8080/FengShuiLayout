@@ -1,18 +1,14 @@
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
-import { Inter, Lora } from "next/font/google";
 import AuthProvider from "@/components/AuthProvider";
-import GoogleAnalytics from "@/components/GoogleAnalytics";
 import PageTracker from "@/components/PageTracker";
-import AutoButtonTracker from "@/components/AutoButtonTracker"; // Add this import
-import "../globals.css";
 import { setRequestLocale } from "next-intl/server";
-import { ToastContainer, toast } from "react-toastify";
-const lora = Lora({ subsets: ["latin", "symbols"] });
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { ImageProvider } from "@/context/ImageContext";
-import { event } from "@/components/GoogleAnalytics";
 import { UserProvider } from "@/context/UserContext";
+import { event } from "@/components/GoogleAnalytics";
 
 export default async function LocaleLayout({
 	children,
@@ -26,40 +22,32 @@ export default async function LocaleLayout({
 		notFound();
 	}
 	setRequestLocale(locale);
-	console.log("locale", locale);
+
 	return (
-		<html lang={locale}>
-			<head>
-				<GoogleAnalytics />
-			</head>
-			<body className={lora.className}>
-				<PageTracker />
-				<AutoButtonTracker /> {/* Add this component */}
-				<ToastContainer
-					position="top-center"
-					autoClose={1000}
-					hideProgressBar={true}
-					newestOnTop={false}
-					closeOnClick={false}
-					rtl={false}
-					pauseOnFocusLoss
-					pauseOnHover
-					theme="light"
-					className={"text:sm"}
-				/>
-				<AuthProvider>
-					<UserProvider>
-						{" "}
-						{/* Add UserProvider wrapper */}
-						<ImageProvider>
-							<NextIntlClientProvider locale={locale}>
-								{children}
-							</NextIntlClientProvider>
-						</ImageProvider>
-					</UserProvider>
-				</AuthProvider>
-			</body>
-		</html>
+		<>
+			<PageTracker />
+			<ToastContainer
+				position="top-center"
+				autoClose={1000}
+				hideProgressBar={true}
+				newestOnTop={false}
+				closeOnClick={false}
+				rtl={false}
+				pauseOnFocusLoss
+				pauseOnHover
+				theme="light"
+				className={"text:sm"}
+			/>
+			<AuthProvider>
+				<UserProvider>
+					<ImageProvider>
+						<NextIntlClientProvider locale={locale}>
+							{children}
+						</NextIntlClientProvider>
+					</ImageProvider>
+				</UserProvider>
+			</AuthProvider>
+		</>
 	);
 }
 

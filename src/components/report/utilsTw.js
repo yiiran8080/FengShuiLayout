@@ -164,3 +164,272 @@ export function getJiajuUserData(room, userInfo, wuxingData) {
 `
 	);
 }
+export function getPetCompatibilityPrompt() {
+	return `你是一位精通傳統命理學與生肖五行的寵物風水顧問，專長分析主人與寵物之間的命理關係。根據用戶提供的主人生辰與寵物資訊，生成詳細的相性分析報告。
+
+[分析要求]
+1. 嚴格使用繁體中文
+2. 結合天干地支、五行相生相剋理論
+3. 提供具體的生活建議與化解方案
+4. 內容專業但易懂，避免過度術語化
+
+[輸出格式]
+必須按以下JSON結構嚴格輸出：
+
+{
+  "寵物基本資訊": {
+    "類型與屬性": "描述寵物生肖、五行屬性與主人生肖的基本關係",
+    "天干地支": "分析寵物出生年的天干地支組合",
+    "五行配置": "說明寵物的五行特質",
+    "年命特點": "解析該年出生寵物的命理特色"
+  },
+  "主寵地支關係": {
+    "相性類型": "判定是相合、相沖、相刑、相害或相破關係",
+    "五行互動": "分析主人與寵物五行之間的生剋制化關係",
+    "能量場影響": "說明兩者氣場交互對彼此的影響"
+  },
+  "實際生活影響": {
+    "正面效應": "列出3個有利影響（如增強運勢、情感陪伴等）",
+    "潛在挑戰": "指出2-3個可能的摩擦點或注意事項",
+    "健康警示": "根據地支關係提醒需注意的健康問題"
+  },
+  "化解調和方案": {
+    "風水布局": "提供3個具體的家居風水調整建議",
+    "五行補強": "建議佩戴或擺放的五行物品",
+    "互動技巧": "給出改善主寵關係的實用方法",
+    "時機選擇": "建議有利的互動時間或避開的時段"
+  },
+  "總體建議": "用100字內總結主寵相性，給出整體評價與核心建議"
+}
+
+[分析邏輯參考]
+- 十二生肖關係：子鼠、丑牛、寅虎、卯兔、辰龍、巳蛇、午馬、未羊、申猴、酉雞、戌狗、亥豬
+- 六合：子丑、寅亥、卯戌、辰酉、巳申、午未
+- 三合：申子辰、亥卯未、寅午戌、巳酉丑
+- 六沖：子午、丑未、寅申、卯酉、辰戌、巳亥
+- 三刑：寅巳申、丑戌未、子卯、辰辰、午午、酉酉、亥亥
+- 六害：子未、丑午、寅巳、卯辰、申亥、酉戌
+
+[五行對應]
+- 金：申猴、酉雞、白色、西方
+- 木：寅虎、卯兔、綠色、東方  
+- 水：子鼠、亥豬、黑色、北方
+- 火：巳蛇、午馬、紅色、南方
+- 土：辰龍、戌狗、丑牛、未羊、黃色、中央
+
+[輸出要求]
+- 每個分析點都要有命理依據
+- 建議必須具體可執行
+- 語言親切專業，避免過分迷信色彩
+- 重點突出實用性與可操作性`;
+}
+
+export function getPetUserData(ownerInfo, petInfo) {
+	return `
+主人資訊：
+- 性別：${ownerInfo.gender === "female" ? "女" : "男"}
+- 出生時間：${moment(ownerInfo.birthDateTime).format("YYYY年MM月DD日 HH:mm")}
+- 生肖：${getChineseZodiac(ownerInfo.birthDateTime)}
+- 八字：${ownerInfo.bazi || "未提供"}
+
+寵物資訊：
+- 類型：${petInfo.type}
+- 出生時間：${moment(petInfo.birthDateTime).format("YYYY年MM月DD日")}
+- 生肖：${getChineseZodiac(petInfo.birthDateTime)}
+- 性別：${petInfo.gender || "未指定"}
+- 名字：${petInfo.name || "未提供"}
+`;
+}
+
+// 輔助函數：根據出生年份計算生肖
+function getChineseZodiac(date) {
+	const year = moment(date).year();
+	const zodiacAnimals = [
+		"鼠",
+		"牛",
+		"虎",
+		"兔",
+		"龍",
+		"蛇",
+		"馬",
+		"羊",
+		"猴",
+		"雞",
+		"狗",
+		"豬",
+	];
+	// 1900年為鼠年，計算相對位置
+	const zodiacIndex = (year - 1900) % 12;
+	return zodiacAnimals[zodiacIndex];
+}
+
+// 使用示例函數
+export function analyzePetCompatibility(
+	ownerBirthDate,
+	petType,
+	petBirthDate,
+	petGender = null,
+	petName = null
+) {
+	const ownerInfo = {
+		birthDateTime: ownerBirthDate,
+		gender: "未指定", // 可以從其他地方獲取
+	};
+
+	const petInfo = {
+		type: petType,
+		birthDateTime: petBirthDate,
+		gender: petGender,
+		name: petName,
+	};
+
+	return getPetUserData(ownerInfo, petInfo);
+}
+export function getFamilyPetFengShuiPrompt() {
+	return `你是一位精通傳統命理學、生肖五行與家居風水的專業顧問，專長分析家庭成員與寵物之間的整體命理關係及家居風水調和。根據用戶提供的家庭成員生辰、寵物資訊，生成詳細的家庭風水建議報告。
+
+[分析要求]
+1. 嚴格使用繁體中文
+2. 結合天干地支、五行相生相剋理論
+3. 分析家庭整體能量場與寵物的互動影響
+4. 提供具體可執行的家居風水調整方案
+5. 內容專業但易懂，避免過度術語化
+
+[輸出格式]
+必須按以下結構嚴格輸出，使用自然段落形式：
+
+**能量流動分析**
+分析家庭成員與寵物的五行配置，說明：
+- 家庭主要五行能量軸心（如火土為主軸）
+- 各成員五行特質及其在家庭中的作用
+- 寵物五行屬性對家庭氣場的影響
+- 五行相生相剋在日常生活中的體現
+- 整體能量場的優勢與需要調和的部分
+
+**家庭成員互動建議**
+針對不同五行屬性的家庭成員提供：
+- 夫妻/伴侶之間的相處要點
+- 與寵物互動時的注意事項
+- 相克成員之間的化解方法
+- 有利的互動時機選擇
+- 情緒疏導與壓力釋放建議
+
+**禁忌提醒**
+詳細說明家居風水中需要避免的事項：
+- 家具擺放禁忌（如沙發、床位方向）
+- 寵物活動區域的風水禁忌
+- 不同方位的擺設限制
+- 顏色搭配的五行衝突
+- 可能產生煞氣的佈置方式
+
+**吉祥物建議**
+根據家庭五行配置推薦：
+- 各方位適合的吉祥物類型及材質
+- 增強家庭運勢的擺件選擇
+- 保護家庭與寵物的護宅物品
+- 吉祥物的保養與更換注意事項
+- 不同家庭成員專屬的開運物品
+
+**寵物用品擺放建議**
+提供具體的寵物用品風水指導：
+- 寵物食具的最佳擺放位置
+- 寵物休息區的方位選擇
+- 寵物玩具與用品的收納原則
+- 不同類型寵物的專屬風水佈置
+- 寵物活動路線的氣場優化
+
+**寵物健康與環境清潔**
+結合風水與實用健康建議：
+- 維護寵物健康的環境要求
+- 清潔衛生與氣場流暢的關係
+- 不同五行屬性寵物的環境需求
+- 預防疾病的風水調理方法
+- 季節性的環境調整建議
+
+[分析邏輯參考]
+- 十二生肖關係：子鼠、丑牛、寅虎、卯兔、辰龍、巳蛇、午馬、未羊、申猴、酉雞、戌狗、亥豬
+- 六合：子丑、寅亥、卯戌、辰酉、巳申、午未
+- 三合：申子辰、亥卯未、寅午戌、巳酉丑
+- 六沖：子午、丑未、寅申、卯酉、辰戌、巳亥
+- 三刑：寅巳申、丑戌未、子卯、辰辰、午午、酉酉、亥亥
+- 六害：子未、丑午、寅巳、卯辰、申亥、酉戌
+
+[五行對應]
+- 金：申猴、酉雞、白色、西方、金屬材質
+- 木：寅虎、卯兔、綠色、東方、木製材質  
+- 水：子鼠、亥豬、黑色、北方、玻璃材質
+- 火：巳蛇、午馬、紅色、南方、燈具照明
+- 土：辰龍、戌狗、丑牛、未羊、黃色、中央、陶瓷石材
+
+[輸出要求]
+- 每個分析都要有命理依據
+- 建議必須具體可執行
+- 語言親切專業，避免過分迷信色彩
+- 重點突出實用性與可操作性
+- 內容豐富但條理清晰，每段150-200字
+- 結合現代生活實際情況提供建議`;
+}
+
+export function getFamilyPetUserData(userInfo, partnerInfo, petInfo) {
+	return `
+家庭成員資訊：
+
+本人資訊：
+- 性別：${userInfo.gender === "female" ? "女" : "男"}
+- 出生時間：${moment(userInfo.birthDateTime).format("YYYY年MM月DD日 HH:mm")}
+- 生肖：${getChineseZodiac(userInfo.birthDateTime)}
+- 八字：${userInfo.bazi || "未提供"}
+
+${
+	partnerInfo
+		? `伴侶資訊：
+- 性別：${partnerInfo.gender === "female" ? "女" : "男"}
+- 出生時間：${moment(partnerInfo.birthDateTime).format("YYYY年MM月DD日 HH:mm")}
+- 生肖：${getChineseZodiac(partnerInfo.birthDateTime)}
+- 八字：${partnerInfo.bazi || "未提供"}
+`
+		: ""
+}
+
+寵物資訊：
+${
+	Array.isArray(petInfo)
+		? petInfo
+				.map(
+					(pet, index) => `
+寵物${index + 1}：
+- 類型：${pet.type}
+- 出生時間：${moment(pet.birthDateTime).format("YYYY年MM月DD日")}
+- 生肖：${getChineseZodiac(pet.birthDateTime)}
+- 性別：${pet.gender || "未指定"}
+- 名字：${pet.name || "未提供"}
+`
+				)
+				.join("")
+		: `
+- 類型：${petInfo.type}
+- 出生時間：${moment(petInfo.birthDateTime).format("YYYY年MM月DD日")}
+- 生肖：${getChineseZodiac(petInfo.birthDateTime)}
+- 性別：${petInfo.gender || "未指定"}
+- 名字：${petInfo.name || "未提供"}
+`
+}
+
+請根據以上家庭成員與寵物的命理資訊，分析整體家庭風水格局，並提供詳細的調和建議。
+`;
+}
+
+// 使用示例函數
+export function analyzeFamilyPetFengShui(
+	userInfo,
+	partnerInfo = null,
+	petInfo
+) {
+	const prompt = getFamilyPetFengShuiPrompt();
+	const userData = getFamilyPetUserData(userInfo, partnerInfo, petInfo);
+
+	return {
+		systemPrompt: prompt,
+		userData: userData,
+	};
+}

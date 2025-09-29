@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file:///Users/michaelng/Desktop/HarmoniqFengShui/FengShuiLayout/src/app/%5Blocale%5D/error.tsx"],"sourcesContent":["// frontend/src/app/error.tsx\n\n\"use client\"; // 错误组件必须是客户端组件\n\nimport { useEffect } from \"react\";\n\nexport default function Error({ error }: { error: never }) {\n\tuseEffect(() => {\n\t\t// 将错误记录到错误报告服务\n\t}, [error]);\n\n\treturn (\n\t\t<div>\n\t\t\t<h2>出了些问题！</h2>\n\t\t\t{/* <p>根错误：{error}</p> */}\n\t\t\t{/* <button\n        onClick={\n          // 尝试通过重新渲染该部分来恢复\n          () => reset()\n        }\n      >\n        再试一次\n      </button>*/}\n\t\t</div>\n\t);\n}\n"],"names":[],"mappings":"AAAA,6BAA6B;;;;;AAI7B;;;AAFA,cAAc,eAAe;;AAId,SAAS,MAAM,EAAE,KAAK,EAAoB;;IACxD,CAAA,GAAA,6JAAA,CAAA,YAAS,AAAD;2BAAE;QACT,eAAe;QAChB;0BAAG;QAAC;KAAM;IAEV,qBACC,6LAAC;kBACA,cAAA,6LAAC;sBAAG;;;;;;;;;;;AAYP;GAnBwB;KAAA","debugId":null}}]
+}

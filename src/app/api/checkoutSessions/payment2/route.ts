@@ -7,6 +7,10 @@ import {
 } from "../../utils/gen-res-data";
 import { stripe } from "@/lib/stripe";
 import { getUserInfo } from "@/lib/session";
+import {
+	getRegionalPriceId,
+	getLocaleFromRequest,
+} from "@/utils/regionalPricing";
 
 export async function POST(request) {
 	const userInfo = await getUserInfo();
@@ -16,16 +20,29 @@ export async function POST(request) {
 		const headersList = await headers();
 		const origin = headersList.get("origin");
 
-		// Get square feet and quantity from request body
+		// Get square feet, quantity and locale from request body
 		const body = await request.json();
 		const quantity = Number(body.quantity) || 1;
 		const squareFeet = Number(body.squareFeet) || quantity;
+		const requestLocale = body.locale;
 
-		// Create Checkout Sessions for premium using PRICE_ID2
+		// Detect user's locale to determine pricing (use request body locale if provided)
+		const locale = requestLocale || getLocaleFromRequest(request);
+		console.log(`🌍 Detected locale: ${locale}`);
+		console.log(`🔍 Payment2 - Request body locale: ${requestLocale}`);
+		console.log(
+			`🔍 Payment2 - Headers locale: ${getLocaleFromRequest(request)}`
+		);
+
+		// Get the appropriate price ID for fengshui based on locale
+		const priceId = getRegionalPriceId(locale, "fengshui");
+		console.log(`💰 Using price ID: ${priceId} for fengshui ${locale}`);
+
+		// Create Checkout Sessions for premium using regional price ID
 		const session = await stripe.checkout.sessions.create({
 			line_items: [
 				{
-					price: process.env.PRICE_ID2, // Use PRICE_ID2 for premium
+					price: priceId, // Use regional price ID
 					quantity,
 				},
 			],
@@ -34,18 +51,15 @@ export async function POST(request) {
 			success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
 			cancel_url: `${origin}/price?payment=cancelled`,
 			metadata: {
-				userId: userInfo.userId,
+				userId: (userInfo as any).userId || userInfo.id,
 				quantity: String(quantity),
 				squareFeet: String(squareFeet),
+				locale: locale,
+				paymentType: "fengshui",
 			},
 		});
-
-		console.log("Premium payment session.url", session.url);
-		console.log("Square feet:", squareFeet, "Quantity:", quantity);
-
 		return NextResponse.json(genSuccessData(session));
 	} catch (err) {
-		console.error("Premium payment error:", err);
 		return NextResponse.json(genErrorData("支付錯誤: " + err.message));
 	}
 }

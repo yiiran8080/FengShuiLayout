@@ -73,9 +73,7 @@ export default function ({
 		setActiveTab("tab1");
 	};
 
-	const onGenerate = (userInfo, _wuxingData) => {
-		console.log("jiaju gen");
-		setProgress(0);
+	const onGenerate = (userInfo, _wuxingData) => {setProgress(0);
 		const systemPrompt = getJiajuPrompt();
 		const rooms = designData.localItems.filter(
 			(item) => item._type === "room"
@@ -134,9 +132,7 @@ export default function ({
 
 					newResults[roomIndexIdArr[index]] = newObj; //newResults: {bedroom-1:{tab1:xxx,tab2:yyy}}
 				});
-				setJiajuProData(newResults);
-				console.log("res 家居进阶", newResults);
-				onSaveData(newResults);
+				setJiajuProData(newResults);onSaveData(newResults);
 			})
 			.catch((e) => {
 				setLoading(false);
@@ -163,7 +159,7 @@ export default function ({
 						completed++;
 						const progress = completed / total;
 						setProgress(progress * 100);
-						//console.log(`Progress: ${progress * 100}%`); // 更新进度条
+						//// 更新进度条
 						if (completed === total) {
 							resolve(results);
 						}

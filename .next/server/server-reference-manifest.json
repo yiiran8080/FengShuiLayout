@@ -1,1 +1,5 @@
-{"node":{"00ef0d2c033754cb8057d429648beae7b1e1d96b51":{"workers":{"app/[locale]/freereport/page":{"moduleId":"877","async":false}},"layer":{"app/[locale]/freereport/page":"action-browser"}},"4090a1032fd59c9b4bf33542ba9261df98e06beaed":{"workers":{"app/[locale]/freereport/page":{"moduleId":"877","async":false}},"layer":{"app/[locale]/freereport/page":"action-browser"}}},"edge":{},"encryptionKey":"RM92zYVN02yhnTcKmnzKEjy0luYC0HmbbNuQPUDkdYM="}
+{
+  "node": {},
+  "edge": {},
+  "encryptionKey": "8KQO6PUX0/Qcwr76kQq6Z77saDtHP/PzZZAbBsPNmt0="
+}

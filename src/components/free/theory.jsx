@@ -1,187 +1,716 @@
+"use client";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { useResponsiveScale } from "../../hooks/useResponsiveScale";
 
-export default function Theory({ bgColor = "bg-[#f0f8f6]" }) {
+export default function Theory({ bgColor }) {
 	const t = useTranslations("theory");
+	const { scaleRatio, isMobileLayout } = useResponsiveScale();
 
-	return (
-		<section
-			className={`w-full max-w-full flex flex-col items-center justify-center ${bgColor} px-4 sm:px-8 md:px-[60px] lg:px-[120px] xl:px-[200px] py-10 sm:py-14 md:py-20`}
-			style={{ fontFamily: "Noto Serif TC, serif" }}
-		>
-			{/* Title Section */}
+	if (isMobileLayout) {
+		// Mobile layout - completely different structure
+		return (
 			<section
-				className="w-full flex flex-row items-start justify-center max-w-full text-left text-2xl sm:text-3xl md:text-[40px] text-[#073e31] mb-6 sm:mb-10"
-				style={{ fontFamily: "Noto Serif TC, serif" }}
+				className="flex flex-col items-center justify-center p-6"
+				style={{
+					width: "100%",
+					background: "rgba(232, 226, 218, 0.25)",
+					backdropFilter: "blur(10px)",
+					WebkitBackdropFilter: "blur(10px)",
+					borderRadius: "20px",
+					overflow: "hidden",
+				}}
 			>
-				<div className="w-full max-w-[729px] flex flex-col items-start justify-start gap-4">
-					<div className="flex flex-row flex-wrap items-end justify-start max-w-full gap-4 md:gap-9">
-						<div className="w-[48px] sm:w-[64px] md:w-[84px] flex flex-col items-start justify-end pt-0 px-0 pb-3 sm:pb-5 box-border">
-							<div className="self-stretch h-[40px] sm:h-[69px] md:h-[90px] relative overflow-hidden shrink-0 opacity-80">
-								<Image
-									className="absolute top-0 left-0 w-full h-full max-w-full max-h-full overflow-hidden drop-shadow-lg"
-									loading="lazy"
-									width={100}
-									height={90}
-									sizes="100vw"
-									alt=""
-									src="/images/report/Quotemark.png"
-								/>
-							</div>
-						</div>
-						<div className="flex flex-row items-center justify-center p-2.5 box-border max-w-full z-[1]">
-							<h2
-								className="m-0 relative text-[length:inherit] leading-8 font-bold text-xl sm:text-2xl md:text-3xl lg:text-[40px] mq925:text-2xl mq925:leading-[19px] mq450:text-[24px] mq450:leading-[26px]"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
-							>
-								{t("title")}
-							</h2>
-						</div>
-					</div>
-					<div
-						className="self-stretch flex flex-row items-start justify-start py-0 pl-2 pr-0 text-center text-base sm:text-lg md:text-xl text-[#004f44]"
-						style={{ fontFamily: "Noto Serif TC, serif" }}
+				{/* Mobile Title */}
+				<div className="w-full mb-6 text-center">
+					<h2
+						style={{
+							fontFamily: "Noto Serif TC, serif",
+							fontWeight: 900,
+							fontSize: "28px",
+							color: "#E8E2DA",
+							fontStyle: "normal",
+							letterSpacing: "0.03em",
+							lineHeight: "1.2",
+							marginBottom: "8px",
+						}}
 					>
-						<div className="relative leading-7 sm:leading-8">
-							{t("description")}
-						</div>
-					</div>
+						{t("title1")}
+					</h2>
+					<h2
+						style={{
+							fontFamily: "Noto Serif TC, serif",
+							fontWeight: 900,
+							fontSize: "28px",
+							color: "#E8E2DA",
+							fontStyle: "normal",
+							letterSpacing: "0.03em",
+							lineHeight: "1.2",
+						}}
+					>
+						{t("title2")}
+					</h2>
 				</div>
-			</section>
-			{/* Card Section */}
-			<section
-				className="w-full flex flex-col md:flex-row items-stretch justify-center gap-4 sm:gap-6 md:gap-8 text-left text-base sm:text-lg md:text-2xl text-[#fff]"
-				style={{ fontFamily: "Noto Serif TC, serif" }}
-			>
-				{/* Card 1 */}
-				<div className="w-full md:w-72 rounded-[10px] bg-[rgba(0,79,68,0.8)] border-[#25826c] border-solid border-[1px] box-border flex flex-col items-center justify-center mb-4 md:mb-0 p-4 sm:p-6">
-					<div className="w-full md:w-60 h-[170px] sm:h-[180px] md:h-[211px] flex flex-col items-start justify-start gap-4 sm:gap-[11px]">
-						<div className="w-full md:w-[231px] flex flex-col items-start justify-start gap-4 sm:gap-6">
-							<Image
-								className="w-8 h-8 sm:w-10 sm:h-[40.9px] relative object-contain"
-								loading="lazy"
-								width={40}
-								height={40.9}
-								sizes="100vw"
-								alt=""
-								src="/images/report/icon-container.svg"
-							/>
-							<div className="flex flex-row items-center justify-center">
-								<h3
-									className="m-0 relative text-[length:inherit] tracking-[-0.03em] leading-[150%] font-semibold text-base sm:text-lg md:text-xl"
-									style={{
-										fontFamily: "Noto Serif TC, serif",
-									}}
-								>
-									{t("cards.imageRecognition.title")}
-								</h3>
-							</div>
-						</div>
+
+				{/* Mobile Description */}
+				<div className="w-full mb-6">
+					<p
+						style={{
+							fontFamily: "ABeeZee, sans-serif",
+							fontWeight: 400,
+							fontSize: "16px",
+							color: "#E8E2DA",
+							fontStyle: "normal",
+							textAlign: "center",
+							lineHeight: "1.4",
+						}}
+					>
+						{t("description")}
+					</p>
+				</div>
+
+				{/* Mobile Button */}
+				{/* <button
+					style={{
+						width: "120px",
+						height: "120px",
+						backgroundColor: "#E8E2DA",
+						borderRadius: "1000px",
+						border: "none",
+						marginBottom: "24px",
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
+						cursor: "pointer",
+					}}
+				>
+					<span
+						style={{
+							fontFamily: "Noto Serif TC, serif",
+							fontWeight: 800,
+							fontStyle: "normal",
+							fontSize: "16px",
+							color: "#000",
+							letterSpacing: "0.03em",
+							textAlign: "center",
+						}}
+					>
+						閱讀更多
+					</span>
+				</button>
+ */}
+				{/* Mobile Cards - 2x2 Grid */}
+				<div className="grid w-full grid-cols-2 gap-4">
+					{/* Card 1 */}
+					<div
+						className="flex flex-col items-center p-4 rounded-lg"
+						style={{
+							background: "#F5F5F5",
+							border: "1px solid #25826c",
+						}}
+					>
 						<div
-							className="relative self-stretch text-sm leading-6 sm:text-base"
-							style={{ fontFamily: "Noto Serif TC, serif" }}
+							style={{
+								background: "#E8E2DA",
+								borderRadius: "8px",
+								padding: "8px",
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								width: "32px",
+								height: "32px",
+								marginBottom: "8px",
+							}}
+						>
+							<Image
+								src="/images/report/theory-1.png"
+								alt=""
+								width={24}
+								height={24}
+								className="object-contain"
+							/>
+						</div>
+						<h3
+							style={{
+								fontFamily: "DM Sans, sans-serif",
+								fontWeight: 600,
+								fontSize: "14px",
+								color: "#374A37",
+								margin: "0 0 8px 0",
+								textAlign: "center",
+							}}
+						>
+							{t("cards.imageRecognition.title")}
+						</h3>
+						<p
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontWeight: 400,
+								fontSize: "11px",
+								color: "#374A37",
+								textAlign: "center",
+								lineHeight: "1.3",
+							}}
 						>
 							{t("cards.imageRecognition.description")}
-						</div>
+						</p>
 					</div>
-				</div>
-				{/* Card 2 */}
-				<div className="w-full md:w-72 rounded-[10px] bg-[rgba(0,79,68,0.8)] border-[#25826c] border-solid border-[1px] box-border flex flex-col items-center justify-center mb-4 md:mb-0 p-4 sm:p-6">
-					<div className="w-full md:w-60 h-[170px] sm:h-[180px] md:h-[211px] flex flex-col items-start justify-start gap-4 sm:gap-[11px]">
-						<div className="w-full md:w-[231px] flex flex-col items-start justify-start gap-4 sm:gap-6">
-							<Image
-								className="w-8 h-8 sm:w-10 sm:h-[40.9px] relative object-contain"
-								loading="lazy"
-								width={40}
-								height={40.9}
-								sizes="100vw"
-								alt=""
-								src="/images/report/icon-container-1.svg"
-							/>
-							<div className="flex flex-row items-center justify-center">
-								<h3
-									className="m-0 relative text-[length:inherit] tracking-[-0.03em] leading-[150%] font-semibold text-base sm:text-lg md:text-xl"
-									style={{
-										fontFamily: "Noto Serif TC, serif",
-									}}
-								>
-									{t("cards.knowledgeBase.title")}
-								</h3>
-							</div>
-						</div>
+
+					{/* Card 2 */}
+					<div
+						className="flex flex-col items-center p-4 rounded-lg"
+						style={{
+							background: "#F5F5F5",
+							border: "1px solid #25826c",
+						}}
+					>
 						<div
-							className="relative self-stretch text-sm leading-6 sm:text-base"
-							style={{ fontFamily: "Noto Serif TC, serif" }}
+							style={{
+								background: "#E8E2DA",
+								borderRadius: "8px",
+								padding: "8px",
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								width: "32px",
+								height: "32px",
+								marginBottom: "8px",
+							}}
+						>
+							<Image
+								src="/images/report/theory-2.png"
+								alt=""
+								width={24}
+								height={24}
+								className="object-contain"
+							/>
+						</div>
+						<h3
+							style={{
+								fontFamily: "DM Sans, sans-serif",
+								fontWeight: 600,
+								fontSize: "14px",
+								color: "#374A37",
+								margin: "0 0 8px 0",
+								textAlign: "center",
+							}}
+						>
+							{t("cards.knowledgeBase.title")}
+						</h3>
+						<p
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontWeight: 400,
+								fontSize: "11px",
+								color: "#374A37",
+								textAlign: "center",
+								lineHeight: "1.3",
+							}}
 						>
 							{t("cards.knowledgeBase.description")}
-						</div>
+						</p>
 					</div>
-				</div>
-				{/* Card 3 */}
-				<div className="w-full md:w-72 rounded-[10px] bg-[rgba(0,79,68,0.8)] border-[#25826c] border-solid border-[1px] box-border flex flex-col items-center justify-center mb-4 md:mb-0 p-4 sm:p-6">
-					<div className="w-full md:w-60 h-[170px] sm:h-[180px] md:h-[211px] flex flex-col items-start justify-start gap-4 sm:gap-[11px]">
-						<div className="w-full md:w-[231px] flex flex-col items-start justify-start gap-4 sm:gap-6">
-							<Image
-								className="w-8 h-8 sm:w-10 sm:h-[40.9px] relative object-contain"
-								loading="lazy"
-								width={40}
-								height={40.9}
-								sizes="100vw"
-								alt=""
-								src="/images/report/icon-container-2.svg"
-							/>
-							<div className="flex flex-row items-center justify-center">
-								<h3
-									className="m-0 relative text-[length:inherit] tracking-[-0.03em] leading-[150%] font-semibold text-base sm:text-lg md:text-xl"
-									style={{
-										fontFamily: "Noto Serif TC, serif",
-									}}
-								>
-									{t("cards.energyFlow.title")}
-								</h3>
-							</div>
-						</div>
+
+					{/* Card 3 */}
+					<div
+						className="flex flex-col items-center p-4 rounded-lg"
+						style={{
+							background: "#F5F5F5",
+							border: "1px solid #25826c",
+						}}
+					>
 						<div
-							className="relative self-stretch text-sm leading-6 sm:text-base"
-							style={{ fontFamily: "Noto Serif TC, serif" }}
+							style={{
+								background: "#E8E2DA",
+								borderRadius: "8px",
+								padding: "8px",
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								width: "32px",
+								height: "32px",
+								marginBottom: "8px",
+							}}
+						>
+							<Image
+								src="/images/report/theory-3.png"
+								alt=""
+								width={24}
+								height={24}
+								className="object-contain"
+							/>
+						</div>
+						<h3
+							style={{
+								fontFamily: "DM Sans, sans-serif",
+								fontWeight: 600,
+								fontSize: "14px",
+								color: "#374A37",
+								margin: "0 0 8px 0",
+								textAlign: "center",
+							}}
+						>
+							{t("cards.energyFlow.title")}
+						</h3>
+						<p
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontWeight: 400,
+								fontSize: "11px",
+								color: "#374A37",
+								textAlign: "center",
+								lineHeight: "1.3",
+							}}
 						>
 							{t("cards.energyFlow.description")}
-						</div>
+						</p>
 					</div>
-				</div>
-				{/* Card 4 */}
-				<div className="w-full md:w-72 rounded-[10px] bg-[rgba(0,79,68,0.8)] border-[#25826c] border-solid border-[1px] box-border flex flex-col items-center justify-center p-4 sm:p-6">
-					<div className="w-full md:w-60 h-[170px] sm:h-[180px] md:h-[209px] flex flex-col items-start justify-start gap-4 sm:gap-[11px]">
-						<div className="w-full md:w-[231px] flex flex-col items-start justify-start gap-4 sm:gap-6">
-							<Image
-								className="w-8 h-8 sm:w-10 sm:h-[40.9px] relative object-contain"
-								loading="lazy"
-								width={40}
-								height={40.9}
-								sizes="100vw"
-								alt=""
-								src="/images/report/icon-container-3.svg"
-							/>
-							<div className="flex flex-row items-center justify-center">
-								<h3
-									className="m-0 relative text-[length:inherit] tracking-[-0.03em] leading-[150%] font-semibold text-base sm:text-lg md:text-xl"
-									style={{
-										fontFamily: "Noto Serif TC, serif",
-									}}
-								>
-									{t("cards.personalizedAdvice.title")}
-								</h3>
-							</div>
-						</div>
+
+					{/* Card 4 */}
+					<div
+						className="flex flex-col items-center p-4 rounded-lg"
+						style={{
+							background: "#F5F5F5",
+							border: "1px solid #25826c",
+						}}
+					>
 						<div
-							className="relative self-stretch text-sm leading-6 sm:text-base"
-							style={{ fontFamily: "Noto Serif TC, serif" }}
+							style={{
+								background: "#E8E2DA",
+								borderRadius: "8px",
+								padding: "8px",
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								width: "32px",
+								height: "32px",
+								marginBottom: "8px",
+							}}
+						>
+							<Image
+								src="/images/report/theory-4.png"
+								alt=""
+								width={24}
+								height={24}
+								className="object-contain"
+							/>
+						</div>
+						<h3
+							style={{
+								fontFamily: "DM Sans, sans-serif",
+								fontWeight: 600,
+								fontSize: "14px",
+								color: "#374A37",
+								margin: "0 0 8px 0",
+								textAlign: "center",
+							}}
+						>
+							{t("cards.personalizedAdvice.title")}
+						</h3>
+						<p
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontWeight: 400,
+								fontSize: "11px",
+								color: "#374A37",
+								textAlign: "center",
+								lineHeight: "1.3",
+							}}
 						>
 							{t("cards.personalizedAdvice.description")}
-						</div>
+						</p>
 					</div>
 				</div>
 			</section>
+		);
+	}
+
+	// Desktop layout - original MacBook Air 13" dimensions, scaled by parent container
+	return (
+		<section
+			className="flex items-center justify-center"
+			style={{
+				position: "relative",
+				width: "1487px", // Original MacBook Air 13" width
+				height: "1085px", // Original MacBook Air 13" height
+			}}
+		>
+			{/* Blurred, transparent background */}
+			<div
+				className="relative flex flex-col items-center justify-center"
+				style={{
+					width: "1487px", // Original dimensions
+					height: "855px",
+					background: "rgba(232, 226, 218, 0.25)",
+					backdropFilter: "blur(10px)",
+					WebkitBackdropFilter: "blur(10px)",
+					borderRadius: "40px 0 0 40px", // Only left corners rounded
+					overflow: "hidden",
+				}}
+			>
+				{/* Title and Description Row */}
+				<div className="flex flex-row w-full px-20 pb-10">
+					{/* Title - left side (35%) */}
+					<div
+						className="flex flex-col items-start"
+						style={{ width: "35%" }}
+					>
+						<h2
+							style={{
+								fontFamily: "Noto Serif TC, serif",
+								fontWeight: 900,
+								fontSize: "40px", // Original size
+								color: "#E8E2DA",
+								fontStyle: "normal",
+								letterSpacing: "0.03em",
+								lineHeight: "1.2",
+							}}
+						>
+							{t("title1")}
+						</h2>
+						<h2
+							style={{
+								fontFamily: "Noto Serif TC, serif",
+								fontWeight: 900,
+								fontSize: "40px", // Original size
+								color: "#E8E2DA",
+								fontStyle: "normal",
+								letterSpacing: "0.03em",
+								lineHeight: "1.2",
+							}}
+						>
+							{t("title2")}
+						</h2>
+
+						{/* Round button under title */}
+						{/* <button
+							style={{
+								width: "186px", // Original size
+								height: "186px",
+								backgroundColor: "#E8E2DA",
+								borderRadius: "1000px",
+								border: "none",
+								marginTop: "32px",
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								cursor: "pointer",
+							}}
+						>
+							<span
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									fontWeight: 800,
+									fontStyle: "normal",
+									fontSize: "32px", // Original size
+									color: "#000",
+									letterSpacing: "0.03em",
+								}}
+							>
+								閱讀更多
+							</span>
+						</button> */}
+					</div>
+
+					{/* Description - right side (65%) */}
+					<div
+						className="flex flex-col items-start ml-10"
+						style={{ width: "65%" }}
+					>
+						<div
+							style={{
+								width: "390px", // Original dimensions
+								height: "125px",
+								display: "flex",
+								flexDirection: "column",
+								justifyContent: "flex-start",
+							}}
+						>
+							<p
+								style={{
+									fontFamily: "ABeeZee, sans-serif",
+									fontWeight: 400,
+									fontSize: "20px", // Original size
+									color: "#E8E2DA",
+									fontStyle: "normal",
+								}}
+							>
+								{t("description")}
+							</p>
+						</div>
+
+						{/* Line under description */}
+						<div
+							style={{
+								width: "983px", // Original width
+								height: "2px",
+								backgroundColor: "#888365",
+								marginTop: "16px",
+							}}
+						></div>
+					</div>
+				</div>
+
+				{/* Rectangle behind cards */}
+				<div
+					style={{
+						position: "absolute",
+						left: "58%",
+						transform: "translateX(-50%)",
+						bottom: "170px",
+						width: "1242px", // Original width
+						height: "182px", // Original height
+						background: "#A3B116",
+						zIndex: 0,
+					}}
+				></div>
+
+				{/* Cards Section */}
+				<section
+					className="flex flex-col items-stretch justify-center w-full gap-4 px-16 text-left md:flex-row sm:gap-6 md:gap-8"
+					style={{ position: "relative", zIndex: 1 }}
+				>
+					{/* Card 1 */}
+					<div
+						className="w-full md:w-72 rounded-[10px] box-border flex flex-col items-center justify-center mb-4 md:mb-0 p-4 sm:p-6"
+						style={{
+							background: "#F5F5F5",
+							border: "1px solid #25826c",
+						}}
+					>
+						<div className="w-full md:w-60 h-[170px] sm:h-[180px] md:h-[211px] flex flex-col items-start justify-start gap-4 sm:gap-[11px]">
+							<div className="w-full md:w-[231px] flex flex-col items-start justify-start gap-4 sm:gap-6">
+								<div
+									style={{
+										background: "#E8E2DA",
+										borderRadius: "8px",
+										padding: "8px",
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center",
+										width: "40px", // Original size
+										height: "40px",
+									}}
+								>
+									<Image
+										className="w-8 h-8 sm:w-10 sm:h-[40.9px] object-contain"
+										loading="lazy"
+										width={40}
+										height={40.9}
+										sizes="100vw"
+										alt=""
+										src="/images/report/theory-1.png"
+									/>
+								</div>
+								<div className="flex flex-row items-center justify-center">
+									<h3
+										style={{
+											fontFamily: "DM Sans, sans-serif",
+											fontWeight: 600,
+											fontSize: "24px", // Original size
+											color: "#374A37",
+											margin: 0,
+										}}
+									>
+										{t("cards.imageRecognition.title")}
+									</h3>
+								</div>
+							</div>
+							<div
+								style={{
+									fontFamily: "Noto Sans HK, sans-serif",
+									fontWeight: 400,
+									fontSize: "13px", // Original size
+									color: "#374A37",
+									marginTop: "8px",
+								}}
+							>
+								{t("cards.imageRecognition.description")}
+							</div>
+						</div>
+					</div>
+
+					{/* Card 2 */}
+					<div
+						className="w-full md:w-72 rounded-[10px] box-border flex flex-col items-center justify-center mb-4 md:mb-0 p-4 sm:p-6"
+						style={{
+							background: "#F5F5F5",
+							border: "1px solid #25826c",
+						}}
+					>
+						<div className="w-full md:w-60 h-[170px] sm:h-[180px] md:h-[211px] flex flex-col items-start justify-start gap-4 sm:gap-[11px]">
+							<div className="w-full md:w-[231px] flex flex-col items-start justify-start gap-4 sm:gap-6">
+								<div
+									style={{
+										background: "#E8E2DA",
+										borderRadius: "8px",
+										padding: "8px",
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center",
+										width: "40px",
+										height: "40px",
+									}}
+								>
+									<Image
+										className="w-8 h-8 sm:w-10 sm:h-[40.9px] object-contain"
+										loading="lazy"
+										width={40}
+										height={40.9}
+										sizes="100vw"
+										alt=""
+										src="/images/report/theory-2.png"
+									/>
+								</div>
+								<div className="flex flex-row items-center justify-center">
+									<h3
+										style={{
+											fontFamily: "DM Sans, sans-serif",
+											fontWeight: 600,
+											fontSize: "24px",
+											color: "#374A37",
+											margin: 0,
+										}}
+									>
+										{t("cards.knowledgeBase.title")}
+									</h3>
+								</div>
+							</div>
+							<div
+								style={{
+									fontFamily: "Noto Sans HK, sans-serif",
+									fontWeight: 400,
+									fontSize: "13px",
+									color: "#374A37",
+									marginTop: "8px",
+								}}
+							>
+								{t("cards.knowledgeBase.description")}
+							</div>
+						</div>
+					</div>
+
+					{/* Card 3 */}
+					<div
+						className="w-full md:w-72 rounded-[10px] box-border flex flex-col items-center justify-center mb-4 md:mb-0 p-4 sm:p-6"
+						style={{
+							background: "#F5F5F5",
+							border: "1px solid #25826c",
+						}}
+					>
+						<div className="w-full md:w-60 h-[170px] sm:h-[180px] md:h-[211px] flex flex-col items-start justify-start gap-4 sm:gap-[11px]">
+							<div className="w-full md:w-[231px] flex flex-col items-start justify-start gap-4 sm:gap-6">
+								<div
+									style={{
+										background: "#E8E2DA",
+										borderRadius: "8px",
+										padding: "8px",
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center",
+										width: "40px",
+										height: "40px",
+									}}
+								>
+									<Image
+										className="w-8 h-8 sm:w-10 sm:h-[40.9px] object-contain"
+										loading="lazy"
+										width={40}
+										height={40.9}
+										sizes="100vw"
+										alt=""
+										src="/images/report/theory-3.png"
+									/>
+								</div>
+								<div className="flex flex-row items-center justify-center">
+									<h3
+										style={{
+											fontFamily: "DM Sans, sans-serif",
+											fontWeight: 600,
+											fontSize: "24px",
+											color: "#374A37",
+											margin: 0,
+										}}
+									>
+										{t("cards.energyFlow.title")}
+									</h3>
+								</div>
+							</div>
+							<div
+								style={{
+									fontFamily: "Noto Sans HK, sans-serif",
+									fontWeight: 400,
+									fontSize: "13px",
+									color: "#374A37",
+									marginTop: "8px",
+								}}
+							>
+								{t("cards.energyFlow.description")}
+							</div>
+						</div>
+					</div>
+
+					{/* Card 4 */}
+					<div
+						className="w-full md:w-72 rounded-[10px] box-border flex flex-col items-center justify-center p-4 sm:p-6"
+						style={{
+							background: "#F5F5F5",
+							border: "1px solid #25826c",
+						}}
+					>
+						<div className="w-full md:w-60 h-[170px] sm:h-[180px] md:h-[209px] flex flex-col items-start justify-start gap-4 sm:gap-[11px]">
+							<div className="w-full md:w-[231px] flex flex-col items-start justify-start gap-4 sm:gap-6">
+								<div
+									style={{
+										background: "#E8E2DA",
+										borderRadius: "8px",
+										padding: "8px",
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center",
+										width: "40px",
+										height: "40px",
+									}}
+								>
+									<Image
+										className="w-8 h-8 sm:w-10 sm:h-[40.9px] object-contain"
+										loading="lazy"
+										width={40}
+										height={40.9}
+										sizes="100vw"
+										alt=""
+										src="/images/report/theory-4.png"
+									/>
+								</div>
+								<div className="flex flex-row items-center justify-center">
+									<h3
+										style={{
+											fontFamily: "DM Sans, sans-serif",
+											fontWeight: 600,
+											fontSize: "24px",
+											color: "#374A37",
+											margin: 0,
+										}}
+									>
+										{t("cards.personalizedAdvice.title")}
+									</h3>
+								</div>
+							</div>
+							<div
+								style={{
+									fontFamily: "Noto Sans HK, sans-serif",
+									fontWeight: 400,
+									fontSize: "13px",
+									color: "#374A37",
+									marginTop: "8px",
+								}}
+							>
+								{t("cards.personalizedAdvice.description")}
+							</div>
+						</div>
+					</div>
+				</section>
+			</div>
 		</section>
 	);
 }

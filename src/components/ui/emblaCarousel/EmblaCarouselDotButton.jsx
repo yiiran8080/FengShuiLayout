@@ -13,6 +13,16 @@ export const useDotButton = (emblaApi) => {
 		[emblaApi]
 	);
 
+	const onPrevButtonClick = useCallback(() => {
+		if (!emblaApi) return;
+		emblaApi.scrollPrev();
+	}, [emblaApi]);
+
+	const onNextButtonClick = useCallback(() => {
+		if (!emblaApi) return;
+		emblaApi.scrollNext();
+	}, [emblaApi]);
+
 	const onInit = useCallback((emblaApi) => {
 		setScrollSnaps(emblaApi.scrollSnapList());
 	}, []);
@@ -36,26 +46,73 @@ export const useDotButton = (emblaApi) => {
 		selectedIndex,
 		scrollSnaps,
 		onDotButtonClick,
+		onPrevButtonClick,
+		onNextButtonClick,
 	};
 };
 
 export const DotButton = ({ selected, ...restProps }) => (
 	<button
 		type="button"
-		className={`relative w-5 h-5 rounded-full border-2 border-[#D7D8D7] flex items-center justify-center mx-1 transition-colors duration-200
-      ${selected ? "border-[#19ad6b] bg-[#D7D8D7]" : "bg-white"}
-    `}
+		className={`relative rounded-full transition-colors duration-200 mx-1`}
+		style={{
+			width: "6px",
+			height: "6px",
+			backgroundColor: selected ? "#FFFFFF" : "rgba(255, 255, 255, 0.4)",
+		}}
+		{...restProps}
+	/>
+);
+
+export const ArrowButton = ({ direction, ...restProps }) => (
+	<button
+		type="button"
+		className="flex items-center justify-center transition-opacity duration-200 hover:opacity-70"
 		{...restProps}
 	>
-		{/* Centered, vivid green dot with shadow */}
-		<span
-			className={`transition-all duration-200 rounded-full
-        ${
-			selected
-				? "w-3 h-3 bg-[#20B580] shadow-lg shadow-[#19ad6b]/60"
-				: "w-2 h-2 bg-[#20B580]"
-		}
-      `}
-		/>
+		<svg
+			width="24"
+			height="24"
+			viewBox="0 0 24 24"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+			className={`text-white ${direction === "down" ? "rotate-180" : ""}`}
+		>
+			{/* Full arrow shape */}
+			<path
+				d="M12 2L12 22M12 2L6 8M12 2L18 8"
+				stroke="currentColor"
+				strokeWidth="2"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+		</svg>
 	</button>
+);
+
+export const CarouselControls = ({
+	selectedIndex,
+	scrollSnaps,
+	onDotButtonClick,
+	onPrevButtonClick,
+	onNextButtonClick,
+}) => (
+	<div className="flex flex-row items-center gap-6">
+		{/* Top Arrow (Previous) */}
+		<ArrowButton direction="up" onClick={onPrevButtonClick} />
+
+		{/* Dots */}
+		<div className="flex flex-row gap-4">
+			{scrollSnaps.map((_, index) => (
+				<DotButton
+					key={index}
+					selected={index === selectedIndex}
+					onClick={() => onDotButtonClick(index)}
+				/>
+			))}
+		</div>
+
+		{/* Bottom Arrow (Next) */}
+		<ArrowButton direction="down" onClick={onNextButtonClick} />
+	</div>
 );

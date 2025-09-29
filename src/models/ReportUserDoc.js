@@ -48,6 +48,44 @@ const reportUserSchema = new mongoose.Schema(
 		jiajuProData: {
 			type: mongoose.Schema.Types.Mixed,
 		},
+		// Four Fortune Analysis Data - Complete Life Report
+		fourFortuneAnalysisData: {
+			type: mongoose.Schema.Types.Mixed,
+		},
+		healthFortuneData: {
+			type: mongoose.Schema.Types.Mixed,
+		},
+		careerFortuneData: {
+			type: mongoose.Schema.Types.Mixed,
+		},
+		wealthFortuneData: {
+			type: mongoose.Schema.Types.Mixed,
+		},
+		relationshipFortuneData: {
+			type: mongoose.Schema.Types.Mixed,
+		},
+		// Comprehensive AI Analysis Data
+		comprehensiveInterpersonalAdvice: {
+			type: mongoose.Schema.Types.Mixed,
+		},
+		comprehensiveLifeAdvice: {
+			type: mongoose.Schema.Types.Mixed,
+		},
+		// NEW: AI Generated Content - Separate from Template Data
+		aiGeneratedContent: {
+			type: mongoose.Schema.Types.Mixed,
+			default: null,
+		},
+		// Complete Life Report Status
+		lifeReportStatus: {
+			type: String,
+			enum: ["generating", "partial", "complete"],
+			default: "generating",
+		},
+		reportGeneratedAt: {
+			type: Date,
+			default: Date.now,
+		},
 	},
 	{
 		timestamps: true, // This adds createdAt and updatedAt automatically

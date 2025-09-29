@@ -19,14 +19,10 @@ export async function createUserIfNotExists(userId, email) {
 				genStatus: "none", // default status
 			});
 
-			await newUser.save();
-			console.log("New user created:", userId);
-			return newUser;
+			await newUser.save();return newUser;
 		}
 
 		return existingUser;
-	} catch (error) {
-		console.error("Error creating user:", error);
-		throw error;
+	} catch (error) {throw error;
 	}
 }

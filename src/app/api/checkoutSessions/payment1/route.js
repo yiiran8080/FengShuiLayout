@@ -38,14 +38,7 @@ export async function POST(request) {
 				quantity: String(quantity),
 				squareFeet: String(squareFeet),
 			},
-		});
-
-		console.log("Subscription session.url", session.url);
-		console.log("Square feet:", squareFeet, "Quantity:", quantity);
-
-		return NextResponse.json(genSuccessData(session));
-	} catch (err) {
-		console.error("Subscription payment error:", err);
-		return NextResponse.json(genErrorData("訂閱支付錯誤: " + err.message));
+		});return NextResponse.json(genSuccessData(session));
+	} catch (err) {return NextResponse.json(genErrorData("訂閱支付錯誤: " + err.message));
 	}
 }

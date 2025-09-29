@@ -13,10 +13,7 @@ export function getBirthDate(birthDateTime: string) {
     day: date.getDate().toString().padStart(2, "0"),
     hour: date.getHours().toString().padStart(2, "0"),
   };
-}
-
-//console.log(getBirthDate(new Date("1989-10-06T18:00:00.000+00:00")));
-export function splitLongString(longString: string, maxLength: number) {
+}export function splitLongString(longString: string, maxLength: number) {
   const result = [];
   let startIndex = 0;
 

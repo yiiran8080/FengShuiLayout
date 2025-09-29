@@ -1,55 +1,91 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function PricingModal({ isOpen, onClose }) {
-	const t = useTranslations("pricePage");
 	const { data: session } = useSession();
 	const router = useRouter();
-	const [isUnlocked, setIsUnlocked] = useState(false);
-	const [showPromoInput, setShowPromoInput] = useState(false);
-	const [promoCode, setPromoCode] = useState("");
-	const [promoError, setPromoError] = useState("");
 	const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 	const [currentCardType, setCurrentCardType] = useState("");
 	const [showSqftPopup, setShowSqftPopup] = useState(false);
 	const [sqftValue, setSqftValue] = useState("");
 	const [sqftError, setSqftError] = useState("");
 
-	// Facebook sharing states
+	// Facebook sharing and promo code states
+	const [isUnlocked, setIsUnlocked] = useState(false);
+	const [promoCode, setPromoCode] = useState("");
+	const [showPromoInput, setShowPromoInput] = useState(false);
+	const [promoError, setPromoError] = useState("");
 	const [sharing, setSharing] = useState(false);
 	const [showShareConfirm, setShowShareConfirm] = useState(false);
 	const [sharePromoCode, setSharePromoCode] = useState("");
-	const [showPromoModal, setShowPromoModal] = useState(false);
 	const [copied, setCopied] = useState(false);
 
 	const validPromoCodes = ["UNLOCK2025", "HARMONIQ", "FENGSHUI"];
 
-	// Facebook share function
+	const handlePremiumClick = () => {
+		// Check if user is logged in first
+		if (!session?.user?.userId) {
+			router.push("/auth/login");
+			onClose();
+			return;
+		}
+
+		// Check if $1 option is unlocked
+		if (!isUnlocked) {
+			// Show promo input if not already shown
+			if (!showPromoInput) {
+				setShowPromoInput(true);
+			}
+			return;
+		}
+
+		setCurrentCardType("premium");
+		setShowSqftPopup(true);
+	};
+
+	const handleSubscriptionClick = () => {
+		// Check if user is logged in first
+		if (!session?.user?.userId) {
+			router.push("/auth/login");
+			onClose();
+			return;
+		}
+
+		setCurrentCardType("subscription");
+		setShowSqftPopup(true);
+	};
+
+	// Handle promo code submission
+	const handlePromoSubmit = () => {
+		if (validPromoCodes.includes(promoCode.toUpperCase())) {
+			setIsUnlocked(true);
+			setShowPromoInput(false);
+			setPromoError("");
+		} else {
+			setPromoError("無效的優惠碼");
+		}
+	};
+
+	// Handle Facebook sharing
 	const handleFacebookShare = () => {
 		setSharing(true);
 
-		// Use the current page URL
 		const shareUrl =
 			typeof window !== "undefined"
-				? window.location.href
-				: "https://www.harmoniqfengshui.com";
+				? window.location.origin + "/price"
+				: "https://www.harmoniqfengshui.com/price";
 
-		// Add content for sharing
 		const shareText = encodeURIComponent(
 			"🏠✨ 發現了一個超棒的風水分析網站！HarmoniQ幫我優化家居布局，讓生活更和諧幸福！現在還有特別優惠，快來試試看吧！"
 		);
 
-		// Create Facebook share URL
-		const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${shareText}`;
+		const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+			shareUrl
+		)}&quote=${shareText}`;
 
-		console.log("Opening Facebook share dialog:", facebookShareUrl);
-		console.log("Share URL:", shareUrl);
-
-		// Open Facebook share dialog in new window
 		const popup = window.open(
 			facebookShareUrl,
 			"facebook-share",
@@ -57,7 +93,6 @@ export default function PricingModal({ isOpen, onClose }) {
 		);
 
 		if (popup) {
-			// Check if popup is closed
 			const checkClosed = setInterval(() => {
 				try {
 					if (popup.closed) {
@@ -71,56 +106,21 @@ export default function PricingModal({ isOpen, onClose }) {
 				}
 			}, 500);
 
-			// Safety timeout to stop checking after 5 minutes
 			setTimeout(() => {
 				if (!popup.closed) {
 					clearInterval(checkClosed);
 					setSharing(false);
 				}
-			}, 300000); // 5 minutes
+			}, 300000);
 
-			// Focus on the popup window
 			popup.focus();
 		} else {
-			// Popup was blocked
 			setSharing(false);
 			alert(
 				"請允許彈出窗口以分享到Facebook，或手動複製網址分享：" +
 					shareUrl
 			);
-			// Show confirmation dialog anyway in case user shares manually
 			setTimeout(() => setShowShareConfirm(true), 1000);
-		}
-	};
-
-	// Copy to clipboard function
-	const copyToClipboard = (text) => {
-		if (navigator.clipboard && window.isSecureContext) {
-			navigator.clipboard
-				.writeText(text)
-				.then(() => {
-					console.log("Copied to clipboard:", text);
-				})
-				.catch((err) => {
-					console.error("Failed to copy: ", err);
-				});
-		} else {
-			// Fallback for older browsers or non-HTTPS
-			const textArea = document.createElement("textarea");
-			textArea.value = text;
-			textArea.style.position = "fixed";
-			textArea.style.left = "-999999px";
-			textArea.style.top = "-999999px";
-			document.body.appendChild(textArea);
-			textArea.focus();
-			textArea.select();
-			try {
-				document.execCommand("copy");
-				console.log("Copied to clipboard (fallback):", text);
-			} catch (err) {
-				console.error("Unable to copy to clipboard", err);
-			}
-			document.body.removeChild(textArea);
 		}
 	};
 
@@ -145,57 +145,43 @@ export default function PricingModal({ isOpen, onClose }) {
 				if (response.ok) {
 					const data = await response.json();
 					setSharePromoCode(data.code);
-					setShowPromoModal(true); // Show promo modal instead of inline display
 				} else {
-					console.error(
-						"Failed to get promo code:",
-						response.statusText
-					);
+					// Fallback promo code if API fails
+					setSharePromoCode("UNLOCK2025");
 				}
 			} catch (error) {
-				console.error("Error getting promo code:", error);
+				// Fallback promo code if API fails
+				setSharePromoCode("UNLOCK2025");
 			}
 		}
 	};
 
-	const handlePromoSubmit = () => {
-		if (promoCode.trim() === "") {
-			setPromoError("請輸入優惠碼");
-			return;
-		}
-
-		// Use the same validation as the price page
-		if (validPromoCodes.includes(promoCode.toUpperCase())) {
-			setIsUnlocked(true);
-			setShowPromoInput(false);
-			setPromoError("");
+	// Copy to clipboard function
+	const copyToClipboard = (text) => {
+		if (navigator.clipboard && window.isSecureContext) {
+			navigator.clipboard
+				.writeText(text)
+				.then(() => {
+					setCopied(true);
+					setTimeout(() => setCopied(false), 1500);
+				})
+				.catch(() => {});
 		} else {
-			setPromoError("無效的優惠碼");
+			const textArea = document.createElement("textarea");
+			textArea.value = text;
+			textArea.style.position = "fixed";
+			textArea.style.left = "-999999px";
+			textArea.style.top = "-999999px";
+			document.body.appendChild(textArea);
+			textArea.focus();
+			textArea.select();
+			try {
+				document.execCommand("copy");
+				setCopied(true);
+				setTimeout(() => setCopied(false), 1500);
+			} catch (err) {}
+			document.body.removeChild(textArea);
 		}
-	};
-
-	const handlePremiumClick = () => {
-		// Check if user is logged in first
-		if (!session?.user?.userId) {
-			router.push("/auth/login");
-			onClose();
-			return;
-		}
-
-		setCurrentCardType("premium");
-		setShowSqftPopup(true);
-	};
-
-	const handleSubscriptionClick = () => {
-		// Check if user is logged in first
-		if (!session?.user?.userId) {
-			router.push("/auth/login");
-			onClose();
-			return;
-		}
-
-		setCurrentCardType("subscription");
-		setShowSqftPopup(true);
 	};
 
 	const handleSqftSubmit = async () => {
@@ -211,7 +197,7 @@ export default function PricingModal({ isOpen, onClose }) {
 		setSqftError("");
 
 		try {
-			// Choose API endpoint based on card type (same as price page)
+			// Choose API endpoint based on card type
 			const endpoint =
 				currentCardType === "premium"
 					? "/api/checkoutSessions/payment2"
@@ -242,7 +228,6 @@ export default function PricingModal({ isOpen, onClose }) {
 				throw new Error(errorData.message || "支付錯誤");
 			}
 		} catch (error) {
-			console.error("Payment error:", error);
 			setSqftError("支付錯誤，請重試");
 			setIsProcessingPayment(false);
 		}
@@ -261,15 +246,15 @@ export default function PricingModal({ isOpen, onClose }) {
 
 	return (
 		<>
-			<div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/50">
-				<div className="relative w-full max-w-6xl max-h-[90vh] overflow-y-auto bg-white shadow-2xl rounded-2xl animate-fade-in">
+			<div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 backdrop-blur-sm bg-black/50">
+				<div className="relative w-full max-w-4xl max-h-[95vh] overflow-y-auto bg-white shadow-2xl rounded-xl sm:rounded-2xl animate-fade-in">
 					{/* Close Button */}
 					<button
 						onClick={onClose}
-						className="absolute z-10 flex items-center justify-center w-8 h-8 transition-colors bg-gray-200 rounded-full top-4 right-4 hover:bg-gray-300"
+						className="absolute z-10 flex items-center justify-center w-6 h-6 transition-colors bg-gray-200 rounded-full sm:w-8 sm:h-8 top-2 right-2 sm:top-4 sm:right-4 hover:bg-gray-300"
 					>
 						<svg
-							className="w-5 h-5"
+							className="w-3 h-3 sm:w-5 sm:h-5"
 							fill="none"
 							stroke="currentColor"
 							viewBox="0 0 24 24"
@@ -284,437 +269,545 @@ export default function PricingModal({ isOpen, onClose }) {
 					</button>
 
 					{/* Modal Content */}
-					<div className="p-8">
-						<div className="mb-8 text-center">
-							<h2 className="text-3xl font-bold text-[#374A37] mb-4">
-								選擇您的方案
-							</h2>
-							<p className="text-gray-600">
-								解鎖詳細風水分析，獲得專業建議
-							</p>
-						</div>
-
-						{/* Facebook Share Button */}
-						<div className="w-full max-w-md mx-auto mb-8">
-							<button
-								onClick={handleFacebookShare}
-								disabled={sharing}
-								className="w-full px-6 py-3 bg-[#1877F2] text-white rounded-lg hover:bg-[#166fe5] transition-colors text-sm font-medium shadow-md hover:shadow-lg disabled:opacity-70 flex items-center gap-3 justify-center"
-								style={{
-									boxShadow:
-										"0 4px 15px rgba(24, 119, 242, 0.3)",
-									fontFamily: "Noto Serif TC, serif",
-								}}
-							>
-								{/* Facebook Icon SVG */}
-								<svg
-									className="w-5 h-5"
-									fill="currentColor"
-									viewBox="0 0 24 24"
+					<div className="p-4 sm:p-6 lg:p-8">
+						{/* Header */}
+						<div className="mb-6 text-center sm:mb-8">
+							<div className="flex items-center justify-start mb-3 sm:mb-5">
+								<Image
+									src="/images/logo/logo-black.png"
+									alt="HarmoniQ Logo"
+									width={32}
+									height={32}
+									className="mr-2 sm:mr-3 sm:w-10 sm:h-10"
+								/>
+								<div
+									className="text-2xl font-bold sm:text-3xl lg:text-4xl"
+									style={{
+										fontFamily: '"Noto Serif TC", serif',
+										color: "black",
+									}}
 								>
-									<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-								</svg>
-								{sharing
-									? "分享中..."
-									: "分享到Facebook獲得優惠碼"}
-							</button>
+									HarmoniQ
+								</div>
+							</div>
+							<h2
+								className="mb-3 text-2xl font-extrabold sm:mb-4 sm:text-3xl lg:text-4xl text-start"
+								style={{
+									fontFamily: '"Noto Serif TC", serif',
+									color: "#374A37",
+								}}
+							>
+								解鎖詳細報告
+							</h2>
+							<div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-6 text-sm sm:text-md text-[#333333]">
+								<div className="flex items-center">
+									<svg
+										className="w-3 h-3 mr-1 text-green-500 sm:w-4 sm:h-4 sm:mr-2"
+										fill="currentColor"
+										viewBox="0 0 20 20"
+									>
+										<path
+											fillRule="evenodd"
+											d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+											clipRule="evenodd"
+										/>
+									</svg>
+									深度優化全屋家居佈局
+								</div>
+								<div className="flex items-center">
+									<svg
+										className="w-3 h-3 mr-1 text-green-500 sm:w-4 sm:h-4 sm:mr-2"
+										fill="currentColor"
+										viewBox="0 0 20 20"
+									>
+										<path
+											fillRule="evenodd"
+											d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+											clipRule="evenodd"
+										/>
+									</svg>
+									個人命掛分析
+								</div>
+								<div className="flex items-center">
+									<svg
+										className="w-3 h-3 mr-1 text-green-500 sm:w-4 sm:h-4 sm:mr-2"
+										fill="currentColor"
+										viewBox="0 0 20 20"
+									>
+										<path
+											fillRule="evenodd"
+											d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+											clipRule="evenodd"
+										/>
+									</svg>
+									全屋分析報告
+								</div>
+							</div>
+							<div className="flex flex-col sm:flex-row items-center justify-center mt-2 space-y-2 sm:space-y-0 sm:space-x-6 text-sm sm:text-md text-[#333333]">
+								<div className="flex items-center">
+									<svg
+										className="w-3 h-3 mr-1 text-green-500 sm:w-4 sm:h-4 sm:mr-2"
+										fill="currentColor"
+										viewBox="0 0 20 20"
+									>
+										<path
+											fillRule="evenodd"
+											d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+											clipRule="evenodd"
+										/>
+									</svg>
+									流年運程綜合分析
+								</div>
+								<div className="flex items-center">
+									<svg
+										className="w-3 h-3 mr-1 text-green-500 sm:w-4 sm:h-4 sm:mr-2"
+										fill="currentColor"
+										viewBox="0 0 20 20"
+									>
+										<path
+											fillRule="evenodd"
+											d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+											clipRule="evenodd"
+										/>
+									</svg>
+									關鍵隱患化解
+								</div>
+								<div className="flex items-center">
+									<svg
+										className="w-3 h-3 mr-1 text-green-500 sm:w-4 sm:h-4 sm:mr-2"
+										fill="currentColor"
+										viewBox="0 0 20 20"
+									>
+										<path
+											fillRule="evenodd"
+											d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+											clipRule="evenodd"
+										/>
+									</svg>
+									流年預警總結
+								</div>
+							</div>
 						</div>
 
-						{/* Pricing Cards Section */}
-						<div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 lg:gap-[70px] max-w-full">
-							{/* First card - Free version */}
-							<section
-								className="group w-full max-w-[328px] sm:w-[280px] lg:w-[328px] h-auto sm:h-[480px] lg:h-[514px] rounded-[20px] bg-[#fff] border-[#066952] border-solid border-[1px] box-border flex flex-col items-center justify-between p-4 sm:p-6 lg:p-7 text-left text-2xl sm:text-3xl lg:text-4xl text-[#111827] font-[Inter] transition-all duration-200 hover:border-[#A3B116] hover:border-[4px] hover:bg-[#F7FAF2] sm:flex-1 shadow-lg hover:shadow-xl"
-								style={{
-									boxShadow: "0 8px 25px rgba(0, 0, 0, 0.15)",
-								}}
-							>
-								<div className="w-full max-w-[232.7px] h-full flex flex-col items-center justify-between pt-0 px-0 box-border">
-									<div className="w-full max-w-[232px] flex flex-col items-start justify-start gap-4 sm:gap-5 lg:gap-6 flex-grow">
-										{/* Price Section */}
-										<div className="flex flex-col items-start self-stretch justify-start gap-3 sm:gap-4 lg:gap-5">
-											<div className="flex flex-row items-start justify-start w-full">
-												<div className="flex flex-row items-center justify-start gap-2">
-													<h2 className="m-0 relative text-[length:inherit] leading-8 sm:leading-10 lg:leading-[46px] font-[500] font-[inherit] inline-block shrink-0 text-xl sm:text-2xl lg:text-4xl">
-														$0
-													</h2>
-													<div className="relative text-sm sm:text-base lg:text-[17px] font-[500] text-[#848199] inline-block shrink-0">
-														/ 每平方尺
-													</div>
-												</div>
-											</div>
-											<div className="self-stretch flex flex-row items-start justify-start text-xl sm:text-2xl lg:text-[28px]">
-												<h2 className="m-0 relative text-[length:inherit] font-[500] font-[inherit] inline-block">
-													免費版本
-												</h2>
-											</div>
-										</div>
-
-										{/* Features List */}
-										<div className="w-full flex flex-col items-start justify-start gap-2 text-xs sm:text-sm text-Font-Color font-[ABeeZee]">
-											{[
-												"基本房間分析",
-												"簡單建議",
-												"有限內容",
-											].map((feature, index) => (
-												<div
-													key={index}
-													className="self-stretch flex flex-row items-start justify-start h-auto min-h-[20px] text-sm sm:text-base font-['DM_Sans']"
-												>
-													<div className="w-full flex flex-row items-center justify-between gap-2.5">
-														<Image
-															className="relative w-4 h-4 sm:w-5 sm:h-5"
-															loading="lazy"
-															width={20}
-															height={20}
-															sizes="100vw"
-															alt=""
-															src="/images/hero/tick.svg"
-														/>
-														<div className="flex-1 relative leading-[14px] sm:leading-4 inline-block">
-															{feature}
-														</div>
-													</div>
-												</div>
-											))}
-
-											{/* Disabled features */}
-											{[
-												"詳細分析",
-												"專業建議",
-												"完整報告",
-											].map((feature, index) => (
-												<div
-													key={index}
-													className="self-stretch flex flex-row items-start justify-start h-auto min-h-[20px] text-sm sm:text-base font-['DM_Sans']"
-												>
-													<div className="w-full flex flex-row items-center justify-between gap-2.5">
-														<Image
-															className="relative w-4 h-4 sm:w-5 sm:h-5"
-															loading="lazy"
-															width={20}
-															height={20}
-															sizes="100vw"
-															alt=""
-															src="/images/hero/cross.svg"
-														/>
-														<div className="flex-1 relative leading-[14px] sm:leading-4 inline-block text-gray-400">
-															{feature}
-														</div>
-													</div>
-												</div>
-											))}
-										</div>
-									</div>
-
-									{/* Button */}
-									<div className="w-full mt-6 sm:w-auto">
-										<button
-											className="cursor-pointer [border:none] px-4 sm:px-6 lg:px-[67px] py-2 sm:py-3 lg:py-[4.1px] bg-[#A3B116] rounded-[50px] sm:rounded-[75px] lg:rounded-[100px] overflow-hidden flex flex-row items-center justify-center shrink-0 transition-all duration-200 hover:bg-[#8a9913] w-full sm:w-auto shadow-md hover:shadow-lg"
-											style={{
-												boxShadow:
-													"0 4px 15px rgba(0, 0, 0, 0.2)",
-											}}
-										>
-											<div className="text-sm sm:text-base leading-6 sm:leading-8 font-[ABeeZee] text-[#fff] text-center">
-												免費使用
-											</div>
-										</button>
-									</div>
+						{/* Pricing Cards - Mobile responsive layout */}
+						<div className="flex flex-col gap-4 mb-6 sm:gap-6 sm:mb-8">
+							{/* Limited Time Offer Card - Top card */}
+							<div className="relative p-4 sm:p-6 border-2 border-black bg-white rounded-xl sm:rounded-2xl hover:border-[#A3B116] hover:bg-[#F7FaF2] transition-all duration-300 group">
+								<div className="absolute top-0 transform -translate-x-1/2 -translate-y-1/2 left-1/2">
+									<span className="px-3 py-1 text-xs font-bold text-white bg-green-500 rounded-full sm:px-4 sm:text-sm">
+										{isUnlocked ? "已解鎖" : "限時優惠"}
+									</span>
 								</div>
-							</section>
-
-							{/* Second card - Premium version */}
-							<section
-								className="relative w-full max-w-[328px] sm:w-[280px] lg:w-[328px] h-auto sm:h-[480px] lg:h-[514px] rounded-[20px] bg-[#fff] border-[#066952] border-solid border-[1px] box-border flex flex-col items-center justify-between p-4 sm:p-6 lg:p-7 text-left text-2xl sm:text-3xl lg:text-4xl text-[#111827] font-[Inter] transition-all duration-200 hover:border-[#A3B116] hover:border-[4px] hover:bg-[#F7FAF2] sm:flex-1 shadow-lg hover:shadow-xl"
-								style={{
-									boxShadow: "0 8px 25px rgba(0, 0, 0, 0.15)",
-								}}
-							>
-								{/* Badge */}
-								<div className="absolute top-2 sm:top-[-10] right-2 sm:right-1 bg-[#A3B116] text-white text-xs sm:text-sm font-bold px-2 sm:px-3 py-1 rounded-md shadow-lg shadow-[#A3B116]/70 z-20">
-									{isUnlocked ? "已解鎖" : "熱門"}
-								</div>
-
-								<div className="w-full max-w-[232.7px] h-full flex flex-col items-center justify-between pt-0 px-0 box-border">
-									<div className="w-full max-w-[232px] flex flex-col items-start justify-start gap-4 sm:gap-5 lg:gap-6 flex-grow">
-										{/* Price Section */}
-										<div className="flex flex-col items-start self-stretch justify-start gap-3 sm:gap-4 lg:gap-5">
-											<div className="flex flex-row items-start justify-start w-full">
-												<div className="flex flex-row items-center justify-start gap-2">
-													<h2 className="m-0 relative text-[length:inherit] leading-8 sm:leading-10 lg:leading-[46px] font-[500] font-[inherit] inline-block shrink-0 text-xl sm:text-2xl lg:text-4xl">
+								<div className="pt-3 sm:pt-4">
+									<div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
+										{/* Left side - Price and details */}
+										<div className="flex-1 w-full lg:w-auto">
+											<div className="mb-3 sm:mb-4">
+												<div className="mb-2">
+													<span
+														className="text-base font-bold text-red-500 sm:text-lg"
+														style={{
+															fontFamily:
+																'"Noto Serif TC", serif',
+														}}
+													>
+														限時優惠
+													</span>
+												</div>
+												<div className="flex flex-wrap items-baseline gap-2">
+													<span
+														className="text-3xl font-bold text-green-600 sm:text-4xl"
+														style={{
+															fontFamily:
+																'"Noto Serif TC", serif',
+														}}
+													>
 														$1
-														<span className="ml-1 text-sm text-gray-500 line-through sm:text-base">
-															$3.8
-														</span>
-													</h2>
-													<div className="relative text-sm sm:text-base lg:text-[17px] font-[500] text-[#848199] inline-block shrink-0">
-														/ 每平方尺
-													</div>
+													</span>
+													<span className="text-base text-gray-600 sm:text-lg">
+														/平方尺
+													</span>
+													<span className="text-sm text-gray-500 line-through">
+														$3.8
+													</span>
 												</div>
 											</div>
-											<div className="self-stretch flex flex-row items-start justify-start text-xl sm:text-2xl lg:text-[28px]">
-												<h2 className="m-0 relative text-[length:inherit] font-[500] font-[inherit] inline-block">
-													高級版本
-												</h2>
+											<div className="mb-3 text-xs text-gray-600 sm:mb-4 sm:text-sm">
+												超值優惠價格，僅限Facebook分享後解鎖
 											</div>
 										</div>
 
-										{/* Features List */}
-										<div className="w-full flex flex-col items-start justify-start gap-2 text-xs sm:text-sm text-Font-Color font-[ABeeZee]">
-											{[
-												"詳細房間分析",
-												"專業風水建議",
-												"完整報告",
-												"個人化建議",
-												"無限制訪問",
-											].map((feature, index) => (
-												<div
-													key={index}
-													className="self-stretch flex flex-row items-start justify-start h-auto min-h-[20px] text-sm sm:text-base font-['DM_Sans']"
-												>
-													<div className="w-full flex flex-row items-center justify-between gap-2.5">
-														<Image
-															className="relative w-4 h-4 sm:w-5 sm:h-5"
-															loading="lazy"
-															width={20}
-															height={20}
-															sizes="100vw"
-															alt=""
-															src="/images/hero/tick.svg"
-														/>
-														<div className="flex-1 relative leading-[14px] sm:leading-4 inline-block">
-															{feature}
+										{/* Right side - Button or unlock section */}
+										<div className="flex-1 w-full lg:max-w-sm">
+											{isUnlocked ? (
+												/* Unlocked state */
+												<div className="space-y-3">
+													<div className="text-center">
+														<p className="mb-2 text-xs text-gray-600">
+															已使用優惠碼解鎖
+														</p>
+														<div className="text-xs font-medium text-green-600">
+															優惠碼已生效
 														</div>
 													</div>
-												</div>
-											))}
-										</div>
-
-										{/* Remove the Facebook Share Button from here - it's now moved to the top */}
-									</div>
-
-									{/* Button Area */}
-									<div className="w-full mt-6 sm:w-auto">
-										{isUnlocked ? (
-											<div className="w-full space-y-3">
-												<div className="text-center">
-													<p className="mb-2 text-xs text-gray-600">
-														使用優惠碼解鎖
-													</p>
-													<div className="text-xs text-[#A3B116] font-medium">
-														優惠碼已使用
-													</div>
-												</div>
-												<button
-													onClick={handlePremiumClick}
-													className="cursor-pointer [border:none] px-4 sm:px-6 lg:px-[67px] py-2 sm:py-3 lg:py-[4.1px] bg-[#A3B116] rounded-[50px] sm:rounded-[75px] lg:rounded-[100px] overflow-hidden flex flex-row items-center justify-center shrink-0 transition-all duration-200 hover:bg-[#8a9913] w-full sm:w-auto shadow-md hover:shadow-lg"
-													disabled={
-														isProcessingPayment
-													}
-													style={{
-														boxShadow:
-															"0 4px 15px rgba(0, 0, 0, 0.2)",
-													}}
-												>
-													<div className="text-sm sm:text-base leading-6 sm:leading-8 font-[ABeeZee] text-[#fff] text-center">
+													<button
+														onClick={
+															handlePremiumClick
+														}
+														disabled={
+															isProcessingPayment
+														}
+														className="w-full px-6 py-3 font-bold text-white transition-colors bg-gray-400 rounded-full shadow-lg hover:bg-gray-500 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed group-hover:bg-[#A3B116] group-hover:hover:bg-[#8a9913]"
+														style={{
+															fontFamily:
+																'"Noto Serif TC", serif',
+														}}
+													>
 														{isProcessingPayment &&
 														currentCardType ===
 															"premium"
 															? "處理中..."
-															: "立即購買"}
-													</div>
-												</button>
-											</div>
-										) : (
-											<div className="w-full space-y-3">
-												{!showPromoInput ? (
-													<div className="text-center">
-														<p className="mb-2 text-xs text-gray-600">
-															有優惠碼嗎？
-														</p>
-														<button
-															onClick={() =>
-																setShowPromoInput(
-																	true
-																)
-															}
-															className="text-xs text-[#A3B116] hover:text-[#8a9913] font-medium underline transition-colors"
-														>
-															輸入優惠碼
-														</button>
-													</div>
-												) : (
-													<div className="space-y-2">
-														<input
-															type="text"
-															placeholder="輸入優惠碼"
-															value={promoCode}
-															onChange={(e) =>
-																setPromoCode(
-																	e.target
-																		.value
-																)
-															}
-															className="w-full px-3 py-2 text-sm text-black border border-gray-300 rounded-lg shadow-sm focus:border-[#A3B116] focus:outline-none"
-															onKeyPress={(e) =>
-																e.key ===
-																	"Enter" &&
-																handlePromoSubmit()
-															}
-														/>
-														{promoError && (
-															<p className="text-xs text-center text-red-500">
-																{promoError}
-															</p>
-														)}
-														<div className="flex gap-2">
+															: "開始購買"}
+													</button>
+												</div>
+											) : (
+												/* Locked state */
+												<div className="space-y-3">
+													{!showPromoInput ? (
+														/* Facebook share and promo code entry */
+														<div className="space-y-3">
+															{/* Facebook Share Button */}
 															<button
 																onClick={
-																	handlePromoSubmit
+																	handleFacebookShare
 																}
-																className="px-4 py-2 bg-[#A3B116] text-white rounded-lg text-sm hover:bg-[#8a9913] transition-colors flex-1 shadow-sm hover:shadow-md"
-															>
-																確認
-															</button>
-															<button
-																onClick={() => {
-																	setShowPromoInput(
-																		false
-																	);
-																	setPromoCode(
-																		""
-																	);
-																	setPromoError(
-																		""
-																	);
+																disabled={
+																	sharing
+																}
+																className="w-full px-4 py-3 bg-[#1877F2] text-white rounded-lg hover:bg-[#166fe5] transition-colors text-sm font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-70 disabled:transform-none flex items-center gap-2 justify-center"
+																style={{
+																	boxShadow:
+																		"0 6px 20px rgba(24, 119, 242, 0.4)",
+																	fontFamily:
+																		'"Noto Serif TC", serif',
 																}}
-																className="flex-1 px-4 py-2 text-sm text-white transition-colors bg-gray-500 rounded-lg shadow-sm hover:bg-gray-600 hover:shadow-md"
 															>
-																取消
+																{/* Facebook Icon */}
+																<svg
+																	className="w-5 h-5"
+																	fill="currentColor"
+																	viewBox="0 0 24 24"
+																>
+																	<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+																</svg>
+																{sharing
+																	? "分享中..."
+																	: "分享到 Facebook"}
 															</button>
-														</div>
-													</div>
-												)}
 
-												<button
-													className="cursor-not-allowed [border:none] px-4 sm:px-6 lg:px-[67px] py-2 sm:py-3 lg:py-[4.1px] bg-gray-400 rounded-[50px] sm:rounded-[75px] lg:rounded-[100px] overflow-hidden flex flex-row items-center justify-center shrink-0 w-full sm:w-auto shadow-md opacity-75"
-													disabled
-													style={{
-														boxShadow:
-															"0 4px 15px rgba(0, 0, 0, 0.2)",
-													}}
-												>
-													<div className="text-sm sm:text-base leading-6 sm:leading-8 font-[ABeeZee] text-[#fff] text-center">
-														已鎖定
-													</div>
-												</button>
-											</div>
-										)}
+															{/* Promo Code Display */}
+															{sharePromoCode && (
+																<div className="flex flex-col items-center w-full">
+																	<div
+																		className="flex flex-col items-center w-full p-3 border-2 rounded-lg shadow-md"
+																		style={{
+																			borderColor:
+																				"#096e56",
+																			backgroundColor:
+																				"rgba(9,110,86,0.08)",
+																			fontFamily:
+																				'"Noto Serif TC", serif',
+																		}}
+																	>
+																		<div
+																			className="mb-2 text-xs"
+																			style={{
+																				color: "#096e56",
+																			}}
+																		>
+																			您的優惠碼
+																		</div>
+																		<div
+																			className="mb-2 text-xl font-bold tracking-wider select-all"
+																			style={{
+																				color: "#096e56",
+																			}}
+																		>
+																			{
+																				sharePromoCode
+																			}
+																		</div>
+																		<button
+																			onClick={() =>
+																				copyToClipboard(
+																					sharePromoCode
+																				)
+																			}
+																			className="px-3 py-1 text-xs font-medium bg-[#096e56] text-white rounded transition-colors shadow hover:bg-[#19ad6b] hover:shadow-lg"
+																			style={{
+																				fontFamily:
+																					'"Noto Serif TC", serif',
+																			}}
+																		>
+																			複製優惠碼
+																		</button>
+																		{copied && (
+																			<div className="mt-1 text-xs font-semibold text-green-600 animate-fade-in">
+																				已複製！
+																			</div>
+																		)}
+																		<div
+																			className="mt-2 text-xs text-center"
+																			style={{
+																				color: "#096e56",
+																				opacity: 0.7,
+																			}}
+																		>
+																			請在下方輸入優惠碼
+																		</div>
+																	</div>
+																</div>
+															)}
+
+															{/* Have Promo Code Link */}
+															<div className="text-center">
+																<p className="mb-2 text-xs text-gray-600">
+																	已有優惠碼？
+																</p>
+																<button
+																	onClick={() =>
+																		setShowPromoInput(
+																			true
+																		)
+																	}
+																	className="text-xs font-medium text-green-600 underline transition-colors hover:text-green-700"
+																>
+																	輸入優惠碼
+																</button>
+															</div>
+														</div>
+													) : (
+														/* Promo Code Input */
+														<div className="space-y-2">
+															<input
+																type="text"
+																placeholder="輸入優惠碼..."
+																value={
+																	promoCode
+																}
+																onChange={(e) =>
+																	setPromoCode(
+																		e.target
+																			.value
+																	)
+																}
+																className="w-full px-3 py-2 text-sm text-black border border-gray-300 rounded-lg shadow-sm focus:border-green-500 focus:outline-none"
+																onKeyPress={(
+																	e
+																) =>
+																	e.key ===
+																		"Enter" &&
+																	handlePromoSubmit()
+																}
+															/>
+															{promoError && (
+																<p className="text-xs text-center text-red-500">
+																	{promoError}
+																</p>
+															)}
+															<div className="flex gap-2">
+																<button
+																	onClick={
+																		handlePromoSubmit
+																	}
+																	className="flex-1 px-4 py-2 text-sm text-white transition-colors bg-green-500 rounded-lg shadow-sm hover:bg-green-600 hover:shadow-md"
+																>
+																	確認
+																</button>
+																<button
+																	onClick={() => {
+																		setShowPromoInput(
+																			false
+																		);
+																		setPromoCode(
+																			""
+																		);
+																		setPromoError(
+																			""
+																		);
+																	}}
+																	className="flex-1 px-4 py-2 text-sm text-white transition-colors bg-gray-500 rounded-lg shadow-sm hover:bg-gray-600 hover:shadow-md"
+																>
+																	取消
+																</button>
+															</div>
+														</div>
+													)}
+
+													{/* Locked button */}
+													<button
+														className="w-full cursor-not-allowed px-6 py-3 font-bold text-white bg-gray-400 rounded-full shadow-lg opacity-75 group-hover:bg-[#A3B116] group-hover:opacity-100"
+														disabled
+														style={{
+															fontFamily:
+																'"Noto Serif TC", serif',
+														}}
+													>
+														🔒 請先解鎖
+													</button>
+												</div>
+											)}
+										</div>
 									</div>
 								</div>
-							</section>
+							</div>
 
-							{/* Third card - Subscription version */}
-							<section
-								className="relative w-full max-w-[328px] sm:w-[280px] lg:w-[328px] h-auto sm:h-[480px] lg:h-[514px] rounded-[20px] bg-[#fff] border-[#066952] border-solid border-[1px] box-border flex flex-col items-center justify-between p-4 sm:p-6 lg:p-7 text-left text-2xl sm:text-3xl lg:text-4xl text-[#111827] font-[Inter] transition-all duration-200 hover:border-[#A3B116] hover:border-[4px] hover:bg-[#F7FAF2] sm:flex-1 shadow-lg hover:shadow-xl"
-								style={{
-									boxShadow: "0 8px 25px rgba(0, 0, 0, 0.15)",
-								}}
-							>
-								<div className="w-full max-w-[232.7px] h-full flex flex-col items-center justify-between pt-0 px-0 box-border">
-									<div className="w-full max-w-[232px] flex flex-col items-start justify-start gap-4 sm:gap-5 lg:gap-6 flex-grow">
-										{/* Price Section */}
-										<div className="flex flex-col items-start self-stretch justify-start gap-3 sm:gap-4 lg:gap-5">
-											<div className="flex flex-row items-start justify-start w-full">
-												<div className="flex flex-row items-center justify-start gap-2">
-													<h2 className="m-0 relative text-[length:inherit] leading-8 sm:leading-10 lg:leading-[46px] font-[500] font-[inherit] inline-block shrink-0 text-xl sm:text-2xl lg:text-4xl">
-														$3.8
-													</h2>
-													<div className="relative text-sm sm:text-base lg:text-[17px] font-[500] text-[#848199] inline-block shrink-0">
-														/ 每平方尺
-													</div>
-												</div>
-											</div>
-											<div className="self-stretch flex flex-row items-start justify-start text-xl sm:text-2xl lg:text-[28px]">
-												<h2 className="m-0 relative text-[length:inherit] font-[500] font-[inherit] inline-block">
-													訂閱版本
-												</h2>
+							{/* Premium Version Card - Bottom card */}
+							<div className="p-4 sm:p-6 border-2 border-black bg-white rounded-xl sm:rounded-2xl hover:border-[#A3B116] hover:bg-[#F7FaF2] transition-all duration-300 group">
+								<div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
+									{/* Left side - Price and details */}
+									<div className="flex-1 w-full lg:w-auto">
+										<div className="mb-3 sm:mb-4">
+											<span
+												className="block mb-2 text-base font-bold text-gray-400 sm:text-lg"
+												style={{
+													fontFamily:
+														'"Noto Serif TC", serif',
+												}}
+											>
+												尊享版
+											</span>
+											<div className="flex flex-wrap items-baseline gap-2">
+												<span
+													className="text-3xl font-bold text-gray-800 sm:text-4xl"
+													style={{
+														fontFamily:
+															'"Noto Serif TC", serif',
+													}}
+												>
+													$3.8
+												</span>
+												<span className="text-base text-gray-600 sm:text-lg">
+													/平方尺
+												</span>
 											</div>
 										</div>
-
-										{/* Features List */}
-										<div className="w-full flex flex-col items-start justify-start gap-2 text-xs sm:text-sm text-Font-Color font-[ABeeZee]">
-											{[
-												"詳細房間分析",
-												"專業風水建議",
-												"完整報告",
-												"個人化建議",
-												"無限制訪問",
-											].map((feature, index) => (
-												<div
-													key={index}
-													className="self-stretch flex flex-row items-start justify-start h-auto min-h-[20px] text-sm sm:text-base font-['DM_Sans']"
-												>
-													<div className="w-full flex flex-row items-center justify-between gap-2.5">
-														<Image
-															className="relative w-4 h-4 sm:w-5 sm:h-5"
-															loading="lazy"
-															width={20}
-															height={20}
-															sizes="100vw"
-															alt=""
-															src="/images/hero/tick.svg"
-														/>
-														<div className="flex-1 relative leading-[14px] sm:leading-4 inline-block">
-															{feature}
-														</div>
-													</div>
-												</div>
-											))}
+										<div className="mb-3 text-xs text-gray-600 sm:mb-4 sm:text-sm">
+											原價購買，無需分享或優惠碼
 										</div>
 									</div>
 
-									{/* Button */}
-									<div className="w-full mt-6 sm:w-auto">
+									{/* Right side - Button */}
+									<div className="flex-1 w-full lg:max-w-sm">
 										<button
 											onClick={handleSubscriptionClick}
 											disabled={isProcessingPayment}
-											className="cursor-pointer [border:none] px-4 sm:px-6 lg:px-[67px] py-2 sm:py-3 lg:py-[4.1px] bg-[#A3B116] rounded-[50px] sm:rounded-[75px] lg:rounded-[100px] overflow-hidden flex flex-row items-center justify-center shrink-0 transition-all duration-200 hover:bg-[#8a9913] w-full sm:w-auto shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+											className="w-full px-4 sm:px-6 py-3 font-bold text-gray-800 transition-colors bg-gray-200 rounded-full shadow-lg hover:bg-gray-300 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed group-hover:bg-[#A3B116] group-hover:text-white group-hover:hover:bg-[#8a9913] text-sm sm:text-base"
 											style={{
-												boxShadow:
-													"0 4px 15px rgba(0, 0, 0, 0.2)",
+												fontFamily:
+													'"Noto Serif TC", serif',
 											}}
 										>
-											<div className="text-sm sm:text-base leading-6 sm:leading-8 font-[ABeeZee] text-[#fff] text-center">
-												{isProcessingPayment &&
-												currentCardType ===
-													"subscription"
-													? "處理中..."
-													: "立即訂閱"}
-											</div>
+											{isProcessingPayment &&
+											currentCardType === "subscription"
+												? "處理中..."
+												: "原價購買"}
 										</button>
 									</div>
 								</div>
-							</section>
+							</div>
+						</div>
+
+						{/* Trust Indicators - Mobile responsive grid */}
+						<div className="grid grid-cols-2 gap-3 pt-4 border-t border-black sm:grid-cols-4 sm:gap-4 sm:pt-6">
+							<div className="flex items-center gap-2">
+								<Image
+									src="/images/hero/feature1.png"
+									alt="User Certification"
+									width={54}
+									height={54}
+									className="flex-shrink-0 w-10 h-10 sm:w-[54px] sm:h-[54px]"
+								/>
+								<div className="flex flex-col">
+									<div className="text-sm sm:text-lg font-bold text-[#A3B116]">
+										10,000+
+									</div>
+									<div className="text-xs text-black">
+										真實用戶認證
+									</div>
+								</div>
+							</div>
+							<div className="flex items-center gap-2">
+								<Image
+									src="/images/hero/feature2.png"
+									alt="Customer Service"
+									width={54}
+									height={54}
+									className="flex-shrink-0 w-10 h-10 sm:w-[54px] sm:h-[54px]"
+								/>
+								<div className="flex flex-col">
+									<div className="text-sm sm:text-lg font-bold text-[#A3B116]">
+										24/7
+									</div>
+									<div className="text-xs text-black">
+										客戶專業服務
+									</div>
+								</div>
+							</div>
+							<div className="flex items-center gap-2">
+								<Image
+									src="/images/hero/feature3.png"
+									alt="Satisfaction Guarantee"
+									width={54}
+									height={54}
+									className="flex-shrink-0 w-10 h-10 sm:w-[54px] sm:h-[54px]"
+								/>
+								<div className="flex flex-col">
+									<div className="text-sm sm:text-lg font-bold text-[#A3B116]">
+										100%
+									</div>
+									<div className="text-xs text-black">
+										滿意度保證
+									</div>
+								</div>
+							</div>
+							<div className="flex items-center gap-2">
+								<Image
+									src="/images/hero/feature4.png"
+									alt="Discount Offer"
+									width={54}
+									height={54}
+									className="flex-shrink-0 w-10 h-10 sm:w-[54px] sm:h-[54px]"
+								/>
+								<div className="flex flex-col">
+									<div className="text-sm sm:text-lg font-bold text-[#A3B116]">
+										10%
+									</div>
+									<div className="text-xs text-black">
+										原價一折優惠
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 
-					{/* Square Feet Input Popup */}
+					{/* Square Feet Input Popup - Mobile responsive */}
 					{showSqftPopup && (
-						<div className="fixed inset-0 flex items-center justify-center p-4 z-60 backdrop-blur-sm bg-black/20">
-							<div className="relative w-full max-w-md p-8 bg-white shadow-2xl rounded-2xl animate-fade-in">
+						<div className="fixed inset-0 flex items-center justify-center p-2 sm:p-4 z-60 backdrop-blur-sm bg-black/20">
+							<div className="relative w-full max-w-md p-4 bg-white shadow-2xl sm:p-8 rounded-xl sm:rounded-2xl animate-fade-in">
 								<div className="text-center">
 									{/* Icon */}
-									<div className="mb-6 text-5xl">🏠</div>
+									<div className="mb-4 text-4xl sm:mb-6 sm:text-5xl">
+										🏠
+									</div>
 
 									{/* Title */}
-									<h3 className="mb-4 text-xl font-bold text-gray-800">
+									<h3 className="mb-3 text-lg font-bold text-gray-800 sm:mb-4 sm:text-xl">
 										輸入房屋面積
 									</h3>
 
 									{/* Description */}
-									<p className="mb-6 text-sm leading-relaxed text-gray-600">
+									<p className="mb-4 text-xs leading-relaxed text-gray-600 sm:mb-6 sm:text-sm">
 										請輸入您的房屋總面積以計算準確的費用
 										<br />
 										<span className="font-medium text-red-600">
@@ -723,7 +816,7 @@ export default function PricingModal({ isOpen, onClose }) {
 									</p>
 
 									{/* Input */}
-									<div className="mb-6">
+									<div className="mb-4 sm:mb-6">
 										<label className="block mb-2 text-sm font-medium text-left text-gray-700">
 											房屋面積（平方尺）
 										</label>
@@ -734,7 +827,7 @@ export default function PricingModal({ isOpen, onClose }) {
 												setSqftValue(e.target.value)
 											}
 											placeholder="輸入面積..."
-											className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-center text-lg focus:border-[#A3B116] focus:outline-none transition-colors"
+											className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-lg text-center text-base sm:text-lg focus:border-[#A3B116] focus:outline-none transition-colors"
 											min="380"
 											step="1"
 											disabled={isProcessingPayment}
@@ -746,12 +839,12 @@ export default function PricingModal({ isOpen, onClose }) {
 										)}
 									</div>
 
-									{/* Buttons */}
-									<div className="flex gap-3">
+									{/* Buttons - Mobile stacked */}
+									<div className="flex flex-col gap-3 sm:flex-row">
 										<button
 											onClick={handleSqftSubmit}
 											disabled={isProcessingPayment}
-											className="flex-1 px-6 py-3 font-medium text-white transition-all duration-200 bg-[#A3B116] rounded-lg hover:bg-[#8a9913] shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+											className="flex-1 px-4 sm:px-6 py-2 sm:py-3 font-medium text-white transition-all duration-200 bg-[#A3B116] rounded-lg hover:bg-[#8a9913] shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
 										>
 											{isProcessingPayment
 												? "處理中..."
@@ -760,7 +853,7 @@ export default function PricingModal({ isOpen, onClose }) {
 										<button
 											onClick={handleSqftPopupClose}
 											disabled={isProcessingPayment}
-											className="flex-1 px-6 py-3 font-medium text-gray-700 transition-colors bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+											className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 transition-colors bg-gray-200 rounded-lg sm:px-6 sm:py-3 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed sm:text-base"
 										>
 											取消
 										</button>
@@ -770,150 +863,47 @@ export default function PricingModal({ isOpen, onClose }) {
 						</div>
 					)}
 
-					{/* Share Confirmation Modal */}
+					{/* Facebook Share Confirmation Modal - Mobile responsive */}
 					{showShareConfirm && (
-						<div className="fixed inset-0 flex items-center justify-center p-4 z-60 backdrop-blur-sm bg-white/30">
-							<div className="relative max-w-md p-6 bg-white shadow-2xl rounded-2xl">
+						<div className="fixed inset-0 flex items-center justify-center p-2 sm:p-4 z-70 backdrop-blur-sm bg-white/30">
+							<div className="relative max-w-md p-4 bg-white shadow-2xl sm:p-6 rounded-xl sm:rounded-2xl">
 								<div className="text-center">
-									<div className="mb-4 text-4xl">🤔</div>
-									<h3 className="mb-3 text-lg font-bold text-gray-800">
-										您分享了嗎？
+									<div className="mb-3 text-3xl sm:mb-4 sm:text-4xl">
+										🤔
+									</div>
+									<h3 className="mb-2 text-base font-bold text-gray-800 sm:mb-3 sm:text-lg">
+										確認分享狀態
 									</h3>
-									<p className="mb-6 text-sm leading-relaxed text-gray-600">
-										如果您剛剛分享了我們的網站到Facebook，點擊「是的，我分享了」來獲得您的專屬優惠碼！
+									<p className="mb-4 text-xs leading-relaxed text-gray-600 whitespace-pre-line sm:mb-6 sm:text-sm">
+										您已經分享HarmoniQ到Facebook了嗎？{"\n"}
+										分享成功後我們會為您提供專屬優惠碼！
 									</p>
-									<div className="flex gap-3">
+									<div className="flex flex-col gap-3 sm:flex-row">
 										<button
 											onClick={() =>
 												handleShareConfirm(true)
 											}
-											className="flex-1 px-4 py-2 font-medium text-white transition-colors bg-[#A3B116] rounded-lg hover:bg-[#8a9913] shadow-md hover:shadow-lg"
+											className="flex-1 px-3 py-2 text-sm font-medium text-white transition-colors bg-green-500 rounded-lg shadow-md sm:px-4 hover:bg-green-600 hover:shadow-lg sm:text-base"
+											style={{
+												fontFamily:
+													'"Noto Serif TC", serif',
+											}}
 										>
-											是的，我分享了
+											是的，已分享
 										</button>
 										<button
 											onClick={() =>
 												handleShareConfirm(false)
 											}
-											className="flex-1 px-4 py-2 font-medium text-gray-700 transition-colors bg-gray-200 rounded-lg hover:bg-gray-300"
+											className="flex-1 px-3 py-2 text-sm font-medium text-gray-700 transition-colors bg-gray-200 rounded-lg sm:px-4 hover:bg-gray-300 sm:text-base"
+											style={{
+												fontFamily:
+													'"Noto Serif TC", serif',
+											}}
 										>
 											取消
 										</button>
 									</div>
-								</div>
-							</div>
-						</div>
-					)}
-
-					{/* Promo Code Modal */}
-					{showPromoModal && sharePromoCode && (
-						<div className="fixed inset-0 flex items-center justify-center p-4 z-60 backdrop-blur-sm bg-black/50">
-							<div className="relative w-full max-w-md p-8 bg-white shadow-2xl rounded-2xl animate-fade-in">
-								<div className="text-center">
-									{/* Close Button */}
-									<button
-										onClick={() => setShowPromoModal(false)}
-										className="absolute z-10 flex items-center justify-center w-6 h-6 transition-colors bg-gray-200 rounded-full top-4 right-4 hover:bg-gray-300"
-									>
-										<svg
-											className="w-4 h-4"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M6 18L18 6M6 6l12 12"
-											/>
-										</svg>
-									</button>
-
-									{/* Success Icon */}
-									<div className="mb-6 text-6xl">🎉</div>
-
-									{/* Title */}
-									<h3 className="mb-4 text-2xl font-bold text-gray-800">
-										恭喜！獲得優惠碼
-									</h3>
-
-									{/* Description */}
-									<p className="mb-6 text-sm leading-relaxed text-gray-600">
-										感謝您分享我們的網站！以下是您的專屬優惠碼
-									</p>
-
-									{/* Promo Code Display */}
-									<div
-										className="p-6 mb-6 border-2 rounded-lg shadow-md"
-										style={{
-											borderColor: "#A3B116",
-											backgroundColor:
-												"rgba(163,177,22,0.08)",
-											backgroundImage: `url("data:image/svg+xml,%3Csvg width='120' height='60' viewBox='0 0 120 60' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='2' fill='%23A3B116'/%3E%3Ccircle cx='60' cy='20' r='1.5' fill='%23fbbf24'/%3E%3Ccircle cx='100' cy='40' r='2' fill='%23f87171'/%3E%3Ccircle cx='30' cy='50' r='1.5' fill='%23A3B116'/%3E%3Ccircle cx='80' cy='10' r='1.5' fill='%23A3B116'/%3E%3Ccircle cx='110' cy='15' r='1' fill='%23fbbf24'/%3E%3Ccircle cx='50' cy='45' r='1' fill='%23f87171'/%3E%3C/svg%3E")`,
-											backgroundRepeat: "repeat",
-										}}
-									>
-										<div
-											className="mb-3 text-sm text-[#A3B116]"
-											style={{
-												fontFamily:
-													"Noto Serif TC, serif",
-											}}
-										>
-											您的優惠碼
-										</div>
-										<div
-											className="mb-4 text-3xl font-bold tracking-wider text-[#A3B116] select-all"
-											style={{
-												fontFamily:
-													"Noto Serif TC, serif",
-											}}
-										>
-											{sharePromoCode}
-										</div>
-										<button
-											onClick={() => {
-												copyToClipboard(sharePromoCode);
-												setCopied(true);
-												setTimeout(
-													() => setCopied(false),
-													1500
-												);
-											}}
-											className="px-6 py-2 font-medium bg-[#A3B116] text-white rounded-lg transition-colors shadow-md hover:bg-[#8a9913] hover:shadow-lg"
-											style={{
-												fontFamily:
-													"Noto Serif TC, serif",
-											}}
-										>
-											複製優惠碼
-										</button>
-										{copied && (
-											<div
-												className="mt-2 text-sm font-semibold text-green-600 animate-fade-in"
-												style={{
-													fontFamily:
-														"Noto Serif TC, serif",
-												}}
-											>
-												已複製到剪貼板！
-											</div>
-										)}
-									</div>
-
-									{/* Instructions */}
-									<p className="mb-6 text-xs text-gray-500">
-										請將此優惠碼輸入到上方的「輸入優惠碼」欄位中以解鎖高級版本
-									</p>
-
-									{/* Close Button */}
-									<button
-										onClick={() => setShowPromoModal(false)}
-										className="px-8 py-3 font-medium text-white transition-all duration-200 bg-[#A3B116] rounded-lg hover:bg-[#8a9913] shadow-md hover:shadow-lg"
-									>
-										了解，繼續使用
-									</button>
 								</div>
 							</div>
 						</div>
@@ -921,7 +911,7 @@ export default function PricingModal({ isOpen, onClose }) {
 				</div>
 			</div>
 
-			{/* Add CSS for animation using a style tag in the head */}
+			{/* Add CSS for animation */}
 			<style
 				dangerouslySetInnerHTML={{
 					__html: `

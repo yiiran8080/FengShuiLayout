@@ -69,57 +69,251 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
 
-  -webkit-user-select: none; /* Chrome, Safari, Opera */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+    /* Allow text selection by default */
+    -webkit-user-select: text;
+    /* Chrome, Safari, Opera */
+    -moz-user-select: text;
+    /* Firefox */
+    -ms-user-select: text;
+    /* Internet Explorer/Edge */
+    user-select: text;
+    /* Non-prefixed version, currently supported by Chrome and Opera */
 
-  -webkit-user-drag: none; /* Chrome, Safari, Opera */
-  -moz-user-drag: none; /* Firefox */
-  -ms-user-drag: none; /* Internet Explorer/Edge */
-::-webkit-scrollbar{
-  width:12px;
-}
-::-webkit-scrollbar-track{
-  background: #f1f1f1;
-    border-radius: 20px;
-}
-::-webkit-scrollbar-thumb{
-  background: #dad9d9;
-  border-radius: 20px;
-  
-}
-::-webkit-scrollbar-thumb:hover{
-  background: #555;
-  
-}
+    -webkit-user-drag: none;
+    /* Chrome, Safari, Opera */
+    -moz-user-drag: none;
+    /* Firefox */
+    -ms-user-drag: none;
+
+    /* Internet Explorer/Edge */
+    ::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 20px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #dad9d9;
+      border-radius: 20px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+  }
+
+  /* Utility class for UI elements that should not be selectable */
+  .no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  /* Utility class to explicitly allow text selection */
+  .allow-select {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
   }
 }
 
 @layer utilities {
   .bg-hero {
-    background: linear-gradient(#0F2A1E99 10%, #13382780 34%,  #73897F1A 90%),
-                url('/images/hero/heroback.png') center/cover;
+    background: linear-gradient(#0F2A1E99 10%, #13382780 34%, #73897F1A 90%),
+      url('/images/hero/heroback.png') center/cover;
   }
-  .bg-shadow{
-    background: linear-gradient(#0F2A1E99 10%, #13382780 34%,  #73897F1A 90%),
+
+  .bg-shadow {
+    background: linear-gradient(#0F2A1E99 10%, #13382780 34%, #73897F1A 90%),
   }
-   .bg-lock{
+
+  .bg-lock {
     background: linear-gradient(#ffffff00 0%, #ffffff 100%),
   }
-  .bg-button-primary{
+
+  .bg-button-primary {
     background-color: #096e44;
   }
+
   .bg-button-gradient {
     background: linear-gradient(135deg, #19AD6B 0%, #16A183 100%);
   }
+
   .text-hero {
-    color:#073E31
+    color: #073E31
   }
-  .secondary-foreground{
-    color:#25826C
+
+  .secondary-foreground {
+    color: #25826C
+  }
+}
+
+/* Enhanced Safari-specific fixes for complex layouts */
+@supports (-webkit-appearance: none) and (not (appearance: none)) {
+
+  /* Safari-specific fixes */
+  .chrome-like {
+    -webkit-transform-style: flat !important;
+    transform-style: flat !important;
+    -webkit-perspective: none !important;
+    perspective: none !important;
+    will-change: auto !important;
+    -webkit-font-smoothing: antialiased !important;
+    text-rendering: optimizeLegibility !important;
+  }
+
+  /* Force Safari grid behavior to match Chrome */
+  .chrome-like[style*="grid"] {
+    display: -ms-grid !important;
+    display: grid !important;
+    -webkit-grid-gap: inherit !important;
+    grid-gap: inherit !important;
+  }
+
+  /* Force Safari flex behavior */
+  .chrome-like[style*="flex"] {
+    display: -webkit-flex !important;
+    display: flex !important;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+  }
+
+  /* Force consistent backdrop blur */
+  .chrome-like[style*="backdrop-blur"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-color: rgba(255, 255, 255, 0.8) !important;
+  }
+
+  /* Force consistent transform behavior */
+  .chrome-like[style*="transform"] {
+    -webkit-transform: none !important;
+    transform: none !important;
+  }
+
+  /* Safari font metrics override */
+  .chrome-standard {
+    font-synthesis: none !important;
+    -webkit-font-feature-settings: normal !important;
+    font-feature-settings: normal !important;
+    letter-spacing: 0 !important;
+    line-height: 1.2 !important;
+  }
+}
+
+/* Enhanced cross-browser motion and animation fixes */
+.chrome-like[data-motion-component] {
+  transform: none !important;
+  will-change: auto !important;
+}
+
+/* Force consistent Chinese text rendering */
+[lang="zh"],
+[lang="zh-CN"],
+[lang="zh-TW"] {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
+  text-rendering: optimizeLegibility !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* Force consistent responsive scaling */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+
+  /* Safari-only styles */
+  [style*="scale("] {
+    transform: none !important;
+    zoom: 1 !important;
+  }
+}
+
+/* 3D Flip Card Styles */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+.group:hover .group-hover\:rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+@font-face {
+  font-family: 'UoqMunThenKhung';
+  src: url('/fonts/UoqMunThenKhung.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Moving tags animation */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(50%);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll-left {
+  animation: scroll-left 12s linear infinite;
+}
+
+/* Mobile-responsive utilities */
+.mobile-safe-width {
+  width: calc(100vw - 1rem);
+  max-width: 100%;
+}
+
+.mobile-container {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .mobile-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Scrollbar hiding for mobile */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Responsive margin for title text */
+.responsive-title-margin {
+  margin-top: 16px;
+}
+
+@media (min-width: 640px) {
+  .responsive-title-margin {
+    margin-top: 90px;
   }
 }

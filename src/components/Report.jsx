@@ -1,6 +1,14 @@
 "use client";
 import Navbar from "@/components/Navbar";
-import { useRef, useState, useEffect, Suspense, use } from "react";
+import {
+	useRef,
+	useState,
+	useEffect,
+	useCallback,
+	useMemo,
+	Suspense,
+	use,
+} from "react";
 import { useSearchParams, useParams, useRouter } from "next/navigation";
 import useMobile from "@/app/hooks/useMobile";
 import useReportDoc from "@/app/hooks/useReportDoc";
@@ -19,19 +27,42 @@ import { useReactToPrint } from "react-to-print";
 import { useSession } from "next-auth/react";
 import { get, post, patch } from "@/lib/ajax";
 import { AntdSpin } from "antd-spin";
+import getWuxingData from "@/lib/nayin";
+import FamilyReport from "@/components/FamilyReport";
+import Pet from "@/components/Pet";
+import FourFortuneAnalysis from "@/components/FourFortuneAnalysis";
+import { useLifeReportPersistence } from "@/hooks/useLifeReportPersistence";
+import { useReportDataPersistence } from "@/hooks/useReportDataPersistence";
+
 const wuxingColorMap = {
-	金: "#CCBB00",
-	木: "#00991B",
-	水: "#0088CC",
-	火: "#E52918",
-	土: "#BF8F00",
+	金: "#B2A062",
+	木: "#567156",
+	水: "#939393",
+	火: "#B4003C",
+	土: "#DEAB20",
+};
+
+const ELEMENTS = ["金", "木", "水", "火", "土"];
+
+const ELEMENT_COLORS = {
+	金: "from-yellow-400 to-yellow-600",
+	木: "from-green-500 to-green-700",
+	水: "from-blue-500 to-blue-700",
+	火: "from-red-500 to-red-700",
+	土: "from-amber-600 to-amber-800",
 };
 
 // you can use a function to return the target element besides using React refs
 
-export default function ReportPage({ locale }) {
+export default function ReportPage({
+	locale,
+	birthDateTime: propBirthDateTime,
+	gender: propGender,
+	sessionId: propSessionId,
+}) {
 	const isMobile = useMobile();
 	const router = useRouter();
+	const searchParams = useSearchParams();
 	const t = useTranslations("report");
 	const t2 = useTranslations("toast");
 	const contentRef = useRef(null);
@@ -46,10 +77,13 @@ export default function ReportPage({ locale }) {
 	const [isPrinting, setIsPrinting] = useState(false);
 	const [isLock, setIsLock] = useState(true);
 	const [userInfo, setUserInfo] = useState(null);
+	const [aiGenerationStarted, setAiGenerationStarted] = useState(false);
 	const [openedNianzhuIndex, setOpenedNianzhuIndex] = useState(null);
 	const [openedYuezhuIndex, setOpenedYuezhuIndex] = useState(null);
 	const [openedRizhuIndex, setOpenedRizhuIndex] = useState(null);
 	const [openedShizhuIndex, setOpenedShizhuIndex] = useState(null);
+	const [activePillar, setActivePillar] = useState("年柱");
+	const [activeTab, setActiveTab] = useState("report"); // "report" or "fortune"
 	const nianzhuRefs = useRef([]);
 	const yuezhuRefs = useRef([]);
 	const rizhuRefs = useRef([]);
@@ -57,11 +91,1028 @@ export default function ReportPage({ locale }) {
 	const [mingLiData, setMingLiData] = useState(null);
 	const [liuNianData, setLiuNianData] = useState(null);
 	const [jiajuProData, setJiaJuData] = useState(null);
-	// const [proReportDataObj, setProReportDataObj] = useState({});
+
+	// Life Report Persistence Hook
+	const { saveLifeReport, markLifeReportComplete } =
+		useLifeReportPersistence();
+
+	// ✅ NEW: Alternative save system (no auth required)
+	const { saveReportData, getReportData, markReportComplete } =
+		useReportDataPersistence();
+
+	// Clear cached content for new payment sessions to ensure fresh AI generation
+	const clearContentForNewSession = useCallback((sessionId) => {
+		console.log(
+			"🧹 Clearing all cached content for new payment session:",
+			sessionId
+		);
+
+		// Clear comprehensive advice
+		setComprehensiveInterpersonalAdvice(null);
+		setComprehensiveLifeAdvice(null);
+
+		// Reset loading states
+		setIsLoadingComprehensiveInterpersonal(false);
+		setIsLoadingComprehensiveLifeAdvice(false);
+
+		// Clear AI analysis data if it exists
+		if (typeof setAiAnalysis === "function") {
+			setAiAnalysis(null);
+		}
+
+		// Clear ming li data
+		setMingLiData(null);
+		setLiuNianData(null);
+		setJiaJuData(null);
+
+		// Clear four fortune data to force fresh generation
+		setFourFortuneData({
+			healthFortuneData: null,
+			careerFortuneData: null,
+			wealthFortuneData: null,
+			relationshipFortuneData: null,
+		});
+
+		console.log("✅ All content cleared - fresh generation will begin");
+	}, []);
+
+	// Four Fortune Analysis data states for persistence
+	const [fourFortuneData, setFourFortuneData] = useState({
+		healthFortuneData: null,
+		careerFortuneData: null,
+		wealthFortuneData: null,
+		relationshipFortuneData: null,
+	});
+
+	// Text-to-speech states
+	const [isSpeaking, setIsSpeaking] = useState(false);
+	const [currentSpeechText, setCurrentSpeechText] = useState("");
+	const speechSynthesis =
+		typeof window !== "undefined" ? window.speechSynthesis : null;
+	const currentUtterance = useRef(null);
+
+	// Stable ref callback functions to prevent infinite loops
+	const setNianzhuRef = useCallback(
+		(index) => (el) => {
+			nianzhuRefs.current[index] = el;
+		},
+		[]
+	);
+
+	const setYuezhuRef = useCallback(
+		(index) => (el) => {
+			yuezhuRefs.current[index] = el;
+		},
+		[]
+	);
+
+	const setRizhuRef = useCallback(
+		(index) => (el) => {
+			rizhuRefs.current[index] = el;
+		},
+		[]
+	);
+
+	const setShizhuRef = useCallback(
+		(index) => (el) => {
+			shizhuRefs.current[index] = el;
+		},
+		[]
+	);
+
+	// AI Analysis state for wuxing patterns
+	const [aiAnalysis, setAiAnalysis] = useState(null);
+	const [activeTenGodsTab, setActiveTenGodsTab] = useState("正印");
+	const [elementFlowAnalysis, setElementFlowAnalysis] = useState(null);
+	const [isLoadingFlowAnalysis, setIsLoadingFlowAnalysis] = useState(false);
+
+	// AI life stage analysis states
+	const [lifeStageAnalysis, setLifeStageAnalysis] = useState({
+		年柱: null,
+		月柱: null,
+		日柱: null,
+		時柱: null,
+	});
+	const [isLoadingLifeStage, setIsLoadingLifeStage] = useState({
+		年柱: false,
+		月柱: false,
+		日柱: false,
+		時柱: false,
+	});
+
+	// Interpersonal and life advice states
+	const [interpersonalAdvice, setInterpersonalAdvice] = useState({
+		年柱: null,
+		月柱: null,
+		日柱: null,
+		時柱: null,
+	});
+	const [lifeAdviceAnalysis, setLifeAdviceAnalysis] = useState({
+		年柱: null,
+		月柱: null,
+		日柱: null,
+		時柱: null,
+	});
+	const [isLoadingInterpersonal, setIsLoadingInterpersonal] = useState({
+		年柱: false,
+		月柱: false,
+		日柱: false,
+		時柱: false,
+	});
+	const [isLoadingLifeAdvice, setIsLoadingLifeAdvice] = useState({
+		年柱: false,
+		月柱: false,
+		日柱: false,
+		時柱: false,
+	});
+
+	// State for comprehensive sections (not tied to specific pillars)
+	const [
+		comprehensiveInterpersonalAdvice,
+		setComprehensiveInterpersonalAdvice,
+	] = useState(null);
+	const [comprehensiveLifeAdvice, setComprehensiveLifeAdvice] =
+		useState(null);
+	const [
+		isLoadingComprehensiveInterpersonal,
+		setIsLoadingComprehensiveInterpersonal,
+	] = useState(false);
+	const [
+		isLoadingComprehensiveLifeAdvice,
+		setIsLoadingComprehensiveLifeAdvice,
+	] = useState(false);
+
+	// Comprehensive Life Advice Tab States
+	const [activeComprehensiveTab, setActiveComprehensiveTab] =
+		useState("五行調和");
+	const [activeWuxingTab, setActiveWuxingTab] = useState("補益");
+	const [activeHealthTab, setActiveHealthTab] = useState("運動建議");
+	const [activeCareerTab, setActiveCareerTab] = useState("近期");
+
+	// Interpersonal Balance Tab States
+	const [activeInterpersonalTab, setActiveInterpersonalTab] =
+		useState("個人關係");
+	const [activePersonalTab, setActivePersonalTab] = useState("婚戀配對");
+	const [activeWorkplaceTab, setActiveWorkplaceTab] = useState("領導風格");
+	const [activeSocialTab, setActiveSocialTab] = useState("人脈建構");
+
 	const { loading, reportDocData, assistantData } = useReportDoc(
 		locale,
 		userInfo
 	);
+
+	// Analyze Wuxing strength patterns (Logic-based)
+	const analyzeWuxingStrength = (elementCounts) => {
+		const total = Object.values(elementCounts).reduce(
+			(sum, count) => sum + count,
+			0
+		);
+		const strongElements = [];
+		const weakElements = [];
+
+		Object.entries(elementCounts).forEach(([element, count]) => {
+			const percentage = (count / total) * 100;
+			if (percentage >= 25) {
+				// 25% or more is considered strong
+				strongElements.push(element);
+			} else if (count === 0) {
+				weakElements.push(element);
+			}
+		});
+
+		// Generate strength description
+		let strengthDesc = "";
+		if (strongElements.length === 1) {
+			strengthDesc = `${strongElements[0]}旺`;
+		} else if (strongElements.length === 2) {
+			strengthDesc = `${strongElements.join("")}兩旺`;
+		} else if (strongElements.length >= 3) {
+			strengthDesc = `${strongElements.slice(0, 2).join("")}等多旺`;
+		} else {
+			// No particularly strong elements, find the strongest
+			const maxCount = Math.max(...Object.values(elementCounts));
+			const dominant = Object.entries(elementCounts).find(
+				([_, count]) => count === maxCount
+			)?.[0];
+			strengthDesc = dominant ? `${dominant}為主` : "五行平衡";
+		}
+
+		return {
+			strongElements,
+			weakElements,
+			strengthDesc,
+			elementCounts,
+		};
+	};
+
+	// Determine useful gods (用神) based on wuxing balance
+	const determineUsefulGods = (strengthAnalysis) => {
+		const { strongElements, weakElements, elementCounts } =
+			strengthAnalysis;
+		const elementCycle = ["木", "火", "土", "金", "水"];
+
+		let primaryGod = "";
+		let auxiliaryGod = "";
+		let strategy = "";
+
+		// Strategy 1: If there are missing elements, they become useful gods
+		if (weakElements.length > 0) {
+			primaryGod = weakElements[0];
+			if (weakElements.length > 1) {
+				auxiliaryGod = weakElements[1];
+			} else {
+				// Find element that generates the primary god
+				const primaryIndex = elementCycle.indexOf(primaryGod);
+				const generatorIndex = (primaryIndex - 1 + 5) % 5;
+				auxiliaryGod = elementCycle[generatorIndex];
+			}
+			strategy = "補缺";
+		}
+		// Strategy 2: If elements are relatively balanced, support the weakest
+		else if (strongElements.length === 0) {
+			const minCount = Math.min(...Object.values(elementCounts));
+			const weakestElements = Object.entries(elementCounts)
+				.filter(([_, count]) => count === minCount)
+				.map(([element, _]) => element);
+
+			primaryGod = weakestElements[0];
+			// Find element that generates the primary god
+			const primaryIndex = elementCycle.indexOf(primaryGod);
+			const generatorIndex = (primaryIndex - 1 + 5) % 5;
+			auxiliaryGod = elementCycle[generatorIndex];
+			strategy = "扶弱";
+		}
+		// Strategy 3: If there are overly strong elements, use restraining elements
+		else if (strongElements.length >= 2) {
+			// Use elements that restrain the strongest
+			const strongestElement = strongElements[0];
+			const strongestIndex = elementCycle.indexOf(strongestElement);
+			const restrainingIndex = (strongestIndex + 1) % 5;
+			primaryGod = elementCycle[restrainingIndex];
+
+			// Secondary restraining element or supporting element
+			const secondaryRestrainingIndex = (restrainingIndex + 1) % 5;
+			auxiliaryGod = elementCycle[secondaryRestrainingIndex];
+			strategy = "抑強";
+		}
+		// Strategy 4: Single strong element - moderate restraint
+		else if (strongElements.length === 1) {
+			const strongElement = strongElements[0];
+			const strongIndex = elementCycle.indexOf(strongElement);
+
+			// Use element that drains the strong element (generated by strong element)
+			const drainingIndex = (strongIndex + 1) % 5;
+			primaryGod = elementCycle[drainingIndex];
+
+			// Use element that restrains the strong element
+			const restrainingIndex = (strongIndex + 2) % 5;
+			auxiliaryGod = elementCycle[restrainingIndex];
+			strategy = "瀉強";
+		}
+
+		return {
+			primaryGod,
+			auxiliaryGod,
+			strategy,
+		};
+	};
+
+	// Calculate elements for 十神 based on user's wuxing data
+	const calculateTenGodsElements = (userInfo) => {
+		if (!userInfo?.birthDateTime) return {};
+
+		const wuxingAnalysis = calculateWuxingAnalysis(userInfo);
+		if (!wuxingAnalysis?.wuxingData) return {};
+
+		const { wuxingData } = wuxingAnalysis;
+		const dayStem = wuxingData.dayStem; // Get day stem (日干)
+		const dayStemElement = wuxingData.dayStemWuxing; // Get day stem element
+
+		// 十神 element relationships based on 五行生克 - using proper day stem
+		const elementCycle = ["木", "火", "土", "金", "水"];
+		const currentIndex = elementCycle.indexOf(dayStemElement);
+
+		const tenGodsElements = {
+			正印: elementCycle[(currentIndex + 4) % 5], // 生我者為印 (Previous in cycle: 水生木)
+			財星: elementCycle[(currentIndex + 2) % 5], // 我克者為財 (Two ahead in cycle: 木克土)
+			官殺: elementCycle[(currentIndex + 3) % 5], // 克我者為官殺 (Three ahead: 金克木)
+			劫比: dayStemElement, // 同我者為比劫 (Same element)
+			食傷: elementCycle[(currentIndex + 1) % 5], // 我生者為食傷 (Next in cycle: 木生火)
+		};
+
+		return { dayStemElement, tenGodsElements };
+	};
+
+	// AI-based analysis for complex patterns
+	const analyzeComplexPatterns = async (wuxingData, userInfo) => {
+		try {
+			const response = await fetch("/api/wuxing-analysis", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					wuxingData,
+					userInfo,
+					birthDateTime: userInfo.birthDateTime,
+					gender: userInfo.gender,
+				}),
+			});
+
+			if (response.ok) {
+				const result = await response.json();
+				// Return the detailed analysis
+				return (
+					result.analysis || {
+						pattern: "身強食神制殺格",
+						primaryGod: "木",
+						secondaryGod: "土",
+						mainConclusion: {
+							wuxingPattern: "金火兩旺",
+							pattern: "身強食神制殺格",
+						},
+						wuxingDistribution: {
+							detailed: {
+								wood: {
+									count: 1,
+									strength: "★",
+									characteristic: "孤立無根",
+									influence: "創造力受限，難將靈感系統化落地",
+								},
+								fire: {
+									count: 3,
+									strength: "★★★",
+									characteristic: "外顯熾熱",
+									influence:
+										"行動力強、熱情主動，但易急躁衝動",
+								},
+								earth: {
+									count: 3,
+									strength: "★★",
+									characteristic: "鬆散無力",
+									influence: "財運不穩，存錢實力，易衝動消費",
+								},
+								metal: {
+									count: 4,
+									strength: "★★★★",
+									characteristic: "剛硬密集",
+									influence:
+										"追求完美、重規則壓力，身心易疲憊",
+								},
+								water: {
+									count: 2,
+									strength: "★★★",
+									characteristic: "潛藏暗流",
+									influence: "直覺敏銳，但思慮多，易焦慮失眠",
+								},
+							},
+							conflicts: [
+								{
+									title: "金火對峙",
+									description:
+										"金（刚烈）与火（热烈）两强相争，消耗日主能量，易引发身心疲惫。",
+									example:
+										'想学习新技能（木），总被工作任务（金）打断，导致计划频繁中断，常怀入"忙到无成果"状态。',
+								},
+							],
+						},
+					}
+				);
+			}
+		} catch (error) {
+			console.error("AI analysis error:", error);
+		}
+
+		// Fallback if AI fails
+		return {
+			pattern: "身強食神制殺格",
+			primaryGod: "木",
+			secondaryGod: "土",
+			mainConclusion: {
+				wuxingPattern: "金火兩旺",
+				pattern: "身強食神制殺格",
+			},
+			wuxingDistribution: {
+				detailed: {
+					wood: {
+						count: 1,
+						strength: "★",
+						characteristic: "孤立無根",
+						influence: "創造力受限，難將靈感系統化落地",
+					},
+					fire: {
+						count: 3,
+						strength: "★★★",
+						characteristic: "外顯熾熱",
+						influence: "行動力強、熱情主動，但易急躁衝動",
+					},
+					earth: {
+						count: 3,
+						strength: "★★",
+						characteristic: "鬆散無力",
+						influence: "財運不穩，存錢實力，易衝動消費",
+					},
+					metal: {
+						count: 4,
+						strength: "★★★★",
+						characteristic: "剛硬密集",
+						influence: "追求完美、重規則壓力，身心易疲憊",
+					},
+					water: {
+						count: 2,
+						strength: "★★★",
+						characteristic: "潛藏暗流",
+						influence: "直覺敏銳，但思慮多，易焦慮失眠",
+					},
+				},
+				conflicts: [
+					{
+						title: "金火對峙",
+						description:
+							"金（刚烈）与火（热烈）两强相争，消耗日主能量，易引发身心疲惫。",
+						example:
+							'想学习新技能（木），总被工作任务（金）打断，导致计划频繁中断，常怀入"忙到无成果"状态。',
+					},
+				],
+			},
+		};
+	};
+
+	// AI-powered element flow analysis
+	const analyzeElementFlow = async (userInfo) => {
+		if (!userInfo || isLoadingFlowAnalysis) return;
+
+		setIsLoadingFlowAnalysis(true);
+		try {
+			const response = await fetch("/api/element-flow-analysis", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					userInfo,
+				}),
+			});
+
+			if (response.ok) {
+				const result = await response.json();
+
+				if (result.success && result.analysis) {
+					setElementFlowAnalysis(result.analysis);
+				} else {
+					console.error("Invalid analysis result:", result);
+				}
+			} else {
+				console.error("API request failed:", response.status);
+			}
+		} catch (error) {
+			console.error("Element flow analysis error:", error);
+		} finally {
+			setIsLoadingFlowAnalysis(false);
+		}
+	};
+
+	// AI-powered life stage analysis for four pillars
+	const generateLifeStageAnalysis = async (
+		pillarType,
+		pillarData,
+		userInfo
+	) => {
+		try {
+			const stageMapping = {
+				年柱: "童年",
+				月柱: "青年",
+				日柱: "成年",
+				時柱: "老年",
+			};
+
+			const stage = stageMapping[pillarType] || "人生阶段";
+
+			const response = await fetch("/api/life-stage-analysis", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					pillarType,
+					stage,
+					pillarData,
+					userInfo,
+					prompt: `关联人生阶段（${pillarType}=${stage}）
+白话直断**（分两段）：  
+   - **{关键词}**：生活场景说明（如"竞争与规则并存"）  
+   - **现实案例**：如"被父母要求先写作业才能玩"`,
+				}),
+			});
+
+			if (response.ok) {
+				const result = await response.json();
+				return result.analysis;
+			}
+		} catch (error) {
+			console.error(
+				`Life stage analysis error for ${pillarType}:`,
+				error
+			);
+		}
+
+		// Fallback content based on the examples provided
+		const fallbackContent = {
+			年柱: {
+				title: "年柱甲申：竞争与规则并存的童年",
+				content:
+					"你小时候的环境（家庭或学校）存在明显的竞争压力，比如兄弟姐妹比较成绩，或父母用严格标准要求你。同时生活中规则感很强，例如必须按时回家、作业错一题罚抄十遍等。",
+				example:
+					"就像玩游戏时，别人轻松过关，你却总被要求「先写完数学题才能玩」，这种约束让你早早就学会在压力下找方法。",
+				wisdom: "智慧如地下暗流：指你天生会暗中观察、动脑筋解决问题。比如被父母禁止看电视，你会偷偷用电脑查资料完成作业来争取自由时间——这种「钻空子」不是叛逆，而是懂得灵活应对规则。",
+			},
+			月柱: {
+				title: "月柱丁巳：才华耀眼但容易三分热度",
+				content:
+					"你青年时期（中学到大学）能力突出，像学新技能比同学快、比赛容易拿奖。但热情来得快去得快，可能今天想学画画，明天又迷上编程，最后都没坚持。",
+				example:
+					"就像参加社团时，你一周就能当上组长（火性爆发力），但三个月后觉得无聊就退社了（火旺难持久）。",
+				wisdom: "火焚高木的警告：你像一棵长在火山边的树，长得快但易被烧伤。比如熬夜三天写完报告拿了高分（才华耀眼），结果感冒一周（消耗过度）。",
+			},
+			日柱: {
+				title: "日柱丁酉：能力与压力互相成就",
+				content:
+					"你成年后靠实力赚钱（如专业技能、创意作品），但这些机会总伴随高压挑战。比如接到高薪项目，却要天天加班；或自己创业当老板，但每笔支出都心惊胆战。",
+				example:
+					"像你设计海报被客户夸赞（丁火发光），但改了20版才通过（酉金磨人）。",
+				wisdom: "钗钏金的本质：你的价值像金首饰，需要被打磨才能闪耀。压力（客户挑剔/老板刁难）其实是让你更专业的「打磨工具」。",
+			},
+			時柱: {
+				title: "时柱庚子：晚年要懂得放松与放手",
+				content:
+					"你老年可能地位高、说话有分量（如当了领导或家族长辈），但责任也更大，常为小事操心失眠。",
+				example:
+					"像退休后还被请去当顾问，既高兴被看重（庚金权威），又烦心年轻人不按你的方法做（子水暗忧）。",
+				wisdom: "壁上土的提醒：这堵墙既是保护（比如存款够多不怕生病），也可能隔绝快乐（比如嫌旅游太累只在家发呆）。学会偶尔「拆墙」——像勉强同意儿女用新方法装修老房，反而发现效果不错。",
+			},
+		};
+
+		return fallbackContent[pillarType] || fallbackContent["年柱"];
+	};
+
+	// Generate interpersonal advice for each pillar
+	const generateInterpersonalAdvice = async (pillar, userInfo) => {
+		try {
+			const response = await fetch("/api/interpersonal-advice", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					pillar,
+					userInfo,
+				}),
+			});
+
+			if (response.ok) {
+				const result = await response.json();
+				return result.analysis;
+			}
+		} catch (error) {
+			console.error(`Interpersonal advice error for ${pillar}:`, error);
+		}
+
+		// Fallback content based on the image
+		return {
+			personalTraits:
+				"年柱反映了您早期的人際特質，天生具有親和力，容易獲得他人信任。在人際關係中展現出純真和熱情，但有時可能過於直接，需要學習更多的人際技巧。",
+			communicationStyle:
+				"建議在溝通時保持真誠，但要學會察言觀色。避免過於衝動的表達，多聽少說，給對方充分的表達空間。在重要場合前先思考再開口。",
+			relationshipMaintenance:
+				"重視情感交流，定期與朋友家人聯繫。學會記住他人的重要日子，適時表達關心。建立互相支持的友誼圈，但要保持適當的界限。",
+			conflictResolution:
+				"面對衝突時，先冷靜下來，避免情緒化的反應。學會換位思考，理解對方的立場。用溫和但堅定的態度表達自己的觀點，尋求雙贏的解決方案。",
+		};
+	};
+
+	// Generate comprehensive life advice for each pillar
+	const generateLifeAdvice = async (pillar, userInfo) => {
+		try {
+			const response = await fetch("/api/comprehensive-advice", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					pillar,
+					userInfo,
+				}),
+			});
+
+			if (response.ok) {
+				const result = await response.json();
+				return result.analysis;
+			}
+		} catch (error) {
+			console.error(`Comprehensive advice error for ${pillar}:`, error);
+		}
+
+		// Fallback content
+		return {
+			careerDevelopment:
+				"年柱代表早期發展基礎，建議選擇能發揮創意和熱情的工作。適合從基層做起，紮實累積經驗。重視學習機會，為未來發展奠定基礎。",
+			healthWellness:
+				"注意心血管和神經系統的健康。保持規律的作息時間，多做戶外運動。年輕時養成良好的飲食習慣，避免過度熬夜和壓力。",
+			wealthManagement:
+				"理財觀念需要從年輕時培養，建議採用穩健的投資策略。避免高風險投資，重視儲蓄習慣的建立。學會記帳和預算管理。",
+			relationshipGuidance:
+				"感情方面較為純真，容易全心投入。建議保持理性，不要過於急躁。學會觀察對方的真實性格，建立穩固的感情基礎。",
+			lifeDirection:
+				"人生規劃應該注重基礎建設，包括教育、技能和人際關係。設定清晰的短期和長期目標，保持學習的心態，為未來發展做好準備。",
+		};
+	};
+
+	// Helper function to generate comprehensive interpersonal advice
+	const generateComprehensiveInterpersonalAdvice = async (
+		userInfo,
+		wuxingData
+	) => {
+		try {
+			const response = await fetch("/api/comprehensive-interpersonal", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					userInfo,
+					wuxingData,
+				}),
+			});
+
+			if (response.ok) {
+				const result = await response.json();
+				return result.analysis;
+			}
+		} catch (error) {
+			console.error(`Comprehensive interpersonal advice error:`, error);
+		}
+
+		// Fallback content
+		return {
+			cooperation: {
+				analysis:
+					"比劫異財的狀況下，須明確合作的邊界。創業合夥時重視財務契約，技術入股需確保專利權。",
+				suggestions: [
+					"技術入股須公證專利權屬，避免後續糾紛",
+					"日常合作要學習西金的剛中帶韌，遇到方案爭執時可以設定「三日緩衝期」",
+					"建立明確的權責分工機制，定期檢視合作成效",
+				],
+			},
+			leadership: {
+				analysis:
+					"正官與金透出時旺，隨著年齡增長威望也會提升，應該用包容的態度替代鋒芒。",
+				suggestions: [
+					"庚金透干時以剛中帶韌化解爭執，避免過度強硬",
+					"決策時要「先聽大家的意見，再做決定」，展現包容性領導風格",
+					"培養下屬時注重因材施教，發揮每個人的長處",
+				],
+			},
+			emotional: {
+				analysis:
+					"情感方面要小心火和金的衝突，需要通過五行調和來化解感情中的矛盾。",
+				suggestions: [
+					"伴侶最好是水木旺的人（比如生於亥卯未時）",
+					"感情溝通時避開火旺的時段，選擇水旺時間（如子時、亥時）",
+					"培養共同的興趣愛好，增進感情交流",
+				],
+				fengshui:
+					"在家裡可以設置木質屏風來增旺西方（金方），坎位置黑曜石化解沖剋",
+			},
+		};
+	};
+
+	// Helper function to generate comprehensive life advice
+	const generateComprehensiveLifeAdvice = async (userInfo, wuxingData) => {
+		try {
+			const response = await fetch("/api/comprehensive-life-advice", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					userInfo,
+					wuxingData,
+				}),
+			});
+
+			if (response.ok) {
+				const result = await response.json();
+				return result.analysis;
+			}
+		} catch (error) {
+			console.error(`Comprehensive life advice error:`, error);
+		}
+
+		// Fallback content based on the image examples
+		return {
+			wuxingHarmony: {
+				primaryGod: "以木為樞要",
+				secondaryGod: "水為輔佐",
+				summary: {
+					supplement: [
+						"日常著青碧服飾，東方青氣引動甲木根基",
+						"居室增置綠植意象，晨起面東而立調息",
+						"引少陽升發之氣，木方有運用神",
+					],
+					strengthen: [
+						"土性承載，建議多用陶器、棕黃織物及方形陳設",
+						"飲食偏重小米、南瓜等甘味食材，以回中宮脾胃之氣",
+					],
+					avoid: [
+						"慎避金火過盛之境，避免穿著白色、赤色服飾及金屬配飾",
+						"午時（11-13時）烈日曝曬需謹慎",
+						"忌金色疊加紅色材質的組合使用",
+					],
+				},
+				detailed:
+					"水星暗導可微量補益，可於家中北位放置墨玉貔貅，既潤局中燥火，亦助百脈流通",
+			},
+			healthWellness: {
+				exercise: [
+					"申時林間習練太極拳，借木氣養身",
+					"卯時戶外慢跑，配合東方木旺之時",
+				],
+				emotion: "透過書法練習涵養正官之氣，化解情緒起伏",
+				detailed: "每日辰時面東靜坐15分鐘，按壓太沖穴，焚檀香調息",
+			},
+			careerDirection: {
+				nearTerm: {
+					ageRange: "20-30歲",
+					pattern: "食神生財格漸顯，創意表達能力突出",
+					industries: ["文化創意產業", "教育培訓行業"],
+					risk: "逢金旺年份須防契約糾紛，重大決策前宜諮詢水木屬性人士",
+				},
+				midTerm: {
+					ageRange: "30-40歲",
+					transformation: "傷官化土生財，轉向管理和整合型工作",
+					strategy: "創建平台整合創意資源，發揮協調統籌能力",
+					decision: "重大投資前諮詢木火屬性人士，避開金旺時段做決策",
+				},
+				longTerm: {
+					ageRange: "40歲後",
+					fortune: "食神吐秀，財庫大開，智慧與財富並進",
+					knowledge: "編纂行業標準典籍，建立專業知識體系",
+					wellness: "參觀文化產業園既養木氣亦啟發靈感",
+				},
+			},
+			interpersonalBalance: {
+				cooperation: "技術入股須公證專利權屬，合作協議需明確權責邊界",
+				leadership: "庚金透干時以剛中帶韌化解爭執，決策前廣納眾議",
+				emotional: "宜選擇水木旺於月令者為伴，坎位置黑曜石化解沖剋",
+			},
+		};
+	};
+
+	const calculateWuxingAnalysis = (userInfo) => {
+		if (!userInfo?.birthDateTime) return null;
+
+		const wuxingData = getWuxingData(
+			userInfo.birthDateTime,
+			userInfo.gender
+		);
+		const elementCounts = {};
+		const missingElements = [];
+
+		// Count elements from all pillars
+		ELEMENTS.forEach((element) => {
+			let count = 0;
+			const stemsBranches = [
+				wuxingData.yearStemWuxing,
+				wuxingData.yearBranchWuxing,
+				wuxingData.monthStemWuxing,
+				wuxingData.monthBranchWuxing,
+				wuxingData.dayStemWuxing,
+				wuxingData.dayBranchWuxing,
+				wuxingData.hourStemWuxing,
+				wuxingData.hourBranchWuxing,
+			];
+
+			stemsBranches.forEach((wuxing) => {
+				if (wuxing === element) count++;
+			});
+
+			elementCounts[element] = count;
+			if (count === 0) missingElements.push(element);
+		});
+
+		// Analyze element strength
+		const strengthAnalysis = analyzeWuxingStrength(elementCounts);
+
+		// Determine useful gods based on element balance
+		const usefulGods = determineUsefulGods(strengthAnalysis);
+
+		return {
+			elementCounts,
+			missingElements,
+			wuxingData,
+			strengthAnalysis,
+			usefulGods,
+		};
+	};
+
+	// Comprehensive element distribution calculation
+	const calculateComprehensiveElementDistribution = (userInfo) => {
+		if (!userInfo || !userInfo.birthDateTime) {
+			console.warn(
+				"calculateComprehensiveElementDistribution: Missing userInfo or birthDateTime",
+				userInfo
+			);
+			return null;
+		}
+
+		try {
+			// Get wuxing data from nayin library
+			const wuxingData = getWuxingData(
+				new Date(userInfo.birthDateTime),
+				userInfo.gender
+			);
+
+			// Element counts combining stems, branches, and hidden stems
+			const elementCounts = {
+				金: 0,
+				木: 0,
+				水: 0,
+				火: 0,
+				土: 0,
+			};
+
+			// Count stems (weight 3) - Most influential, direct manifestation
+			const stemElements = [
+				wuxingData.yearStemWuxing,
+				wuxingData.monthStemWuxing,
+				wuxingData.dayStemWuxing,
+				wuxingData.hourStemWuxing,
+			];
+
+			stemElements.forEach((element) => {
+				if (elementCounts[element] !== undefined) {
+					elementCounts[element] += 3;
+				}
+			});
+
+			// Count branches (weight 2) - Strong influence, foundational
+			const branchElements = [
+				wuxingData.yearBranchWuxing,
+				wuxingData.monthBranchWuxing,
+				wuxingData.dayBranchWuxing,
+				wuxingData.hourBranchWuxing,
+			];
+
+			branchElements.forEach((element) => {
+				if (elementCounts[element] !== undefined) {
+					elementCounts[element] += 2;
+				}
+			});
+
+			// Count hidden stems (weight 1) - Indirect influence
+			const hiddenStemsData = [
+				{
+					key: "yearBranchHiddenStems",
+					data: wuxingData.yearBranchHiddenStems,
+				},
+				{
+					key: "monthBranchHiddenStems",
+					data: wuxingData.monthBranchHiddenStems,
+				},
+				{
+					key: "dayBranchHiddenStems",
+					data: wuxingData.dayBranchHiddenStems,
+				},
+				{
+					key: "hourBranchHiddenStems",
+					data: wuxingData.hourBranchHiddenStems,
+				},
+			];
+
+			hiddenStemsData.forEach(({ data }) => {
+				if (Array.isArray(data)) {
+					data.forEach((stem) => {
+						if (
+							stem.element &&
+							elementCounts[stem.element] !== undefined
+						) {
+							// Fixed weight of 1 for all hidden stems
+							elementCounts[stem.element] += 1;
+						}
+					});
+				}
+			});
+
+			// Convert counts to strength ratings (stars) - adjusted for new weight system
+			const elementStrengthMap = {};
+			Object.entries(elementCounts).forEach(([element, count]) => {
+				if (count === 0) {
+					elementStrengthMap[element] = "";
+				} else if (count >= 15) {
+					elementStrengthMap[element] = "★★★★★";
+				} else if (count >= 12) {
+					elementStrengthMap[element] = "★★★★";
+				} else if (count >= 8) {
+					elementStrengthMap[element] = "★★★";
+				} else if (count >= 5) {
+					elementStrengthMap[element] = "★★";
+				} else {
+					elementStrengthMap[element] = "★";
+				}
+			});
+
+			return {
+				elementCounts,
+				elementStrengthMap,
+				wuxingData,
+			};
+		} catch (error) {
+			console.error(
+				"Error calculating comprehensive element distribution:",
+				error
+			);
+			return null;
+		}
+	};
+
+	// Text-to-speech function
+	const speakText = (text, key) => {
+		if (!speechSynthesis) {
+			toast.error("您的浏览器不支持语音功能");
+			return;
+		}
+
+		// Stop current speech if speaking
+		if (isSpeaking) {
+			speechSynthesis.cancel();
+			setIsSpeaking(false);
+			setCurrentSpeechText("");
+			return;
+		}
+
+		// Create new utterance
+		const utterance = new SpeechSynthesisUtterance(text);
+		currentUtterance.current = utterance;
+
+		// Configure voice settings for male-like sound
+		utterance.rate = 1; // Slower rate for deeper, more authoritative sound
+		utterance.pitch = 0.3; // Lower pitch for male voice (0.1 was too low, 0.3-0.5 is better)
+		utterance.volume = 1;
+
+		// Just use any available Chinese voice and tune it manually
+		const voices = speechSynthesis.getVoices();
+		const chineseVoice = voices.find(
+			(voice) =>
+				voice.lang.includes("zh") ||
+				voice.lang.includes("cmn") ||
+				voice.lang.includes("zh-CN") ||
+				voice.lang.includes("zh-TW")
+		);
+
+		if (chineseVoice) {
+			utterance.voice = chineseVoice;
+		}
+
+		// Event handlers
+		utterance.onstart = () => {
+			setIsSpeaking(true);
+			setCurrentSpeechText(key);
+		};
+
+		utterance.onend = () => {
+			setIsSpeaking(false);
+			setCurrentSpeechText("");
+		};
+
+		utterance.onerror = () => {
+			setIsSpeaking(false);
+			setCurrentSpeechText("");
+		};
+
+		// Start speaking
+		speechSynthesis.speak(utterance);
+	};
+
+	// Get content for currently opened tab
+	const getCurrentNianzhuContent = () => {
+		if (openedNianzhuIndex !== null && reportDocData?.nianzhuData) {
+			const entries = Object.entries(reportDocData.nianzhuData);
+			if (entries[openedNianzhuIndex]) {
+				const [key, value] = entries[openedNianzhuIndex];
+				return { key, value };
+			}
+		}
+		return null;
+	};
+
+	// Clean up speech on component unmount
+	useEffect(() => {
+		return () => {
+			if (speechSynthesis) {
+				speechSynthesis.cancel();
+			}
+		};
+	}, []);
 
 	const handlePrint = useReactToPrint({
 		contentRef,
@@ -266,9 +1317,162 @@ export default function ReportPage({ locale }) {
 
 	const { data: session } = useSession();
 
+	// Detect new payment sessions and clear cached content for fresh generation
 	useEffect(() => {
+		const currentSessionId = propSessionId || searchParams.get("sessionId");
+		const storedSessionId = localStorage.getItem("lastProcessedSessionId");
+
+		if (currentSessionId && currentSessionId !== storedSessionId) {
+			console.log("🆕 NEW PAYMENT SESSION DETECTED!");
+			console.log("Previous session:", storedSessionId);
+			console.log("Current session:", currentSessionId);
+
+			// Clear all cached content for fresh generation
+			clearContentForNewSession(currentSessionId);
+
+			// Store current session as processed
+			localStorage.setItem("lastProcessedSessionId", currentSessionId);
+		}
+	}, [propSessionId, searchParams, clearContentForNewSession]);
+
+	// Initialize comprehensive advice states from reportDocData - SESSION-AWARE CONTENT LOADING
+	useEffect(() => {
+		if (reportDocData) {
+			const currentSessionId =
+				propSessionId || searchParams.get("sessionId");
+			console.log("🔄 Checking content for session:", currentSessionId);
+
+			// Check if existing content is from current payment session
+			const isFromCurrentSession =
+				reportDocData.sessionId === currentSessionId ||
+				reportDocData.comprehensiveInterpersonalAdvice?.sessionId ===
+					currentSessionId;
+
+			if (isFromCurrentSession) {
+				console.log(
+					"✅ Content from current session - loading cached data"
+				);
+
+				// Initialize comprehensive interpersonal advice
+				if (
+					reportDocData.comprehensiveInterpersonalAdvice &&
+					!comprehensiveInterpersonalAdvice
+				) {
+					console.log(
+						"✅ Loading existing comprehensive interpersonal advice"
+					);
+					setComprehensiveInterpersonalAdvice(
+						reportDocData.comprehensiveInterpersonalAdvice
+					);
+				}
+
+				// Initialize comprehensive life advice
+				if (
+					reportDocData.comprehensiveLifeAdvice &&
+					!comprehensiveLifeAdvice
+				) {
+					console.log(
+						"✅ Loading existing comprehensive life advice"
+					);
+					setComprehensiveLifeAdvice(
+						reportDocData.comprehensiveLifeAdvice
+					);
+				}
+			} else {
+				console.log(
+					"🆕 Content from different session - will generate fresh content"
+				);
+				// Clear existing content to force fresh generation for new payment
+				if (comprehensiveInterpersonalAdvice) {
+					console.log("🧹 Clearing old interpersonal advice");
+					setComprehensiveInterpersonalAdvice(null);
+				}
+				if (comprehensiveLifeAdvice) {
+					console.log("🧹 Clearing old life advice");
+					setComprehensiveLifeAdvice(null);
+				}
+			}
+
+			// Initialize mingLi, liuNian, jiajuPro data if they exist
+			if (reportDocData.mingLiData && !mingLiData) {
+				console.log("✅ Loading existing mingLi data");
+				setMingLiData(reportDocData.mingLiData);
+			}
+
+			if (reportDocData.liuNianData && !liuNianData) {
+				console.log("✅ Loading existing liuNian data");
+				setLiuNianData(reportDocData.liuNianData);
+			}
+
+			if (reportDocData.jiajuProData && !jiajuProData) {
+				console.log("✅ Loading existing jiajuPro data");
+				setJiaJuData(reportDocData.jiajuProData);
+			}
+
+			// Initialize four fortune data if it exists
+			if (reportDocData.fourFortuneAnalysisData) {
+				const {
+					healthFortuneData,
+					careerFortuneData,
+					wealthFortuneData,
+					relationshipFortuneData,
+				} = reportDocData.fourFortuneAnalysisData;
+
+				setFourFortuneData((prev) => ({
+					healthFortuneData:
+						healthFortuneData || prev.healthFortuneData,
+					careerFortuneData:
+						careerFortuneData || prev.careerFortuneData,
+					wealthFortuneData:
+						wealthFortuneData || prev.wealthFortuneData,
+					relationshipFortuneData:
+						relationshipFortuneData || prev.relationshipFortuneData,
+				}));
+
+				console.log("✅ Loaded four fortune data from database");
+			}
+		}
+	}, [reportDocData]);
+
+	useEffect(() => {
+		// PRIORITY 1: If URL parameters are provided, ALWAYS use them (even if user is logged in)
+		if (propBirthDateTime && propGender) {
+			console.log("🎯 Using URL parameters:", {
+				propBirthDateTime,
+				propGender,
+				propSessionId,
+			});
+			console.log("🔧 Setting userInfo from URL parameters");
+			console.log(
+				"🚨 FORCING URL-ONLY MODE - Ignoring any logged-in user data"
+			);
+
+			// FORCE URL-only mode - completely ignore session data
+			const urlUserInfo = {
+				birthDateTime: propBirthDateTime,
+				gender: propGender,
+				sessionId: propSessionId,
+				// Use sessionId as userId for URL-based reports
+				userId: propSessionId || `url_${Date.now()}`,
+				// Add default values for other properties that might be expected
+				isLock: false,
+				genStatus: "pending", // Allow report generation
+				// Mark this as URL-based to prevent session interference
+				isUrlBased: true,
+			};
+			setUserInfo(urlUserInfo);
+			setIsLock(false);
+			// Reset AI generation flag for new URL parameters
+			setAiGenerationStarted(false);
+
+			console.log("✅ URL userInfo set:", urlUserInfo);
+			return;
+		}
+
+		// PRIORITY 2: Only fetch from database if NO URL parameters
 		const userId = session?.user?.userId;
 		if (userId) {
+			console.log("📀 Using database user data for:", userId);
 			const loadData = async () => {
 				const {
 					status,
@@ -282,7 +1486,7 @@ export default function ReportPage({ locale }) {
 			};
 			loadData();
 		}
-	}, [session?.user?.userId]);
+	}, [session?.user?.userId, propBirthDateTime, propGender, propSessionId]);
 	// 目录失焦自动隐藏
 	useEffect(() => {
 		const handleClick = (e) => {
@@ -297,66 +1501,475 @@ export default function ReportPage({ locale }) {
 		return () => window.removeEventListener("mousedown", handleClick);
 	}, []);
 
-	//保存MingLi数据
+	// ✅ NEW: Comprehensive Life Report Auto-Save System
+	// Saves both Report.jsx data and FourFortuneAnalysis.jsx data together
 	useEffect(() => {
-		const saveMingLi = async () => {
-			const userId = session?.user?.userId;
-			if (!userId || !mingLiData) return;
+		const saveCompleteLifeReport = async () => {
+			// Only save when we have basic report data
+			if (!mingLiData && !liuNianData && !jiajuProData) return;
 
-			console.log("💾 Saving MingLi data:", mingLiData);
-			const { status } = await patch(
-				`/api/reportUserDoc/${userId}/${locale == "zh-CN" ? "zh" : "tw"}`,
-				{ mingLiData }
+			console.log("💾 Auto-saving complete life report...");
+			console.log("📊 Report data:", {
+				mingLiData: !!mingLiData,
+				liuNianData: !!liuNianData,
+				jiajuProData: !!jiajuProData,
+			});
+			console.log("🎯 Fortune data:", fourFortuneData);
+
+			// Determine report status
+			let reportStatus = "generating";
+			const hasBasicData = mingLiData || liuNianData || jiajuProData;
+			const hasFourFortuneData = Object.values(fourFortuneData).some(
+				(data) => data !== null
 			);
-			console.log("💾 MingLi save result:", status);
+
+			if (hasBasicData && hasFourFortuneData) {
+				const allFortunesComplete = Object.values(
+					fourFortuneData
+				).every((data) => data !== null);
+				reportStatus = allFortunesComplete ? "complete" : "partial";
+			} else if (hasBasicData || hasFourFortuneData) {
+				reportStatus = "partial";
+			}
+
+			const currentSessionId =
+				propSessionId || searchParams.get("sessionId");
+
+			const reportData = {
+				// Template data (existing fields for backward compatibility)
+				basicReportData: {
+					mingLiData,
+					liuNianData,
+					jiajuProData,
+				},
+				fourFortuneData,
+				reportStatus,
+				sessionId: currentSessionId,
+				// NEW: AI Generated Content Structure
+				aiGeneratedContent: {
+					sessionId: currentSessionId,
+					generatedAt: new Date().toISOString(),
+					generationStatus: reportStatus,
+					comprehensiveAI: {
+						// HIDDEN: interpersonalAdvice: comprehensiveInterpersonalAdvice
+						//	? {
+						//			...comprehensiveInterpersonalAdvice,
+						//			sessionId: currentSessionId,
+						//			generatedAt: new Date().toISOString(),
+						//		}
+						//	: null,
+						lifeAdvice: comprehensiveLifeAdvice
+							? {
+									...comprehensiveLifeAdvice,
+									sessionId: currentSessionId,
+									generatedAt: new Date().toISOString(),
+								}
+							: null,
+					},
+					fourFortuneAI:
+						fourFortuneData &&
+						Object.keys(fourFortuneData).length > 0
+							? fourFortuneData
+							: null,
+				},
+			};
+
+			const result = await saveLifeReport(reportData);
+
+			// ✅ NEW: Also save to alternative reportData collection (no auth required)
+			try {
+				const alternativeReportData = {
+					sessionId: currentSessionId,
+					birthDateTime: userInfo?.birthDateTime || propBirthDateTime,
+					gender: userInfo?.gender || propGender,
+					basicReportData: {
+						mingLiData,
+						liuNianData,
+						jiajuProData,
+					},
+					fourFortuneData,
+					aiGeneratedContent: {
+						sessionId: currentSessionId,
+						generatedAt: new Date().toISOString(),
+						generationStatus: reportStatus,
+						comprehensiveAI: {
+							lifeAdvice: comprehensiveLifeAdvice,
+						},
+						fourFortuneAI: fourFortuneData,
+						wuxingAnalysis: aiAnalysis,
+						lifeStageAnalysis: lifeStageAnalysis,
+					},
+					reportStatus,
+				};
+
+				const alternativeResult = await saveReportData(
+					alternativeReportData
+				);
+				if (alternativeResult.success) {
+					console.log(
+						"🎉 Report data also saved to reportData collection!"
+					);
+				}
+			} catch (error) {
+				console.error(
+					"❌ Error saving to alternative collection:",
+					error
+				);
+			}
+
+			if (result.success && reportStatus === "complete") {
+				console.log("🎉 Complete life report saved successfully!");
+				// Update user genStatus when everything is complete
+				const userId = session?.user?.userId;
+				if (userId) {
+					await post(`/api/users/${userId}`, {
+						genStatus: "done",
+					});
+				}
+			}
 		};
-		if (mingLiData) {
-			saveMingLi();
-		}
-	}, [mingLiData]);
 
-	//保存LiuNian数据
+		// Use a small delay to debounce rapid state changes
+		const timeoutId = setTimeout(() => {
+			saveCompleteLifeReport();
+		}, 100);
+
+		return () => clearTimeout(timeoutId);
+	}, [
+		mingLiData,
+		liuNianData,
+		jiajuProData,
+		fourFortuneData,
+		// comprehensiveInterpersonalAdvice, // HIDDEN: 人際調衡要點
+		comprehensiveLifeAdvice,
+		saveLifeReport,
+		saveReportData, // NEW: Alternative save function
+		session?.user?.userId,
+		propSessionId,
+		searchParams,
+		propBirthDateTime,
+		propGender,
+		aiAnalysis,
+		lifeStageAnalysis,
+	]);
+
+	// ✅ NEW: Four Fortune Data Update Handler
+	// This function will be passed to FourFortuneAnalysis to update fortune data
+	const updateFortuneData = useCallback((fortuneType, data) => {
+		console.log(`🎯 Updating ${fortuneType} fortune data:`, data);
+		setFourFortuneData((prev) => ({
+			...prev,
+			[`${fortuneType}FortuneData`]: data,
+		}));
+	}, []);
+
+	// Memoized loading state to prevent unnecessary re-renders
+	const isAIGenerating = useMemo(() => {
+		return (
+			Object.values(isLoadingLifeStage).some((loading) => loading) ||
+			Object.values(isLoadingInterpersonal).some((loading) => loading) ||
+			Object.values(isLoadingLifeAdvice).some((loading) => loading) ||
+			// isLoadingComprehensiveInterpersonal || // HIDDEN: 人際調衡要點
+			isLoadingComprehensiveLifeAdvice ||
+			Object.values(fourFortuneData).some((data) => data === null) ||
+			// !comprehensiveInterpersonalAdvice || // HIDDEN: 人際調衡要點
+			!comprehensiveLifeAdvice
+		);
+	}, [
+		isLoadingLifeStage,
+		isLoadingInterpersonal,
+		isLoadingLifeAdvice,
+		// isLoadingComprehensiveInterpersonal, // HIDDEN: 人際調衡要點
+		isLoadingComprehensiveLifeAdvice,
+		fourFortuneData,
+		// comprehensiveInterpersonalAdvice, // HIDDEN: 人際調衡要點
+		comprehensiveLifeAdvice,
+	]);
+
+	// Fetch AI analysis for wuxing patterns
 	useEffect(() => {
-		const saveLiuNian = async () => {
-			const userId = session?.user?.userId;
-			if (!userId || !liuNianData) return;
+		const getAiAnalysis = async () => {
+			if (!userInfo) return;
 
-			console.log("💾 Saving LiuNian data:", liuNianData);
-			const { status } = await patch(
-				`/api/reportUserDoc/${userId}/${locale == "zh-CN" ? "zh" : "tw"}`,
-				{ liuNianData }
-			);
-			console.log("💾 LiuNian save result:", status);
-		};
-		if (liuNianData) {
-			saveLiuNian();
-		}
-	}, [liuNianData]);
-
-	//保存JiajuPro数据
-	useEffect(() => {
-		const saveJiajuPro = async () => {
-			const userId = session?.user?.userId;
-			if (!userId || !jiajuProData) return;
-
-			console.log("💾 Saving JiajuPro data:", jiajuProData);
-			const { status } = await patch(
-				`/api/reportUserDoc/${userId}/${locale == "zh-CN" ? "zh" : "tw"}`,
-				{ jiajuProData }
-			);
-			console.log("💾 JiajuPro save result:", status);
-
-			// Only update genStatus when all premium data is saved
-			if (status === 0 && mingLiData && liuNianData) {
-				await post(`/api/users/${userId}`, {
-					genStatus: "done",
+			try {
+				const wuxingAnalysis = calculateWuxingAnalysis(userInfo);
+				if (wuxingAnalysis?.wuxingData) {
+					const result = await analyzeComplexPatterns(
+						wuxingAnalysis.wuxingData,
+						userInfo
+					);
+					console.log("🔍 AI Analysis Result:", result);
+					console.log("📋 LifeAdvice in result:", result?.lifeAdvice);
+					console.log("🤖 AI Success:", !!result?.aiGenerated);
+					console.log(
+						"🎯 Content Type:",
+						result?.contentType || "unknown"
+					);
+					setAiAnalysis(result);
+				}
+			} catch (error) {
+				console.error("Error fetching AI analysis:", error);
+				// Set fallback data
+				setAiAnalysis({
+					pattern: "身強食神制殺格",
+					primaryGod: "木",
+					secondaryGod: "土",
 				});
 			}
 		};
-		if (jiajuProData) {
-			saveJiajuPro();
+		getAiAnalysis();
+	}, [userInfo]);
+
+	// Fetch AI analysis for element flow obstacles
+	useEffect(() => {
+		const getElementFlowAnalysis = async () => {
+			if (!userInfo) return;
+
+			try {
+				await analyzeElementFlow(userInfo);
+			} catch (error) {
+				console.error("Error fetching element flow analysis:", error);
+			}
+		};
+		getElementFlowAnalysis();
+	}, [userInfo]);
+
+	// Generate life stage analysis for all four pillars
+	useEffect(() => {
+		const generateAllAnalyses = async () => {
+			if (!userInfo || !reportDocData) {
+				console.log("Skipping AI generation - missing data:", {
+					hasUserInfo: !!userInfo,
+					hasReportDocData: !!reportDocData,
+				});
+				return;
+			}
+
+			// Prevent duplicate AI generation during development hot reloads
+			if (aiGenerationStarted) {
+				console.log(
+					"⚠️ AI generation already started, skipping duplicate..."
+				);
+				return;
+			}
+
+			// EMERGENCY: Additional check for URL-based reports
+			if (userInfo?.isUrlBased && userInfo?.sessionId) {
+				const sessionKey = `ai_generation_${userInfo.sessionId}`;
+				if (window[sessionKey]) {
+					console.log(
+						"🚨 EMERGENCY: URL session already generating, aborting!"
+					);
+					return;
+				}
+				window[sessionKey] = true;
+			}
+
+			console.log("Starting AI generation process...");
+			console.log(
+				"🎯 Generation for:",
+				userInfo?.birthDateTime,
+				userInfo?.sessionId
+			);
+			setAiGenerationStarted(true);
+			const pillars = ["年柱", "月柱", "日柱", "時柱"];
+
+			for (const pillar of pillars) {
+				// Generate life stage analysis
+				if (!lifeStageAnalysis[pillar] && !isLoadingLifeStage[pillar]) {
+					setIsLoadingLifeStage((prev) => ({
+						...prev,
+						[pillar]: true,
+					}));
+
+					try {
+						const pillarDataMap = {
+							年柱: reportDocData.nianzhuData,
+							月柱: reportDocData.yuezhuData,
+							日柱: reportDocData.rizhuData,
+							時柱: reportDocData.shizhuData,
+						};
+
+						const analysis = await generateLifeStageAnalysis(
+							pillar,
+							pillarDataMap[pillar],
+							userInfo
+						);
+
+						setLifeStageAnalysis((prev) => ({
+							...prev,
+							[pillar]: analysis,
+						}));
+					} catch (error) {
+						console.error(
+							`Error generating ${pillar} analysis:`,
+							error
+						);
+					} finally {
+						setIsLoadingLifeStage((prev) => ({
+							...prev,
+							[pillar]: false,
+						}));
+					}
+				}
+
+				// Generate interpersonal advice
+				if (
+					!interpersonalAdvice[pillar] &&
+					!isLoadingInterpersonal[pillar]
+				) {
+					setIsLoadingInterpersonal((prev) => ({
+						...prev,
+						[pillar]: true,
+					}));
+
+					try {
+						const advice = await generateInterpersonalAdvice(
+							pillar,
+							userInfo
+						);
+						setInterpersonalAdvice((prev) => ({
+							...prev,
+							[pillar]: advice,
+						}));
+					} catch (error) {
+						console.error(
+							`Error generating interpersonal advice for ${pillar}:`,
+							error
+						);
+					} finally {
+						setIsLoadingInterpersonal((prev) => ({
+							...prev,
+							[pillar]: false,
+						}));
+					}
+				}
+
+				// Generate comprehensive life advice
+				if (
+					!lifeAdviceAnalysis[pillar] &&
+					!isLoadingLifeAdvice[pillar]
+				) {
+					setIsLoadingLifeAdvice((prev) => ({
+						...prev,
+						[pillar]: true,
+					}));
+
+					try {
+						const advice = await generateLifeAdvice(
+							pillar,
+							userInfo
+						);
+						setLifeAdviceAnalysis((prev) => ({
+							...prev,
+							[pillar]: advice,
+						}));
+					} catch (error) {
+						console.error(
+							`Error generating life advice for ${pillar}:`,
+							error
+						);
+					} finally {
+						setIsLoadingLifeAdvice((prev) => ({
+							...prev,
+							[pillar]: false,
+						}));
+					}
+				}
+			}
+
+			// Generate comprehensive sections
+			const wuxingData = getWuxingData(
+				userInfo.birthDateTime,
+				userInfo.gender
+			);
+
+			const currentSessionId =
+				propSessionId || searchParams.get("sessionId");
+
+			// HIDDEN: Generate comprehensive interpersonal advice - FRESH PER PAYMENT SESSION
+			if (
+				false &&
+				!comprehensiveInterpersonalAdvice &&
+				!isLoadingComprehensiveInterpersonal
+			) {
+				setIsLoadingComprehensiveInterpersonal(true);
+				console.log(
+					"🔥 Generating FRESH interpersonal advice for session:",
+					currentSessionId
+				);
+				try {
+					const advice =
+						await generateComprehensiveInterpersonalAdvice(
+							userInfo,
+							wuxingData
+						);
+					// Add session tracking to ensure uniqueness per payment
+					const adviceWithSession = {
+						...advice,
+						sessionId: currentSessionId,
+						generatedAt: new Date().toISOString(),
+					};
+					setComprehensiveInterpersonalAdvice(adviceWithSession);
+				} catch (error) {
+					console.error(
+						"Error generating comprehensive interpersonal advice:",
+						error
+					);
+				} finally {
+					setIsLoadingComprehensiveInterpersonal(false);
+				}
+			}
+
+			// Generate comprehensive life advice - FRESH PER PAYMENT SESSION
+			if (!comprehensiveLifeAdvice && !isLoadingComprehensiveLifeAdvice) {
+				setIsLoadingComprehensiveLifeAdvice(true);
+				console.log(
+					"🔥 Generating FRESH life advice for session:",
+					currentSessionId
+				);
+				try {
+					const advice = await generateComprehensiveLifeAdvice(
+						userInfo,
+						wuxingData
+					);
+					// Add session tracking to ensure uniqueness per payment
+					const adviceWithSession = {
+						...advice,
+						sessionId: currentSessionId,
+						generatedAt: new Date().toISOString(),
+					};
+					setComprehensiveLifeAdvice(adviceWithSession);
+				} catch (error) {
+					console.error(
+						"Error generating comprehensive life advice:",
+						error
+					);
+				} finally {
+					setIsLoadingComprehensiveLifeAdvice(false);
+				}
+			}
+		};
+
+		// Allow page to render first, then start AI generation after a brief delay
+		const startAIGeneration = () => {
+			setTimeout(() => {
+				generateAllAnalyses();
+			}, 2000); // 2 second delay to let page render completely and user see content first
+		};
+
+		startAIGeneration();
+	}, [userInfo, reportDocData, aiGenerationStarted]);
+
+	// Set the first 十神 tab when AI analysis is loaded
+	useEffect(() => {
+		if (aiAnalysis?.tenGodsAnalysis && !activeTenGodsTab) {
+			const firstTabKey = Object.keys(aiAnalysis.tenGodsAnalysis)[0];
+			if (firstTabKey) {
+				setActiveTenGodsTab(firstTabKey);
+			}
 		}
-	}, [jiajuProData]);
+	}, [aiAnalysis, activeTenGodsTab]);
 
 	// 进度指示器hover/点击显示目录
 	const handleProgressEnter = () => {
@@ -376,795 +1989,4994 @@ export default function ReportPage({ locale }) {
 		// setShowMenu(false);
 	};
 
-	if (loading) {
+	// Check if essential data is available (not AI data)
+	if (loading || !reportDocData || !userInfo) {
 		return (
-			<div className="space-y-8 mt-25">
-				<Skeleton className="h-4 w-[80%]" />
-				<Skeleton className="h-4 w-[70%]" />
-				<Skeleton className="h-4 w-[80%]" />
-				<Skeleton className="h-4 w-[70%]" />
+			<div className="min-h-screen bg-[#EFEFEF] flex items-center justify-center">
+				<div className="space-y-8">
+					<div className="text-center">
+						<div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#A3B115] mx-auto mb-4"></div>
+						<p className="text-xl text-[#5A5A5A]">
+							載入基本報告資料中...
+						</p>
+					</div>
+					<div className="max-w-lg mx-auto space-y-4">
+						<Skeleton className="h-4 w-[80%]" />
+						<Skeleton className="h-4 w-[70%]" />
+						<Skeleton className="h-4 w-[80%]" />
+						<Skeleton className="h-4 w-[70%]" />
+					</div>
+				</div>
 			</div>
 		);
 	}
 
-	if (!reportDocData) {
-		toast.error(t("error"));
-		router.push("/design");
-		return;
+	// console.log('reportDocData:', activeIndex);
+	console.log("Report rendering with data:", {
+		hasReportDocData: !!reportDocData,
+		hasUserInfo: !!userInfo,
+		loading,
+	});
+
+	// Helper functions for element analysis
+	function getStar(strength) {
+		if (strength.includes("★★★★★")) return 5;
+		if (strength.includes("★★★")) return 3;
+		if (strength.includes("★")) return 1;
+		return 0;
 	}
 
-	// console.log('reportDocData:', activeIndex);
+	function getElementTrait(element, star) {
+		switch (element) {
+			case "水":
+				if (star === 1) return "容易沉滯";
+				if (star === 3) return "能夠靈活應對變化";
+				if (star === 5) return "能夠激發創造力和靈感";
+				break;
+			case "火":
+				if (star === 1) return "缺乏熱情";
+				if (star === 3) return "具備一定的熱情和活力";
+				if (star === 5) return "象徵激情和驅動力，能夠引領變革";
+				break;
+			case "土":
+				if (star === 1) return "缺乏支持，容易崩潰";
+				if (star === 3) return "一定的穩定性，能夠支持基本需求";
+				if (star === 5) return "堅實可靠";
+				break;
+			case "金":
+				if (star === 1) return "缺乏堅固性";
+				if (star === 3) return "具備一定的堅韌性和力量";
+				if (star === 5) return "剛硬密集，能夠帶來變革";
+				break;
+			case "木":
+				if (star === 1) return "孤立無根";
+				if (star === 3) return "能夠展現成長潛力";
+				if (star === 5) return "象徵生命力和繁榮，持續向上成長";
+				break;
+			default:
+				return "";
+		}
+		return "";
+	}
+
+	function getElementInfluence(element, star) {
+		switch (element) {
+			case "水":
+				if (star === 1) return "感到迷茫，難做出決策";
+				if (star === 3)
+					return "在變化中能夠保持一定的冷靜，適度支持個人成長";
+				if (star === 5) return "自由流動的能量，促進個人發展和創新思維";
+				break;
+			case "火":
+				if (star === 1) return "缺乏動力和目標";
+				if (star === 3) return "能夠在挑戰中展現一定的勇氣和決心";
+				if (star === 5)
+					return "激發強烈的創造力和行動力，驅動成就和成功";
+				break;
+			case "土":
+				if (star === 1) return "感到不安，缺乏安全感和根基";
+				if (star === 3) return "提供穩定的支持，能夠協助應對日常挑戰";
+				if (star === 5) return "增強自信心和安全感，促進個人繁榮和發展";
+				break;
+			case "金":
+				if (star === 1) return "感到缺乏方向感，容易受到外界影響";
+				if (star === 3) return "提供適度的支持，能夠協助做出合理的決策";
+				if (star === 5) return "追求完美，重規則壓力，身心易疲憊";
+				break;
+			case "木":
+				if (star === 1) return "創造力受阻，難將靈感系統化落地";
+				if (star === 3)
+					return "能夠在一定程度上激發靈感，但仍需更多支持";
+				if (star === 5)
+					return "促進創造力的發揮，能夠有效實現想法和計劃";
+				break;
+			default:
+				return "";
+		}
+		return "";
+	}
+
+	// Calculate wuxing analysis for the component
+	const wuxingAnalysis = userInfo ? calculateWuxingAnalysis(userInfo) : null;
 
 	return (
-		<div className="relative min-h-screen bg-white">
+		<div className="min-h-screen bg-[#EFEFEF] ">
 			{!isPrinting && <Navbar from="report" />}
 
-			{/* 右侧进度指示器+目录 */}
-			<div className="fixed z-10 right-4 top-32">
-				{!isPrinting && (
-					<a
-						href="#"
-						className="absolute right-0 py-1 text-center text-white hidden-on-print rounded-3xl w-25 -top-12 bg-primary"
-						onClick={onPrint}
-					>
-						{t("download")}
-					</a>
-				)}
-				{/* 进度指示器 */}
-				<div
-					className="flex flex-col items-center gap-2 cursor-pointer select-none progress-indicator"
-					onMouseEnter={handleProgressEnter}
-					// onMouseLeave={handleProgressLeave}
-					onClick={handleProgressEnter}
-				>
-					{anchorList.map((item, idx) => (
-						<div
-							key={item.id}
-							className={`transition-all duration-200 ${
-								item.isMain ? "w-5 h-5" : "w-2 h-2"
-							} rounded-full  ${
-								activeIndex === idx
-									? "bg-[#20B580]"
-									: "bg-[#E7F2EE] "
-							}`}
-							style={{ margin: item.isMain ? "8px 0" : "3px 0" }}
-						/>
-					))}
-				</div>
-				{/* 目录结构 */}
-				{showMenu && (
-					<div
-						className="absolute top-0 right-0 report-menu w-56 bg-white shadow-lg rounded-lg py-4 px-4 text-sm max-h-[70vh] overflow-y-auto"
-						tabIndex={-1}
-					>
-						{sections.map((section, i) => (
-							<div key={section.title}>
-								<div
-									className={`text-sm mb-1 cursor-pointer ${
-										activeIndex ===
-										anchorList.findIndex(
-											(a) => a.id === `section-${i}`
-										)
-											? "text-[#20B580]"
-											: ""
-									}`}
-									onClick={() =>
-										handleAnchorClick(
-											anchorList.findIndex(
-												(a) => a.id === `section-${i}`
-											)
-										)
-									}
-								>
-									{section.title}
-								</div>
-								{section.children?.map((child, j) => (
-									<div
-										key={child.title}
-										className={`text-sm pl-4 py-1 cursor-pointer ${
-											activeIndex ===
-											anchorList.findIndex(
-												(a) =>
-													a.id === `section-${i}-${j}`
-											)
-												? "text-[#20B580]"
-												: "text-gray-700"
-										}`}
-										onClick={() =>
-											handleAnchorClick(
-												anchorList.findIndex(
-													(a) =>
-														a.id ===
-														`section-${i}-${j}`
-												)
-											)
-										}
-									>
-										{child.title}
-									</div>
-								))}
-							</div>
-						))}
+			{/* Navigation Row */}
+			{!isPrinting && (
+				<div className="w-full mt-16 bg-gradient-to-r from-[#A3B116] to-[#3D5C2D] py-6">
+					<div className="max-w-6xl px-4 mx-auto">
+						<div className="flex flex-wrap justify-center gap-6">
+							{/* 命理分析報告 Tab */}
+							<button
+								onClick={() => setActiveTab("report")}
+								className={`px-8 py-4 rounded-full font-semibold text-lg transition-all duration-200 ${
+									activeTab === "report"
+										? "bg-gradient-to-r from-[#A3B116] to-[#3D5C2D] text-white shadow-[0_4px_14px_rgba(0,0,0,0.25)]"
+										: "bg-white text-[#374A37] shadow-inner shadow-[inset_0_4px_4px_rgba(0,0,0,0.25)]"
+								}`}
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									boxShadow: "0 4px 4px rgba(0, 0, 0, 0.25)",
+								}}
+							>
+								命理分析報告
+							</button>
+
+							{/* 四大運勢分析 Tab */}
+							<button
+								onClick={() => setActiveTab("fortune")}
+								className={`px-8 py-4 rounded-full font-semibold text-lg transition-all duration-200 ${
+									activeTab === "fortune"
+										? "bg-gradient-to-r from-[#A3B116] to-[#3D5C2D] text-white shadow-[0_4px_14px_rgba(0,0,0,0.25)]"
+										: "bg-white text-[#374A37] shadow-inner shadow-[inset_0_4px_4px_rgba(0,0,0,0.25)]"
+								}`}
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									boxShadow: "0 4px 4px rgba(0, 0, 0, 0.25)",
+								}}
+							>
+								四大運勢分析
+							</button>
+						</div>
 					</div>
-				)}
-			</div>
+				</div>
+			)}
+
 			{/* 正文内容 */}
-
-			<div ref={contentRef}>
+			<div
+				ref={contentRef}
+				style={{ display: activeTab === "report" ? "block" : "none" }}
+			>
 				{/* 第一章 四柱*/}
-				<div key="section-0" className="mx-auto md:max-w-250 md:px-5">
-					<h1
-						ref={(el) => (sectionRefs.current[0] = el)}
-						className="md:text-[40px] text-[28px] text-center font-bold my-10 md:mt-30 md:px-0 px-5 text-[#073E31]"
-						id={`section-0`}
-					>
-						{sections[0].title}
-					</h1>
-					<p className="px-5 font-bold leading-8 tracking-normal text-justify md:px-0">
-						<span className="text-[#073E31]">{t("p1-1")}</span>
-						{t("p1-2")}
-						<span className="text-[#073E31]">{t("p1-3")}</span>。
-						<br />
-						{t("p1-4")}
-					</p>
-
-					{/* 年柱 */}
-					<section className="md:rounded-[26px] rounded-none bg-gradient-to-br from-white via-[#e8f7ef] to-[#cbead6] p-8 md:mt-8 mt-2">
-						{" "}
-						<h2
-							id={`section-0-1`}
-							ref={(el) => (sectionRefs.current[1] = el)}
-							className="text-[28px] text-[#073E31] font-bold mb-3"
+				<div
+					key="section-0"
+					className="w-full sm:w-[95%] lg:w-[90%] mx-auto px-4 sm:px-5 pt-2s sm:pt-10 lg:pt-10 pb-6 sm:pb-10 flex flex-col lg:flex-row bg-[#EFEFEF]"
+				>
+					{/* Left Section */}
+					<div className="flex items-start justify-center flex-1 mb-6 lg:justify-start lg:mb-0">
+						<h1
+							ref={(el) => (sectionRefs.current[0] = el)}
+							style={{
+								fontFamily: "Noto Serif TC, serif",
+								fontWeight: 800,
+								fontSize: "clamp(32px, 6vw, 56px)",
+								color: "#A3B116",
+								lineHeight: 1.1,
+								textAlign: "center",
+							}}
+							className="lg:text-left"
 						>
-							年柱
-						</h2>
-						<p className="mb-6 leading-8 text-justify">
-							{t("p1-5")}
-						</p>
-						{/* Tag buttons */}
-						<div className="flex flex-wrap gap-3 mb-6 interactive-tabs">
-							{Object.entries(reportDocData.nianzhuData).map(
-								([key, value], index) => (
-									<button
-										key={index}
-										className={`px-4 py-2 rounded-full font-bold border transition-all duration-200 ${
-											openedNianzhuIndex === index
-												? "bg-[#20B580] text-white border-[#20B580]"
-												: "bg-white text-[#20B580] border-[#20B580]"
-										}`}
-										style={{
-											color:
-												openedNianzhuIndex === index
-													? "#fff"
-													: wuxingColorMap[
-															key.slice(-1)
-														],
-											borderColor:
-												wuxingColorMap[key.slice(-1)],
-										}}
-										onClick={() => {
-											setOpenedNianzhuIndex(
-												openedNianzhuIndex === index
-													? null
-													: index
-											);
-										}}
-									>
-										{key}
-									</button>
-								)
-							)}
-						</div>
-						{/* Dropdown content */}
-						{Object.entries(reportDocData.nianzhuData).map(
-							([key, value], index) => (
-								<div
-									key={index}
-									ref={(el) =>
-										(nianzhuRefs.current[index] = el)
-									}
-									className={`flex justify-center mt-4 ${isPrinting ? "tab-content-print" : ""}`}
-									style={
-										isPrinting
-											? {}
-											: {
-													maxHeight:
-														openedNianzhuIndex ===
-														index
-															? 500
-															: 0,
-													overflow: "hidden",
-													transition:
-														"max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s",
-													opacity:
-														openedNianzhuIndex ===
-														index
-															? 1
-															: 0,
-												}
-									}
+							{sections[0]?.title}
+						</h1>
+					</div>
+					{/* Right Section */}
+					{/* <div className="flex flex-col items-center justify-center flex-1">
+						<div className="flex flex-col w-full max-w-md gap-3 sm:flex-row sm:gap-4 sm:max-w-none">
+							<button
+								onClick={onPrint}
+								style={{
+									width: "100%",
+									maxWidth: "250px",
+									height: "60px",
+									backgroundColor: "#A3B116",
+									borderRadius: "100px",
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+									border: "none",
+									cursor: "pointer",
+									marginBottom: "16px",
+								}}
+								className="sm:h-[72px] sm:mb-6"
+							>
+								<span
+									style={{
+										fontFamily: "Noto Serif TC, serif",
+										fontWeight: 800,
+										fontSize: "clamp(16px, 4vw, 20px)",
+										color: "#FFFFFF",
+										letterSpacing: 2,
+									}}
 								>
-									<section
-										className={`${index !== 2 && "lg:max-w-125"} flex-grow`}
-									>
-										<p
-											className={`leading-8 text-xl font-bold text-[#073E31]`}
-											style={{
-												color: wuxingColorMap[
-													key.slice(-1)
-												],
-											}}
-										>
-											{key}
-										</p>
-										<p className="leading-8 text-justify">
-											{value}
-										</p>
-									</section>
-									{index !== 2 && (
-										<div
-											className="flex items-center justify-end ml-4"
-											style={{
-												marginRight: "-40px",
-												zIndex: 1,
-											}}
-										>
-											<Image
-												className="object-contain w-105 h-75"
-												priority
-												src={`/images/report/${key.slice(-1)}.png`}
-												alt={key}
-												width={420}
-												height={320}
-											/>
-										</div>
-									)}
-								</div>
-							)
-						)}
-					</section>
-					{/* 月柱 */}
-					<section className="md:rounded-[26px] rounded-none bg-gradient-to-br from-white via-[#e8f7ef] to-[#cbead6] p-8 md:mt-8 mt-2">
-						<h2
-							id={`section-0-2`}
-							ref={(el) => (sectionRefs.current[2] = el)}
-							className="text-[28px] text-[#073E31] font-bold mb-3"
-						>
-							月柱
-						</h2>
-						<p className="mb-6 leading-8 text-justify">
-							{t("p1-6")}
-						</p>
-						{/* Tag buttons */}
-						<div className="flex flex-wrap gap-3 mb-6 interactive-tabs">
-							{Object.entries(reportDocData.yuezhuData).map(
-								([key, value], index) => (
-									<button
-										key={index}
-										className={`px-4 py-2 rounded-full font-bold border transition-all duration-200 ${
-											openedYuezhuIndex === index
-												? "bg-[#20B580] text-white border-[#20B580]"
-												: "bg-white text-[#20B580] border-[#20B580]"
-										}`}
-										style={{
-											color:
-												openedYuezhuIndex === index
-													? "#fff"
-													: wuxingColorMap[
-															key.slice(-1)
-														],
-											borderColor:
-												wuxingColorMap[key.slice(-1)],
-										}}
-										onClick={() => {
-											setOpenedYuezhuIndex(
-												openedYuezhuIndex === index
-													? null
-													: index
-											);
-										}}
-									>
-										{key}
-									</button>
-								)
-							)}
-						</div>
-						{/* Dropdown content */}
-						{Object.entries(reportDocData.yuezhuData).map(
-							([key, value], index) => (
-								<div
-									key={index}
-									ref={(el) =>
-										(yuezhuRefs.current[index] = el)
-									}
-									className={`flex justify-center mt-4 ${isPrinting ? "tab-content-print" : ""}`}
-									style={
-										isPrinting
-											? {}
-											: {
-													maxHeight:
-														openedYuezhuIndex ===
-														index
-															? 500
-															: 0,
-													overflow: "hidden",
-													transition:
-														"max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s",
-													opacity:
-														openedYuezhuIndex ===
-														index
-															? 1
-															: 0,
-												}
-									}
+									下載報告
+								</span>
+							</button>
+							<button
+								onClick={() => {
+									// Add your share logic here
+									alert("分享您的結果功能待实现");
+								}}
+								style={{
+									width: "100%",
+									maxWidth: "250px",
+									height: "60px",
+									backgroundColor: "#A3B116",
+									borderRadius: "100px",
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+									border: "none",
+									cursor: "pointer",
+									marginBottom: "16px",
+								}}
+								className="sm:h-[72px] sm:mb-6"
+							>
+								<span
+									style={{
+										fontFamily: "Noto Serif TC, serif",
+										fontWeight: 800,
+										fontSize: "clamp(16px, 4vw, 20px)",
+										color: "#FFFFFF",
+										letterSpacing: 2,
+									}}
 								>
-									<section
-										className={`${index !== 2 && "lg:max-w-125"} flex-grow`}
-									>
-										<p
-											className="leading-8 text-xl font-bold text-[#073E31]"
-											style={{
-												color: wuxingColorMap[
-													key.slice(-1)
-												],
-											}}
-										>
-											{key}
-										</p>
-										<p className="leading-8 text-justify">
-											{value}
-										</p>
-									</section>
-									{index !== 2 && (
-										<div
-											className="flex items-center justify-end ml-4"
-											style={{
-												marginRight: "-40px", // adjust as needed
-												zIndex: 1,
-											}}
-										>
-											<Image
-												className="object-contain w-105 h-75"
-												priority
-												src={`/images/report/${key.slice(-1)}.png`}
-												alt={key}
-												width={420}
-												height={320}
-											/>
-										</div>
-									)}
-								</div>
-							)
-						)}
-					</section>
-					{/* 日柱 */}
-					<section className="md:rounded-[26px] rounded-none bg-gradient-to-br from-white via-[#e8f7ef] to-[#cbead6] p-8 md:mt-8 mt-2">
-						<h2
-							id={`section-0-3`}
-							ref={(el) => (sectionRefs.current[3] = el)}
-							className="text-[28px] text-[#073E31] font-bold mb-3"
-						>
-							日柱
-						</h2>
-						<p className="mb-6 leading-8 text-justify">
-							{t("p1-7")}
-						</p>
-						{/* Tag buttons */}
-						<div className="flex flex-wrap gap-3 mb-6 interactive-tabs">
-							{Object.entries(reportDocData.rizhuData).map(
-								([key, value], index) => (
-									<button
-										key={index}
-										className={`px-4 py-2 rounded-full font-bold border transition-all duration-200 ${
-											openedRizhuIndex === index
-												? "bg-[#20B580] text-white border-[#20B580]"
-												: "bg-white text-[#20B580] border-[#20B580]"
-										}`}
-										style={{
-											color:
-												openedRizhuIndex === index
-													? "#fff"
-													: wuxingColorMap[
-															key.slice(-1)
-														],
-											borderColor:
-												wuxingColorMap[key.slice(-1)],
-										}}
-										onClick={() => {
-											setOpenedRizhuIndex(
-												openedRizhuIndex === index
-													? null
-													: index
-											);
-											// Remove the scrolling behavior
-										}}
-									>
-										{key}
-									</button>
-								)
-							)}
+									分享您的結果
+								</span>
+							</button>
 						</div>
-						{/* Dropdown content */}
-						{Object.entries(reportDocData.rizhuData).map(
-							([key, value], index) => (
-								<div
-									key={index}
-									ref={(el) =>
-										(rizhuRefs.current[index] = el)
-									}
-									className={`flex justify-center mt-4 ${isPrinting ? "tab-content-print" : ""}`}
-									style={
-										isPrinting
-											? {}
-											: {
-													maxHeight:
-														openedRizhuIndex ===
-														index
-															? 500
-															: 0,
-													overflow: "hidden",
-													transition:
-														"max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s",
-													opacity:
-														openedRizhuIndex ===
-														index
-															? 1
-															: 0,
-												}
-									}
-								>
-									<section
-										className={`${index !== 2 && "lg:max-w-125"} flex-grow`}
-									>
-										<p
-											className="leading-8 text-xl font-bold text-[#073E31]"
-											style={{
-												color: wuxingColorMap[
-													key.slice(-1)
-												],
-											}}
-										>
-											{key}
-										</p>
-										<p className="leading-8 text-justify">
-											{value}
-										</p>
-									</section>
-									{index !== 2 && (
-										<div
-											className="flex items-center justify-end ml-4"
-											style={{
-												marginRight: "-40px",
-												zIndex: 1,
-											}}
-										>
-											<Image
-												className="object-contain w-105 h-75"
-												priority
-												src={`/images/report/${key.slice(-1)}.png`}
-												alt={key}
-												width={420}
-												height={320}
-											/>
-										</div>
-									)}
-								</div>
-							)
-						)}
-					</section>
-
-					{/* 时柱 */}
-					<section className="md:rounded-[26px] rounded-none bg-gradient-to-br from-white via-[#e8f7ef] to-[#cbead6] p-8 md:mt-8 mt-2">
-						<h2
-							id={`section-0-4`}
-							ref={(el) => (sectionRefs.current[4] = el)}
-							className="text-[28px] text-[#073E31] font-bold mb-3"
-						>
-							{t("shizhu")}
-						</h2>
-						<p className="mb-6 leading-8 text-justify">
-							{t("p1-8")}
-						</p>
-						{/* Tag buttons */}
-						<div className="flex flex-wrap gap-3 mb-6 interactive-tabs">
-							{Object.entries(reportDocData.shizhuData).map(
-								([key, value], index) => (
-									<button
-										key={index}
-										className={`px-4 py-2 rounded-full font-bold border transition-all duration-200 ${
-											openedShizhuIndex === index
-												? "bg-[#20B580] text-white border-[#20B580]"
-												: "bg-white text-[#20B580] border-[#20B580]"
-										}`}
-										style={{
-											color:
-												openedShizhuIndex === index
-													? "#fff"
-													: wuxingColorMap[
-															key.slice(-1)
-														],
-											borderColor:
-												wuxingColorMap[key.slice(-1)],
-										}}
-										onClick={() => {
-											setOpenedShizhuIndex(
-												openedShizhuIndex === index
-													? null
-													: index
-											);
-										}}
-									>
-										{key}
-									</button>
-								)
-							)}
-						</div>
-						{/* Dropdown content */}
-						{Object.entries(reportDocData.shizhuData).map(
-							([key, value], index) => (
-								<div
-									key={index}
-									ref={(el) =>
-										(shizhuRefs.current[index] = el)
-									}
-									className={`flex justify-center mt-4 ${isPrinting ? "tab-content-print" : ""}`}
-									style={
-										isPrinting
-											? {}
-											: {
-													maxHeight:
-														openedShizhuIndex ===
-														index
-															? 500
-															: 0,
-													overflow: "hidden",
-													transition:
-														"max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s",
-													opacity:
-														openedShizhuIndex ===
-														index
-															? 1
-															: 0,
-												}
-									}
-								>
-									<section
-										className={`${index !== 2 && "lg:max-w-125"} flex-grow`}
-									>
-										<p
-											className="leading-8 text-xl font-bold text-[#073E31]"
-											style={{
-												color: wuxingColorMap[
-													key.slice(-1)
-												],
-											}}
-										>
-											{key}
-										</p>
-										<p className="leading-8 text-justify">
-											{value}
-										</p>
-									</section>
-									{index !== 2 && (
-										<div
-											className="flex items-center justify-end ml-4"
-											style={{
-												marginRight: "-40px",
-												zIndex: 1,
-											}}
-										>
-											<Image
-												className="object-contain w-105 h-75"
-												priority
-												src={`/images/report/${key.slice(-1)}.png`}
-												alt={key}
-												width={420}
-												height={320}
-											/>
-										</div>
-									)}
-								</div>
-							)
-						)}
-					</section>
-					{/* <div className="items-center px-6 mt-10 md:flex md:p-0">
-						<p>
-							<span className="text-[#FF531A]">*</span>{" "}
-							{t("p1-9")}
-							<span className="font-bold">{t("p1-10")}</span>
-						</p>
-						{isLock && (
-							<UnlockButton className="bg-[#096E56] text-white md:ml-2 w-full md:w-auto mt-5 md:mt-0 block md:inline text-center" />
-						)}
 					</div> */}
 				</div>
-				{/* 第二章 流年运程解析 */}
-				<div
-					key="section-1"
-					className="relative mx-auto max-w-250 md:px-5 chapter-page-break"
-				>
-					<h1
-						ref={(el) => (sectionRefs.current[5] = el)}
-						className="md:text-[40px] text-[28px] text-center font-bold md:mt-18 mt-10 mb-10 md:px-0 px-5 text-[#073E31]"
-						id={`section-1`}
+				{/* Paragraph below both columns */}
+				<div className="w-full sm:w-[95%] lg:w-[85%] mx-auto px-4 sm:px-5 pb-6 sm:pb-8 mb-6 sm:mb-10">
+					<p
+						style={{
+							fontFamily: "Noto Sans HK, sans-serif",
+							fontWeight: 400,
+							fontSize: "clamp(16px, 4vw, 20px)",
+							color: "#000000",
+							lineHeight: 1.8,
+						}}
 					>
-						{sections[1].title}
-					</h1>
-					<p className="px-5 font-bold leading-8 tracking-normal text-justify md:px-0">
-						<span className="text-[#073E31]">{t("p2-1")}</span>
-						{t("p2-2")}
+						{t("p1-4")}
 					</p>
+				</div>
+				{/* Five Elements Summary Section */}
+				<section className="w-full sm:w-[95%] lg:w-[80%] mx-auto bg-white rounded-[30px] sm:rounded-[60px] lg:rounded-[160px] p-4 sm:p-6 lg:p-8 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+					<div className="flex items-center justify-center">
+						{/* Five Elements with counts */}
+						<div className="flex flex-col items-center justify-center w-full space-y-6 lg:flex-row lg:space-y-0 lg:space-x-8">
+							{(() => {
+								const analysis =
+									calculateWuxingAnalysis(userInfo);
+								if (!analysis) return null;
 
-					{/* 指數展示 */}
-					<div className="flex flex-wrap justify-center gap-3 px-5 mt-8 mb-8 sm:gap-4 md:gap-6 md:px-0 md:justify-between">
-						{reportDocData.yunchengData
-							.slice(0, 5)
-							.map((item, index) => (
-								<div
-									key={index}
-									className="flex flex-col items-center min-w-0 flex-1 max-w-[calc(50%-6px)] sm:max-w-[calc(33.333%-8px)] md:max-w-none"
-								>
-									<div
-										className="flex flex-col items-center justify-center w-16 h-16 mb-2 border-2 rounded-full sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 sm:border-3 md:border-4"
-										style={{
-											borderColor:
-												sections[1].children[index]
-													.color,
-											background: "#fff",
-										}}
-									>
-										<span
-											className="text-xl font-extrabold sm:text-2xl md:text-4xl lg:text-5xl"
-											style={{
-												color: sections[1].children[
-													index
-												].color,
-											}}
-										>
-											{item.zhishu?.split("/")[0]}
-										</span>
-										<span
-											className="text-xs font-bold sm:text-sm md:text-base lg:text-lg"
-											style={{
-												color: sections[1].children[
-													index
-												].color,
-											}}
-										>
-											/10
-										</span>
+								const { elementCounts, missingElements } =
+									analysis;
+
+								return (
+									<>
+										{/* Element displays */}
+										<div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 lg:gap-8">
+											{ELEMENTS.map((element) => (
+												<div
+													key={element}
+													className="flex flex-col items-center gap-2 sm:flex-row sm:gap-3"
+												>
+													<div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12">
+														<Image
+															src={`/images/elements/${element}.png`}
+															alt={element}
+															width={48}
+															height={48}
+															className="object-contain w-full h-full"
+														/>
+													</div>
+													<span
+														style={{
+															fontFamily:
+																"Noto Serif TC, serif",
+															fontWeight: 900,
+															fontSize:
+																"clamp(16px, 4vw, 20px)",
+															color: wuxingColorMap[
+																element
+															],
+														}}
+													>
+														{elementCounts[element]}
+													</span>
+												</div>
+											))}
+										</div>
+
+										{/* Analysis */}
+										<div className="w-full p-3 sm:p-4 lg:ml-15 lg:w-auto">
+											{/* <div
+												className="mb-2 text-lg font-semibold"
+												style={{
+													fontFamily:
+														"Noto Sans HK, sans-serif",
+													color: "#333",
+												}}
+											>
+												五行分析
+											</div> */}
+											<div
+												className="text-sm text-center sm:text-base lg:text-left"
+												style={{
+													fontFamily:
+														"Noto Sans HK, sans-serif",
+													color: "#666",
+												}}
+											>
+												{missingElements.length ===
+												0 ? (
+													<div>
+														<span
+															style={{
+																fontFamily:
+																	"Noto Serif TC, serif",
+																fontWeight: 700,
+																fontSize:
+																	"clamp(24px, 5vw, 34px)",
+																color: "#A3B116",
+															}}
+														>
+															五行齊全
+														</span>
+														<span
+															style={{
+																fontFamily:
+																	"Noto Serif TC, serif",
+																fontWeight: 700,
+																fontSize:
+																	"clamp(18px, 4vw, 24px)",
+																color: "#515151",
+															}}
+														>
+															-
+															沒有嚴重缺失某一元素
+														</span>
+													</div>
+												) : (
+													<div>
+														{missingElements.map(
+															(
+																element,
+																index
+															) => (
+																<span
+																	key={
+																		element
+																	}
+																>
+																	<span
+																		style={{
+																			fontFamily:
+																				"Noto Serif TC, serif",
+																			fontWeight: 700,
+																			fontSize:
+																				"24px",
+																			color: wuxingColorMap[
+																				element
+																			],
+																		}}
+																	>
+																		{
+																			element
+																		}
+																	</span>
+																	{index <
+																		missingElements.length -
+																			1 && (
+																		<span
+																			style={{
+																				fontFamily:
+																					"Noto Serif TC, serif",
+																				fontWeight: 700,
+																				fontSize:
+																					"24px",
+																				color: "#515151",
+																			}}
+																		>
+																			、
+																		</span>
+																	)}
+																</span>
+															)
+														)}
+														<span
+															style={{
+																fontFamily:
+																	"Noto Serif TC, serif",
+																fontWeight: 700,
+																fontSize:
+																	"24px",
+																color: "#515151",
+															}}
+														>
+															缺失
+														</span>
+													</div>
+												)}
+											</div>
+										</div>
+									</>
+								);
+							})()}
+						</div>
+					</div>
+				</section>
+
+				{/* Zodiac and Four Pillars Detail Section */}
+				<section className="w-full sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-8 lg:p-13 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+					{(() => {
+						const analysis = calculateWuxingAnalysis(userInfo);
+						if (!analysis) return null;
+
+						const { wuxingData } = analysis;
+
+						// Calculate zodiac from birth year
+						const birthDate = new Date(userInfo.birthDateTime);
+						const birthYear = birthDate.getFullYear();
+						const zodiacAnimals = [
+							"鼠",
+							"牛",
+							"虎",
+							"兔",
+							"龍",
+							"蛇",
+							"馬",
+							"羊",
+							"猴",
+							"雞",
+							"狗",
+							"豬",
+						];
+						const userZodiac =
+							zodiacAnimals[(birthYear - 1900) % 12];
+
+						return (
+							<div className="flex flex-col items-start gap-6 lg:flex-row lg:justify-between lg:gap-0">
+								{/* Left Side - Zodiac Animal */}
+								<div className="w-full lg:w-[20%] ml-10 flex items-center justify-center">
+									<div className="text-center">
+										<div className="flex items-center justify-center w-20 h-20 mx-auto mb-4 sm:w-24 sm:h-24 lg:w-102 lg:h-102">
+											<Image
+												src={`/images/animals/${
+													userZodiac === "龍"
+														? "dragon"
+														: userZodiac === "鼠"
+															? "mouse"
+															: userZodiac ===
+																  "牛"
+																? "cow"
+																: userZodiac ===
+																	  "虎"
+																	? "tiger"
+																	: userZodiac ===
+																		  "兔"
+																		? "rabbit"
+																		: userZodiac ===
+																			  "蛇"
+																			? "snake"
+																			: userZodiac ===
+																				  "馬"
+																				? "horse"
+																				: userZodiac ===
+																					  "羊"
+																					? "sheep"
+																					: userZodiac ===
+																						  "猴"
+																						? "monkey"
+																						: userZodiac ===
+																							  "雞"
+																							? "chicken"
+																							: userZodiac ===
+																								  "狗"
+																								? "dog"
+																								: userZodiac ===
+																									  "豬"
+																									? "pig"
+																									: "mouse"
+												}.png`}
+												alt={userZodiac}
+												width={328}
+												height={328}
+												className="object-contain"
+											/>
+										</div>
 									</div>
-									{/* Optional: Add labels below for mobile */}
-									<span className="mt-1 text-xs text-center text-gray-600 sm:text-sm md:hidden">
-										{sections[1].children[index].title}
-									</span>
 								</div>
-							))}
+
+								{/* Right Side - Enhanced Display Following Image Design */}
+								<div className="w-full lg:w-[70%] flex flex-col gap-4 sm:gap-6">
+									{/* Header with Title */}
+									<div className="text-center lg:text-start">
+										<h3
+											className="font-bold text-[#A3B116] mb-4 sm:mb-6"
+											style={{
+												fontFamily:
+													"Noto Serif TC, serif",
+												fontSize:
+													"clamp(36px, 8vw, 70px)",
+											}}
+										>
+											主要結論
+										</h3>
+									</div>
+
+									{/* Four Pillars in responsive layout */}
+									<div className="flex flex-wrap justify-center gap-3 mb-4 lg:justify-start sm:gap-4 sm:mb-6">
+										{/* 年柱 */}
+										<div className="bg-white border-2 border-black rounded-full px-3 sm:px-6 lg:px-10 py-2 min-w-[100px] sm:min-w-[120px] lg:min-w-[140px] text-center flex-shrink-0">
+											<div
+												className="font-bold text-[#374A37]"
+												style={{
+													fontFamily:
+														"Noto Serif TC, serif",
+													fontSize:
+														"clamp(14px, 3vw, 18px)",
+												}}
+											>
+												年柱-
+												<span className="text-[#A3B116]">
+													{wuxingData.year}
+												</span>
+											</div>
+										</div>
+
+										{/* 月柱 */}
+										<div className="bg-white border-2 border-black rounded-full px-3 sm:px-6 lg:px-10 py-2 min-w-[100px] sm:min-w-[120px] lg:min-w-[140px] text-center flex-shrink-0">
+											<div
+												className="font-bold text-[#374A37]"
+												style={{
+													fontFamily:
+														"Noto Serif TC, serif",
+													fontSize:
+														"clamp(14px, 3vw, 18px)",
+												}}
+											>
+												月柱-
+												<span className="text-[#A3B116]">
+													{wuxingData.month}
+												</span>
+											</div>
+										</div>
+
+										{/* 日柱 */}
+										<div className="bg-white border-2 border-black rounded-full px-3 sm:px-6 lg:px-10 py-2 min-w-[100px] sm:min-w-[120px] lg:min-w-[140px] text-center flex-shrink-0">
+											<div
+												className="font-bold text-[#374A37]"
+												style={{
+													fontFamily:
+														"Noto Serif TC, serif",
+													fontSize:
+														"clamp(14px, 3vw, 18px)",
+												}}
+											>
+												日柱-
+												<span className="text-[#A3B116]">
+													{wuxingData.day}
+												</span>
+											</div>
+										</div>
+
+										{/* 時柱 */}
+										<div className="bg-white border-2 border-black rounded-full px-3 sm:px-6 lg:px-10 py-2 min-w-[100px] sm:min-w-[120px] lg:min-w-[140px] text-center flex-shrink-0">
+											<div
+												className="font-bold text-[#374A37]"
+												style={{
+													fontFamily:
+														"Noto Serif TC, serif",
+													fontSize:
+														"clamp(14px, 3vw, 18px)",
+												}}
+											>
+												時柱-
+												<span className="text-[#A3B116]">
+													{wuxingData.hour}
+												</span>
+											</div>
+										</div>
+									</div>
+
+									{/* Two main analysis sections side by side like the image */}
+									<div className="flex justify-start gap-8">
+										{/* Left section - Wuxing Analysis */}
+										<div className="bg-[#A3B116] text-white px-15 py-4 rounded-full">
+											<div
+												className="text-xl font-bold text-center"
+												style={{
+													fontFamily:
+														"Noto Serif TC, serif",
+												}}
+											>
+												五行-
+												{
+													analysis.strengthAnalysis
+														.strengthDesc
+												}
+											</div>
+										</div>
+
+										{/* Right section - Missing Elements Analysis (Logic-based) */}
+										<div className="bg-[#A3B116] text-white px-15 py-4 rounded-full">
+											<div
+												className="text-xl font-bold text-center"
+												style={{
+													fontFamily:
+														"Noto Serif TC, serif",
+												}}
+											>
+												{(() => {
+													const missingElements =
+														analysis
+															.strengthAnalysis
+															.weakElements || [];
+													if (
+														missingElements.length ===
+														0
+													) {
+														return "五行沒有缺失";
+													} else if (
+														missingElements.length ===
+														1
+													) {
+														return `缺${missingElements[0]}`;
+													} else if (
+														missingElements.length ===
+														2
+													) {
+														return `缺${missingElements.join("")}`;
+													} else {
+														return `缺${missingElements.slice(0, 2).join("")}等`;
+													}
+												})()}
+											</div>
+										</div>
+									</div>
+
+									{/* Advice section like the image */}
+									<div className="mt-6">
+										<p
+											className="text-lg text-[#5A5A5A] text-start leading-relaxed"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontWeight: 400,
+												lineHeight: 1.8,
+											}}
+										>
+											{(() => {
+												const {
+													primaryGod,
+													auxiliaryGod,
+													strategy,
+												} = analysis.usefulGods || {};
+
+												if (
+													!primaryGod ||
+													!auxiliaryGod
+												) {
+													return "根據五行分析，需要進一步確認用神配置以達到最佳平衡效果。";
+												}
+
+												const strategyDesc = {
+													補缺: "補足所缺",
+													扶弱: "扶助偏弱",
+													抑強: "抑制過強",
+													瀉強: "化解過旺",
+												};
+
+												return `根據您的五行配置分析，建議以「${primaryGod}」為首選用神，「${auxiliaryGod}」為輔助用神。透過${strategyDesc[strategy] || "平衡調和"}的策略，兩者協同作用可有效調節五行能量，達到陰陽平衡，提升整體運勢發展。在日常生活中，可通過相應的顏色、方位、職業選擇等方式來強化這些有利元素的影響力。`;
+											})()}
+										</p>
+									</div>
+								</div>
+							</div>
+						);
+					})()}
+				</section>
+				{/* 四柱排盤&納音解析 - Tabbed Interface */}
+				<section className="relative w-full sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-12 lg:p-20 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+					{/* Background Image at Bottom Right */}
+					<div className="absolute bottom-0 right-0 overflow-hidden rounded-br-[20px] sm:rounded-br-[26px]">
+						<Image
+							src="/images/report/pillarbg.png"
+							alt="Pillar Background"
+							width={500}
+							height={500}
+							className="hidden object-contain opacity-40 sm:block"
+							style={{ pointerEvents: "none" }}
+						/>
 					</div>
 
-					<div className="relative">
-						<div>
-							{reportDocData.yunchengData.map((item, index) => {
-								return (
-									<section
+					<div className="relative z-10 mb-6 sm:mb-8">
+						<h2
+							className="font-bold text-[#A3B116] text-center lg:text-left"
+							style={{
+								fontFamily: "Noto Serif TC, serif",
+								fontSize: "clamp(32px, 8vw, 70px)",
+								marginBottom: "clamp(24px, 4vw, 60px)",
+							}}
+						>
+							四柱排盤&納音解析
+						</h2>
+					</div>
+
+					{/* Navigation Tabs */}
+					<div className="relative z-10 mb-6 sm:mb-8">
+						<div className="flex flex-wrap justify-center gap-3 sm:gap-6 lg:gap-10">
+							{["年柱", "月柱", "日柱", "時柱"].map((pillar) => (
+								<button
+									key={pillar}
+									onClick={() => setActivePillar(pillar)}
+									className="flex-shrink-0 transition-all duration-200"
+									style={{
+										width: "clamp(120px, 25vw, 220px)",
+										height: "clamp(40px, 8vw, 60px)",
+										borderRadius: 26,
+										backgroundColor: "#FFFFFF",
+										color: "#000000",
+										border:
+											activePillar === pillar
+												? "7px solid #A3B116"
+												: "7px solid transparent",
+										fontFamily: "Noto Sans HK, sans-serif",
+										fontWeight: 600,
+										fontSize: "clamp(14px, 3vw, 18px)",
+										cursor: "pointer",
+										boxShadow:
+											"0 2px 6.2px rgba(0, 0, 0, 0.4)",
+									}}
+								>
+									{pillar}
+								</button>
+							))}
+						</div>
+					</div>
+
+					{/* Tab Content */}
+					<div className="relative z-10">
+						{/* 年柱 Content */}
+						{activePillar === "年柱" && (
+							<>
+								<div className="flex flex-col items-start gap-4 mb-6 lg:flex-row lg:justify-start sm:mb-8 lg:mb-10 lg:gap-0">
+									{/* Left side - H2 title with speaker button */}
+									<div className="flex items-center justify-center w-full lg:justify-start lg:w-auto">
+										<h2
+											id={`section-0-1`}
+											ref={(el) =>
+												(sectionRefs.current[1] = el)
+											}
+											style={{
+												fontFamily:
+													"Noto Serif TC, serif",
+												fontWeight: 800,
+												fontSize:
+													"clamp(32px, 6vw, 56px)",
+												color: "#A3B115",
+											}}
+										>
+											年柱
+										</h2>
+									</div>
+
+									{/* Right side - Two buttons */}
+									<div className="flex flex-col w-full gap-3 ml-0 sm:flex-row sm:gap-4 sm:ml-4 lg:ml-8 sm:w-auto">
+										{/* Tag buttons */}
+										<div className="flex flex-wrap items-center justify-center gap-2 mb-4 sm:gap-3 sm:mb-6 sm:justify-start interactive-tabs">
+											{Object.entries(
+												reportDocData.nianzhuData
+											).map(([key, value], index) => {
+												const isLastButton =
+													index ===
+													Object.entries(
+														reportDocData.nianzhuData
+													).length -
+														1;
+
+												// Extract element from key - handle new format like 天干金, 地支木, 综合金木
+												const getElementFromKey = (
+													key
+												) => {
+													// Check if key contains any of the wuxing elements
+													const elements = [
+														"土",
+														"木",
+														"水",
+														"火",
+														"金",
+													];
+													for (const element of elements) {
+														if (
+															key.includes(
+																element
+															)
+														) {
+															return element;
+														}
+													}
+													// Fallback to last character if no element found
+													return key.slice(-1);
+												};
+
+												const elementKey =
+													getElementFromKey(key);
+
+												return (
+													<button
+														key={index}
+														className="transition-all duration-200 hover:border-6"
+														style={{
+															width: 243,
+															height: 61,
+															borderRadius: 10000,
+															backgroundColor:
+																isLastButton
+																	? "#FFFFFF"
+																	: wuxingColorMap[
+																			elementKey
+																		],
+															color: isLastButton
+																? "#000000"
+																: "#FFFFFF",
+															border:
+																openedNianzhuIndex ===
+																index
+																	? `6px solid #C9D923`
+																	: "6px solid transparent",
+															fontFamily:
+																"Noto Sans HK, sans-serif",
+															fontWeight: 400,
+															fontSize: 16,
+															cursor: "pointer",
+															boxShadow:
+																"0 2px 6.2px rgba(0, 0, 0, 0.4)",
+														}}
+														onMouseEnter={(e) => {
+															if (
+																openedNianzhuIndex !==
+																index
+															) {
+																e.target.style.border =
+																	"6px solid #C9D923";
+															}
+														}}
+														onMouseLeave={(e) => {
+															if (
+																openedNianzhuIndex !==
+																index
+															) {
+																e.target.style.border =
+																	"6px solid transparent";
+															}
+														}}
+														onClick={() => {
+															setOpenedNianzhuIndex(
+																openedNianzhuIndex ===
+																	index
+																	? null
+																	: index
+															);
+														}}
+													>
+														{key}
+													</button>
+												);
+											})}
+										</div>
+									</div>
+								</div>
+								<div className="w-[95%]">
+									<p
 										style={{
-											backgroundColor:
-												sections[1].children[index]
-													.bgColor,
+											fontFamily:
+												"Noto Sans HK, sans-serif",
+											fontWeight: 400,
+											fontSize: 20,
+											color: "#000000",
+											lineHeight: 1.8,
+											marginBottom: 6,
 										}}
-										className="md:rounded-[26px] rounded-none md:p-8 p-5 md:mt-10 mt-10"
 									>
-										<div className="flex items-center justify-between">
+										{t("p1-5")}
+									</p>
+								</div>
+
+								{/* Dropdown content */}
+								{Object.entries(reportDocData.nianzhuData).map(
+									([key, value], index) => (
+										<div
+											key={index}
+											ref={setNianzhuRef(index)}
+											className={`flex mt-4 ${isPrinting ? "tab-content-print" : ""}`}
+											style={
+												isPrinting
+													? {}
+													: {
+															maxHeight:
+																openedNianzhuIndex ===
+																index
+																	? 500
+																	: 0,
+															overflow: "hidden",
+															transition:
+																"max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s",
+															opacity:
+																openedNianzhuIndex ===
+																index
+																	? 1
+																	: 0,
+														}
+											}
+										>
+											{/* Left side - Content (50% width) */}
+											<div className="w-1/2 pr-4">
+												<p
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+														fontWeight: 400,
+														fontSize: 20,
+														color: "#000000",
+														lineHeight: 1.8,
+													}}
+												>
+													{value}
+												</p>
+											</div>
+
+											{/* Right side - Image (50% width) */}
+											<div className="flex items-center justify-center w-1/2">
+												<Image
+													className="object-contain max-w-full max-h-full"
+													priority
+													src={(() => {
+														// Extract element from key - handle new format like 天干金, 地支木, 综合金木
+														const getElementFromKey =
+															(key) => {
+																const elements =
+																	[
+																		"土",
+																		"木",
+																		"水",
+																		"火",
+																		"金",
+																	];
+																for (const element of elements) {
+																	if (
+																		key.includes(
+																			element
+																		)
+																	) {
+																		return element;
+																	}
+																}
+																return key.slice(
+																	-1
+																); // Fallback
+															};
+
+														const elementKey =
+															getElementFromKey(
+																key
+															);
+														// Map of available element images
+														const availableImages =
+															[
+																"土",
+																"木",
+																"水",
+																"火",
+																"金",
+															];
+														if (
+															availableImages.includes(
+																elementKey
+															)
+														) {
+															return `/images/report/${elementKey}.png`;
+														}
+														// Fallback to a default element image if not found
+														return `/images/report/木.png`;
+													})()}
+													alt={key}
+													width={420}
+													height={320}
+												/>
+											</div>
+										</div>
+									)
+								)}
+
+								{/* AI Life Stage Analysis Section for 年柱 */}
+								<div className="p-8">
+									{isLoadingLifeStage["年柱"] ? (
+										<div className="py-8 text-center">
+											<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
+											<p className="text-lg text-[#5A5A5A]">
+												正在分析您的童年生活特征...
+											</p>
+										</div>
+									) : lifeStageAnalysis["年柱"] ? (
+										<div>
+											<div className="mb-6">
+												<h4
+													className="text-4xl font-bold text-[#A3B116] mb-4"
+													style={{
+														fontFamily:
+															"Noto Serif TC, serif",
+													}}
+												>
+													{
+														lifeStageAnalysis[
+															"年柱"
+														].title
+													}
+												</h4>
+												<div className="p-4 mb-4">
+													<p
+														className="text-lg leading-relaxed text-black"
+														style={{
+															fontFamily:
+																"Noto Sans HK, sans-serif",
+															fontWeight: 400,
+															lineHeight: 1.8,
+														}}
+													>
+														{
+															lifeStageAnalysis[
+																"年柱"
+															].content
+														}
+													</p>
+												</div>
+												<div className="p-4 mb-4 ">
+													<p
+														className="text-lg leading-relaxed text-black"
+														style={{
+															fontFamily:
+																"Noto Sans HK, sans-serif",
+															fontWeight: 400,
+															lineHeight: 1.8,
+														}}
+													>
+														{
+															lifeStageAnalysis[
+																"年柱"
+															].example
+														}
+													</p>
+												</div>
+												{lifeStageAnalysis["年柱"]
+													.wisdom && (
+													<div className="p-4 ">
+														<p
+															className="text-lg leading-relaxed text-black"
+															style={{
+																fontFamily:
+																	"Noto Sans HK, sans-serif",
+																fontWeight: 400,
+																lineHeight: 1.8,
+															}}
+														>
+															{
+																lifeStageAnalysis[
+																	"年柱"
+																].wisdom
+															}
+														</p>
+													</div>
+												)}
+											</div>
+										</div>
+									) : (
+										<div className="py-8">
+											<div className="space-y-4">
+												<Skeleton className="w-3/4 h-6" />
+												<Skeleton className="w-full h-6" />
+												<Skeleton className="w-5/6 h-6" />
+												<Skeleton className="w-2/3 h-6" />
+											</div>
+										</div>
+									)}
+								</div>
+							</>
+						)}
+
+						{/* 月柱 Content */}
+						{activePillar === "月柱" && (
+							<>
+								<div className="flex items-start justify-start mb-10">
+									{/* Left side - H2 title */}
+									<div className="flex items-center">
+										<h2
+											id={`section-0-2`}
+											ref={(el) =>
+												(sectionRefs.current[2] = el)
+											}
+											style={{
+												fontFamily:
+													"Noto Serif TC, serif",
+												fontWeight: 800,
+												fontSize: 56,
+												color: "#A3B115",
+											}}
+										>
+											月柱
+										</h2>
+									</div>
+
+									{/* Right side - Tag buttons */}
+									<div className="flex flex-row gap-4 ml-8">
+										{/* Tag buttons */}
+										<div className="flex flex-wrap gap-3 mb-6 interactive-tabs">
+											{Object.entries(
+												reportDocData.yuezhuData
+											).map(([key, value], index) => {
+												const isLastButton =
+													index ===
+													Object.entries(
+														reportDocData.yuezhuData
+													).length -
+														1;
+
+												// Extract element from key - handle new format like 天干金, 地支木, 综合金木
+												const getElementFromKey = (
+													key
+												) => {
+													// Check if key contains any of the wuxing elements
+													const elements = [
+														"土",
+														"木",
+														"水",
+														"火",
+														"金",
+													];
+													for (const element of elements) {
+														if (
+															key.includes(
+																element
+															)
+														) {
+															return element;
+														}
+													}
+													// Fallback to last character if no element found
+													return key.slice(-1);
+												};
+
+												const elementKey =
+													getElementFromKey(key);
+
+												return (
+													<button
+														key={index}
+														className="transition-all duration-200 hover:border-6"
+														style={{
+															width: 243,
+															height: 61,
+															borderRadius: 10000,
+															backgroundColor:
+																isLastButton
+																	? "#FFFFFF"
+																	: wuxingColorMap[
+																			elementKey
+																		],
+															color: isLastButton
+																? "#000000"
+																: "#FFFFFF",
+															border:
+																openedYuezhuIndex ===
+																index
+																	? `6px solid #C9D923`
+																	: "6px solid transparent",
+															fontFamily:
+																"Noto Sans HK, sans-serif",
+															fontWeight: 400,
+															fontSize: 16,
+															cursor: "pointer",
+															boxShadow:
+																"0 2px 6.2px rgba(0, 0, 0, 0.4)",
+														}}
+														onMouseEnter={(e) => {
+															if (
+																openedYuezhuIndex !==
+																index
+															) {
+																e.target.style.border =
+																	"6px solid #C9D923";
+															}
+														}}
+														onMouseLeave={(e) => {
+															if (
+																openedYuezhuIndex !==
+																index
+															) {
+																e.target.style.border =
+																	"6px solid transparent";
+															}
+														}}
+														onClick={() => {
+															setOpenedYuezhuIndex(
+																openedYuezhuIndex ===
+																	index
+																	? null
+																	: index
+															);
+														}}
+													>
+														{key}
+													</button>
+												);
+											})}
+										</div>
+									</div>
+								</div>
+								<div className="w-[95%]">
+									<p
+										style={{
+											fontFamily:
+												"Noto Sans HK, sans-serif",
+											fontWeight: 400,
+											fontSize: 20,
+											color: "#000000",
+											lineHeight: 1.8,
+											marginBottom: 6,
+										}}
+									>
+										{t("p1-6")}
+									</p>
+								</div>
+								{/* Dropdown content */}
+								{Object.entries(reportDocData.yuezhuData).map(
+									([key, value], index) => (
+										<div
+											key={index}
+											ref={setYuezhuRef(index)}
+											className={`flex mt-4 ${isPrinting ? "tab-content-print" : ""}`}
+											style={
+												isPrinting
+													? {}
+													: {
+															maxHeight:
+																openedYuezhuIndex ===
+																index
+																	? 500
+																	: 0,
+															overflow: "hidden",
+															transition:
+																"max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s",
+															opacity:
+																openedYuezhuIndex ===
+																index
+																	? 1
+																	: 0,
+														}
+											}
+										>
+											{/* Left side - Content (50% width) */}
+											<div className="w-1/2 pr-4">
+												<p
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+														fontWeight: 400,
+														fontSize: 20,
+														color: "#000000",
+														lineHeight: 1.8,
+													}}
+												>
+													{value}
+												</p>
+											</div>
+
+											{/* Right side - Image (50% width) */}
+											<div className="flex items-center justify-center w-1/2">
+												<Image
+													className="object-contain max-w-full max-h-full"
+													priority
+													src={(() => {
+														// Extract element from key - handle new format like 天干金, 地支木, 综合金木
+														const getElementFromKey =
+															(key) => {
+																const elements =
+																	[
+																		"土",
+																		"木",
+																		"水",
+																		"火",
+																		"金",
+																	];
+																for (const element of elements) {
+																	if (
+																		key.includes(
+																			element
+																		)
+																	) {
+																		return element;
+																	}
+																}
+																return key.slice(
+																	-1
+																); // Fallback
+															};
+
+														const elementKey =
+															getElementFromKey(
+																key
+															);
+														// Map of available element images
+														const availableImages =
+															[
+																"土",
+																"木",
+																"水",
+																"火",
+																"金",
+															];
+														if (
+															availableImages.includes(
+																elementKey
+															)
+														) {
+															return `/images/report/${elementKey}.png`;
+														}
+														// Fallback to a default element image if not found
+														return `/images/report/木.png`;
+													})()}
+													alt={key}
+													width={420}
+													height={320}
+												/>
+											</div>
+										</div>
+									)
+								)}
+
+								{/* AI Life Stage Analysis Section for 月柱 */}
+								<div className="p-8">
+									{isLoadingLifeStage["月柱"] ? (
+										<div className="py-8 text-center">
+											<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
+											<p className="text-lg text-[#5A5A5A]">
+												正在分析您的青年时期特征...
+											</p>
+										</div>
+									) : lifeStageAnalysis["月柱"] ? (
+										<div>
+											<div className="mb-6">
+												<h4
+													className="text-4xl font-bold text-[#A3B116] mb-4"
+													style={{
+														fontFamily:
+															"Noto Serif TC, serif",
+													}}
+												>
+													{
+														lifeStageAnalysis[
+															"月柱"
+														].title
+													}
+												</h4>
+												<div className="p-4 mb-4">
+													<p
+														className="text-lg leading-relaxed text-black"
+														style={{
+															fontFamily:
+																"Noto Sans HK, sans-serif",
+															fontWeight: 400,
+															lineHeight: 1.8,
+														}}
+													>
+														{
+															lifeStageAnalysis[
+																"月柱"
+															].content
+														}
+													</p>
+												</div>
+												<div className="p-4 mb-4">
+													<p
+														className="text-lg leading-relaxed text-black"
+														style={{
+															fontFamily:
+																"Noto Sans HK, sans-serif",
+															fontWeight: 400,
+															lineHeight: 1.8,
+														}}
+													>
+														<strong>例子：</strong>{" "}
+														{
+															lifeStageAnalysis[
+																"月柱"
+															].example
+														}
+													</p>
+												</div>
+												{lifeStageAnalysis["月柱"]
+													.wisdom && (
+													<div className="p-4">
+														<p
+															className="text-lg leading-relaxed text-black"
+															style={{
+																fontFamily:
+																	"Noto Sans HK, sans-serif",
+																fontWeight: 400,
+																lineHeight: 1.8,
+															}}
+														>
+															<strong>
+																智慧洞察：
+															</strong>
+															{
+																lifeStageAnalysis[
+																	"月柱"
+																].wisdom
+															}
+														</p>
+													</div>
+												)}
+											</div>
+										</div>
+									) : (
+										<div className="py-8">
+											<div className="space-y-4">
+												<Skeleton className="w-3/4 h-6" />
+												<Skeleton className="w-full h-6" />
+												<Skeleton className="w-5/6 h-6" />
+												<Skeleton className="w-2/3 h-6" />
+											</div>
+										</div>
+									)}
+								</div>
+							</>
+						)}
+
+						{/* 日柱 Content */}
+						{activePillar === "日柱" && (
+							<>
+								<div className="flex items-start justify-start mb-10">
+									{/* Left side - H2 title */}
+									<div className="flex items-center">
+										<h2
+											id={`section-0-3`}
+											ref={(el) =>
+												(sectionRefs.current[3] = el)
+											}
+											style={{
+												fontFamily:
+													"Noto Serif TC, serif",
+												fontWeight: 800,
+												fontSize: 56,
+												color: "#A3B115",
+											}}
+										>
+											日柱
+										</h2>
+									</div>
+
+									{/* Right side - Tag buttons */}
+									<div className="flex flex-row gap-4 ml-8">
+										{/* Tag buttons */}
+										<div className="flex flex-wrap gap-3 mb-6 interactive-tabs">
+											{Object.entries(
+												reportDocData.rizhuData
+											).map(([key, value], index) => {
+												const isLastButton =
+													index ===
+													Object.entries(
+														reportDocData.rizhuData
+													).length -
+														1;
+
+												// Extract element from key - handle new format like 天干金, 地支木, 综合金木
+												const getElementFromKey = (
+													key
+												) => {
+													// Check if key contains any of the wuxing elements
+													const elements = [
+														"土",
+														"木",
+														"水",
+														"火",
+														"金",
+													];
+													for (const element of elements) {
+														if (
+															key.includes(
+																element
+															)
+														) {
+															return element;
+														}
+													}
+													// Fallback to last character if no element found
+													return key.slice(-1);
+												};
+
+												const elementKey =
+													getElementFromKey(key);
+
+												return (
+													<button
+														key={index}
+														className="transition-all duration-200 hover:border-6"
+														style={{
+															width: 243,
+															height: 61,
+															borderRadius: 10000,
+															backgroundColor:
+																isLastButton
+																	? "#FFFFFF"
+																	: wuxingColorMap[
+																			elementKey
+																		],
+															color: isLastButton
+																? "#000000"
+																: "#FFFFFF",
+															border:
+																openedRizhuIndex ===
+																index
+																	? `6px solid #C9D923`
+																	: "6px solid transparent",
+															fontFamily:
+																"Noto Sans HK, sans-serif",
+															fontWeight: 400,
+															fontSize: 16,
+															cursor: "pointer",
+															boxShadow:
+																"0 2px 6.2px rgba(0, 0, 0, 0.4)",
+														}}
+														onMouseEnter={(e) => {
+															if (
+																openedRizhuIndex !==
+																index
+															) {
+																e.target.style.border =
+																	"6px solid #C9D923";
+															}
+														}}
+														onMouseLeave={(e) => {
+															if (
+																openedRizhuIndex !==
+																index
+															) {
+																e.target.style.border =
+																	"6px solid transparent";
+															}
+														}}
+														onClick={() => {
+															setOpenedRizhuIndex(
+																openedRizhuIndex ===
+																	index
+																	? null
+																	: index
+															);
+														}}
+													>
+														{key}
+													</button>
+												);
+											})}
+										</div>
+									</div>
+								</div>
+								<div className="w-[95%]">
+									<p
+										style={{
+											fontFamily:
+												"Noto Sans HK, sans-serif",
+											fontWeight: 400,
+											fontSize: 20,
+											color: "#000000",
+											lineHeight: 1.8,
+											marginBottom: 6,
+										}}
+									>
+										{t("p1-7")}
+									</p>
+								</div>
+
+								{/* Dropdown content */}
+								{Object.entries(reportDocData.rizhuData).map(
+									([key, value], index) => (
+										<div
+											key={index}
+											ref={setRizhuRef(index)}
+											className={`flex mt-4 ${isPrinting ? "tab-content-print" : ""}`}
+											style={
+												isPrinting
+													? {}
+													: {
+															maxHeight:
+																openedRizhuIndex ===
+																index
+																	? 500
+																	: 0,
+															overflow: "hidden",
+															transition:
+																"max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s",
+															opacity:
+																openedRizhuIndex ===
+																index
+																	? 1
+																	: 0,
+														}
+											}
+										>
+											{/* Left side - Content (50% width) */}
+											<div className="w-1/2 pr-4">
+												<p
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+														fontWeight: 400,
+														fontSize: 20,
+														color: "#000000",
+														lineHeight: 1.8,
+													}}
+												>
+													{value}
+												</p>
+											</div>
+
+											{/* Right side - Image (50% width) */}
+											<div className="flex items-center justify-center w-1/2">
+												<Image
+													className="object-contain max-w-full max-h-full"
+													priority
+													src={(() => {
+														// Extract element from key - handle new format like 天干金, 地支木, 综合金木
+														const getElementFromKey =
+															(key) => {
+																const elements =
+																	[
+																		"土",
+																		"木",
+																		"水",
+																		"火",
+																		"金",
+																	];
+																for (const element of elements) {
+																	if (
+																		key.includes(
+																			element
+																		)
+																	) {
+																		return element;
+																	}
+																}
+																return key.slice(
+																	-1
+																); // Fallback
+															};
+
+														const elementKey =
+															getElementFromKey(
+																key
+															);
+														// Map of available element images
+														const availableImages =
+															[
+																"土",
+																"木",
+																"水",
+																"火",
+																"金",
+															];
+														if (
+															availableImages.includes(
+																elementKey
+															)
+														) {
+															return `/images/report/${elementKey}.png`;
+														}
+														// Fallback to a default element image if not found
+														return `/images/report/木.png`;
+													})()}
+													alt={key}
+													width={420}
+													height={320}
+												/>
+											</div>
+										</div>
+									)
+								)}
+								{/* AI Life Stage Analysis Section for 日柱 */}
+								<div className="p-8">
+									{isLoadingLifeStage["日柱"] ? (
+										<div className="py-8 text-center">
+											<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
+											<p className="text-lg text-[#5A5A5A]">
+												正在分析您的成年时期特征...
+											</p>
+										</div>
+									) : lifeStageAnalysis["日柱"] ? (
+										<div>
+											<div className="mb-6">
+												<h4
+													className="text-4xl font-bold text-[#A3B116] mb-4"
+													style={{
+														fontFamily:
+															"Noto Serif TC, serif",
+													}}
+												>
+													{
+														lifeStageAnalysis[
+															"日柱"
+														].title
+													}
+												</h4>
+												<div className="p-4 mb-4">
+													<p
+														className="text-lg leading-relaxed text-black"
+														style={{
+															fontFamily:
+																"Noto Sans HK, sans-serif",
+															fontWeight: 400,
+															lineHeight: 1.8,
+														}}
+													>
+														{
+															lifeStageAnalysis[
+																"日柱"
+															].content
+														}
+													</p>
+												</div>
+												<div className="p-4 mb-4">
+													<p
+														className="text-lg leading-relaxed text-black"
+														style={{
+															fontFamily:
+																"Noto Sans HK, sans-serif",
+															fontWeight: 400,
+															lineHeight: 1.8,
+														}}
+													>
+														{
+															lifeStageAnalysis[
+																"日柱"
+															].example
+														}
+													</p>
+												</div>
+												{lifeStageAnalysis["日柱"]
+													.wisdom && (
+													<div className="p-4">
+														<p
+															className="text-lg leading-relaxed text-black"
+															style={{
+																fontFamily:
+																	"Noto Sans HK, sans-serif",
+																fontWeight: 400,
+																lineHeight: 1.8,
+															}}
+														>
+															{
+																lifeStageAnalysis[
+																	"日柱"
+																].wisdom
+															}
+														</p>
+													</div>
+												)}
+											</div>
+										</div>
+									) : (
+										<div className="py-8">
+											<div className="space-y-4">
+												<Skeleton className="w-3/4 h-6" />
+												<Skeleton className="w-full h-6" />
+												<Skeleton className="w-5/6 h-6" />
+												<Skeleton className="w-2/3 h-6" />
+											</div>
+										</div>
+									)}
+								</div>
+							</>
+						)}
+
+						{/* 時柱 Content */}
+						{activePillar === "時柱" && (
+							<>
+								<div className="flex items-start justify-start mb-10">
+									{/* Left side - H2 title */}
+									<div className="flex items-center">
+										<h2
+											id={`section-0-4`}
+											ref={(el) =>
+												(sectionRefs.current[4] = el)
+											}
+											style={{
+												fontFamily:
+													"Noto Serif TC, serif",
+												fontWeight: 800,
+												fontSize: 56,
+												color: "#A3B115",
+											}}
+										>
+											{t("shizhu")}
+										</h2>
+									</div>
+
+									{/* Right side - Tag buttons */}
+									<div className="flex flex-row gap-4 ml-8">
+										{/* Tag buttons */}
+										<div className="flex flex-wrap gap-3 mb-6 interactive-tabs">
+											{Object.entries(
+												reportDocData.shizhuData
+											).map(([key, value], index) => {
+												const isLastButton =
+													index ===
+													Object.entries(
+														reportDocData.shizhuData
+													).length -
+														1;
+
+												// Extract element from key - handle new format like 天干金, 地支木, 综合金木
+												const getElementFromKey = (
+													key
+												) => {
+													// Check if key contains any of the wuxing elements
+													const elements = [
+														"土",
+														"木",
+														"水",
+														"火",
+														"金",
+													];
+													for (const element of elements) {
+														if (
+															key.includes(
+																element
+															)
+														) {
+															return element;
+														}
+													}
+													// Fallback to last character if no element found
+													return key.slice(-1);
+												};
+
+												const elementKey =
+													getElementFromKey(key);
+
+												return (
+													<button
+														key={index}
+														className="transition-all duration-200 hover:border-6"
+														style={{
+															width: 243,
+															height: 61,
+															borderRadius: 10000,
+															backgroundColor:
+																isLastButton
+																	? "#FFFFFF"
+																	: wuxingColorMap[
+																			elementKey
+																		],
+															color: isLastButton
+																? "#000000"
+																: "#FFFFFF",
+															border:
+																openedShizhuIndex ===
+																index
+																	? `6px solid #C9D923`
+																	: "6px solid transparent",
+															fontFamily:
+																"Noto Sans HK, sans-serif",
+															fontWeight: 400,
+															fontSize: 16,
+															cursor: "pointer",
+															boxShadow:
+																"0 2px 6.2px rgba(0, 0, 0, 0.4)",
+														}}
+														onMouseEnter={(e) => {
+															if (
+																openedShizhuIndex !==
+																index
+															) {
+																e.target.style.border =
+																	"6px solid #C9D923";
+															}
+														}}
+														onMouseLeave={(e) => {
+															if (
+																openedShizhuIndex !==
+																index
+															) {
+																e.target.style.border =
+																	"6px solid transparent";
+															}
+														}}
+														onClick={() => {
+															setOpenedShizhuIndex(
+																openedShizhuIndex ===
+																	index
+																	? null
+																	: index
+															);
+														}}
+													>
+														{key}
+													</button>
+												);
+											})}
+										</div>
+									</div>
+								</div>
+								<div className="w-[95%]">
+									<p
+										style={{
+											fontFamily:
+												"Noto Sans HK, sans-serif",
+											fontWeight: 400,
+											fontSize: 20,
+											color: "#000000",
+											lineHeight: 1.8,
+											marginBottom: 6,
+										}}
+									>
+										{t("p1-8")}
+									</p>
+								</div>
+
+								{/* Dropdown content */}
+								{Object.entries(reportDocData.shizhuData).map(
+									([key, value], index) => (
+										<div
+											key={index}
+											ref={setShizhuRef(index)}
+											className={`flex mt-4 ${isPrinting ? "tab-content-print" : ""}`}
+											style={
+												isPrinting
+													? {}
+													: {
+															maxHeight:
+																openedShizhuIndex ===
+																index
+																	? 500
+																	: 0,
+															overflow: "hidden",
+															transition:
+																"max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s",
+															opacity:
+																openedShizhuIndex ===
+																index
+																	? 1
+																	: 0,
+														}
+											}
+										>
+											{/* Left side - Content (50% width) */}
+											<div className="w-1/2 pr-4">
+												<p
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+														fontWeight: 400,
+														fontSize: 20,
+														color: "#000000",
+														lineHeight: 1.8,
+													}}
+												>
+													{value}
+												</p>
+											</div>
+											{/* Right side - Image (50% width) */}
+											<div className="flex items-center justify-center w-1/2">
+												<Image
+													className="object-contain max-w-full max-h-full"
+													priority
+													src={(() => {
+														// Extract element from key - handle new format like 天干金, 地支木, 综合金木
+														const getElementFromKey =
+															(key) => {
+																const elements =
+																	[
+																		"土",
+																		"木",
+																		"水",
+																		"火",
+																		"金",
+																	];
+																for (const element of elements) {
+																	if (
+																		key.includes(
+																			element
+																		)
+																	) {
+																		return element;
+																	}
+																}
+																return key.slice(
+																	-1
+																); // Fallback
+															};
+
+														const elementKey =
+															getElementFromKey(
+																key
+															);
+														// Map of available element images
+														const availableImages =
+															[
+																"土",
+																"木",
+																"水",
+																"火",
+																"金",
+															];
+														if (
+															availableImages.includes(
+																elementKey
+															)
+														) {
+															return `/images/report/${elementKey}.png`;
+														}
+														// Fallback to a default element image if not found
+														return `/images/report/木.png`;
+													})()}
+													alt={key}
+													width={420}
+													height={320}
+												/>
+											</div>
+										</div>
+									)
+								)}
+
+								{/* AI Life Stage Analysis Section for 時柱 */}
+								<div className="p-8">
+									{isLoadingLifeStage["時柱"] ? (
+										<div className="py-8 text-center">
+											<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
+											<p className="text-lg text-[#5A5A5A]">
+												正在分析您的老年时期特征...
+											</p>
+										</div>
+									) : lifeStageAnalysis["時柱"] ? (
+										<div>
+											<div className="mb-6">
+												<h4
+													className="text-4xl font-bold text-[#A3B116] mb-4"
+													style={{
+														fontFamily:
+															"Noto Serif TC, serif",
+													}}
+												>
+													{
+														lifeStageAnalysis[
+															"時柱"
+														].title
+													}
+												</h4>
+												<div className="p-4 mb-4">
+													<p
+														className="text-lg leading-relaxed text-black"
+														style={{
+															fontFamily:
+																"Noto Sans HK, sans-serif",
+															fontWeight: 400,
+															lineHeight: 1.8,
+														}}
+													>
+														{
+															lifeStageAnalysis[
+																"時柱"
+															].content
+														}
+													</p>
+												</div>
+												<div className="p-4 mb-4">
+													<p
+														className="text-lg leading-relaxed text-black"
+														style={{
+															fontFamily:
+																"Noto Sans HK, sans-serif",
+															fontWeight: 400,
+															lineHeight: 1.8,
+														}}
+													>
+														{
+															lifeStageAnalysis[
+																"時柱"
+															].example
+														}
+													</p>
+												</div>
+												{lifeStageAnalysis["時柱"]
+													.wisdom && (
+													<div className="p-4">
+														<p
+															className="text-lg leading-relaxed text-black"
+															style={{
+																fontFamily:
+																	"Noto Sans HK, sans-serif",
+																fontWeight: 400,
+																lineHeight: 1.8,
+															}}
+														>
+															{
+																lifeStageAnalysis[
+																	"時柱"
+																].wisdom
+															}
+														</p>
+													</div>
+												)}
+											</div>
+										</div>
+									) : (
+										<div className="py-8">
+											<div className="space-y-4">
+												<Skeleton className="w-3/4 h-6" />
+												<Skeleton className="w-full h-6" />
+												<Skeleton className="w-5/6 h-6" />
+												<Skeleton className="w-2/3 h-6" />
+											</div>
+										</div>
+									)}
+								</div>
+							</>
+						)}
+					</div>
+				</section>
+				{/* New Sections Based on Attached Images */}
+				{(() => {
+					// Always render sections, use fallback if aiAnalysis is null
+					const analysis = aiAnalysis || {
+						mainConclusion: {
+							wuxingPattern: "金火兩旺",
+							pattern: "身強食神制殺格",
+						},
+						wuxingDistribution: {
+							detailed: {
+								wood: {
+									count: 1,
+									strength: "★",
+									characteristic: "孤立無根",
+									influence: "創造力受限，難將靈感系統化落地",
+								},
+								fire: {
+									count: 3,
+									strength: "★★★",
+									characteristic: "外顯熾熱",
+									influence:
+										"行動力強、熱情主動，但易急躁衝動",
+								},
+								earth: {
+									count: 3,
+									strength: "★★",
+									characteristic: "鬆散無力",
+									influence: "財運不穩，存錢實力，易衝動消費",
+								},
+								metal: {
+									count: 4,
+									strength: "★★★★",
+									characteristic: "剛硬密集",
+									influence:
+										"追求完美、重規則壓力，身心易疲憊",
+								},
+								water: {
+									count: 2,
+									strength: "★★★",
+									characteristic: "潛藏暗流",
+									influence: "直覺敏銳，但思慮多，易焦慮失眠",
+								},
+							},
+							conflicts: [
+								{
+									title: "金火對峙",
+									description:
+										"金（刚烈）与火（热烈）两强相争，消耗日主能量，易引发身心疲惫。",
+									example:
+										'想学习新技能（木），总被工作任务（金）打断，导致计划频繁中断，常怀入"忙到无成果"状态。',
+								},
+							],
+						},
+						tenGodsPattern: {
+							selectedGod: "正印",
+							description:
+								"年干透出，主智慧、學業與長輩緣，但孤立無根，需主動尋求知識滋養。",
+							characteristics:
+								"你學東西比一般人快，尤其擅長支持、企劃類知識容易獲得威信教等你的長輩或老師（例如實習時的導師主動帶你）",
+							challenges:
+								"但甲木被年支申金「斬腳」（木坐金上），意味著...",
+							coreAnalysis: {
+								title: "核心矛盾-才華vs壓力",
+								sections: [
+									{
+										title: "得vs失財",
+										color: "red",
+										content: "你的創意能夠為你帶來來利",
+										example:
+											"等你發出了一個出色的營銷方案或改功獲得大獎暑，這是你實質的才華在發揮",
+									},
+									{
+										title: "劫財vs年財",
+										color: "purple",
+										content:
+											"在與朋友合作時，你可能會面臨財分配的問題",
+										example:
+											"讓約中容間友作夥伴所各等级的利益分配能夠促進合作的順利進行，避免未來的予盾",
+									},
+									{
+										title: "正印效時",
+										color: "green",
+										content:
+											"調要時到，往在能夠到判帶來幫助",
+										example:
+											"當你為求業務訂定個等，或是待在某個況的危勞求，可能有上老師為你解答",
+									},
+								],
+							},
+						},
+						// Remove lifeAdvice from fallback - let it show loading instead
+						// lifeAdvice: null, // This will trigger loading state in UI
+					};
+					return (
+						<>
+							{/* Debug: Check analysis data */}
+							{console.log(
+								"🧪 Analysis object in 化解提示:",
+								analysis
+							)}
+							{console.log(
+								"🧪 LifeAdvice available:",
+								analysis?.lifeAdvice
+							)}
+							{console.log(
+								"🧪 LifeAdvice tips count:",
+								analysis?.lifeAdvice?.tips?.length || 0
+							)}
+							{console.log(
+								"⚠️ Using AI content:",
+								!!analysis?.lifeAdvice?.tips,
+								"vs Fallback content:",
+								!analysis?.lifeAdvice?.tips
+							)}
+
+							{/* 五行分佈深度解析 Section - Third Image */}
+							<section className="w-full sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-8 lg:p-12 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+								<div className="mb-6 sm:mb-8">
+									<h2
+										className="font-bold text-[#A3B116] text-center lg:text-left"
+										style={{
+											fontFamily: "Noto Serif TC, serif",
+											fontSize: "clamp(32px, 7vw, 60px)",
+											marginBottom:
+												"clamp(16px, 3vw, 24px)",
+										}}
+									>
+										五行分佈深度解析
+									</h2>
+								</div>
+
+								{/* Five elements analysis table */}
+								<div className="p-4 mb-6 sm:p-6 lg:p-8 sm:mb-8 rounded-2xl">
+									{(() => {
+										const distribution =
+											calculateComprehensiveElementDistribution(
+												userInfo
+											);
+
+										if (!distribution) {
+											return (
+												<div className="py-8 text-center text-gray-500">
+													無法載入五行分析數據
+												</div>
+											);
+										}
+
+										const {
+											elementCounts,
+											elementStrengthMap,
+										} = distribution;
+										const elements = [
+											"金",
+											"木",
+											"水",
+											"火",
+											"土",
+										];
+
+										return (
+											<>
+												<div
+													className="grid gap-2 mb-4 text-center"
+													style={{
+														gridTemplateColumns:
+															"10% 10% 15% 20% 45%",
+													}}
+												>
+													<div
+														className="py-2 font-bold text-white rounded-lg "
+														style={{
+															fontFamily:
+																"Noto Serif TC, serif",
+														}}
+													>
+														五行
+													</div>
+													<div
+														className="bg-[#A3B116] text-white py-2 rounded-lg font-bold"
+														style={{
+															fontFamily:
+																"Noto Serif TC, serif",
+														}}
+													>
+														數量
+													</div>
+													<div
+														className="bg-[#A3B116] text-white py-2 rounded-lg font-bold"
+														style={{
+															fontFamily:
+																"Noto Serif TC, serif",
+														}}
+													>
+														強度
+													</div>
+													<div
+														className="bg-[#A3B116] text-white py-2 rounded-lg font-bold"
+														style={{
+															fontFamily:
+																"Noto Serif TC, serif",
+														}}
+													>
+														特性
+													</div>
+													<div
+														className="bg-[#A3B116] text-white py-2 rounded-lg font-bold"
+														style={{
+															fontFamily:
+																"Noto Serif TC, serif",
+														}}
+													>
+														對命主的影響
+													</div>
+												</div>
+
+												{elements.map((element) => {
+													const count =
+														elementCounts[
+															element
+														] || 0;
+													const strength =
+														elementStrengthMap[
+															element
+														] || "";
+													const star =
+														getStar(strength);
+
+													return (
+														<div
+															key={element}
+															className="grid items-center gap-2 mb-2 text-center"
+															style={{
+																gridTemplateColumns:
+																	"10% 10% 15% 20% 45%",
+															}}
+														>
+															{/* Element with image and color */}
+															<div
+																className={`text-white py-3 rounded-lg flex items-center justify-center gap-3 font-bold`}
+																style={{
+																	backgroundColor:
+																		wuxingColorMap[
+																			element
+																		],
+																}}
+															>
+																<img
+																	src={`/images/elements/${element}.png`}
+																	alt={
+																		element
+																	}
+																	className="w-8 h-8"
+																	style={{
+																		filter: "brightness(0) saturate(100%) invert(1)",
+																	}}
+																/>
+																<span
+																	style={{
+																		fontFamily:
+																			"Noto Serif TC, serif",
+																	}}
+																>
+																	{element}
+																</span>
+															</div>
+
+															{/* Count */}
+															<div
+																className="bg-[#EFEFEF] py-3 rounded-lg font-bold text-[#374A37]"
+																style={{
+																	fontSize:
+																		"18px",
+																}}
+															>
+																{count.toFixed(
+																	1
+																)}
+															</div>
+
+															{/* Strength */}
+															<div
+																className="py-3 font-bold text-yellow-600 bg-[#EFEFEF] rounded-lg"
+																style={{
+																	fontSize:
+																		"18px",
+																}}
+															>
+																{strength}
+															</div>
+
+															{/* 特性 */}
+															<div
+																className="bg-[#EFEFEF] py-3 rounded-lg text-[#374A37] text-left px-3"
+																style={{
+																	fontSize:
+																		"18px",
+																}}
+															>
+																{getElementTrait(
+																	element,
+																	star
+																)}
+															</div>
+
+															{/* 對命主的影響 */}
+															<div
+																className="bg-[#EFEFEF] py-3 rounded-lg text-left px-3"
+																style={{
+																	fontSize:
+																		"18px",
+																	color: "#3E5513",
+																}}
+															>
+																{getElementInfluence(
+																	element,
+																	star
+																)}
+															</div>
+														</div>
+													);
+												})}
+											</>
+										);
+									})()}
+								</div>
+
+								{/* Five elements flow conflicts */}
+								<div className="mb-8">
+									<h3
+										className="text-4xl font-bold text-[#A3B116] mb-6"
+										style={{
+											fontFamily: "Noto Serif TC, serif",
+										}}
+									>
+										五行流通阻礙點
+									</h3>
+
+									<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+										{/* Loading state */}
+										{isLoadingFlowAnalysis && (
+											<div className="col-span-3 py-12 text-center">
+												<div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#A3B116] mb-4"></div>
+												<p
+													className="text-[#5A5A5A]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
+													正在進行五行流通深度分析...
+												</p>
+											</div>
+										)}
+
+										{/* AI-generated flow obstacles */}
+										{!isLoadingFlowAnalysis &&
+											elementFlowAnalysis?.flowObstacles?.map(
+												(obstacle, index) => (
+													<div
+														key={index}
+														className="p-6 bg-[#EFEFEF] border border-gray-200 shadow-lg rounded-xl"
+													>
+														<div
+															className="inline-block px-4 py-2 mb-4 font-bold text-white rounded-full"
+															style={{
+																fontFamily:
+																	"Noto Serif TC, serif",
+																backgroundColor:
+																	"#B4003C",
+															}}
+														>
+															{obstacle.title}
+														</div>
+														<p
+															className="mb-4 leading-relaxed text-black"
+															style={{
+																fontFamily:
+																	"Noto Sans HK, sans-serif",
+																fontWeight: 400,
+															}}
+														>
+															{
+																obstacle.description
+															}
+														</p>
+														<div className="mb-2">
+															<span
+																className="text-[#A3B116] font-medium"
+																style={{
+																	fontFamily:
+																		"Noto Sans HK, sans-serif",
+																}}
+															>
+																生活影響...
+															</span>
+														</div>
+														<p
+															className="text-sm leading-relaxed text-black"
+															style={{
+																fontFamily:
+																	"Noto Sans HK, sans-serif",
+																fontWeight: 400,
+															}}
+														>
+															{
+																obstacle.lifeImpact
+															}
+														</p>
+													</div>
+												)
+											)}
+
+										{/* Fallback when no AI data */}
+										{!isLoadingFlowAnalysis &&
+											!elementFlowAnalysis?.flowObstacles && (
+												<div className="col-span-3 py-8 text-center">
+													<p
+														className="text-[#5A5A5A] mb-4"
+														style={{
+															fontFamily:
+																"Noto Sans HK, sans-serif",
+														}}
+													>
+														正在為您準備個人化的五行流通分析...
+													</p>
+												</div>
+											)}
+									</div>
+								</div>
+							</section>
+
+							{/* 十神格局與內在關聯 Section - Comprehensive Design */}
+							<section className="w-full sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-8 lg:p-12 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+								<div className="mb-6 sm:mb-8">
+									<h2
+										className="font-bold text-[#A3B116] text-center lg:text-left"
+										style={{
+											fontFamily: "Noto Serif TC, serif",
+											fontSize: "clamp(32px, 7vw, 70px)",
+											marginBottom:
+												"clamp(24px, 4vw, 60px)",
+										}}
+									>
+										十神格局與內在關聯
+									</h2>
+								</div>
+
+								{(() => {
+									// Use AI-generated content if available, otherwise use fallback data
+									const tenGodsData =
+										analysis?.tenGodsAnalysis || {
+											正印: {
+												name: "正印",
+												meaning: "主學業、貴人、長輩緣",
+												expression:
+													"載入個人化分析中...",
+												realManifestation: [
+													"正在分析您的學習天賦...",
+													"正在分析您的貴人運勢...",
+												],
+												warnings: {
+													title: "正在分析潛在挑戰...",
+													items: [
+														"個人化分析載入中...",
+														"請稍候...",
+													],
+												},
+												coreConflicts: {
+													title: "核心矛盾分析中...",
+													conflicts: [
+														{
+															title: "分析中...",
+															color: "red",
+															description:
+																"正在生成個人化分析...",
+															example:
+																"請稍候獲取專屬洞察...",
+														},
+														{
+															title: "分析中...",
+															color: "purple",
+															description:
+																"正在生成個人化分析...",
+															example:
+																"請稍候獲取專屬洞察...",
+														},
+														{
+															title: "分析中...",
+															color: "green",
+															description:
+																"正在生成個人化分析...",
+															example:
+																"請稍候獲取專屬洞察...",
+														},
+													],
+												},
+											},
+											財星: {
+												name: "財星",
+												meaning: "主財富、物質、配偶",
+												expression:
+													"載入個人化分析中...",
+												realManifestation: [
+													"正在分析您的財運特質...",
+													"正在分析您的物質天賦...",
+												],
+												warnings: {
+													title: "正在分析潛在挑戰...",
+													items: [
+														"個人化分析載入中...",
+														"請稍候...",
+													],
+												},
+												coreConflicts: {
+													title: "核心矛盾分析中...",
+													conflicts: [
+														{
+															title: "分析中...",
+															color: "red",
+															description:
+																"正在生成個人化分析...",
+															example:
+																"請稍候獲取專屬洞察...",
+														},
+														{
+															title: "分析中...",
+															color: "purple",
+															description:
+																"正在生成個人化分析...",
+															example:
+																"請稍候獲取專屬洞察...",
+														},
+														{
+															title: "分析中...",
+															color: "green",
+															description:
+																"正在生成個人化分析...",
+															example:
+																"請稍候獲取專屬洞察...",
+														},
+													],
+												},
+											},
+											官殺: {
+												name: "官殺",
+												meaning: "主事業、權威、責任",
+												expression:
+													"載入個人化分析中...",
+												realManifestation: [
+													"正在分析您的領導天賦...",
+													"正在分析您的事業運勢...",
+												],
+												warnings: {
+													title: "正在分析潛在挑戰...",
+													items: [
+														"個人化分析載入中...",
+														"請稍候...",
+													],
+												},
+												coreConflicts: {
+													title: "核心矛盾分析中...",
+													conflicts: [
+														{
+															title: "分析中...",
+															color: "red",
+															description:
+																"正在生成個人化分析...",
+															example:
+																"請稍候獲取專屬洞察...",
+														},
+														{
+															title: "分析中...",
+															color: "purple",
+															description:
+																"正在生成個人化分析...",
+															example:
+																"請稍候獲取專屬洞察...",
+														},
+														{
+															title: "分析中...",
+															color: "green",
+															description:
+																"正在生成個人化分析...",
+															example:
+																"請稍候獲取專屬洞察...",
+														},
+													],
+												},
+											},
+											劫比: {
+												name: "劫比",
+												meaning: "主朋友、競爭、協作",
+												expression:
+													"載入個人化分析中...",
+												realManifestation: [
+													"正在分析您的人際天賦...",
+													"正在分析您的合作能力...",
+												],
+												warnings: {
+													title: "正在分析潛在挑戰...",
+													items: [
+														"個人化分析載入中...",
+														"請稍候...",
+													],
+												},
+												coreConflicts: {
+													title: "核心矛盾分析中...",
+													conflicts: [
+														{
+															title: "分析中...",
+															color: "red",
+															description:
+																"正在生成個人化分析...",
+															example:
+																"請稍候獲取專屬洞察...",
+														},
+														{
+															title: "分析中...",
+															color: "purple",
+															description:
+																"正在生成個人化分析...",
+															example:
+																"請稍候獲取專屬洞察...",
+														},
+														{
+															title: "分析中...",
+															color: "green",
+															description:
+																"正在生成個人化分析...",
+															example:
+																"請稍候獲取專屬洞察...",
+														},
+													],
+												},
+											},
+											食傷: {
+												name: "食傷",
+												meaning: "主創意、表達、子女",
+												expression:
+													"載入個人化分析中...",
+												realManifestation: [
+													"正在分析您的創意天賦...",
+													"正在分析您的表達能力...",
+												],
+												warnings: {
+													title: "正在分析潛在挑戰...",
+													items: [
+														"個人化分析載入中...",
+														"請稍候...",
+													],
+												},
+												coreConflicts: {
+													title: "核心矛盾分析中...",
+													conflicts: [
+														{
+															title: "分析中...",
+															color: "red",
+															description:
+																"正在生成個人化分析...",
+															example:
+																"請稍候獲取專屬洞察...",
+														},
+														{
+															title: "分析中...",
+															color: "purple",
+															description:
+																"正在生成個人化分析...",
+															example:
+																"請稍候獲取專屬洞察...",
+														},
+														{
+															title: "分析中...",
+															color: "green",
+															description:
+																"正在生成個人化分析...",
+															example:
+																"請稍候獲取專屬洞察...",
+														},
+													],
+												},
+											},
+										};
+
+									const { tenGodsElements } =
+										calculateTenGodsElements(userInfo);
+
+									// Use existing activeTenGodsTab state, set default if empty
+									const activeTab =
+										activeTenGodsTab || "正印";
+
+									return (
+										<>
+											{/* Tab Navigation */}
+											<div className="flex flex-wrap gap-9 mb-15">
+												{Object.keys(tenGodsData).map(
+													(godName) => (
+														<button
+															key={godName}
+															onClick={() =>
+																setActiveTenGodsTab(
+																	godName
+																)
+															}
+															className="text-lg font-extrabold transition-colors"
+															style={{
+																fontFamily:
+																	"Noto Serif TC, serif",
+																width: "180px",
+																height: "61px",
+																borderRadius:
+																	"1000px",
+																border:
+																	activeTenGodsTab ===
+																	godName
+																		? "7px solid #A3B116"
+																		: "none",
+																backgroundColor:
+																	"#FFFFFF",
+																color: "#5A5A5A",
+																boxShadow:
+																	activeTenGodsTab ===
+																	godName
+																		? "none"
+																		: "0 2px 6.2px rgba(0, 0, 0, 0.4)",
+															}}
+														>
+															{godName}
+														</button>
+													)
+												)}
+											</div>
+
+											{/* Tab Content */}
+											{Object.entries(tenGodsData).map(
+												([godName, data]) =>
+													activeTab === godName && (
+														<div key={godName}>
+															{/* Header Section */}
+															<div className="mb-6">
+																<div className="flex items-center justify-start gap-4 mb-4">
+																	<div
+																		className="text-[#A3B116] pl-0 pr-4 py-2 rounded-full text-5xl font-extrabold"
+																		style={{
+																			fontFamily:
+																				"Noto Serif TC, serif",
+																		}}
+																	>
+																		{
+																			godName
+																		}
+																	</div>
+																	<div
+																		className="flex items-center justify-center gap-3 py-2 text-3xl font-extrabold text-white rounded-full px-15"
+																		style={{
+																			fontFamily:
+																				"Noto Sans HK, sans-serif",
+																			backgroundColor:
+																				(() => {
+																					const element =
+																						data.element ||
+																						tenGodsElements[
+																							godName
+																						];
+																					switch (
+																						element
+																					) {
+																						case "金":
+																							return "#DAA520";
+																						case "木":
+																							return "#228B22";
+																						case "水":
+																							return "#4169E1";
+																						case "火":
+																							return "#DC143C";
+																						case "土":
+																							return "#8B4513";
+																						default:
+																							return "#6B8E23";
+																					}
+																				})(),
+																		}}
+																	>
+																		<img
+																			src={`/images/elements/${data.element || tenGodsElements[godName]}.png`}
+																			alt={
+																				data.element ||
+																				tenGodsElements[
+																					godName
+																				]
+																			}
+																			className="w-8 h-8"
+																			style={{
+																				filter: "brightness(0) saturate(100%) invert(1)",
+																			}}
+																		/>
+																		{data.element ||
+																			tenGodsElements[
+																				godName
+																			]}
+																	</div>
+																	<div
+																		className="bg-[#EFEFEF] text-[#515151] px-10 py-2 rounded-full flex items-center justify-center gap-4"
+																		style={{
+																			fontFamily:
+																				"Noto Sans HK, sans-serif",
+																		}}
+																	>
+																		<span className="text-3xl font-extrabold">
+																			{
+																				godName
+																			}
+																		</span>
+																		<span className="text-2xl">
+																			-
+																			{
+																				data.meaning
+																			}
+																		</span>
+																	</div>
+																</div>
+
+																<h3
+																	className="text-xl font-bold text-[#374A37] mb-4"
+																	style={{
+																		fontFamily:
+																			"Noto Serif TC, serif",
+																	}}
+																>
+																	{
+																		data.expression
+																	}
+																</h3>
+															</div>
+
+															{/* 實際表現 Section */}
+															<div className="mb-6">
+																<h4
+																	className="text-4xl font-extrabold text-[#A3B116] mb-3"
+																	style={{
+																		fontFamily:
+																			"Noto Serif TC, serif",
+																	}}
+																>
+																	實際表現
+																</h4>
+																{data.realManifestation.map(
+																	(
+																		item,
+																		index
+																	) => (
+																		<p
+																			key={
+																				index
+																			}
+																			className="mb-2 text-xl leading-relaxed text-black text-bold"
+																			style={{
+																				fontFamily:
+																					"Noto Sans HK, sans-serif",
+																				fontWeight: 400,
+																			}}
+																		>
+																			{
+																				item
+																			}
+																		</p>
+																	)
+																)}
+															</div>
+
+															{/* Warning Section */}
+															<div className="mb-8">
+																<p
+																	className="mb-3 text-2xl leading-relaxed text-black"
+																	style={{
+																		fontFamily:
+																			"Noto Sans HK, sans-serif",
+																	}}
+																>
+																	{
+																		data
+																			.warnings
+																			.title
+																	}
+																</p>
+																{data.warnings.items.map(
+																	(
+																		item,
+																		index
+																	) => (
+																		<p
+																			key={
+																				index
+																			}
+																			className="ml-4 text-xl leading-relaxed text-black"
+																			style={{
+																				fontFamily:
+																					"Noto Sans HK, sans-serif",
+																				fontWeight: 400,
+																			}}
+																		>
+																			▶{" "}
+																			{
+																				item
+																			}
+																		</p>
+																	)
+																)}
+															</div>
+
+															{/* Core Conflicts Section */}
+															<div className="p-8 bg-white ">
+																<h3
+																	className="mb-6 text-4xl font-extrabold text-start text-[#B4003C]"
+																	style={{
+																		fontFamily:
+																			"Noto Serif TC, serif",
+																	}}
+																>
+																	{
+																		data
+																			.coreConflicts
+																			.title
+																	}
+																</h3>
+
+																<div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+																	{data.coreConflicts.conflicts.map(
+																		(
+																			conflict,
+																			index
+																		) => (
+																			<div
+																				key={
+																					index
+																				}
+																				className="bg-[#EFEFEF] p-6 shadow-md"
+																				style={{
+																					borderRadius:
+																						"20px",
+																				}}
+																			>
+																				<div
+																					className="inline-block px-6 py-3 mb-4 font-bold text-white "
+																					style={{
+																						fontFamily:
+																							"Noto Serif TC, serif",
+																						backgroundColor:
+																							"#B4003C",
+																						borderRadius:
+																							"100px",
+																					}}
+																				>
+																					{
+																						conflict.title
+																					}
+																				</div>
+
+																				{/* Main description */}
+																				<div className="mb-1">
+																					<p
+																						className="leading-relaxed text-black"
+																						style={{
+																							fontFamily:
+																								"Noto Sans HK, sans-serif",
+																						}}
+																					>
+																						{
+																							conflict.description
+																						}
+																					</p>
+																				</div>
+
+																				{/* Psychological Roots */}
+																				{conflict.psychologicalRoots && (
+																					<div className="p-3 mb-1">
+																						<h5
+																							className="mb-2 font-medium  text-[#A3B116]"
+																							style={{
+																								fontFamily:
+																									"Noto Sans HK, sans-seri",
+																							}}
+																						>
+																							💭
+																							心理根源
+																						</h5>
+																						<p
+																							className="leading-relaxed text-black"
+																							style={{
+																								fontFamily:
+																									"Noto Sans HK, sans-serif",
+																							}}
+																						>
+																							{
+																								conflict.psychologicalRoots
+																							}
+																						</p>
+																					</div>
+																				)}
+
+																				{/* Developmental Stages */}
+																				{conflict.developmentalStages && (
+																					<div className="p-3 mb-1">
+																						<h5
+																							className="mb-2 font-medium  text-[#A3B116]"
+																							style={{
+																								fontFamily:
+																									"Noto Sans HK, sans-seri",
+																							}}
+																						>
+																							📈
+																							發展演變
+																						</h5>
+																						<p
+																							className="leading-relaxed text-black "
+																							style={{
+																								fontFamily:
+																									"Noto Sans HK, sans-serif",
+																							}}
+																						>
+																							{
+																								conflict.developmentalStages
+																							}
+																						</p>
+																					</div>
+																				)}
+
+																				{/* Example */}
+																				<div className="pt-0 mt-0">
+																					<p
+																						className="text-[#A3B116] font-medium mb-2"
+																						style={{
+																							fontFamily:
+																								"Noto Sans HK, sans-serif",
+																						}}
+																					>
+																						💡
+																						具體例子
+																					</p>
+																					<p
+																						className="leading-relaxed text-black "
+																						style={{
+																							fontFamily:
+																								"Noto Sans HK, sans-serif",
+																							fontWeight: 400,
+																						}}
+																					>
+																						{
+																							conflict.example
+																						}
+																					</p>
+																				</div>
+																			</div>
+																		)
+																	)}
+																</div>
+															</div>
+														</div>
+													)
+											)}
+										</>
+									);
+								})()}
+							</section>
+
+							{/* 化解提示 Section - First Image */}
+							<section className="w-[80%] mx-auto  p-12 mb-10 ">
+								<div className="mb-8">
+									<h2
+										className="text-7xl font-extrabold text-[#A3B116] mb-10"
+										style={{
+											fontFamily: "Noto Serif TC, serif",
+										}}
+									>
+										化解提示
+									</h2>
+
+									{/* Show loading state if no AI content */}
+									{!analysis?.lifeAdvice?.tips ? (
+										<div className="py-12 text-center">
+											<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
+											<p className="text-lg text-[#5A5A5A] mb-4">
+												正在生成個人化建議...
+											</p>
+											<p className="text-sm text-gray-500">
+												AI正在根據您的八字命理分析，為您量身定制專屬的化解提示
+											</p>
+										</div>
+									) : (
+										<>
 											<p
-												ref={(el) =>
-													(sectionRefs.current[
-														6 + index
-													] = el)
-												}
-												id={`section-1-${index}`}
-												className={`leading-8 text-xl font-bold flex items-center`}
+												className="mb-8 text-2xl leading-relaxed text-black"
+												style={{
+													fontFamily:
+														"Noto Sans HK, sans-serif",
+													fontWeight: 400,
+													lineHeight: 1.6,
+												}}
+											>
+												透過這些策略，你可以在生活和工作中更好地平衡才華與壓力，發揮自己的潛力，迎接機會的來臨。
+											</p>
+										</>
+									)}
+								</div>
+
+								{/* Only show content grid if AI data is available */}
+								{analysis?.lifeAdvice?.tips && (
+									<div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+										{analysis.lifeAdvice.tips.map(
+											(tip, index) => (
+												<div
+													key={index}
+													className="p-8 bg-white border border-gray-100 shadow-lg rounded-2xl"
+												>
+													<h3
+														className="text-4xl font-bold text-[#A3B116] mb-4"
+														style={{
+															fontFamily:
+																"Noto Serif TC, serif",
+														}}
+													>
+														{tip.title}
+													</h3>
+													<p
+														className="text-xl leading-relaxed text-black"
+														style={{
+															fontFamily:
+																"Noto Sans HK, sans-serif",
+															fontWeight: 400,
+														}}
+													>
+														{tip.content}
+													</p>
+													{tip.example && (
+														<div className="mt-4">
+															<p
+																className="text-[#A3B116] text-xl font-medium"
+																style={{
+																	fontFamily:
+																		"Noto Sans HK, sans-serif",
+																}}
+															>
+																例如：
+															</p>
+															<p
+																className="text-xl text-[#5A5A5A] leading-relaxed mt-1"
+																style={{
+																	fontFamily:
+																		"Noto Sans HK, sans-serif",
+																}}
+															>
+																{tip.example}
+															</p>
+														</div>
+													)}
+												</div>
+											)
+										)}
+									</div>
+								)}
+							</section>
+							{/* 綜合調理与人生建議 - Comprehensive Section */}
+							<section className="w-full sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-12 lg:p-20 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+								<h3
+									className="font-bold text-[#A3B116] flex items-center justify-center lg:justify-start text-center lg:text-left"
+									style={{
+										fontFamily: "Noto Serif TC, serif",
+										fontSize: "clamp(32px, 7vw, 70px)",
+										marginBottom: "clamp(32px, 5vw, 88px)",
+									}}
+								>
+									<span>綜合調理与人生建議</span>
+								</h3>
+
+								{isLoadingComprehensiveLifeAdvice ? (
+									<div className="p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl">
+										<div className="flex flex-col items-center justify-center gap-4 sm:flex-row sm:justify-between">
+											<div className="animate-spin rounded-full h-8 w-8 sm:h-10 sm:w-10 border-b-2 border-[#8B4513]"></div>
+											<span className="text-lg sm:text-xl text-[#8B4513] text-center">
+												AI正在生成綜合人生建議...
+											</span>
+										</div>
+									</div>
+								) : comprehensiveLifeAdvice ? (
+									<div className="space-y-6 sm:space-y-8">
+										{/* Main Tab Navigation */}
+										<div className="flex flex-col justify-center gap-4 px-0 sm:flex-row lg:justify-between sm:gap-6 lg:gap-8 sm:px-4 lg:px-25">
+											{[
+												{
+													key: "五行調和",
+													icon: "⭐",
+													image: "/images/report/star.png",
+												},
+												{
+													key: "身心養護",
+													icon: "❤️",
+													image: "/images/report/heart.png",
+												},
+												{
+													key: "事業方向",
+													icon: "💼",
+													image: "/images/report/bag.png",
+												},
+											].map((tab) => (
+												<div
+													key={tab.key}
+													className="flex flex-col items-center flex-1 gap-2 sm:gap-3 sm:flex-none"
+												>
+													<button
+														onClick={() =>
+															setActiveComprehensiveTab(
+																tab.key
+															)
+														}
+														className={`w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 rounded-full transition-all duration-300 flex items-center justify-center ${
+															activeComprehensiveTab ===
+															tab.key
+																? "bg-[#EFEFEF] shadow-lg border-2 border-black"
+																: "bg-[#EFEFEF] shadow-lg "
+														}`}
+													>
+														{tab.image && (
+															<div className="flex items-center justify-center w-full h-full overflow-hidden rounded-full">
+																<img
+																	src={
+																		tab.image
+																	}
+																	alt={
+																		tab.key
+																	}
+																	className="object-contain w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20"
+																	onError={(
+																		e
+																	) => {
+																		e.target.style.display =
+																			"none";
+																		e.target.nextSibling.style.display =
+																			"flex";
+																	}}
+																/>
+																<div
+																	className="flex items-center justify-center w-12 h-12 bg-gray-300 rounded-full sm:w-16 sm:h-16 lg:w-20 lg:h-20"
+																	style={{
+																		display:
+																			"none",
+																		fontSize:
+																			"clamp(20px, 4vw, 32px)",
+																	}}
+																>
+																	{tab.icon}
+																</div>
+															</div>
+														)}
+													</button>
+													<span
+														className={`font-semibold text-center ${
+															activeComprehensiveTab ===
+															tab.key
+																? "text-[#A3B116]"
+																: "text-gray-600"
+														}`}
+														style={{
+															fontSize:
+																"clamp(14px, 3vw, 20px)",
+														}}
+													>
+														{tab.key}
+													</span>
+												</div>
+											))}
+										</div>
+
+										{/* Selected Tab Title */}
+										<div className="mb-6 text-center sm:mb-8">
+											<h4
+												className="font-extrabold"
+												style={{
+													fontFamily:
+														"Noto Serif TC, serif",
+													fontWeight: 800,
+													fontSize:
+														"clamp(28px, 6vw, 38px)",
+												}}
+											>
+												{activeComprehensiveTab}
+											</h4>
+										</div>
+
+										{/* Tab Content */}
+										{activeComprehensiveTab ===
+											"五行調和" && (
+											<div className="px-4 sm:px-8 lg:px-30">
+												{/* Sub-tab Navigation */}
+												<div className="flex justify-between gap-3 p-6 mb-3">
+													{[
+														"補益",
+														"强化",
+														"避免",
+													].map((subTab) => (
+														<button
+															key={subTab}
+															onClick={() =>
+																setActiveWuxingTab(
+																	subTab
+																)
+															}
+															className={`px-22 py-3 rounded-full text-lg font-bold transition-all duration-300 ${
+																activeWuxingTab ===
+																subTab
+																	? "bg-[#89960A] text-white shadow-lg border-2 border-black"
+																	: "bg-[#89960A] text-white "
+															}`}
+														>
+															{subTab}
+														</button>
+													))}
+												</div>
+
+												{/* Sub-tab Content */}
+												<div className="p-6">
+													{activeWuxingTab ===
+														"補益" && (
+														<div className="space-y-4">
+															<h4 className="mb-4 text-4xl font-bold text-[#89960A]">
+																補益建議
+															</h4>
+															<div className="text-xl leading-relaxed text-black">
+																{comprehensiveLifeAdvice
+																	.wuxingHarmony
+																	?.summary
+																	?.supplement ? (
+																	Array.isArray(
+																		comprehensiveLifeAdvice
+																			.wuxingHarmony
+																			.summary
+																			.supplement
+																	) ? (
+																		<ul className="space-y-2">
+																			{comprehensiveLifeAdvice.wuxingHarmony.summary.supplement.map(
+																				(
+																					item,
+																					index
+																				) => (
+																					<li
+																						key={
+																							index
+																						}
+																						className="flex items-start gap-3"
+																					>
+																						<span className="font-bold text-green-600">
+																							•
+																						</span>
+																						<span>
+																							{
+																								item
+																							}
+																						</span>
+																					</li>
+																				)
+																			)}
+																		</ul>
+																	) : (
+																		<p>
+																			{
+																				comprehensiveLifeAdvice
+																					.wuxingHarmony
+																					.summary
+																					.supplement
+																			}
+																		</p>
+																	)
+																) : (
+																	<p className="italic text-gray-500">
+																		暫無補益建議
+																	</p>
+																)}
+															</div>
+														</div>
+													)}
+
+													{activeWuxingTab ===
+														"强化" && (
+														<div className="space-y-4">
+															<h4 className="mb-4 text-4xl font-bold text-green-700">
+																强化方法
+															</h4>
+															<div className="text-xl leading-relaxed text-black">
+																{comprehensiveLifeAdvice
+																	.wuxingHarmony
+																	?.summary
+																	?.strengthen ? (
+																	Array.isArray(
+																		comprehensiveLifeAdvice
+																			.wuxingHarmony
+																			.summary
+																			.strengthen
+																	) ? (
+																		<ul className="space-y-3">
+																			{comprehensiveLifeAdvice.wuxingHarmony.summary.strengthen.map(
+																				(
+																					item,
+																					index
+																				) => (
+																					<li
+																						key={
+																							index
+																						}
+																						className="flex items-start gap-3"
+																					>
+																						<span className="font-bold text-green-600">
+																							•
+																						</span>
+																						<span>
+																							{
+																								item
+																							}
+																						</span>
+																					</li>
+																				)
+																			)}
+																		</ul>
+																	) : (
+																		<p>
+																			{
+																				comprehensiveLifeAdvice
+																					.wuxingHarmony
+																					.summary
+																					.strengthen
+																			}
+																		</p>
+																	)
+																) : (
+																	<p className="italic text-gray-500">
+																		暫無强化建議
+																	</p>
+																)}
+															</div>
+														</div>
+													)}
+
+													{activeWuxingTab ===
+														"避免" && (
+														<div className="space-y-4">
+															<h4 className="mb-4 text-4xl font-bold text-green-700">
+																避免事項
+															</h4>
+															<div className="text-xl leading-relaxed text-black">
+																{comprehensiveLifeAdvice
+																	.wuxingHarmony
+																	?.summary
+																	?.avoid ? (
+																	Array.isArray(
+																		comprehensiveLifeAdvice
+																			.wuxingHarmony
+																			.summary
+																			.avoid
+																	) ? (
+																		<ul className="space-y-3">
+																			{comprehensiveLifeAdvice.wuxingHarmony.summary.avoid.map(
+																				(
+																					item,
+																					index
+																				) => (
+																					<li
+																						key={
+																							index
+																						}
+																						className="flex items-start gap-3"
+																					>
+																						<span className="font-bold text-red-600">
+																							•
+																						</span>
+																						<span>
+																							{
+																								item
+																							}
+																						</span>
+																					</li>
+																				)
+																			)}
+																		</ul>
+																	) : (
+																		<p>
+																			{
+																				comprehensiveLifeAdvice
+																					.wuxingHarmony
+																					.summary
+																					.avoid
+																			}
+																		</p>
+																	)
+																) : (
+																	<p className="italic text-gray-500">
+																		暫無避免事項
+																	</p>
+																)}
+															</div>
+														</div>
+													)}
+												</div>
+
+												{/* Detailed explanation */}
+												{comprehensiveLifeAdvice
+													.wuxingHarmony
+													?.detailed && (
+													<div className="p-4 mt-6 bg-[#EFEFEF]  rounded-xl">
+														<h5 className="mb-2 text-2xl font-semibold text-black">
+															詳細說明
+														</h5>
+														<p className="text-xl leading-relaxed text-black">
+															{
+																comprehensiveLifeAdvice
+																	.wuxingHarmony
+																	.detailed
+															}
+														</p>
+													</div>
+												)}
+											</div>
+										)}
+
+										{activeComprehensiveTab ===
+											"身心養護" && (
+											<div className="px-30">
+												{/* Sub-tab Navigation */}
+												<div className="flex justify-between gap-3 p-6 mb-3">
+													{[
+														"運動建議",
+														"情緒調節",
+													].map((subTab) => (
+														<button
+															key={subTab}
+															onClick={() =>
+																setActiveHealthTab(
+																	subTab
+																)
+															}
+															className={`px-22 py-3 rounded-full text-lg font-bold transition-all duration-300 ${
+																activeHealthTab ===
+																subTab
+																	? "bg-[#B4003C] text-white shadow-lg border-2 border-black"
+																	: "bg-[#B4003C] text-white "
+															}`}
+														>
+															{subTab}
+														</button>
+													))}
+												</div>
+
+												{/* Sub-tab Content */}
+												<div className="p-6">
+													{activeHealthTab ===
+														"運動建議" && (
+														<div className="space-y-4">
+															<h4 className="mb-4 text-4xl font-bold text-[#B4003C]">
+																運動建議
+															</h4>
+															<div className="text-xl leading-relaxed text-black">
+																{comprehensiveLifeAdvice
+																	.healthWellness
+																	?.exercise ? (
+																	Array.isArray(
+																		comprehensiveLifeAdvice
+																			.healthWellness
+																			.exercise
+																	) ? (
+																		<ul className="space-y-3">
+																			{comprehensiveLifeAdvice.healthWellness.exercise.map(
+																				(
+																					item,
+																					index
+																				) => (
+																					<li
+																						key={
+																							index
+																						}
+																						className="flex items-start gap-3"
+																					>
+																						<span className="font-bold text-[#B4003C]">
+																							•
+																						</span>
+																						<span>
+																							{
+																								item
+																							}
+																						</span>
+																					</li>
+																				)
+																			)}
+																		</ul>
+																	) : (
+																		<p>
+																			{
+																				comprehensiveLifeAdvice
+																					.healthWellness
+																					.exercise
+																			}
+																		</p>
+																	)
+																) : (
+																	<p className="italic text-gray-500">
+																		暫無運動建議
+																	</p>
+																)}
+															</div>
+														</div>
+													)}
+
+													{activeHealthTab ===
+														"情緒調節" && (
+														<div className="space-y-4">
+															<h4 className="mb-4 text-4xl font-bold text-[#B4003C]">
+																情緒調節
+															</h4>
+															<div className="text-xl leading-relaxed text-black">
+																{comprehensiveLifeAdvice
+																	.healthWellness
+																	?.emotion ? (
+																	<p>
+																		{
+																			comprehensiveLifeAdvice
+																				.healthWellness
+																				.emotion
+																		}
+																	</p>
+																) : (
+																	<p className="italic text-gray-500">
+																		暫無情緒調節建議
+																	</p>
+																)}
+															</div>
+														</div>
+													)}
+												</div>
+
+												{/* Detailed explanation */}
+												{comprehensiveLifeAdvice
+													.healthWellness
+													?.detailed && (
+													<div className="p-4 mt-6 bg-[#EFEFEF] rounded-xl">
+														<h5 className="mb-2 text-2xl font-semibold text-black">
+															詳細說明
+														</h5>
+														<p className="text-xl leading-relaxed text-black">
+															{
+																comprehensiveLifeAdvice
+																	.healthWellness
+																	.detailed
+															}
+														</p>
+													</div>
+												)}
+											</div>
+										)}
+
+										{activeComprehensiveTab ===
+											"事業方向" && (
+											<div className="px-30">
+												{/* Sub-tab Navigation */}
+												<div className="flex justify-between gap-3 p-6 mb-3">
+													{[
+														"近期",
+														"中期",
+														"遠期",
+													].map((subTab) => (
+														<button
+															key={subTab}
+															onClick={() =>
+																setActiveCareerTab(
+																	subTab
+																)
+															}
+															className={`px-22 py-3 rounded-full text-lg font-bold transition-all duration-300 ${
+																activeCareerTab ===
+																subTab
+																	? "bg-[#007BFF] text-white shadow-lg border-2 border-black"
+																	: "bg-[#007BFF] text-white "
+															}`}
+														>
+															{subTab}
+														</button>
+													))}
+												</div>
+
+												{/* Sub-tab Content */}
+												<div className="p-6">
+													{activeCareerTab ===
+														"近期" &&
+														comprehensiveLifeAdvice
+															.careerDirection
+															?.nearTerm && (
+															<div className="space-y-4">
+																<h4 className="mb-4 text-4xl font-bold text-[#007BFF]">
+																	近期事業方向
+																</h4>
+																<div className="text-xl leading-relaxed text-black">
+																	{typeof comprehensiveLifeAdvice
+																		.careerDirection
+																		.nearTerm ===
+																	"string" ? (
+																		<p className="leading-relaxed">
+																			{
+																				comprehensiveLifeAdvice
+																					.careerDirection
+																					.nearTerm
+																			}
+																		</p>
+																	) : (
+																		<div className="space-y-3">
+																			{comprehensiveLifeAdvice
+																				.careerDirection
+																				.nearTerm
+																				.ageRange && (
+																				<p>
+																					<strong className="text-[#007BFF]">
+																						年齡範圍：
+																					</strong>
+																					{
+																						comprehensiveLifeAdvice
+																							.careerDirection
+																							.nearTerm
+																							.ageRange
+																					}
+																				</p>
+																			)}
+																			{comprehensiveLifeAdvice
+																				.careerDirection
+																				.nearTerm
+																				.pattern && (
+																				<p>
+																					<strong className="text-[#007BFF]">
+																						格局：
+																					</strong>
+																					{
+																						comprehensiveLifeAdvice
+																							.careerDirection
+																							.nearTerm
+																							.pattern
+																					}
+																				</p>
+																			)}
+																			{comprehensiveLifeAdvice
+																				.careerDirection
+																				.nearTerm
+																				.industries && (
+																				<p>
+																					<strong className="text-[#007BFF]">
+																						推薦行業：
+																					</strong>
+																					{Array.isArray(
+																						comprehensiveLifeAdvice
+																							.careerDirection
+																							.nearTerm
+																							.industries
+																					)
+																						? comprehensiveLifeAdvice.careerDirection.nearTerm.industries.join(
+																								"、"
+																							)
+																						: comprehensiveLifeAdvice
+																								.careerDirection
+																								.nearTerm
+																								.industries}
+																				</p>
+																			)}
+																			{comprehensiveLifeAdvice
+																				.careerDirection
+																				.nearTerm
+																				.risk && (
+																				<p>
+																					<strong className="text-[#B4003C]">
+																						風險預警：
+																					</strong>
+																					{
+																						comprehensiveLifeAdvice
+																							.careerDirection
+																							.nearTerm
+																							.risk
+																					}
+																				</p>
+																			)}
+																		</div>
+																	)}
+																</div>
+															</div>
+														)}
+
+													{activeCareerTab ===
+														"中期" &&
+														comprehensiveLifeAdvice
+															.careerDirection
+															?.midTerm && (
+															<div className="space-y-4">
+																<h4 className="mb-4 text-4xl font-bold text-[#007BFF]">
+																	中期事業方向
+																</h4>
+																<div className="text-xl leading-relaxed text-black">
+																	{typeof comprehensiveLifeAdvice
+																		.careerDirection
+																		.midTerm ===
+																	"string" ? (
+																		<p className="leading-relaxed">
+																			{
+																				comprehensiveLifeAdvice
+																					.careerDirection
+																					.midTerm
+																			}
+																		</p>
+																	) : (
+																		<div className="space-y-3">
+																			{comprehensiveLifeAdvice
+																				.careerDirection
+																				.midTerm
+																				.ageRange && (
+																				<p>
+																					<strong className="text-[#007BFF]">
+																						年齡範圍：
+																					</strong>
+																					{
+																						comprehensiveLifeAdvice
+																							.careerDirection
+																							.midTerm
+																							.ageRange
+																					}
+																				</p>
+																			)}
+																			{comprehensiveLifeAdvice
+																				.careerDirection
+																				.midTerm
+																				.transformation && (
+																				<p>
+																					<strong className="text-[#007BFF]">
+																						轉化：
+																					</strong>
+																					{
+																						comprehensiveLifeAdvice
+																							.careerDirection
+																							.midTerm
+																							.transformation
+																					}
+																				</p>
+																			)}
+																			{comprehensiveLifeAdvice
+																				.careerDirection
+																				.midTerm
+																				.strategy && (
+																				<p>
+																					<strong className="text-[#007BFF]">
+																						策略：
+																					</strong>
+																					{
+																						comprehensiveLifeAdvice
+																							.careerDirection
+																							.midTerm
+																							.strategy
+																					}
+																				</p>
+																			)}
+																			{comprehensiveLifeAdvice
+																				.careerDirection
+																				.midTerm
+																				.decision && (
+																				<p>
+																					<strong className="text-[#007BFF]">
+																						決策：
+																					</strong>
+																					{
+																						comprehensiveLifeAdvice
+																							.careerDirection
+																							.midTerm
+																							.decision
+																					}
+																				</p>
+																			)}
+																		</div>
+																	)}
+																</div>
+															</div>
+														)}
+
+													{activeCareerTab ===
+														"遠期" &&
+														comprehensiveLifeAdvice
+															.careerDirection
+															?.longTerm && (
+															<div className="space-y-4">
+																<h4 className="mb-4 text-4xl font-bold text-[#007BFF]">
+																	遠期事業方向
+																</h4>
+																<div className="text-xl leading-relaxed text-black">
+																	{typeof comprehensiveLifeAdvice
+																		.careerDirection
+																		.longTerm ===
+																	"string" ? (
+																		<p className="leading-relaxed">
+																			{
+																				comprehensiveLifeAdvice
+																					.careerDirection
+																					.longTerm
+																			}
+																		</p>
+																	) : (
+																		<div className="space-y-3">
+																			{comprehensiveLifeAdvice
+																				.careerDirection
+																				.longTerm
+																				.ageRange && (
+																				<p>
+																					<strong className="text-[#007BFF]">
+																						年齡範圍：
+																					</strong>
+																					{
+																						comprehensiveLifeAdvice
+																							.careerDirection
+																							.longTerm
+																							.ageRange
+																					}
+																				</p>
+																			)}
+																			{comprehensiveLifeAdvice
+																				.careerDirection
+																				.longTerm
+																				.fortune && (
+																				<p>
+																					<strong className="text-[#007BFF]">
+																						運勢：
+																					</strong>
+																					{
+																						comprehensiveLifeAdvice
+																							.careerDirection
+																							.longTerm
+																							.fortune
+																					}
+																				</p>
+																			)}
+																			{comprehensiveLifeAdvice
+																				.careerDirection
+																				.longTerm
+																				.knowledge && (
+																				<p>
+																					<strong className="text-[#007BFF]">
+																						知識：
+																					</strong>
+																					{
+																						comprehensiveLifeAdvice
+																							.careerDirection
+																							.longTerm
+																							.knowledge
+																					}
+																				</p>
+																			)}
+																			{comprehensiveLifeAdvice
+																				.careerDirection
+																				.longTerm
+																				.wellness && (
+																				<p>
+																					<strong className="text-[#007BFF]">
+																						養生：
+																					</strong>
+																					{
+																						comprehensiveLifeAdvice
+																							.careerDirection
+																							.longTerm
+																							.wellness
+																					}
+																				</p>
+																			)}
+																		</div>
+																	)}
+																</div>
+															</div>
+														)}
+												</div>
+
+												{/* Detailed explanation */}
+												{comprehensiveLifeAdvice
+													.careerDirection
+													?.detailed && (
+													<div className="p-4 mt-6 bg-[#EFEFEF] rounded-xl">
+														<h5 className="mb-2 text-2xl font-semibold text-black">
+															詳細說明
+														</h5>
+														<p className="text-xl leading-relaxed text-black">
+															{
+																comprehensiveLifeAdvice
+																	.careerDirection
+																	.detailed
+															}
+														</p>
+													</div>
+												)}
+											</div>
+										)}
+									</div>
+								) : (
+									<div className="py-8">
+										<div className="space-y-6">
+											<div>
+												<Skeleton className="w-40 h-5 mb-3" />
+												<div className="space-y-2">
+													<Skeleton className="w-full h-4" />
+													<Skeleton className="w-4/5 h-4" />
+													<Skeleton className="w-5/6 h-4" />
+												</div>
+											</div>
+											<div>
+												<Skeleton className="h-5 mb-3 w-36" />
+												<div className="space-y-2">
+													<Skeleton className="w-full h-4" />
+													<Skeleton className="w-3/4 h-4" />
+												</div>
+											</div>
+											<div>
+												<Skeleton className="h-5 mb-3 w-44" />
+												<div className="space-y-2">
+													<Skeleton className="w-full h-4" />
+													<Skeleton className="w-2/3 h-4" />
+													<Skeleton className="w-4/5 h-4" />
+												</div>
+											</div>
+										</div>
+									</div>
+								)}
+							</section>
+
+							{/* HIDDEN: 人際調衡要點 - Comprehensive Section */}
+							{false && (
+								<section className="w-full sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-12 lg:p-20 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+									<h3
+										className="font-bold text-[#A3B116] flex items-center justify-center lg:justify-start text-center lg:text-left"
+										style={{
+											fontFamily: "Noto Serif TC, serif",
+											fontSize: "clamp(32px, 7vw, 70px)",
+											marginBottom:
+												"clamp(24px, 4vw, 52px)",
+										}}
+									>
+										<span>人際調衡要點</span>
+									</h3>
+
+									{isLoadingComprehensiveInterpersonal ? (
+										<div className="p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl">
+											<div className="flex flex-col items-center justify-center gap-4 sm:flex-row sm:justify-between">
+												<div className="animate-spin rounded-full h-8 w-8 sm:h-10 sm:w-10 border-b-2 border-[#8B4513]"></div>
+												<span className="text-lg sm:text-xl text-[#8B4513] text-center">
+													AI正在生成綜合人際關係建議...
+												</span>
+											</div>
+										</div>
+									) : comprehensiveInterpersonalAdvice ? (
+										<div className="space-y-8">
+											{/* Main Tab Navigation */}
+											<div className="flex justify-between gap-8 mb-6 px-25 ">
+												{[
+													{
+														key: "個人關係",
+														color: "#8E44AD", // Purple
+													},
+													{
+														key: "職場協作",
+														color: "#3498DB", // Blue
+													},
+													{
+														key: "社交網絡",
+														color: "#27AE60", // Green
+													},
+												].map((tab) => (
+													<div
+														key={tab.key}
+														className="flex flex-col items-center gap-3"
+													>
+														<button
+															onClick={() =>
+																setActiveInterpersonalTab(
+																	tab.key
+																)
+															}
+															className={`w-32 h-32 rounded-full transition-all duration-300 flex items-center justify-center text-4xl font-bold text-white ${
+																activeInterpersonalTab ===
+																tab.key
+																	? "shadow-lg border-2 border-black"
+																	: "shadow-lg "
+															}`}
+															style={{
+																backgroundColor:
+																	"#EFEFEF",
+															}}
+														>
+															{tab.key ===
+																"個人關係" &&
+																"👥"}
+															{tab.key ===
+																"職場協作" &&
+																"🤝"}
+															{tab.key ===
+																"社交網絡" &&
+																"🌐"}
+														</button>
+														<span
+															className={`text-xl font-semibold text-center ${
+																activeInterpersonalTab ===
+																tab.key
+																	? "text-[#A3B116]"
+																	: "text-gray-600"
+															}`}
+														>
+															{tab.key}
+														</span>
+													</div>
+												))}
+											</div>
+
+											{/* Selected Tab Title */}
+											<div className="mb-8 text-center">
+												<h4
+													className="text-[38px] font-extrabold"
+													style={{
+														fontFamily:
+															"Noto Serif TC, serif",
+														fontWeight: 800,
+													}}
+												>
+													{activeInterpersonalTab}
+												</h4>
+											</div>
+
+											{/* Tab Content */}
+											{activeInterpersonalTab ===
+												"個人關係" && (
+												<div className="px-30">
+													{/* Sub-tab Navigation */}
+													<div className="flex justify-between gap-3 p-6 mb-3">
+														{[
+															"婚戀配對",
+															"家庭關係",
+															"交友圈層",
+														].map((subTab) => (
+															<button
+																key={subTab}
+																onClick={() =>
+																	setActivePersonalTab(
+																		subTab
+																	)
+																}
+																className={`px-22 py-3 rounded-full text-lg font-bold transition-all duration-300 ${
+																	activePersonalTab ===
+																	subTab
+																		? "bg-[#8E44AD] text-white shadow-lg border-2 border-black"
+																		: "bg-[#8E44AD] text-white "
+																}`}
+															>
+																{subTab}
+															</button>
+														))}
+													</div>
+
+													{/* Sub-tab Content */}
+													<div className="p-6">
+														{activePersonalTab ===
+															"婚戀配對" && (
+															<div className="space-y-4">
+																<h4 className="mb-4 text-4xl font-bold text-[#8E44AD]">
+																	婚戀配對建議
+																</h4>
+																<div className="text-xl leading-relaxed text-black">
+																	{comprehensiveInterpersonalAdvice
+																		.personalRelationships
+																		?.romanticCompatibility ? (
+																		<p>
+																			{
+																				comprehensiveInterpersonalAdvice
+																					.personalRelationships
+																					.romanticCompatibility
+																			}
+																		</p>
+																	) : (
+																		<p className="italic text-gray-500">
+																			暫無婚戀配對建議
+																		</p>
+																	)}
+																</div>
+															</div>
+														)}
+
+														{activePersonalTab ===
+															"家庭關係" && (
+															<div className="space-y-4">
+																<h4 className="mb-4 text-4xl font-bold text-[#8E44AD]">
+																	家庭關係建議
+																</h4>
+																<div className="text-xl leading-relaxed text-black">
+																	{comprehensiveInterpersonalAdvice
+																		.personalRelationships
+																		?.familyDynamics ? (
+																		<p>
+																			{
+																				comprehensiveInterpersonalAdvice
+																					.personalRelationships
+																					.familyDynamics
+																			}
+																		</p>
+																	) : (
+																		<p className="italic text-gray-500">
+																			暫無家庭關係建議
+																		</p>
+																	)}
+																</div>
+															</div>
+														)}
+
+														{activePersonalTab ===
+															"交友圈層" && (
+															<div className="space-y-4">
+																<h4 className="mb-4 text-4xl font-bold text-[#8E44AD]">
+																	交友圈層建議
+																</h4>
+																<div className="text-xl leading-relaxed text-black">
+																	{comprehensiveInterpersonalAdvice
+																		.personalRelationships
+																		?.friendshipCircle ? (
+																		<p>
+																			{
+																				comprehensiveInterpersonalAdvice
+																					.personalRelationships
+																					.friendshipCircle
+																			}
+																		</p>
+																	) : (
+																		<p className="italic text-gray-500">
+																			暫無交友圈層建議
+																		</p>
+																	)}
+																</div>
+															</div>
+														)}
+													</div>
+
+													{/* Detailed explanation */}
+													{comprehensiveInterpersonalAdvice
+														.personalRelationships
+														?.detailed && (
+														<div className="p-4 mt-6 bg-[#EFEFEF] rounded-xl">
+															<h5 className="mb-2 text-2xl font-semibold text-black">
+																詳細說明
+															</h5>
+															<p className="text-xl leading-relaxed text-black">
+																{
+																	comprehensiveInterpersonalAdvice
+																		.personalRelationships
+																		.detailed
+																}
+															</p>
+														</div>
+													)}
+												</div>
+											)}
+
+											{activeInterpersonalTab ===
+												"職場協作" && (
+												<div className="px-30">
+													{/* Sub-tab Navigation */}
+													<div className="flex justify-between gap-3 p-6 mb-3">
+														{[
+															"領導風格",
+															"團隊配合",
+															"衝突化解",
+														].map((subTab) => (
+															<button
+																key={subTab}
+																onClick={() =>
+																	setActiveWorkplaceTab(
+																		subTab
+																	)
+																}
+																className={`px-22 py-3 rounded-full text-lg font-bold transition-all duration-300 ${
+																	activeWorkplaceTab ===
+																	subTab
+																		? "bg-[#3498DB] text-white shadow-lg border-2 border-black"
+																		: "bg-[#3498DB] text-white "
+																}`}
+															>
+																{subTab}
+															</button>
+														))}
+													</div>
+
+													{/* Sub-tab Content */}
+													<div className="p-6">
+														{activeWorkplaceTab ===
+															"領導風格" && (
+															<div className="space-y-4">
+																<h4 className="mb-4 text-4xl font-bold text-[#3498DB]">
+																	領導風格建議
+																</h4>
+																<div className="text-xl leading-relaxed text-black">
+																	{comprehensiveInterpersonalAdvice
+																		.workplaceCollaboration
+																		?.leadershipStyle ? (
+																		<p>
+																			{
+																				comprehensiveInterpersonalAdvice
+																					.workplaceCollaboration
+																					.leadershipStyle
+																			}
+																		</p>
+																	) : (
+																		<p className="italic text-gray-500">
+																			暫無領導風格建議
+																		</p>
+																	)}
+																</div>
+															</div>
+														)}
+
+														{activeWorkplaceTab ===
+															"團隊配合" && (
+															<div className="space-y-4">
+																<h4 className="mb-4 text-4xl font-bold text-[#3498DB]">
+																	團隊配合建議
+																</h4>
+																<div className="text-xl leading-relaxed text-black">
+																	{comprehensiveInterpersonalAdvice
+																		.workplaceCollaboration
+																		?.teamDynamics ? (
+																		<p>
+																			{
+																				comprehensiveInterpersonalAdvice
+																					.workplaceCollaboration
+																					.teamDynamics
+																			}
+																		</p>
+																	) : (
+																		<p className="italic text-gray-500">
+																			暫無團隊配合建議
+																		</p>
+																	)}
+																</div>
+															</div>
+														)}
+
+														{activeWorkplaceTab ===
+															"衝突化解" && (
+															<div className="space-y-4">
+																<h4 className="mb-4 text-4xl font-bold text-[#3498DB]">
+																	衝突化解建議
+																</h4>
+																<div className="text-xl leading-relaxed text-black">
+																	{comprehensiveInterpersonalAdvice
+																		.workplaceCollaboration
+																		?.conflictResolution ? (
+																		<p>
+																			{
+																				comprehensiveInterpersonalAdvice
+																					.workplaceCollaboration
+																					.conflictResolution
+																			}
+																		</p>
+																	) : (
+																		<p className="italic text-gray-500">
+																			暫無衝突化解建議
+																		</p>
+																	)}
+																</div>
+															</div>
+														)}
+													</div>
+
+													{/* Detailed explanation */}
+													{comprehensiveInterpersonalAdvice
+														.workplaceCollaboration
+														?.detailed && (
+														<div className="p-4 mt-6 bg-[#EFEFEF] rounded-xl">
+															<h5 className="mb-2 text-2xl font-semibold text-black">
+																詳細說明
+															</h5>
+															<p className="text-xl leading-relaxed text-black">
+																{
+																	comprehensiveInterpersonalAdvice
+																		.workplaceCollaboration
+																		.detailed
+																}
+															</p>
+														</div>
+													)}
+												</div>
+											)}
+
+											{activeInterpersonalTab ===
+												"社交網絡" && (
+												<div className="px-30">
+													{/* Sub-tab Navigation */}
+													<div className="flex justify-between gap-3 p-6 mb-3">
+														{[
+															"人脈建構",
+															"溝通技巧",
+															"聚會參與",
+														].map((subTab) => (
+															<button
+																key={subTab}
+																onClick={() =>
+																	setActiveSocialTab(
+																		subTab
+																	)
+																}
+																className={`px-22 py-3 rounded-full text-lg font-bold transition-all duration-300 ${
+																	activeSocialTab ===
+																	subTab
+																		? "bg-[#27AE60] text-white shadow-lg border-2 border-black"
+																		: "bg-[#27AE60] text-white "
+																}`}
+															>
+																{subTab}
+															</button>
+														))}
+													</div>
+
+													{/* Sub-tab Content */}
+													<div className="p-6">
+														{activeSocialTab ===
+															"人脈建構" && (
+															<div className="space-y-4">
+																<h4 className="mb-4 text-4xl font-bold text-[#27AE60]">
+																	人脈建構建議
+																</h4>
+																<div className="text-xl leading-relaxed text-black">
+																	{comprehensiveInterpersonalAdvice
+																		.socialNetworking
+																		?.networkBuilding ? (
+																		<p>
+																			{
+																				comprehensiveInterpersonalAdvice
+																					.socialNetworking
+																					.networkBuilding
+																			}
+																		</p>
+																	) : (
+																		<p className="italic text-gray-500">
+																			暫無人脈建構建議
+																		</p>
+																	)}
+																</div>
+															</div>
+														)}
+
+														{activeSocialTab ===
+															"溝通技巧" && (
+															<div className="space-y-4">
+																<h4 className="mb-4 text-4xl font-bold text-[#27AE60]">
+																	溝通技巧建議
+																</h4>
+																<div className="text-xl leading-relaxed text-black">
+																	{comprehensiveInterpersonalAdvice
+																		.socialNetworking
+																		?.communicationSkills ? (
+																		<p>
+																			{
+																				comprehensiveInterpersonalAdvice
+																					.socialNetworking
+																					.communicationSkills
+																			}
+																		</p>
+																	) : (
+																		<p className="italic text-gray-500">
+																			暫無溝通技巧建議
+																		</p>
+																	)}
+																</div>
+															</div>
+														)}
+
+														{activeSocialTab ===
+															"聚會參與" && (
+															<div className="space-y-4">
+																<h4 className="mb-4 text-4xl font-bold text-[#27AE60]">
+																	聚會參與建議
+																</h4>
+																<div className="text-xl leading-relaxed text-black">
+																	{comprehensiveInterpersonalAdvice
+																		.socialNetworking
+																		?.socialGatherings ? (
+																		<p>
+																			{
+																				comprehensiveInterpersonalAdvice
+																					.socialNetworking
+																					.socialGatherings
+																			}
+																		</p>
+																	) : (
+																		<p className="italic text-gray-500">
+																			暫無聚會參與建議
+																		</p>
+																	)}
+																</div>
+															</div>
+														)}
+													</div>
+
+													{/* Detailed explanation */}
+													{comprehensiveInterpersonalAdvice
+														.socialNetworking
+														?.detailed && (
+														<div className="p-4 mt-6 bg-[#EFEFEF] rounded-xl">
+															<h5 className="mb-2 text-2xl font-semibold text-black">
+																詳細說明
+															</h5>
+															<p className="text-xl leading-relaxed text-black">
+																{
+																	comprehensiveInterpersonalAdvice
+																		.socialNetworking
+																		.detailed
+																}
+															</p>
+														</div>
+													)}
+												</div>
+											)}
+										</div>
+									) : (
+										<div className="py-8">
+											<div className="space-y-6">
+												<div>
+													<Skeleton className="w-40 h-5 mb-3" />
+													<div className="space-y-2">
+														<Skeleton className="w-full h-4" />
+														<Skeleton className="w-4/5 h-4" />
+														<Skeleton className="w-5/6 h-4" />
+													</div>
+												</div>
+												<div>
+													<Skeleton className="h-5 mb-3 w-36" />
+													<div className="space-y-2">
+														<Skeleton className="w-full h-4" />
+														<Skeleton className="w-3/4 h-4" />
+													</div>
+												</div>
+												<div>
+													<Skeleton className="h-5 mb-3 w-44" />
+													<div className="space-y-2">
+														<Skeleton className="w-full h-4" />
+														<Skeleton className="w-2/3 h-4" />
+														<Skeleton className="w-4/5 h-4" />
+													</div>
+												</div>
+											</div>
+										</div>
+									)}
+								</section>
+							)}
+						</>
+					);
+				})()}
+
+				{/* Existing sections continue below... */}
+			</div>
+
+			<div
+				style={{ display: activeTab === "fortune" ? "block" : "none" }}
+			>
+				<FourFortuneAnalysis
+					userInfo={userInfo}
+					wuxingData={wuxingAnalysis?.wuxingData}
+					sessionId={propSessionId || searchParams.get("sessionId")}
+					onFortuneDataUpdate={updateFortuneData}
+				/>
+			</div>
+			{/* 第二章 流年运程解析 */}
+			{/* <div
+				key="section-1"
+				className="relative mx-auto max-w-250 md:px-5 chapter-page-break"
+			>
+				<h1
+					ref={(el) => (sectionRefs.current[5] = el)}
+					className="md:text-[40px] text-[28px] text-center font-bold md:mt-18 mt-10 mb-10 md:px-0 px-5 text-[#073E31]"
+					id={`section-1`}
+				>
+					{sections[1].title}
+				</h1>
+				<p className="px-5 font-bold leading-8 tracking-normal text-justify md:px-0">
+					<span className="text-[#073E31]">{t("p2-1")}</span>
+					{t("p2-2")}
+				</p> */}
+
+			{/* 指數展示 */}
+			{/* <div className="flex flex-wrap justify-center gap-3 px-5 mt-8 mb-8 sm:gap-4 md:gap-6 md:px-0 md:justify-between">
+					{reportDocData.yunchengData
+						.slice(0, 5)
+						.map((item, index) => (
+							<div
+								key={index}
+								className="flex flex-col items-center min-w-0 flex-1 max-w-[calc(50%-6px)] sm:max-w-[calc(33.333%-8px)] md:max-w-none"
+							>
+								<div
+									className="flex flex-col items-center justify-center w-16 h-16 mb-2 border-2 rounded-full sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 sm:border-3 md:border-4"
+									style={{
+										borderColor:
+											sections[1].children[index].color,
+										background: "#fff",
+									}}
+								>
+									<span
+										className="text-xl font-extrabold sm:text-2xl md:text-4xl lg:text-5xl"
+										style={{
+											color: sections[1].children[index]
+												.color,
+										}}
+									>
+										{item.zhishu?.split("/")[0]}
+									</span>
+									<span
+										className="text-xs font-bold sm:text-sm md:text-base lg:text-lg"
+										style={{
+											color: sections[1].children[index]
+												.color,
+										}}
+									>
+										/10
+									</span>
+								</div> */}
+			{/* Optional: Add labels below for mobile */}
+			{/* <span className="mt-1 text-xs text-center text-gray-600 sm:text-sm md:hidden">
+									{sections[1].children[index].title}
+								</span>
+							</div>
+						))}
+				</div>
+
+				<div className="relative">
+					<div>
+						{reportDocData.yunchengData.map((item, index) => {
+							return (
+								<section
+									style={{
+										backgroundColor:
+											sections[1].children[index].bgColor,
+									}}
+									className="md:rounded-[26px] rounded-none md:p-8 p-5 md:mt-10 mt-10"
+								>
+									<div className="flex items-center justify-between">
+										<p
+											ref={(el) =>
+												(sectionRefs.current[
+													6 + index
+												] = el)
+											}
+											id={`section-1-${index}`}
+											className={`leading-8 text-xl font-bold flex items-center`}
+											style={{
+												color: sections[1].children[
+													index
+												].color,
+											}}
+										>
+											{index < 5 && (
+												<Image
+													src={`/images/report/icon${index}.png`}
+													width={24}
+													height={24}
+													alt=""
+													className="mr-1"
+												/>
+											)}
+											{sections[1].children[index].title}
+										</p>
+										{index < 5 && (
+											<p
+												className={`leading-8 flex items-end`}
 												style={{
 													color: sections[1].children[
 														index
 													].color,
 												}}
 											>
-												{index < 5 && (
-													<Image
-														src={`/images/report/icon${index}.png`}
-														width={24}
-														height={24}
-														alt=""
-														className="mr-1"
-													/>
-												)}
-												{
-													sections[1].children[index]
-														.title
-												}
+												<span className="text-xl font-bold">
+													{item.zhishu?.split("/")[0]}
+												</span>
+												<span className="text-sm">
+													/10
+												</span>
 											</p>
-											{index < 5 && (
-												<p
-													className={`leading-8 flex items-end`}
-													style={{
-														color: sections[1]
-															.children[index]
-															.color,
-													}}
-												>
-													<span className="text-xl font-bold">
-														{
-															item.zhishu?.split(
-																"/"
-															)[0]
-														}
-													</span>
-													<span className="text-sm">
-														/10
-													</span>
-												</p>
-											)}
-										</div>
-										<p className="leading-8 text-justify">
-											{item.content}
-										</p>
-									</section>
-								);
-							})}
-						</div>
+										)}
+									</div>
+									<p className="leading-8 text-justify">
+										{item.content}
+									</p>
+								</section>
+							);
+						})}
 					</div>
 				</div>
-				{/* 第三章 家居风水解析 */}
-				<div
-					key="section-2"
-					className="mx-auto md:max-w-250 md:px-5 chapter-page-break"
-				>
+			</div> */}
+			{/* 第三章 家居风水解析 */}
+			{/* <div
+				key="section-0"
+				className="w-[80%] mx-auto px-5 pt-30 pb-10 flex flex-col lg:flex-row bg-[#EFEFEF]"
+			> */}
+			{/* Left Section */}
+			{/* <div className="flex items-start justify-start flex-1">
 					<h1
-						ref={(el) => (sectionRefs.current[12] = el)}
-						className="md:text-[40px] text-[28px] text-center font-bold md:mt-18 mt-10 mb-10 md:px-0 px-5 text-[#073E31]"
-						id={`section-2`}
+						ref={(el) => (sectionRefs.current[2] = el)}
+						style={{
+							fontFamily: "Noto Serif TC, serif",
+							fontWeight: 800,
+							fontSize: 56,
+							color: "#A3B116",
+							lineHeight: 1.1,
+						}}
 					>
-						{sections[2].title}
+						{sections[2]?.title}
 					</h1>
-					<p className="px-5 mb-8 font-bold leading-8 tracking-normal text-justify md:px-0">
-						<span className="text-[#073E31]">{t("p3-1")}</span>
-						{t("p3-2")}
-						<br />
-						{t("p3-3")}
-						<span className="text-[#073E31]"> {t("p3-4")}</span>
-						{t("p3-5")}
-					</p>
-
-					<Chapter3
-						locale={locale}
-						onSaveData={setJiaJuData}
-						userInfo={userInfo}
-						jiajuProDataString={JSON.stringify(
-							reportDocData.jiajuProData || undefined
-						)}
-						assistantDataString={JSON.stringify(
-							assistantData.jiajuProData
-						)}
-						jiajuDataString={JSON.stringify(
-							reportDocData.jiajuData
-						)}
-						isPrinting={isPrinting}
-					/>
+				</div> */}
+			{/* Right Section */}
+			{/* <div className="flex flex-col items-center justify-center flex-1">
+					<div className="flex flex-row gap-4">
+						<button
+							onClick={onPrint}
+							style={{
+								width: 250,
+								height: 72,
+								backgroundColor: "#A3B116",
+								borderRadius: "100px",
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								border: "none",
+								cursor: "pointer",
+								marginBottom: 24,
+							}}
+						>
+							<span
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									fontWeight: 800,
+									fontSize: 20,
+									color: "#FFFFFF",
+									letterSpacing: 2,
+								}}
+							>
+								下載報告
+							</span>
+						</button>
+						<button
+							onClick={() => {
+								// Add your share logic here
+								alert("分享您的結果功能待实现");
+							}}
+							style={{
+								width: 250,
+								height: 72,
+								backgroundColor: "#A3B116",
+								borderRadius: "100px",
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								border: "none",
+								cursor: "pointer",
+								marginBottom: 24,
+							}}
+						>
+							<span
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									fontWeight: 800,
+									fontSize: 20,
+									color: "#FFFFFF",
+									letterSpacing: 2,
+								}}
+							>
+								分享您的結果
+							</span>
+						</button>
+					</div>
 				</div>
-
-				{/* 第四章 个人命理进阶解析 */}
+			</div> */}
+			{/* Paragraph below both columns */}
+			{/* <div className="w-[80%] align-center mx-auto px-5 pb-8 mb-10">
+				<p
+					style={{
+						fontFamily: "Noto Sans HK, sans-serif",
+						fontWeight: 400,
+						fontSize: 20,
+						color: "#000000",
+						lineHeight: 1.8,
+					}}
+				>
+					<span>{t("p3-1")}</span>
+					{t("p3-2")}
+				</p>
+				<p
+					style={{
+						fontFamily: "Noto Sans HK, sans-serif",
+						fontWeight: 400,
+						fontSize: 20,
+						color: "#000000",
+						lineHeight: 1.8,
+					}}
+				>
+					{t("p3-3")}
+				</p>
+				<p
+					style={{
+						fontFamily: "Noto Sans HK, sans-serif",
+						fontWeight: 400,
+						fontSize: 20,
+						color: "#000000",
+						lineHeight: 1.8,
+					}}
+				>
+					<span>{t("p3-4")}</span>
+					{t("p3-5")}
+				</p>
+			</div>
+			<div key="section-2" className="mx-auto md:px-5 chapter-page-break">
+				<Chapter3
+					locale={locale}
+					onSaveData={setJiaJuData}
+					userInfo={userInfo}
+					jiajuProDataString={JSON.stringify(
+						reportDocData.jiajuProData || undefined
+					)}
+					assistantDataString={JSON.stringify(
+						assistantData.jiajuProData
+					)}
+					jiajuDataString={JSON.stringify(reportDocData.jiajuData)}
+					isPrinting={isPrinting}
+				/>
+			</div>
+ */}
+			{/* 第四章 个人命理进阶解析 */}
+			{/* <div className="pb-30">
 				<div
 					key="section-3"
-					className="relative mx-auto md:max-w-250 md:px-5 chapter-page-break"
+					className="relative mx-auto w-[80%] bg-white shadow-[0_4px_5.3px_rgba(0,0,0,0.25)] p-20 rounded-[60px]  md:px-5 chapter-page-break"
+				> */}
+			{/* <h1
+					ref={(el) => (sectionRefs.current[13] = el)}
+					className="md:text-[40px] text-[28px] text-center font-bold md:mt-18 mt-10 mb-10 md:px-0 px-5 text-[#073E31]"
+					id={`section-3`}
 				>
-					<h1
-						ref={(el) => (sectionRefs.current[13] = el)}
-						className="md:text-[40px] text-[28px] text-center font-bold md:mt-18 mt-10 mb-10 md:px-0 px-5 text-[#073E31]"
-						id={`section-3`}
-					>
-						{sections[3]?.title}
-					</h1>
-					<div className="relative">
+					{sections[3]?.title}
+				</h1> */}
+			{/* <div>
 						<div>
 							<MingLi
 								locale={locale}
@@ -1181,8 +6993,14 @@ export default function ReportPage({ locale }) {
 						</div>
 					</div>
 				</div>
+			</div>
+ */}
+			{/* 第五章 流年运程进阶解析
+				{!isLock && (
+				</div>
+						</div>
 
-				{/* 第五章 流年运程进阶解析
+			{/* 第五章 流年运程进阶解析
 				{!isLock && (
 					<div key="section-4">
 						<h1
@@ -1206,8 +7024,8 @@ export default function ReportPage({ locale }) {
 						/>
 					</div>
 				)} */}
-				{/* 第六章 家居进阶解析 */}
-				{/* <div
+			{/* 第六章 家居进阶解析 */}
+			{/* <div
 					key="section-5"
 					className="relative mx-auto md:max-w-250 md:px-5"
 				>
@@ -1260,7 +7078,6 @@ export default function ReportPage({ locale }) {
 						</div>
 					</div>
 				</div> */}
-			</div>
 		</div>
 	);
 }

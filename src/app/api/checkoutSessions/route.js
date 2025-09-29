@@ -35,10 +35,7 @@ export async function POST(request) {
 				userId: userInfo.userId,
 				quantity: String(quantity),
 			},
-		});
-		console.log("session.url", session.url);
-
-		return NextResponse.json(genSuccessData(session));
+		});return NextResponse.json(genSuccessData(session));
 	} catch (err) {
 		return NextResponse.json(genErrorData("支付错误" + err.message));
 	}

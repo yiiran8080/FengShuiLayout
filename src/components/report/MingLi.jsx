@@ -60,9 +60,7 @@ export default function ({
 	const onGenerate = (userInfo, _wuxingData) => {
 		toast.info(
 			t2(userInfo.genStatus === "done" ? "translating2" : "generating")
-		);
-		console.log("mingli gen");
-		setProgress(0);
+		);setProgress(0);
 		let userData = getUserData(userInfo, _wuxingData || wuxingData);
 		let transAssistantData = assistantDataString
 			? JSON.parse(assistantDataString)
@@ -162,9 +160,7 @@ export default function ({
 		setLoading(true);
 		createProgressivePromiseAll(promises)
 			.then((results) => {
-				setLoading(false);
-				console.log("res 命理进阶", results);
-				const newMingLiData = {
+				setLoading(false);const newMingLiData = {
 					...mingLiData,
 					mingpan: results[0].data,
 					minggong: results[1].data,
@@ -204,11 +200,9 @@ export default function ({
 							throw new Error(result.message);
 						}
 						results[index] = result;
-						completed++;
-						console.log("c", completed);
-						const progress = completed / total;
+						completed++;const progress = completed / total;
 						setProgress(progress * 100);
-						//console.log(`Progress: ${progress * 100}%`); // 更新进度条
+						//// 更新进度条
 						if (completed === total) {
 							resolve(results);
 						}
@@ -220,7 +214,7 @@ export default function ({
 	const RowFirst = (
 		<>
 			<div
-				className="md:p-2 p-1  bg-[#F7FAF9] md:rounded-t-xl rounded-t-lg rounded-r-none border-2 border-[#6CA698] flex items-center justify-center"
+				className="md:p-2 p-1  bg-[#F7FAF9] md:rounded-t-[50px] rounded-t-[50px] rounded-r-none border-0 border-[#6CA698] flex items-center justify-center"
 				style={{ borderTopRightRadius: 0 }}
 			>
 				<div
@@ -229,13 +223,37 @@ export default function ({
 							? { backgroundColor: "#066952CC", color: "#fff" }
 							: { backgroundColor: "#F7FAF9" }
 					}
-					className="flex items-center justify-center w-full h-full text-xs font-bold text-center cursor-pointer md:text-xl min-h-12 hover:bg-gray-100"
+					className="flex items-center justify-center w-full h-full text-xs rounded-tl-[50px] font-bold text-center cursor-pointer md:text-xl min-h-12 hover:bg-gray-100"
 					onClick={() => handleClick("mingpan")}
 				>
 					{t("mingpan")}
 				</div>
 			</div>
-			<div className="md:p-2 p-1  bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
+			<div
+				className="p-2 bg-[#F7FAF9] flex items-center justify-center relative"
+				style={{
+					borderTop: "none",
+					borderBottom: "none",
+				}}
+			>
+				{/* Left dashed border */}
+				<div
+					className="absolute top-0 bottom-0 left-0"
+					style={{
+						backgroundImage:
+							"repeating-linear-gradient(to bottom, #A3B116 0, #A3B116 17px, transparent 17px, transparent 29px)",
+						width: "2px",
+					}}
+				/>
+				{/* Right dashed border */}
+				<div
+					className="absolute top-0 bottom-0 right-0"
+					style={{
+						backgroundImage:
+							"repeating-linear-gradient(to bottom, #A3B116 0, #A3B116 17px, transparent 17px, transparent 29px)",
+						width: "2px",
+					}}
+				/>{" "}
 				<div
 					style={
 						activeKey === "minggong"
@@ -248,7 +266,31 @@ export default function ({
 					{t("minggong")}
 				</div>
 			</div>
-			<div className="md:p-2 p-1  bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
+			<div
+				className="p-2 bg-[#F7FAF9] flex items-center justify-center relative"
+				style={{
+					borderTop: "none",
+					borderBottom: "none",
+				}}
+			>
+				{/* Left dashed border */}
+				<div
+					className="absolute top-0 bottom-0 left-0"
+					style={{
+						backgroundImage:
+							"repeating-linear-gradient(to bottom, #A3B116 0, #A3B116 17px, transparent 17px, transparent 29px)",
+						width: "0px",
+					}}
+				/>
+				{/* Right dashed border */}
+				<div
+					className="absolute top-0 bottom-0 right-0"
+					style={{
+						backgroundImage:
+							"repeating-linear-gradient(to bottom, #A3B116 0, #A3B116 17px, transparent 17px, transparent 29px)",
+						width: "2px",
+					}}
+				/>{" "}
 				<div
 					style={
 						activeKey === "gexing"
@@ -262,7 +304,7 @@ export default function ({
 				</div>
 			</div>
 			<div
-				className="md:p-2 p-1 bg-[#F7FAF9] md:rounded-t-xl rounded-t-lg rounded-l-none  border-2 border-[#6CA698] flex items-center justify-center"
+				className="md:p-2 p-1 bg-[#F7FAF9] md:rounded-t-[50px] rounded-t-lg rounded-l-none  border-0 border-[#6CA698] flex items-center justify-center"
 				style={{ borderTopLeftRadius: 0 }}
 			>
 				<div
@@ -271,7 +313,7 @@ export default function ({
 							? { backgroundColor: "#066952CC", color: "#fff" }
 							: { backgroundColor: "#F7FAF9" }
 					}
-					className="flex items-center justify-center w-full h-full text-xs font-bold text-center cursor-pointer md:text-xl min-h-12 hover:bg-gray-100"
+					className="flex items-center justify-center w-full h-full text-xs rounded-tr-[50px] font-bold text-center cursor-pointer md:text-xl min-h-12 hover:bg-gray-100"
 					onClick={() => handleClick("yunshi")}
 				>
 					{t("yunshi")}
@@ -282,7 +324,7 @@ export default function ({
 	const RowLast = (
 		<>
 			<div
-				className="md:p-2 p-1 bg-[#F7FAF9] md:rounded-b-xl rounded-b-0 border-2 border-[#6CA698] flex items-center justify-center"
+				className="md:p-2 p-1 bg-[#F7FAF9] md:rounded-b-[50px] rounded-b-0 border-0 border-[#6CA698] flex items-center justify-center"
 				style={{ borderBottomRightRadius: 0 }}
 			>
 				<div
@@ -291,13 +333,37 @@ export default function ({
 							? { backgroundColor: "#066952CC", color: "#fff" }
 							: { backgroundColor: "#F7FAF9" }
 					}
-					className="flex items-center justify-center w-full h-full text-xs font-bold text-center cursor-pointer md:text-xl min-h-12 hover:bg-gray-100"
+					className="flex items-center justify-center w-full h-full rounded-bl-[50px] text-xs font-bold text-center cursor-pointer md:text-xl min-h-12 hover:bg-gray-100"
 					onClick={() => handleClick("renji")}
 				>
 					{t("renji")}
 				</div>
 			</div>
-			<div className="md:p-2 p-1  bg-[#F7FAF9]   border-2 border-[#6CA698] flex items-center justify-center">
+			<div
+				className="p-2 bg-[#F7FAF9] flex items-center justify-center relative"
+				style={{
+					borderTop: "none",
+					borderBottom: "none",
+				}}
+			>
+				{/* Left dashed border */}
+				<div
+					className="absolute top-0 bottom-0 left-0"
+					style={{
+						backgroundImage:
+							"repeating-linear-gradient(to bottom, #A3B116 0, #A3B116 17px, transparent 17px, transparent 29px)",
+						width: "2px",
+					}}
+				/>
+				{/* Right dashed border */}
+				<div
+					className="absolute top-0 bottom-0 right-0"
+					style={{
+						backgroundImage:
+							"repeating-linear-gradient(to bottom, #A3B116 0, #A3B116 17px, transparent 17px, transparent 29px)",
+						width: "0spx",
+					}}
+				/>{" "}
 				<div
 					style={
 						activeKey === "juece"
@@ -310,7 +376,31 @@ export default function ({
 					{t("juece")}
 				</div>
 			</div>
-			<div className="md:p-2 p-1  bg-[#F7FAF9]   border-2 border-[#6CA698] flex items-center justify-center">
+			<div
+				className="p-2 bg-[#F7FAF9] flex items-center justify-center relative"
+				style={{
+					borderTop: "none",
+					borderBottom: "none",
+				}}
+			>
+				{/* Left dashed border */}
+				<div
+					className="absolute top-0 bottom-0 left-0"
+					style={{
+						backgroundImage:
+							"repeating-linear-gradient(to bottom, #A3B116 0, #A3B116 17px, transparent 17px, transparent 29px)",
+						width: "2px",
+					}}
+				/>
+				{/* Right dashed border */}
+				<div
+					className="absolute top-0 bottom-0 right-0"
+					style={{
+						backgroundImage:
+							"repeating-linear-gradient(to bottom, #A3B116 0, #A3B116 17px, transparent 17px, transparent 29px)",
+						width: "2px",
+					}}
+				/>{" "}
 				<div
 					style={
 						activeKey === "kaiyun"
@@ -325,7 +415,7 @@ export default function ({
 			</div>
 			<div
 				style={{ borderBottomLeftRadius: 0 }}
-				className="bg-[#F7FAF9] border-2 border-[#6CA698] md:rounded-b-xl rounded-b-0 "
+				className="bg-[#F7FAF9] border-0 border-[#6CA698] md:rounded-b-[50px] rounded-b-0 "
 			></div>
 		</>
 	);
@@ -454,11 +544,35 @@ export default function ({
 								</div>
 							</div>
 						) : (
-							<div className="mx-auto p-4 w-[952px] h-[608px]">
-								<div className="grid grid-cols-4 grid-rows-4 h-full border-8 border-[#6CA698] rounded-2xl">
+							<div className="mx-auto p-4 w-[1252px] h-[608px]">
+								<div className="grid grid-cols-4 grid-rows-4 h-full border-[4px] border-[#A3B116] rounded-[50px]">
 									{RowFirst}
 									{/* 第二行 */}
-									<div className="p-2 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
+									<div
+										className="p-2 bg-[#F7FAF9] flex items-center justify-center relative"
+										style={{
+											borderTop: "none",
+											borderBottom: "none",
+										}}
+									>
+										{/* Top dashed border */}
+										<div
+											className="absolute top-0 left-0 right-0"
+											style={{
+												backgroundImage:
+													"repeating-linear-gradient(to right, #A3B116 0, #A3B116 17px, transparent 12px, transparent 20px)",
+												height: "2px",
+											}}
+										/>
+										{/* Bottom dashed border */}
+										<div
+											className="absolute bottom-0 left-0 right-0"
+											style={{
+												backgroundImage:
+													"repeating-linear-gradient(to right, #A3B116 0, #A3B116 17px, transparent 12px, transparent 20px)",
+												height: "2px",
+											}}
+										/>{" "}
 										<div
 											style={
 												activeKey === "liuqin"
@@ -481,10 +595,34 @@ export default function ({
 										</div>
 									</div>
 									{/* 中间合并区域 */}
-									<div className="text-xs min-h-12 whitespace-pre-wrap text-white overflow-y-auto col-span-2 row-span-2 border border-gray-300  p-4 flex justify-center bg-[#066952CC]">
+									<div className="text-xs min-h-12 whitespace-pre-wrap text-black overflow-y-auto col-span-2 row-span-2 border-4 border-[#A3B116] p-4 flex justify-center bg-[#F7FAF9] rounded-[50px]">
 										{mingLiData[activeKey]}
 									</div>
-									<div className="p-2 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
+									<div
+										className="p-2 bg-[#F7FAF9] flex items-center justify-center relative"
+										style={{
+											borderTop: "none",
+											borderBottom: "none",
+										}}
+									>
+										{/* Top dashed border */}
+										<div
+											className="absolute top-0 left-0 right-0"
+											style={{
+												backgroundImage:
+													"repeating-linear-gradient(to right, #A3B116 0, #A3B116 17px, transparent 12px, transparent 20px)",
+												height: "2px",
+											}}
+										/>
+										{/* Bottom dashed border */}
+										<div
+											className="absolute bottom-0 left-0 right-0"
+											style={{
+												backgroundImage:
+													"repeating-linear-gradient(to right, #A3B116 0, #A3B116 17px, transparent 12px, transparent 20px)",
+												height: "2px",
+											}}
+										/>{" "}
 										<div
 											style={
 												activeKey === "shiye"
@@ -505,7 +643,22 @@ export default function ({
 										</div>
 									</div>
 									{/* 第三行 */}
-									<div className="p-2 bg-[#F7FAF9]  border-2 border-[#6CA698] flex items-center justify-center">
+									<div
+										className="p-2 bg-[#F7FAF9] flex items-center justify-center relative"
+										style={{
+											borderTop: "none",
+											borderBottom: "none",
+										}}
+									>
+										{/* Bottom dashed border */}
+										<div
+											className="absolute bottom-0 left-0 right-0"
+											style={{
+												backgroundImage:
+													"repeating-linear-gradient(to right, #A3B116 0, #A3B116 17px, transparent 12px, transparent 20px)",
+												height: "2px",
+											}}
+										/>{" "}
 										<div
 											style={
 												activeKey === "ganqing"
@@ -528,7 +681,22 @@ export default function ({
 										</div>
 									</div>
 									{/* 中间区域已在上方定义 */}
-									<div className="p-2  bg-[#F7FAF9]   border-2 border-[#6CA698] flex items-center justify-center">
+									<div
+										className="p-2 bg-[#F7FAF9] flex items-center justify-center relative"
+										style={{
+											borderTop: "none",
+											borderBottom: "none",
+										}}
+									>
+										{/* Bottom dashed border */}
+										<div
+											className="absolute bottom-0 left-0 right-0"
+											style={{
+												backgroundImage:
+													"repeating-linear-gradient(to right, #A3B116 0, #A3B116 17px, transparent 12px, transparent 20px)",
+												height: "2px",
+											}}
+										/>{" "}
 										<div
 											style={
 												activeKey === "jiankang"

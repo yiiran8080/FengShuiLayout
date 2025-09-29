@@ -1,11 +1,59 @@
 {
 	"login": {
-		"tip1": "要使用HarmoniQ服务，您必须登录现有帐户或使用以下选项创建一个帐户。",
+		"tip1": "要使用HarmoniQ服务，您必须登录现有账户或使用以下选项创建一个账户。",
 		"tip2": "使用HarmoniQ服务即表示您同意我们会对收集的数据进行分析。",
 		"Apple": "使用Apple账号登录",
-		"Google": "使用Google账号登录"
+		"Google": "使用Google账号登录",
+		"emailLoginTitle": "使用电子邮件登入",
+		"or": "或",
+		"emailLogin": "使用电子邮件登入",
+		"noAccount": "还没有账户？",
+		"registerNow": "立即注册",
+		"emailPlaceholder": "电子邮件",
+		"passwordPlaceholder": "密码",
+		"login": "登入",
+		"loggingIn": "登入中...",
+		"back": "返回",
+		"fillAllFields": "请填写所有栏位",
+		"invalidCredentials": "电子邮件或密码错误",
+		"loginFailed": "登入失败，请稍后再试",
+		"loginFailedCheckCredentials": "登入失败，请检查您的电子邮件和密码",
+		"loginFailedTryAgain": "登入失败，请稍后再试",
+		"loginSuccess": "登入成功！"
+	},
+	"register": {
+		"title": "注册新账户",
+		"form": {
+			"namePlaceholder": "姓名",
+			"emailPlaceholder": "电子邮件",
+			"passwordPlaceholder": "密码（至少8个字符，包含字母和数字）",
+			"confirmPasswordPlaceholder": "确认密码",
+			"register": "注册",
+			"registering": "注册中..."
+		},
+		"validation": {
+			"nameRequired": "请输入姓名",
+			"emailRequired": "请输入电子邮件",
+			"emailInvalid": "请输入有效的电子邮件地址",
+			"emailExists": "此电子邮件已被注册",
+			"passwordRequired": "请输入密码",
+			"passwordMinLength": "密码至少需要8个字符",
+			"passwordFormat": "密码必须包含至少一个字母和一个数字",
+			"confirmPasswordRequired": "请确认密码",
+			"passwordMismatch": "密码不匹配"
+		},
+		"messages": {
+			"registerSuccess": "注册成功！正在为您登入...",
+			"registerSuccessLoginFailed": "注册成功，但自动登入失败。请手动登入。",
+			"registerAndLoginSuccess": "注册并登入成功！",
+			"registerFailed": "注册失败，请稍后再试"
+		},
+		"haveAccount": "已有账户？",
+		"loginNow": "立即登入",
+		"termsAgreement": "注册即表示您同意我们的服务条款和隐私政策"
 	},
 	"toast": {
+		"processing": "处理中...",
 		"loading": "正在跳转，请稍候...",
 		"open": "正在支付中...待支付完成后报告页面会自动更新，请耐心等待。",
 		"redirect": "秒后自动跳转",
@@ -16,13 +64,13 @@
 		"saveSuccess": "保存成功！",
 		"saveFailed": "保存失败："
 	},
-
 	"Navigation": {
 		"cn": "简体中文",
-		"tw": "繁體中文",
+		"tw": "繁体中文",
 		"unlock": "解锁进阶分析",
 		"yourReport": "您的家居风水分析结果",
 		"home": "首页",
+		"smartChat": "风铃聊天室",
 		"about": "关于我们",
 		"process": "服务流程",
 		"theory": "风水原理",
@@ -31,10 +79,10 @@
 	},
 	"home": {
 		"hero": {
-			"title": "打造和谐风水佈局",
+			"title": "打造和谐风水布局",
 			"title2": "融合自然之力，优化气场流动",
 			"subtitle1": "只要轻轻挪动房间的一个角落，幸运与幸福便悄悄降临您的生活",
-			"subtitle2": "阅读专属于您的定制化评测报告，开启专属幸福人生的钥匙",
+			"subtitle2": "阅读专属于您的客制化评测报告，开启专属幸福人生的钥匙",
 			"subtitle3": "家庭容易发生口角？",
 			"subtitle4": "试试移动房间的一个小角落，您将会变得更幸运，收获幸福！",
 			"subtitle5": "阅读专属科学订制测评报告，解锁幸福人生。",
@@ -46,19 +94,116 @@
 			"readReport": "查看报告",
 			"pricing": "服务定价"
 		},
+		"services": {
+			"steps": {
+				"step1": {
+					"title": "风铃聊天室",
+					"subtitle": "免费测评房间/命理"
+				},
+				"step2": {
+					"title": "选择报告",
+					"subtitle": "挑选心仪测算模式（可预览）"
+				},
+				"step3": {
+					"title": "填写信息移动模组",
+					"subtitle": "输入生辰八字"
+				},
+				"step4": {
+					"title": "解锁专属定制报告",
+					"subtitle": "收到详细分析和建议"
+				}
+			},
+			"fengshui": {
+				"title": "风水测算",
+				"subtitle1": "洞悉宅运秘码，调和天地之气",
+				"subtitle2": "让家成为幸福与财运的源泉",
+				"description": "基于八宅理论与玄空飞星，结合八字、性别、房屋朝向与平面图，量身策划专属您的风水格局。",
+				"button": "开始风水测算",
+				"altText": "风水测算服务"
+			},
+			"destiny": {
+				"title": "命理测算",
+				"subtitle1": "解读生命密码",
+				"subtitle2": "指引您的智慧与幸运之路",
+				"description": "通过四柱八字、五行与十神深度解析个人命理，结合时期特质，为明路保途的助您把握人生关键。",
+				"button": "开始命理测算",
+				"altText": "命理测算服务"
+			}
+		},
+		"demo": {
+			"title": "付费测算报告",
+			"tags": {
+				"fengshui": {
+					"name": "风水测算",
+					"description": "调整环境气场，促进运势好转"
+				},
+				"life": {
+					"name": "命理测算",
+					"description": "探究人生运势，解示未来方向"
+				},
+				"relationship": {
+					"name": "感情流年测算",
+					"description": "洞悉爱情机会，把握情感机缘"
+				},
+				"career": {
+					"name": "事业测算",
+					"description": "事业发展指导，职场运势分析"
+				},
+				"health": {
+					"name": "健康测算",
+					"description": "预测健康状况，养生保健建议"
+				},
+				"wealth": {
+					"name": "财运流年测算",
+					"description": "掌示财运走向，投资理财指导"
+				}
+			},
+			"startButton": "开始测算",
+			"previewButton": "预览付费报告",
+			"previewTitle": "付费报告预览",
+			"previewDescription1": "获取个性化风水见解，按照我们的建议",
+			"previewDescription2": "打造完美平衡的生活空间",
+			"demoAltText": "付费报告演示"
+		},
+		"comments": {
+			"title": "甜蜜的家",
+			"description": "在各个交流平台与反馈渠道上，用户对我们的称赞不绝于耳，无论是产品品质还是服务态度，都得到充分肯定。",
+			"p1": "30岁freelancer",
+			"c1": "我只是转换了床头的朝向，不让床头横梁压头顶，睡眠质素已经改善不少。然后再将书房格局的调一调，又在客厅东南窗边摆植物提升木气，又可以增加财运同气场。我除了睡得好，更是遇到一份好工作。",
+			"p2": "一家三口",
+			"c2": "以前屋企又吵小朋友又专心不到读书，我调整了客厅沙发的摆向，又移走西北角杂物通财气。小朋友张书桌都放了个暖色的灯，增加文昌位帮助学习，而家小朋友个专注力好了很多，我也没有再烦恼过。",
+			"p3": "同居男女朋友，有宠物",
+			"c3": "现在家中整齐了不少，狗狗都有一个舒适的空间，我和伴侣的争吵也少了，生活确实是有变好的迹象。",
+			"p4": "24岁自住Gen Z",
+			"c4": "新装修的房子参考了风水测试里面建议的家具布局，想不到真的几分钟就完成了一份报告，又准确又快，对我来说是全新的体验。",
+			"p5": "已婚专业人士",
+			"c5": "因为工作压力比较大，在家很难放松导致家里的气氛不太好。整天失眠，又影响双方的情绪。现在睡得好，一觉睡到天亮，生活素质都有提升到，真的是做个几分钟的简单测试就可以改变好多东西。"
+		},
 		"features": {
-			"title": "为何选择我们的风水测算服务？",
-			"title1": "10,000＋",
+			"title": "为何选择我们？",
+			"title1": "98%",
 			"subtitle1": "用户满意",
 			"title2": "24-7",
 			"subtitle2": "自助定制化服务",
 			"title3": "100%",
 			"subtitle3": "退款保障",
 			"title4": "10%",
-			"subtitle4": "市场一折价格"
+			"subtitle4": "市场一折价格",
+			"readMore": "阅读更多",
+			"facebookAlt": "Facebook 主页",
+			"instagramAlt": "Instagram 主页"
+		},
+		"carousel": {
+			"beforeLabel": "测算前",
+			"afterLabel": "测算后",
+			"buttonText": "定制化风水报告",
+			"title": "HarmoniQ焕运",
+			"subtitle1": "获取个性化风水见解，按照我们的建议",
+			"subtitle2": "打造完美平衡的生活空间",
+			"dragLabel": "拖拽以显示前后对比"
 		},
 		"Desire": {
-			"bigtitle1": "您是否有以下问题烦恼?",
+			"bigtitle1": "玄学测算的力量",
 			"bigtitle2": "您是否有想要拥有?",
 			"title1": "01",
 			"subtitle1": "财神不进家门？",
@@ -69,13 +214,13 @@
 			"title4": "04",
 			"subtitle4": "事业停滞不前？",
 			"title5": "财运提升",
-			"subtitle5": "不再受疾病困扰",
+			"subtitle5": "3个月提升15%",
 			"title6": "身体健康",
-			"subtitle6": "找到理想工作",
+			"subtitle6": "不再受疾病困扰",
 			"title7": "孩子省心",
 			"subtitle7": "孩子成绩提升",
 			"title8": "事业顺利",
-			"subtitle8": "3个月提升15%"
+			"subtitle8": "找到理想工作"
 		},
 		"share": {
 			"title": "HarmoniQ风水测算服务流程",
@@ -89,7 +234,7 @@
 			"description4": "个人化分析及改善方法"
 		},
 		"compare": {
-			"title": "HarmoniQ焕运",
+			"title": "HarmoniQ换运",
 			"description": "获取个性化风水见解，按照我们的建议打造完美平衡的生活空间",
 			"cta": "定制化风水报告",
 			"before": "测算前",
@@ -97,26 +242,16 @@
 		},
 		"tips": {
 			"title": "风水小贴士",
+			"description": {
+				"line1": "踏出学习风水的第一步，无需复杂仪式",
+				"line2": "只要从观察和改善身边的环境做起。"
+			},
 			"tip1": "什么是风水",
 			"tip2": "风水如何影响人生",
 			"tip3": "风水与日常生活",
 			"tip4": "如何开始学习风水",
 			"tip5": "迎接蛇年",
 			"tip6": "蛇年行大运"
-		},
-		"comments": {
-			"title": "甜蜜的家",
-			"description": "在各大交流平台和反馈渠道上，用户对我们的称赞源源不断，无论是产品质量还是服务态度，都得到了充分肯定。",
-			"p1": "30岁freelancer",
-			"c1": "我只是换了床头的朝向，不让床头横梁压头顶，睡眠质量已经改善不少。然后再调整一下书房格局，又在客厅东南窗边摆植物提升木气，还能增加财运和气场。我不仅睡得好，还遇到了一份好工作。",
-			"p2": "一家三口",
-			"c2": "以前家里又吵，孩子也专心不了学习，我调整了客厅沙发的摆向，又移走西北角杂物通财气。孩子的书桌也放了个暖色的灯，增加文昌位帮助学习，现在孩子的专注力好了很多，我也没有再烦恼过。",
-			"p3": "同居情侣，有宠物",
-			"c3": "现在家里整洁了不少，狗狗也有了一个舒适的空间，我和伴侣的争吵也少了，生活确实有变好的迹象。",
-			"p4": "24岁自住Gen Z",
-			"c4": "新装修的房子参考了风水测试里的家具布局，没想到真的几分钟就完成了一份报告，又准又快，对我来说是全新的体验。",
-			"p5": "已婚专业人士",
-			"c5": "因为工作压力比较大，在家很难放松导致家里的气氛不太好。整天失眠，也影响双方的情绪。现在睡得好，一觉睡到天亮，生活质量都提升了，真的只要做几分钟的简单测试就能改变很多事情。 "
 		},
 		"message": {
 			"title": "初心寄语",
@@ -127,30 +262,29 @@
 			"showMore": "查看更多疑问",
 			"closeMore": "收起",
 			"q1": "什么是HarmoniQ？",
-			"a1": "HarmoniQ是一个智能家居风水顾问，旨在优化您空间的能量流动及平衡，提供个性化方案以达到和谐家居。",
-			"q2": "HarmoniQ如何运作？",
-			"a2": "HarmoniQ全面评估您的家居平面布局，配合住户八字，辅以流年九宫飞星图、五行八卦、紫微斗数进行初步分析，再参考数据库中《青囊经》、《黄帝宅经》等古籍，最后比对10万+近代资深风水专家审核案例，量身为用户分析及定制风水建议，创造和谐家园。",
+			"a1": "HarmoniQ 是一个智能家居风水顾问，旨在优化您空间的能量流动及平衡，提供个人化方案以达致和谐家居。",
+			"q2": "HarmoniQ怎样运作？",
+			"a2": "HarmoniQ全面评估您的家居平面布局，配合住户八字，辅以流年九宫飞星图、五行八卦、紫微斗数进行初步分析，再参考资料库中《青囊经》、《黄帝宅经》等古籍，最后比对10万+近代资深风水专家审核案例，量身为用户分析及定制风水建议，创造和谐家园。",
 			"q3": "如何开始使用HarmoniQ？",
 			"a3": "您只需要输入家居平面图及部分用户个人资料，数分钟内即可获得免费风水评估报告。想深入改善运势？付费升级可解锁进阶版风水方案。",
 			"q4": "我应该多久更新一次风水分析？",
-			"a4": "HarmoniQ建议每年咨询一次就足够了。同时建议在家居布局进行更改后或加入新成员等重大变更后再进行咨询。",
+			"a4": "HarmoniQ 建议每年咨询一次就足够。同时建议在家居布局进行更改后或加入新成员等重大变更后再进行咨询。",
 			"q5": "HarmoniQ提供办公室风水顾问吗？",
-			"a5": "目前HarmoniQ专注于家居风水顾问，帮助家庭打造和谐空间。我们正在积极探索办公室风水服务，欢迎您前往『联系我们』留言，告诉我们您的需求！",
+			"a5": "目前HarmoniQ专注于家居风水顾问，帮助家庭打造和谐空间。我们正积极探索办公室风水服务，欢迎您前往『联络我们』留言，告诉我们您的需求！",
 			"q6": "我的平面图数据安全吗？",
 			"a6": "是的，您的平面图和个人数据受到企业级加密保护，并符合国际隐私标准（如GDPR）。我们绝不会将数据分享给第三方，确保您的隐私安全。",
-			"q7": "HarmoniQ如何收费？",
-			"a7": "市面上普遍按面积收费，平均费用也可达到每平方英尺HKD $10，动辄就要几千元。HarmoniQ希望让风水智慧惠及更多家庭，打造和谐生活，因此价格更加亲民。优惠期间在Instagram/Facebook发布宣传帖文可获得分享码折扣，详情请查询服务定价页面。",
+			"q7": "HarmoniQ 如何收费？",
+			"a7": "市面上普遍按面积收费，而平均费用亦可达约每平方尺HKD $10，动辄都要数千元。HarmoniQ希望宣扬风水智慧可为更多家庭打造和谐生活，因此价格比较亲民。优惠期间发布宣传帖文于Instagram/Facebook可获取分享码折扣，详情查询服务定价页面。",
 			"q8": "如果我不满意HarmoniQ的服务，可以退款吗？",
-			"a8": "是的，HarmoniQ对服务品质充满信心，我们提供无条件退款保证。若用户依照风水报告内的建议90天后未能改善能量，请联系我们申请退款，让您无后顾之忧。"
+			"a8": "是的，HarmoniQ对服务品质充满信心，我们提供无条件退款保证。若用户依照风水报告内的建议90天后未能改善能量，请联络我们申请退款，让您无后顾之忧。"
 		},
-
 		"footer": {
 			"title": "准备开始您的风水之旅？",
 			"subtitle": "立即体验HarmoniQ的风水分析, 让科技为您的家居带来和谐好运",
 			"consult": "咨询",
 			"address": "地址",
 			"email": "电子邮箱",
-			"contact": "联系我们",
+			"contact": "联络我们",
 			"privacy": "隐私政策",
 			"terms": "用户条款",
 			"focus": "关注我们",
@@ -174,7 +308,6 @@
 				"placeholder": "选择类别",
 				"option1": "风水咨询",
 				"option2": "技术支持",
-
 				"option3": "账单和订阅",
 				"option4": "合作咨询",
 				"option5": "其他",
@@ -192,7 +325,6 @@
 				"button": "返回首页"
 			}
 		},
-
 		"terms": {
 			"title": "用户条款",
 			"description": "欢迎使用我们的风水咨询服务！在使用本站点之前，请仔细阅读以下使用条款。",
@@ -214,7 +346,7 @@
 			},
 			"block5": {
 				"title": "优惠及退款政策",
-				"content": "我们提供限时优惠及退款保障。限时优惠需要用户分享指定讯息到社交媒体，从而获得优惠码，即享低至每平方尺HKD$1优惠，最低消费为HKD$380 。风水优化能量需时，退款期会在购买服务后第91天-120天生效，退款金额会先扣除不多于百分之十的行政费用，以用户缴费渠道退款给用户。欢迎通过联络我们安排退款。\n*优惠及退款保障受有关条款及细则约束。本公司保留对优惠及任何争议之最终决定权，并可更改此优惠之条款及细则而不作另行通知。"
+				"content": "我们提供限时优惠及退款保障。限时优惠需要用户分享指定讯息到社交媒体，从而获得优惠码，即享低至每平方尺HKD$1优惠，最低消费为HKD$380 。风水优化能量需时，退款期会在购买服务后第91天-120天生效，退款金额会先扣除不多于百分之十的行政费用，以用户缴费渠道退款给用户。欢迎通过联络我们安排退款。\n*优惠及退款保障受有关条款及细则约束。本公司保留对优惠及任何争议之最终决定权，并可更改此优惠之条款及细则而不作另行通知。。"
 			},
 			"block6": {
 				"title": "使用者行为",
@@ -267,21 +399,21 @@
 		}
 	},
 	"upload": {
-		"title": "上传您的家居照片以获得免费测算报告",
+		"title": "上载您的家居照片以获得免费测算报告",
 		"description1": "将您的家居照片上传到此处，我们将免费帮您分析您的家居格局以及它的风水",
 		"description2": "是否有利您的运势。",
-		"uploadAction": "拍照/ 上传照片到此处",
+		"uploadAction": "拍照/ 上载照片到此处",
 		"fileFormat": "仅支持JPEG或PNG格式，10MB以下。",
 		"browseButton": "浏览照片",
 		"disclaimer": "*您的照片仅供测算使用。",
 		"nextStep": "下一步",
-		"modalTitle": "输入以下资料进行免费风水测算",
-		"modalTitle2": "简单选择以下内容，我们将为您提供你想要房间的免费测算报告",
+		"modalTitle": "个人资料",
+		"modalTitle2": "您的个人资料仅用于此次测算",
 		"gender": "性别：",
 		"genderSelect": "请选择",
 		"male": "男",
 		"female": "女",
-		"birthDateTime": "生辰：",
+		"birthDateTime": "出生年月日时间：",
 		"year": "年",
 		"month": "月",
 		"day": "日",
@@ -298,9 +430,9 @@
 		"close": "关闭",
 		"processing": "计算中，请稍候...",
 		"roomTypes": {
-			"bedroom": "卧室",
+			"bedroom": "睡房",
 			"livingRoom": "客厅",
-			"diningRoom": "餐厅",
+			"diningRoom": "饭厅",
 			"kitchen": "厨房",
 			"bathroom": "洗手间",
 			"studyRoom": "书房",
@@ -318,12 +450,14 @@
 			"west": "正西",
 			"northWest": "西北"
 		},
-		"invalidRoomImage": "错误，请上传一张房间图片",
+		"invalidRoomImage": "错误, 请上传一张房间图片",
 		"roomDetected": "房间照片验证成功！",
 		"validatingImage": "正在验证图片...",
 		"invalidFileFormat": "文件格式不正确，请上传JPEG或PNG格式的图片",
+		"notableupload": "无法即时上载家居照片？",
+		"roomdetailRequired": "输入房间资料进行测试",
 		"uploadDifferentImage": "请上传不同的图片",
-		"roomImageRequired": "需要上传室内房间照片才能进行风水分析",
+		"roomImageRequired": "需要房间图片",
 		"personalInfo": "个人资料",
 		"personalInfoDescription": "您的个人资料仅用于此次测算",
 		"roomData": "房间资料",
@@ -331,28 +465,30 @@
 		"redirectingToLogin": "请登录以继续...",
 		"saveSuccess": "保存成功！",
 		"saveFailed": "保存失败！",
+		"reportGenerating": "正在为您分析个人命卦与住宅风水...",
 		"reportGeneratedCount": "报告生成成功！这是您的第 {count} 份免费报告。",
 		"firstReportGenerated": "首份免费报告生成成功！"
 	},
 	"theory": {
-		"title": "风水测算是基于什么原理？",
-		"description": "通过上传家居图片，我们的智能风水分析系统利用先进的图像识别技术，结合传统风水学的核心理论，为您的家居环境提供深度的风水解析。",
+		"title1": "风水测算",
+		"title2": "是基于什么原理？",
+		"description": "透过上传八字/建立家居平面图，我们的智慧风水命理分析系统利用先进的人工智能技术结合传统风水命理学的核心理论，为您提供深度的风水命理解析。",
 		"cards": {
 			"imageRecognition": {
-				"title": "图像识别与布局分析",
-				"description": "系统会对您上传的家居图片进行自动识别，提取家具摆放、空间格局、光线分布等关键信息进行分析。"
+				"title": "玄学知识结构化",
+				"description": "将传统风水命理典籍（如《易经》《葬经》）中的规则转化为结构化数据库。透过自然语言处理解析古籍术语，建构可计算的规则引擎，为AI提供理论架构基础"
 			},
 			"knowledgeBase": {
-				"title": "风水学知识库对比",
-				"description": "内置了完整的风水学知识库，包括五行平衡、阴阳协调等理论，同时参考超过十万案例，系统会将家居布局与风水原则进行对比，定位潜在问题和优化点。"
+				"title": "命盘演算智能化",
+				"description": "将八字、紫微斗数等命理推演规则转换为算法模型。基于用户生辰时空数据，自动产生十神关系、大运走势等千亿级组合的命盘图谱，取代传统人工排盘。"
 			},
 			"energyFlow": {
 				"title": "能量流动评估",
-				"description": "系统通过分析空间的开口位置、家具朝向、光线反射等，预测气流和能量流动的路径，帮助判断是否存在风水上的“阻滞”或“泄气”问题。"
+				"description": "系统通过分析空间的开口位置、家具朝向、光线反射等，预测气流和能量流动的路径，帮助判断是否存在风水上的「阻滞」或「泄气」问题。"
 			},
 			"personalizedAdvice": {
-				"title": "个性化风水建议",
-				"description": "根据您的家庭成员命理、五行需求，系统会具体调整建议，例如家具的摆放、色彩搭配、植物添加等，让您的家居环境更和谐。"
+				"title": "深度学习趋吉推演",
+				"description": "透过机器学习分析海量历史案例（如宅运势关联数据），训练预测模型。结合使用者个人化需求，动态优化风水调整方案及运势预警策略。"
 			}
 		}
 	},
@@ -395,7 +531,7 @@
 		"unlockDetailButton": "🔓 解锁详细报告",
 		"careerContent": "房间布置会引发最近事业停滞不前，夏季火旺阶段则需低调，避免与同事正面冲突！对创业者而言，巳火为「驿马+劫财」，适合拓展异地市场，但合伙财务务必白纸黑字（己土食神被合，易有口头承诺反悔）。农历八月（酉月）「巳酉半合」将转化竞争为合作契机，可把握金属、科技相关领域商机。",
 		"relationshipContent": "房间布置会引发最近感情问题，夏季火旺阶段则需低调，避免与同事正面冲突！对创业者而言，巳火为「驿马+劫财」，适合拓展异地市场，但合伙财务务必白纸黑字（己土食神被合，易有口头承诺反悔）。农历八月（酉月）「巳酉半合」将转化竞争为合作契机，可把握金属、科技相关领域商机。",
-		"wealthContent": "房间布置会引发最近事业停滞不前，夏季火旺阶段则需低调，避免与同事正面冲突！对创业者而言，巳火为「驿马+劫财」，适合拓展异地市场，但合伙财务务必白纸黑字（己土食神被合，易有口头承诺反悔）。农历八月（酉月）「巳酉半合」将转化竞争为合作契机，可把握金属、科技相关领域商机。",
+		"wealthContent": "房间布置会引发最近财运不佳，夏季火旺阶段则需低调，避免与同事正面冲突！对创业者而言，巳火为「驿马+劫财」，适合拓展异地市场，但合伙财务务必白纸黑字（己土食神被合，易有口头承诺反悔）。农历八月（酉月）「巳酉半合」将转化竞争为合作契机，可把握金属、科技相关领域商机。",
 		"unlockDetail": "解锁查看详细内容",
 		"noData": "No data found for this room type and direction."
 	},
@@ -406,27 +542,37 @@
 		"button": "推荐HarmoniQ"
 	},
 	"pricePromo": {
-		"title": "HarmoniQ为您量身定制专属的风水报告",
-		"desc": "只需几分钟，即可了解更多人生运势，改变生活也只是简单几步",
+		"title": "HarmoniQ为您度身订造专属的风水报告",
+		"desc": "只需几分钟，便可了解更多人生的运程或运势，改变生活也只是简单几步",
 		"feature1": {
-			"title": "高准确度 用户满意",
-			"desc": "结合住户生辰八字，辅以流年九宫飞星图、家居方位等进行分析，并参考10万+案例，用户能量运势增强"
+			"title": "准确度高 用户称心满意",
+			"desc": "配合住户生辰八字，辅以流年九宫飞星图、家居方位等进行分析，并参考10万+案例，用户能量运势增强"
 		},
 		"feature2": {
 			"title": "无条件退款保证",
-			"desc": "若在90日期限内未有改善能量或帮助，请向我们咨询有关退款问题及详细说明退款原因，我们会尽快回复并处理退款事项。详情请留意用户条款。"
+			"desc": "若在90日期限内未有改善能量或帮助，请向我们咨询有关退款问题及详细说明退款原因，我们会尽快回复并处理退款事项。有关详情请留意用户条款。"
 		},
 		"feature3": {
-			"title": "分享贴文享折扣优惠",
-			"desc": "优惠期间分享宣传贴文于Instagram/Facebook可获取优惠码折扣，价格低至每平方尺HKD$1"
+			"title": "分享帖文享折扣优惠",
+			"desc": "优惠期间分享宣传帖文于Instagram/Facebook可获取优惠码折扣，价格低至每平方尺HKD$1"
 		}
 	},
 	"pricePage": {
 		"title": "解锁进阶分析",
 		"subtitle": "亲自动手还原家庭布局，解锁风水密码",
-		"desc": "免费版的分析为流年运程和家居风水的基础分析，进阶版的分析报告将会按照您提供的命盘及家居布局运算出专业的风水建议。",
+		"desc": "免费版的分析为流年运程和家居风水的基础分析，进阶版的分析报告将会按照您提供的名盘及家居布局运算出专业的风水建议。",
 		"shareBtn": "立即分享解锁取得优惠码",
+		"regionSelection": "选择地区",
+		"regionHongKong": "中国香港",
+		"regionChina": "中国",
 		"perSqft": "每平方尺",
+		"perSqm": "每平方米",
+		"unitToggle": "选择面积单位",
+		"unitSelection": "选择面积单位",
+		"unitSqft": "平方尺",
+		"unitSqm": "平方米",
+		"sqftUnit": "平方尺",
+		"sqmUnit": "平方米",
 		"freeVersion": "体验版",
 		"freeBtn": "免费测算",
 		"freeFeatures": ["免费测试一个房间", "流年运程基础分析"],
@@ -437,7 +583,7 @@
 		"unlockedBadge": "✓ 已解锁",
 		"popularBadge": "99%用户选择",
 		"lockedTitle": "此方案已锁定",
-		"lockedDesc": "分享并输入优惠码解锁特殊价格",
+		"lockedDesc": "分享输入优惠码解锁特殊价格",
 		"inputPromoBtn": "输入优惠码",
 		"inputPromoPlaceholder": "输入优惠码",
 		"confirmBtn": "确认",
@@ -459,12 +605,12 @@
 		"sqftInputPlaceholder": "例如：800",
 		"sqftProceedBtn": "立即订阅",
 		"sqftCancelBtn": "取消",
-		"sqftErrorMsg": "请输入有效的房屋面积",
-		"shareProcessing": "开启分享窗口中...",
+		"sqftErrorMsg": "房屋面积不能少于380平方尺",
+		"shareProcessing": "开启分享视窗中...",
 		"shareToFacebook": "分享到Facebook获取优惠码",
 		"yourPromoCode": "您的专属优惠码：",
 		"copyPromoCode": "复制优惠码",
-		"copied": "已复制",
+		"copied": "己复制",
 		"usePromoCodeBelow": "请在以下方案使用此优惠码",
 		"shareConfirmTitle": "分享确认",
 		"shareConfirmDesc": "您是否已经成功在Facebook上分享了我们的内容？\n如果您已分享，请点击「是」获取优惠码！",
@@ -480,7 +626,7 @@
 		"paymentError": "支付处理失败，请稍后再试",
 		"sqftValidationError": "房屋面积不能少于380平方尺",
 		"existingReportFound": "发现已有风水报告",
-		"existingReportDescription": "您已经生成过风水报告，您可以查看带有详细分析的现有报告（专享版），或重新测试（需要重新付款）",
+		"existingReportDescription": "你已经生成过风水报告，您可以查看带有详细分析的现有报告（专享版）或重新测试（需要重新付款）",
 		"viewExistingReport": "查看现有报告",
 		"retestWithPayment": "重新测试",
 		"checkingExistingReports": "正在检查已有报告...",
@@ -488,17 +634,82 @@
 		"enterPromoCode": "输入优惠码解锁",
 		"unlockedWithPromo": "已通过优惠码解锁",
 		"promoCodeUsed": "优惠码已使用",
-		"loginToBuy": "登录购买"
+		"loginToBuy": "登录购买",
+
+		"previewButton": "预览付费报告",
+		"fengShuiCalculation": "风水测算",
+		"destinyCalculation": "命理测算",
+		"mostUserChoice": "最多用户选择",
+		"limitedTimeOffer": "限时优惠",
+		"perTime": "每次",
+		"premiumVersion2": "专享版",
+		"paymentCalculation": "付费测算",
+		"premiumFeature2_1": "深度优化全无家具布局",
+		"premiumFeature2_2": "全屋分析报告",
+		"premiumFeature2_3": "关键隐患化解",
+		"premiumFeature2_4": "流年运程综合分析",
+		"premiumFeature2_5": "个人命挂分析",
+		"premiumFeature2_6": "流年预警总结",
+		"destinyFeature_1": "深度分析您的八字命理",
+		"destinyFeature_2": "十神格局&内在关键",
+		"destinyFeature_3": "四柱排盘&纳音解析",
+		"destinyFeature_4": "综合调理&人生建议",
+		"destinyFeature_5": "五行分布深度解析",
+		"destinyFeature_6": "人际调衡要点",
+		"personalFortuneAnalysis": "个人流年测算",
+		"coupleFortuneAnalysis": "双人合盘流年测算",
+		"wealthFortune": "财运流年测算",
+		"loveFortune": "感情流年测算",
+		"healthFortune": "健康流年测算",
+		"careerFortune": "事业流年测算",
+		"basicAnalysis": "命主八字基础分析",
+		"formatPatternAnalysis": "八字命局心得解释",
+		"wealthAnalysis": "财运流年解析",
+		"loveAnalysis": "感情流年解析",
+		"healthAnalysis": "健康流年解析",
+		"careerAnalysis": "事业流年解析",
+		"fortuneSummary": "流年财运运势总结",
+		"loveSummary": "流年感情运势总结",
+		"healthSummary": "流年健康运势总结",
+		"careerSummary": "流年事业运势总结",
+		"fortuneAdvice": "流年开运建议",
+		"premiumPlan": "专享版",
+		"lightPlan": "限时优惠",
+		"processing2": "处理中...",
+		"coupleFeature_1": "命主八字基础分析",
+		"coupleFeature_2": "八字命局格局心得解",
+		"coupleFeature_3": "财运流年解析",
+		"coupleFeature_4": "流年财运运势总结",
+		"coupleFeature_5": "流年开运建议",
+		"fengshuiCalculation": "风水测算",
+		"destinyExplanation": "八字命局心得解释",
+		"wealthSummary": "流年财运运势总结",
+		"luckAdvice": "流年开运建议",
+		"coupleAnalysisTitle": "双人合盘流年测算",
+		"coupleAnalysis": "感情合盘流年测算",
+		"limitedOffer": "限时优惠",
+		"minimumAreaNote": "最少需要38平方米",
+		"areaInputLabel": "房屋面积（平方米）",
+		"areaPlaceholder": "例如：80",
+		"areaValidationError": "房屋面积不能少于38平方米",
+		"shareText": "🏠✨ 发现了一个超棒的风水分析网站！HarmoniQ帮我优化家居布局，让生活更和谐幸福！现在还有特别优惠，快来试试看吧！",
+		"facebookShareAlert": "请允许弹出窗口以分享到Facebook，或手动复制网址分享：",
+		"premiumVersionTitle": "尊享版",
+		"discountVersionTitle": "优惠版",
+		"perTimeUnit": "每次"
 	},
 	"design": {
 		"showTab": "选择房间或家具",
+		"demo": {
+			"startTutorial": "教学"
+		},
 		"cta": "开始测算",
 		"alert": "请确认个人资料和房间布局是否准确？",
 		"warning": "至少需要设置1个房间、1扇门和1扇窗才可测算",
 		"cancel": "取消",
 		"ok": "确认",
 		"readReport": "查看已有报告",
-		"description": "您可以点击“查看已有报告”，前往报告页下载。",
+		"description": "您可以点击\"查看已有报告\"，前往报告页下载。",
 		"hasReportAlert": "您已生成过报告，如重新生成，会覆盖原有报告。请确认是否继续？",
 		"coverReport": "重新生成",
 		"room": "房间",
@@ -506,9 +717,6 @@
 		"chosed": "已选中",
 		"profile": "个人资料",
 		"useModuleAlert": "如果选择使用该模板，会覆盖当前布局。请确认是否继续？",
-		"demo": {
-			"startTutorial": "教学"
-		},
 		"tip": "您的个人资料仅用于此次测算",
 		"hour": "时",
 		"module": "模组",
@@ -558,16 +766,15 @@
 	},
 	"report": {
 		"catelog": "目录",
-		"title1": "第一章：个人命理基础分析",
+		"title1": "个人命理基础分析",
 		"title2": "第二章：流年运程基础分析",
 		"title2-1": "整体运势",
 		"title2-2": "健康运势",
 		"title2-3": "事业运势",
 		"title2-4": "感情运势",
 		"title2-5": "财运运势",
-
 		"title2-6": "总结",
-		"title3": "第三章：家居风水基础分析",
+		"title3": "家居风水基础分析",
 		"title4": "第四章：个人命理进阶分析",
 		"title4Preview": "第四章：个人命理进阶分析（预览）",
 		"title5": "第五章：流年运程进阶分析",
@@ -575,7 +782,7 @@
 		"p1-1": "风水命理",
 		"p1-2": "，作为一门古老的智慧学问，其核心在于探讨天地能量与个人气场之间的微妙关系，旨在通过调整环境与个人的能量场，达到和谐共生的状态。在这第一章，我们会简单探讨用户命理的基础，从阴阳五行的基本概念出发，逐步理解自身与环境的关系，",
 		"p1-3": "从而做出更为明智的选择，提升生活的品质与幸福感",
-		"p1-4": "风水命理并非迷信，而是一种科学与艺术的结合。它要求我们以开放的心态去接纳自然的力量，并通过细致的观察与分析，找到最适合自己的生活方式。",
+		"p1-4": "风水命理,作为一门古老的智慧学问,其核心在于探讨天地能量与个人气场之间的微妙关系,旨在通过调整环境与个人的能量场,达到和谐共生的状态。在这第一章,我们会简单探讨用户命理的基础,从阴阳五行的基本概念出发,逐步理解自身与环境的关系,从而做出更为明智的选择,提升生活的品质与幸福感。",
 		"p1-5": "年柱的天干代表外在的表现和性格特质，地支则代表内在的潜力和环境影响。年柱不仅反映个人的基本性格和命运走向，还与家庭背景、祖先遗传等因素有关。通过分析年柱，可以初步了解一个人的基本命格和未来发展趋势。",
 		"p1-6": "月柱的天干代表个人的情感表达和社交能力，地支则反映内在的情绪状态和潜在的影响力。月柱不仅揭示个人的情感特质和人际关系模式，还与个人的心理健康和情感稳定性有关。通过分析月柱，可以深入了解一个人的情感世界和社交互动方式。",
 		"p1-7": "日柱的天干代表个人的核心性格和行为模式，地支则反映个人的内在情感和生活环境。日柱不仅揭示个人的主要性格特质，还与个人的健康状况、情感生活以及日常行为模式密切相关。通过分析日柱，可以深入了解一个人的内在动机和行为倾向。",
@@ -583,15 +790,15 @@
 		"p1-9": "第四章的进阶分析会加入",
 		"p1-10": "命宫分析，同时包括幸运数字，幸运颜色。",
 		"p2-1": "命运",
-		"p2-2": "，如同浩瀚星河，看似遥不可及，却又与我们息息相关。古人云：“一命二运三风水”，道出了命运与环境的紧密联系。然而，命运并非一成不变，它如同一幅未完成的画卷，等待我们用智慧和行动去描绘。",
-		"p2-3": "第五章的进阶分析，会加入",
+		"p2-2": "，如同浩瀚星河，看似遥不可及，却又与我们息息相关。古人云：\"一命二运三风水\"，道出了命运与环境的紧密联系。然而，命运并非一成不变，它如同一幅未完成的画卷，等待我们用智慧和行动去描绘。",
+		"p2-3": "第五章及第六章的进阶分析，会加入",
 		"p2-4": "流月分析和运势增强建议。",
 		"p3-1": "风水",
 		"p3-2": "，这门源自古老东方的智慧，千百年来一直引领着人们追求与自然和谐共处之道。它并非迷信，而是古人对自然环境的深刻观察与经验总结，蕴含着对宇宙规律的敬畏与顺应。",
 		"p3-3": "在风水学中，九宫飞星图是根据每年的飞星位置来判断吉凶方位的工具。 ",
 		"p3-4": "2025年是蛇年",
 		"p3-5": "，飞星的位置会对每个房间的风水产生不同的影响。以下将根据房间的排序，逐一分析其风水影响，并提供相应的建议。",
-		"p3-6": "第六章的进阶分析，会",
+		"p3-6": "第七及第八章的进阶分析，会",
 		"p3-7": "对照用户命格比对，提供相应优化建议。",
 		"unlockButton": "解锁获取完整报告",
 		"error": "未查询到报告记录，正在跳转至设计页面，请重新生成...",
@@ -615,28 +822,28 @@
 			"tab3": "五行色系与材质",
 			"tab4": "运势增强方法",
 			"p6-1": "注：以上建议需配合实际空间尺寸调整，若有冲煞需优先化解。",
-			"transfer": "如果assistant的内容有值，请直接把assistant提供的内容原样翻译成简体中文。",
+			"transfer": "如果assistant的内容有值，请直接把assistant提供的内容翻译成正宗简体中文，严格使用简体字书写，避免任何繁体字词汇。必须符合中国大陆简体中文的习惯用法和词汇选择。",
 			"scrollInstruction": "下滑查看详细解读与1项免费调整方案（隐藏禁忌+运势增强方法）",
 			"advancedAnalysisTitle": "流年运程进阶分析",
 			"unlockAdvancedAnalysis": "解锁以得到整份流年分析"
 		}
 	},
 	"demo": {
-		"startTutorial": "开始演示",
+		"startTutorial": "开始教学",
 		"step": "步骤",
 		"of": "共",
 		"progress": "进度",
 		"welcomeDialog": {
 			"title": "欢迎使用风水设计工具！",
-			"description": "这是您第一次使用我们的设计工具？我们可以为您提供一个简单的教程来帮助您快速上手。",
-			"question": "您想要观看教程吗？",
-			"yes": "是的，开始教程",
+			"description": "这是您第一次使用我们的设计工具？我们可以为您提供一个简单的教学来帮助您快速上手。",
+			"question": "您想要观看教学吗？",
+			"yes": "是的，开始教学",
 			"no": "不用了，直接开始",
 			"skip": "跳过"
 		},
 		"welcome": {
 			"title": "欢迎使用设计工具",
-			"description": "让我们通过简单的步骤学习如何使用画布。这个教程将向您展示如何添加房间、家具以及使用各种工具来创建完美的风水布局。"
+			"description": "让我们通过简单的步骤学习如何使用画布。这个教学将向您展示如何添加房间、家具以及使用各种工具来创建完美的风水布局。"
 		},
 		"dragRoom": {
 			"title": "步骤1: 添加房间",
@@ -681,7 +888,7 @@
 			"description": "探索预设的风水布局模板。选择一个适合的模板作为设计起点，或者继续使用自定义布局。"
 		},
 		"complete": {
-			"title": "教程完成！",
+			"title": "教学完成！",
 			"description": "恭喜！您已经学会了设计工具的基本功能。现在您可以开始创建自己的风水布局了。记住，好的风水布局需要考虑房间的朝向、家具的摆放位置等因素。"
 		},
 		"tapToSelect": "点击选择物品",
@@ -707,6 +914,246 @@
 		"previous": "上一步",
 		"next": "下一步",
 		"skip": "跳过",
-		"finish": "完成教程"
+		"finish": "完成教学"
+	},
+	"demoPage": {
+		"tags": {
+			"fengshui": {
+				"name": "风水测算",
+				"description": "调整环境气场，促进运势好转"
+			},
+			"life": {
+				"name": "命理测算",
+				"description": "探究人生运势，解示未来方向"
+			},
+			"wealth": {
+				"name": "财运流年测算",
+				"description": "掌示财运走向，投资理财指导"
+			},
+			"relationship": {
+				"name": "感情流年测算",
+				"description": "洞悉爱情机会，把握情感机缘"
+			},
+			"health": {
+				"name": "健康测算",
+				"description": "预测健康状况，养生保健建议"
+			},
+			"career": {
+				"name": "事业测算",
+				"description": "事业发展指导，职场运势分析"
+			},
+			"couple": {
+				"name": "感情合盘流年测算",
+				"description": "情侣合盘分析，感情运势测算"
+			}
+		},
+		"content": {
+			"fengshui": {
+				"title": "风水测算服务",
+				"features": [
+					"居家风水分析",
+					"办公室风水布局",
+					"商业空间风水",
+					"风水化煞方法"
+				],
+				"description": "专业风水师为您分析环境气场，提供具体改善建议，助您事业顺利，家庭和谐。",
+				"mainTitle": "风水测算",
+				"previewTitle": "风水测算报告预览"
+			},
+			"life": {
+				"title": "命理测算服务",
+				"features": [
+					"八字命盘分析",
+					"紫微斗数",
+					"流年运势",
+					"五行平衡"
+				],
+				"description": "深度解析您的命理格局，洞察人生起伏规律，指导重要决策时机。",
+				"mainTitle": "命理流年测算",
+				"previewTitle": "命理流年报告预览"
+			},
+			"wealth": {
+				"title": "财运测算服务",
+				"features": [
+					"财运流年分析",
+					"投资时机指导",
+					"理财方向建议",
+					"财富增长策略"
+				],
+				"description": "精准预测财运走势，把握投资良机，实现财富稳定增长。",
+				"mainTitle": "财运流年测算",
+				"previewTitle": "财运流年报告预览"
+			},
+			"relationship": {
+				"title": "感情测算服务",
+				"features": [
+					"姻缘桃花运",
+					"感情发展预测",
+					"伴侣匹配度",
+					"婚姻时机分析"
+				],
+				"description": "深入分析感情运势，指导恋爱技巧，助您找到真爱，收获幸福。",
+				"mainTitle": "感情流年测算",
+				"previewTitle": "感情流年报告预览"
+			},
+			"health": {
+				"title": "健康测算服务",
+				"features": [
+					"体质分析",
+					"健康风险预测",
+					"养生建议",
+					"疾病预防指导"
+				],
+				"description": "根据命理分析健康状况，提供个人化养生方案，预防疾病风险。",
+				"mainTitle": "健康流年测算",
+				"previewTitle": "健康流年报告预览"
+			},
+			"career": {
+				"title": "事业测算服务",
+				"features": [
+					"职业发展方向",
+					"升职加薪时机",
+					"创业运势分析",
+					"职场人际关系"
+				],
+				"description": "分析事业运势走向，指导职业规划，助您在职场上乘风破浪。",
+				"mainTitle": "事业流年测算",
+				"previewTitle": "事业流年报告预览"
+			},
+			"couple": {
+				"title": "感情合盘流年测算服务",
+				"features": [
+					"情侣八字合盘分析",
+					"感情发展预测",
+					"恋爱运势测算",
+					"婚姻时机指导"
+				],
+				"description": "专业情侣合盘分析，预测感情发展方向，助您掌握爱情运势。",
+				"mainTitle": "感情合盘流年测算",
+				"previewTitle": "感情合盘流年报告预览"
+			}
+		},
+		"ui": {
+			"premiumVersion": "专享版",
+			"limitedOffer": "限时优惠",
+			"processing": "处理中...",
+			"paymentCalculation": "付费测算",
+			"coupleCompatibility": "感情合盘",
+			"exclusivePlan": "专属方案",
+			"coupleCompatibilityReport": "感情合盘报告",
+			"exclusivePlanReport": "专属方案报告"
+		},
+		"sections": {
+			"materialsNeeded": "所需材料"
+		},
+		"pricing": {
+			"perTime": "/每次"
+		},
+		"dialog": {
+			"existingReport": {
+				"title": "检测到现有报告",
+				"message": "您已有一份风水测算报告。您可以查看现有报告或支付重新测算。",
+				"viewReport": "查看现有报告",
+				"retest": "重新测算",
+				"cancel": "取消"
+			}
+		}
+	},
+	"fortuneEntry": {
+		"verifyingPayment": "正在验证付款...",
+		"paymentVerificationFailed": "付款验证失败",
+		"invalidSession": "无效的会话 ID",
+		"paymentFailed": "付款失败",
+		"verificationError": "付款验证失败",
+		"returnToPricing": "返回价格页面",
+		"fillDataPrompt": "请填写您的资料以生成专属{concernTitle}分析报告",
+		"basicInfo": "基本资料",
+		"analysisQuestion": "{concernTitle}测算问题",
+		"selectGender": "选择性别",
+		"male": "男性",
+		"female": "女性",
+		"birthDate": "出生日期",
+		"specificQuestion": "您的具体问题",
+		"questionPlaceholder": "请详细描述您关于{concernTitle}的具体问题或困扰...",
+		"questionHint": "请尽可能详细描述，这将帮助我们为您提供更精准的分析",
+		"confirmData": "确认资料",
+		"gender": "性别",
+		"birthday": "生日",
+		"noSpecificProblem": "我无特定疑惑",
+		"previousStep": "上一步",
+		"nextStep": "下一步",
+		"generating": "生成报告中...",
+		"generateReport": "生成专属报告",
+		"fillGenderBirthday": "请填写性别和生日",
+		"enterSpecificQuestion": "请输入您的具体问题",
+		"submitError": "提交资料时发生错误，请重试",
+		"generalAnalysis": "一般{concernTitle}分析",
+		"selectDate": "选择日期",
+		"detailedDescriptionHelp": "请尽可能详细描述，这将帮助我们为您提供更精准的分析",
+		"generatingReport": "生成报告中...",
+		"concerns": {
+			"financial": "财运",
+			"love": "感情",
+			"health": "健康",
+			"career": "事业",
+			"fortune": "运势",
+			"study": "学业",
+			"travel": "出行"
+		},
+		"required": "*"
+	},
+	"coupleEntry": {
+		"verifyingPayment": "正在验证付款...",
+		"invalidSession": "无效的会话 ID",
+		"paymentFailed": "付款失败",
+		"verificationError": "付款验证失败",
+		"paymentVerificationFailed": "付款验证失败",
+		"returnToPricing": "返回价格页面",
+		"fillDataPrompt": "请填写两人的资料以生成专属情侣关系分析报告",
+		"basicInfo": "基本资料",
+		"relationshipQuestion": "感情问题",
+		"firstPersonData": "第一人资料",
+		"secondPersonData": "第二人资料",
+		"gender": "性别",
+		"required": "*",
+		"male": "男性",
+		"female": "女性",
+		"birthDate": "出生日期",
+		"specificRelationshipQuestion": "具体感情问题或想了解的方面",
+		"relationshipQuestionPlaceholder": "例如：我们经常吵架，如何改善关系？或者想了解彼此的性格相容性...",
+		"detailedDescriptionHelp": "请详细描述，这将帮助我们为您提供更精准的分析",
+		"confirmData": "确认资料",
+		"firstPerson": "第一人",
+		"secondPerson": "第二人",
+		"noSpecificProblem": "我无特定疑惑",
+		"previousStep": "上一步",
+		"nextStep": "下一步",
+		"generatingReport": "生成报告中...",
+		"generateReport": "生成专属报告",
+		"fillBothPersonsData": "请填写两人的性别和生日",
+		"enterSpecificQuestion": "请输入您的具体问题",
+		"submitError": "提交资料时发生错误，请重试",
+		"generalCoupleAnalysis": "一般情侣关系分析"
+	},
+	"paymentThankYou": {
+		"title": "感谢您的惠顾",
+		"subtitle": "选择我们的命理风水服务，您的信任是我们前进的动力",
+		"startButton": "开始测算",
+		"description": {
+			"fortune": "请完成资料填写以生成您的专属运势分析报告",
+			"health": "请完成资料填写以生成您的专属健康分析报告",
+			"couple": "请完成资料填写以生成您的专属情侣分析报告",
+			"comprehensive": "请完成资料填写以生成您的专属综合分析报告",
+			"premium": "请完成资料填写以生成您的专属高级分析报告",
+			"default": "请完成资料填写以生成您的专属分析报告"
+		},
+		"title_type": {
+			"fortune": "运势",
+			"health": "健康",
+			"couple": "情侣",
+			"comprehensive": "综合",
+			"premium": "高级",
+			"default": "专属"
+		}
 	}
 }

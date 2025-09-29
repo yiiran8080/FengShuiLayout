@@ -58,9 +58,7 @@ export default function Chapter3({
 			try {
 				const parsedData = JSON.parse(jiajuProDataString);
 				setJiajuProData(parsedData);
-			} catch (error) {
-				console.error("Error parsing jiajuProDataString:", error);
-				setJiajuProData({});
+			} catch (error) {setJiajuProData({});
 			}
 		}
 	}, [jiajuProDataString]);
@@ -92,9 +90,7 @@ export default function Chapter3({
 		setActiveTab("tab0");
 	};
 
-	const onGenerate = (userInfo, _wuxingData) => {
-		console.log("jiaju gen");
-		setProgress(0);
+	const onGenerate = (userInfo, _wuxingData) => {setProgress(0);
 		const systemPrompt = getJiajuPrompt();
 		const rooms = designData.localItems.filter(
 			(item) => item._type === "room"
@@ -154,9 +150,7 @@ export default function Chapter3({
 					});
 					newResults[roomIndexIdArr[index]] = newObj;
 				});
-				setJiajuProData(newResults);
-				console.log("res 家居进阶", newResults);
-				onSaveData(newResults);
+				setJiajuProData(newResults);onSaveData(newResults);
 			})
 			.catch((e) => {
 				setLoading(false);
@@ -286,239 +280,325 @@ export default function Chapter3({
 				)}
 				className="bg-[#fff9]"
 			>
-				<p className="md:mb-20 mb-10 md:px-0 px-2.5 font-bold leading-8 tracking-normal text-justify">
-					<span className="text-sm leading-8">命主八字</span>
-					<br />
-					<span className="text-[#073E31] font-bold text-xl">
-						{`${wuxingData.year}年、${wuxingData.month}月、${wuxingData.day}日、${wuxingData.hour}${t("hour")}`}
-					</span>
-				</p>
+				{/* Card Container */}
+				<div className="w-[82%] mb-10 mx-auto bg-white rounded-[60px] shadow-md p-6 md:p-8">
+					<p className="md:mb-20 mb-10 md:px-0 px-2.5 font-bold leading-8 tracking-normal text-justify">
+						<span className="text-sm leading-8">命主八字</span>
+						<br />
+						<span className="text-[#073E31] font-bold text-xl">
+							{`${wuxingData.year}年、${wuxingData.month}月、${wuxingData.day}日、${wuxingData.hour}${t("hour")}`}
+						</span>
+					</p>
 
-				<RoomCanvas
-					activeRoom={activeRoom}
-					setActiveRoom={onSetActiveRoom}
-					onChangeDesignData={fetchDesignData}
-					onChangeRoomList={fetchRoomList}
-				/>
+					<RoomCanvas
+						activeRoom={activeRoom}
+						setActiveRoom={onSetActiveRoom}
+						onChangeDesignData={fetchDesignData}
+						onChangeRoomList={fetchRoomList}
+					/>
 
-				{activeRoom && !isPrinting && (
-					<div className="w-full md:rounded-b-3xl bg-[#fafafa] md:p-8 p-5 border-1 border-[#E6E6E6]">
-						<div className="flex items-center gap-2">
-							<Image
-								width={
-									activeRoom?.data._type === "dining_room"
-										? 28
-										: 32
-								}
-								height={
-									activeRoom?.data._type === "dining_room"
-										? 28
-										: 32
-								}
-								style={{ color: "red" }}
-								alt=""
-								src={`/images/report/${activeRoom?.data._type}.svg`}
-							/>
-							<h2 className="text-xl font-bold">
-								{activeRoom?.data.label}
-							</h2>
-						</div>
-
-						<div className="mt-8">
-							{/* Mobile Dropdown */}
-							<div className="block mb-5 md:hidden">
-								<div className="relative">
+					{/* Room Tabs - Show all rooms horizontally */}
+					{roomList.length > 0 && !isPrinting && (
+						<div className="w-full mt-8">
+							{/* Room Selection Tabs */}
+							<div className="flex flex-wrap justify-between mb-6">
+								{roomList.map((room) => (
 									<button
-										onClick={() =>
-											setShowDropdown(!showDropdown)
-										}
-										className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium bg-white border border-gray-200 rounded-lg"
+										key={room.id}
+										onClick={() => onSetActiveRoom(room)}
+										className={`flex items-center gap-2 px-4 py-3 rounded-lg border-2 transition-all duration-200 ${
+											activeRoom?.id === room.id
+												? "border-[#066952] bg-[#066952] text-white shadow-md"
+												: "border-gray-200 bg-white text-gray-700 hover:border-[#066952] hover:bg-gray-50"
+										}`}
 									>
-										<span>{getCurrentTabLabel()}</span>
-										<ChevronDown
-											className={`w-4 h-4 transition-transform ${
-												showDropdown ? "rotate-180" : ""
-											}`}
+										<Image
+											width={24}
+											height={24}
+											alt=""
+											src={`/images/report/${room.data._type}.svg`}
+											className={
+												activeRoom?.id === room.id
+													? "brightness-0 invert"
+													: ""
+											}
 										/>
+										<span className="text-sm font-medium md:text-base">
+											{room.data.label}
+										</span>
 									</button>
+								))}
+							</div>
 
-									{showDropdown && (
-										<div className="absolute left-0 right-0 z-10 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg top-full">
-											<button
-												onClick={() =>
-													handleTabChange("tab0")
-												}
-												className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-50 ${
-													activeTab === "tab0"
-														? "bg-blue-50 text-blue-600 font-medium"
-														: ""
-												}`}
-											>
-												佈局基本分析
-											</button>
+							{/* Active Room Content */}
+							{activeRoom && (
+								<div className="w-full p-5 bg-white border border-gray-200 rounded-lg md:p-8">
+									<div className="flex items-center gap-2 mb-6">
+										<Image
+											width={
+												activeRoom?.data._type ===
+												"dining_room"
+													? 28
+													: 32
+											}
+											height={
+												activeRoom?.data._type ===
+												"dining_room"
+													? 28
+													: 32
+											}
+											style={{ color: "red" }}
+											alt=""
+											src={`/images/report/${activeRoom?.data._type}.svg`}
+										/>
+										<h2 className="text-xl font-bold">
+											{activeRoom?.data.label}
+										</h2>
+									</div>
 
-											{hasJiajuProData && (
-												<>
-													<button
-														onClick={() =>
-															handleTabChange(
-																"tab1"
-															)
-														}
-														className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-50 ${
-															activeTab === "tab1"
-																? "bg-blue-50 text-blue-600 font-medium"
+									<div className="mt-8">
+										{/* Mobile Dropdown */}
+										<div className="block mb-5 md:hidden">
+											<div className="relative">
+												<button
+													onClick={() =>
+														setShowDropdown(
+															!showDropdown
+														)
+													}
+													className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium bg-white border border-gray-200 rounded-lg"
+												>
+													<span>
+														{getCurrentTabLabel()}
+													</span>
+													<ChevronDown
+														className={`w-4 h-4 transition-transform ${
+															showDropdown
+																? "rotate-180"
 																: ""
 														}`}
-													>
-														{t("tab1")}
-													</button>
-													<button
-														onClick={() =>
-															handleTabChange(
-																"tab2"
-															)
-														}
-														className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-50 ${
-															activeTab === "tab2"
-																? "bg-blue-50 text-blue-600 font-medium"
-																: ""
-														}`}
-													>
-														{t("tab2")}
-													</button>
-													<button
-														onClick={() =>
-															handleTabChange(
-																"tab3"
-															)
-														}
-														className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-50 ${
-															activeTab === "tab3"
-																? "bg-blue-50 text-blue-600 font-medium"
-																: ""
-														}`}
-													>
-														{t("tab3")}
-													</button>
-													<button
-														onClick={() =>
-															handleTabChange(
-																"tab4"
-															)
-														}
-														className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-50 ${
-															activeTab === "tab4"
-																? "bg-blue-50 text-blue-600 font-medium"
-																: ""
-														}`}
-													>
-														{t("tab4")}
-													</button>
-												</>
-											)}
+													/>
+												</button>
+
+												{showDropdown && (
+													<div className="absolute left-0 right-0 z-10 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg top-full">
+														<button
+															onClick={() =>
+																handleTabChange(
+																	"tab0"
+																)
+															}
+															className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-50 ${
+																activeTab ===
+																"tab0"
+																	? "bg-blue-50 text-blue-600 font-medium"
+																	: ""
+															}`}
+														>
+															佈局基本分析
+														</button>
+
+														{hasJiajuProData && (
+															<>
+																<button
+																	onClick={() =>
+																		handleTabChange(
+																			"tab1"
+																		)
+																	}
+																	className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-50 ${
+																		activeTab ===
+																		"tab1"
+																			? "bg-blue-50 text-blue-600 font-medium"
+																			: ""
+																	}`}
+																>
+																	{t("tab1")}
+																</button>
+																<button
+																	onClick={() =>
+																		handleTabChange(
+																			"tab2"
+																		)
+																	}
+																	className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-50 ${
+																		activeTab ===
+																		"tab2"
+																			? "bg-blue-50 text-blue-600 font-medium"
+																			: ""
+																	}`}
+																>
+																	{t("tab2")}
+																</button>
+																<button
+																	onClick={() =>
+																		handleTabChange(
+																			"tab3"
+																		)
+																	}
+																	className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-50 ${
+																		activeTab ===
+																		"tab3"
+																			? "bg-blue-50 text-blue-600 font-medium"
+																			: ""
+																	}`}
+																>
+																	{t("tab3")}
+																</button>
+																<button
+																	onClick={() =>
+																		handleTabChange(
+																			"tab4"
+																		)
+																	}
+																	className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-50 ${
+																		activeTab ===
+																		"tab4"
+																			? "bg-blue-50 text-blue-600 font-medium"
+																			: ""
+																	}`}
+																>
+																	{t("tab4")}
+																</button>
+															</>
+														)}
+													</div>
+												)}
+											</div>
 										</div>
-									)}
+
+										{/* Desktop Tabs */}
+										<div className="hidden md:block">
+											<Tabs
+												value={activeTab}
+												className="w-full gap-0"
+												onValueChange={setActiveTab}
+											>
+												<TabsList className="justify-start gap-40 p-0 bg-transparent">
+													<TabsTrigger
+														value="tab0"
+														className="cursor-pointer pb-3 px-0 rounded-none bg-transparent text-[24px] font-extrabold text-[#434343] data-[state=active]:font-extrabold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
+														style={{
+															fontFamily:
+																"Noto Serif TC, serif",
+															fontWeight: 800,
+														}}
+													>
+														佈局基本分析
+													</TabsTrigger>
+
+													{hasJiajuProData && (
+														<>
+															<TabsTrigger
+																value="tab1"
+																className="cursor-pointer pb-3 px-0 rounded-none bg-transparent text-[24px] font-extrabold text-[#434343] data-[state=active]:font-extrabold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
+																style={{
+																	fontFamily:
+																		"Noto Serif TC, serif",
+																	fontWeight: 800,
+																}}
+															>
+																{t("tab1")}
+															</TabsTrigger>
+															<TabsTrigger
+																value="tab2"
+																className="cursor-pointer pb-3 px-0 rounded-none bg-transparent text-[24px] font-extrabold text-[#434343] data-[state=active]:font-extrabold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
+																style={{
+																	fontFamily:
+																		"Noto Serif TC, serif",
+																	fontWeight: 800,
+																}}
+															>
+																{t("tab2")}
+															</TabsTrigger>
+															<TabsTrigger
+																value="tab3"
+																className="cursor-pointer pb-3 px-0 rounded-none bg-transparent text-[24px] font-extrabold text-[#434343] data-[state=active]:font-extrabold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
+																style={{
+																	fontFamily:
+																		"Noto Serif TC, serif",
+																	fontWeight: 800,
+																}}
+															>
+																{t("tab3")}
+															</TabsTrigger>
+															<TabsTrigger
+																value="tab4"
+																className="cursor-pointer pb-3 px-0 rounded-none bg-transparent text-[24px] font-extrabold text-[#434343] data-[state=active]:font-extrabold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
+																style={{
+																	fontFamily:
+																		"Noto Serif TC, serif",
+																	fontWeight: 800,
+																}}
+															>
+																{t("tab4")}
+															</TabsTrigger>
+														</>
+													)}
+												</TabsList>
+												<Separator className="mb-5" />
+
+												<TabsContent
+													value="tab0"
+													className="w-full leading-8"
+												>
+													{renderTabContent()}
+												</TabsContent>
+												{hasJiajuProData && (
+													<>
+														<TabsContent
+															value="tab1"
+															className="w-full leading-8"
+														>
+															{renderTabContent()}
+														</TabsContent>
+														<TabsContent
+															value="tab2"
+															className="w-full leading-8"
+														>
+															{renderTabContent()}
+														</TabsContent>
+														<TabsContent
+															value="tab3"
+															className="w-full leading-8"
+														>
+															{renderTabContent()}
+														</TabsContent>
+														<TabsContent
+															value="tab4"
+															className="w-full leading-8"
+														>
+															{renderTabContent()}
+														</TabsContent>
+													</>
+												)}
+											</Tabs>
+										</div>
+
+										{/* Mobile Content Area */}
+										<div className="block md:hidden">
+											<div className="w-full leading-8">
+												{renderTabContent()}
+											</div>
+										</div>
+									</div>
 								</div>
-							</div>
-
-							{/* Desktop Tabs */}
-							<div className="hidden md:block">
-								<Tabs
-									value={activeTab}
-									className="w-full gap-0"
-									onValueChange={setActiveTab}
-								>
-									<TabsList className="justify-start gap-5 p-0 bg-transparent">
-										<TabsTrigger
-											value="tab0"
-											className="cursor-pointer pb-3 px-0 rounded-none bg-transparent text-base data-[state=active]:font-bold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
-										>
-											佈局基本分析
-										</TabsTrigger>
-
-										{hasJiajuProData && (
-											<>
-												<TabsTrigger
-													value="tab1"
-													className="cursor-pointer pb-3 px-0 rounded-none bg-transparent text-base data-[state=active]:font-bold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
-												>
-													{t("tab1")}
-												</TabsTrigger>
-												<TabsTrigger
-													value="tab2"
-													className="cursor-pointer pb-3 px-0 rounded-none bg-transparent text-base data-[state=active]:font-bold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
-												>
-													{t("tab2")}
-												</TabsTrigger>
-												<TabsTrigger
-													value="tab3"
-													className="cursor-pointer pb-3 px-0 rounded-none bg-transparent text-base data-[state=active]:font-bold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
-												>
-													{t("tab3")}
-												</TabsTrigger>
-												<TabsTrigger
-													value="tab4"
-													className="cursor-pointer pb-3 px-0 rounded-none bg-transparent text-base data-[state=active]:font-bold data-[state=active]:shadow-none data-[state=active]:border-b-3 data-[state=active]:border-b-[#333] data-[state=active]:bg-transparent"
-												>
-													{t("tab4")}
-												</TabsTrigger>
-											</>
-										)}
-									</TabsList>
-									<Separator className="mb-5" />
-
-									<TabsContent
-										value="tab0"
-										className="w-full leading-8"
-									>
-										{renderTabContent()}
-									</TabsContent>
-									{hasJiajuProData && (
-										<>
-											<TabsContent
-												value="tab1"
-												className="w-full leading-8"
-											>
-												{renderTabContent()}
-											</TabsContent>
-											<TabsContent
-												value="tab2"
-												className="w-full leading-8"
-											>
-												{renderTabContent()}
-											</TabsContent>
-											<TabsContent
-												value="tab3"
-												className="w-full leading-8"
-											>
-												{renderTabContent()}
-											</TabsContent>
-											<TabsContent
-												value="tab4"
-												className="w-full leading-8"
-											>
-												{renderTabContent()}
-											</TabsContent>
-										</>
-									)}
-								</Tabs>
-							</div>
-
-							{/* Mobile Content Area */}
-							<div className="block md:hidden">
-								<div className="w-full leading-8">
-									{renderTabContent()}
-								</div>
-							</div>
+							)}
 						</div>
+					)}
+
+					<div className="px-6 my-5 md:p-0">
+						<p>
+							<span className="text-[#FF531A]">*</span>
+							{t("p6-1")}
+						</p>
 					</div>
-				)}
+				</div>
 			</AntdSpin>
 
-			{/* Print section */}
+			{/* Print section - outside the card */}
 			{isPrinting && (
-				<div className="w-full bg-[#fafafa] md:p-8 p-5 border-1 border-[#E6E6E6]">
+				<div className="w-full p-5 bg-white md:p-8 ">
 					<div className="mb-8">
 						<h3 className="mb-4 text-lg font-bold text-primary">
 							佈局基本分析
@@ -606,13 +686,6 @@ export default function Chapter3({
 						)}
 				</div>
 			)}
-
-			<div className="px-6 my-5 md:p-0">
-				<p>
-					<span className="text-[#FF531A]">*</span>
-					{t("p6-1")}
-				</p>
-			</div>
 		</section>
 	);
 }

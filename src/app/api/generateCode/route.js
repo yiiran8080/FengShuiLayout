@@ -29,7 +29,7 @@ export async function POST(request) {
 		],
 		model: "deepseek-chat",
 		frequency_penalty: 0,
-		max_tokens: body.jsonResult ? null : 500, // Increase from 300 to 500
+		max_tokens: body.jsonResult ? null : 300,
 		presence_penalty: 0,
 		response_format: {
 			type: body.jsonResult ? "json_object" : "text",
@@ -58,16 +58,14 @@ export async function POST(request) {
 		});
 
 		const resData = await res.json();
-		// console.log('res', resData, resData.status);
-		if (resData.choices) {
-			return NextResponse.json(
-				genSuccessData(resData.choices[0].message.content)
-			);
-		}
+		//if (resData.choices) {
+		return NextResponse.json(
+			genSuccessData(resData.choices[0].message.content)
+		);
+		//}
 		//throw new Error(resData.statusText);
-		return NextResponse.json(genErrorData(resData.statusText));
+		//return NextResponse.json(genErrorData(resData.statusText));
 	} catch (error) {
-		console.log("error", error);
 		return NextResponse.json(genErrorData(error.message));
 	}
 }

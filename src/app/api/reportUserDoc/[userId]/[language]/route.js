@@ -14,9 +14,7 @@ export async function GET(request, { params }) {
         await dbConnect();
         const userDoc = await ReportUserDoc.findOne({ userId, language, isDelete: 0 }).select('-__v');
         return NextResponse.json(genSuccessData(userDoc))
-    } catch (error) {
-        console.error('Error fetching userDoc:', error);
-        return NextResponse.json(genErrorData('Error fetching userDoc'));
+    } catch (error) {return NextResponse.json(genErrorData('Error fetching userDoc'));
     }
 }
 
@@ -38,9 +36,7 @@ export async function POST(request, { params }) {
             ...body,
         });
         return NextResponse.json(genSuccessData())
-    } catch (error) {
-        console.error('Error create reportUserDoc:', error);
-        return NextResponse.json(genErrorData('Internal Server Error'));
+    } catch (error) {return NextResponse.json(genErrorData('Internal Server Error'));
     }
 }
 //更新用户报告。将付费内容更新进已有报告
@@ -61,8 +57,6 @@ export async function PATCH(request, { params }) {
             await userDoc.save();
         }
         return NextResponse.json(genSuccessData())
-    } catch (error) {
-        console.error('Error update reportUserDoc:', error);
-        return NextResponse.json(genErrorData('Internal Server Error'));
+    } catch (error) {return NextResponse.json(genErrorData('Internal Server Error'));
     }
 } 

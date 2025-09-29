@@ -30,7 +30,6 @@ export default function ({
 	const [showMenu, setShowMenu] = useState(false);
 	const { data: session } = useSession();
 
-	//console.log(designData);
 	useEffect(() => {
 		const userId = session?.user?.userId;
 		if (!userId) return;
@@ -122,7 +121,7 @@ export default function ({
 	// translate(${position.x}px, ${position.y}px)
 	return (
 		<div className="relative canvasImage">
-			<div className="relative border-1 border-[#E6E6E6] rounded-t-3xl py-[2px] mt-8 overflow-scroll">
+			<div className="relative  rounded-t-3xl py-[2px] mt-8 overflow-scroll">
 				<div
 					onClick={() => setShowMenu(false)}
 					className="relative flex justify-center w-full h-135"
@@ -206,7 +205,6 @@ export default function ({
 								} else if (
 									item._type === ITEM_TYPES.FURNITURE
 								) {
-									// console.log('item', item)
 									return (
 										<div
 											key={item.id}

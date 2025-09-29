@@ -20,6 +20,7 @@ import {
 export default function NavbarDesign({
 	onSaveProject,
 	onGenReport,
+	onBazhaiReport,
 	onUserOpen,
 }) {
 	const { isMobile } = useMobile();
@@ -28,7 +29,10 @@ export default function NavbarDesign({
 		<nav className="fixed top-0 left-0 right-0 z-10 h-16 bg-white border-b-2 border-b-gray-100">
 			<div className="h-full px-4 mx-auto">
 				<div className="flex items-center justify-between h-full">
-					<Link href="/" className="text-2xl font-bold text-primary">
+					<Link
+						href="/home"
+						className="text-2xl font-bold text-primary"
+					>
 						HarmoniQ
 					</Link>
 
@@ -48,6 +52,19 @@ export default function NavbarDesign({
 							<UserPen className="w-4 h-4" />
 							{t("profile")}{" "}
 						</span>
+
+						{/* 八宅風水分析按鈕 */}
+						{onBazhaiReport && (
+							<span
+								className="flex items-center gap-1 transition-colors cursor-pointer text-amber-600 hover:text-amber-700"
+								onClick={onBazhaiReport}
+								title="八宅風水分析"
+							>
+								<span>🧭</span>
+								八宅風水
+							</span>
+						)}
+
 						<AlertDialog>
 							<AlertDialogTrigger className="inline-flex items-center gap-2 px-4 py-1 text-white transition-colors rounded-full bg-button-gradient hover:bg-primary/90">
 								{t("cta")}

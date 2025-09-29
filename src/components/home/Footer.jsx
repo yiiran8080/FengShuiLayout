@@ -27,11 +27,14 @@ export default function Footer() {
 
 	return (
 		<footer
-			className="bg-[#004F44] text-gray-300 px-5 md:px-0"
-			style={{ fontFamily: "Noto Serif TC, serif" }}
+			className="px-5 text-gray-300 md:px-0"
+			style={{
+				background: "#374A37",
+				fontFamily: "Noto Serif TC, serif",
+			}}
 		>
-			<div className="container px-4 mx-auto py-25">
-				<div className="justify-center item-center text-[50px] font-bold text-white text-center mb-10">
+			<div className="container px-4 mx-auto py-30">
+				<div className="justify-center item-center text-[50px] font-bold text-white text-center mt-20 mb-20">
 					<h1
 						className="text-white"
 						style={{
@@ -53,7 +56,7 @@ export default function Footer() {
 						{t("subtitle")}
 					</p>
 					{/* Link Button */}
-					<Link
+					{/* <Link
 						href="/price"
 						className="inline-flex items-center justify-center mt-10 transition-colors hover:bg-gray-50"
 						style={{
@@ -69,7 +72,7 @@ export default function Footer() {
 						}}
 					>
 						{t("button")}
-					</Link>
+					</Link> */}
 				</div>
 				<div className="flex flex-wrap items-start justify-between gap-5">
 					{/* Left side: Product links and Company links grouped together */}

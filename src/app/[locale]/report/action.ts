@@ -8,9 +8,7 @@ export async function getReportDocData() {
   // const userInfo = await getUserInfo();
   // if (!userInfo || !userInfo.userId) return;
 
-  await dbConnect();
-  console.log("111");
-  const twData = await ReportDoc.findOne({ language: "tw" }).select("-__v");
+  await dbConnect();const twData = await ReportDoc.findOne({ language: "tw" }).select("-__v");
   const zhData = await ReportDoc.findOne({ language: "zh" }).select("-__v");
   return {
     twData,

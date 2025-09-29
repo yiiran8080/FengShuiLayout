@@ -5,7 +5,7 @@ import Footer from "@/components/home/Footer";
 import Navbar from "@/components/Navbar";
 import FAQ from "@/components/home/FAQ";
 import PricePromo from "../../../components/PricePromo";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -21,10 +21,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { get, post, patch } from "@/lib/ajax";
 
-// Remove the metadata export - it's now in layout.jsx
-
 export default function YourPage() {
 	const t = useTranslations("pricePage");
+	const featuresT = useTranslations("home.features");
+	const locale = useLocale(); // Get current locale
 	const { data: session } = useSession();
 	const router = useRouter();
 	const [isUnlocked, setIsUnlocked] = useState(false);
@@ -32,6 +32,9 @@ export default function YourPage() {
 	const [showPromoInput, setShowPromoInput] = useState(false);
 	const [promoError, setPromoError] = useState("");
 	const [copied, setCopied] = useState(false);
+
+	// Region selection state
+	const [selectedRegion, setSelectedRegion] = useState("hongkong"); // "hongkong" or "china"
 
 	// Sharing states (simplified without Facebook SDK)
 	const [sharing, setSharing] = useState(false);
@@ -52,7 +55,102 @@ export default function YourPage() {
 	const [existingReport, setExistingReport] = useState(null);
 	const [checkingExistingReport, setCheckingExistingReport] = useState(false);
 
+	// Chat-originated payment states
+	const [chatParams, setChatParams] = useState({
+		fromChat: false,
+		concern: "",
+		specificProblem: "",
+		isCoupleAnalysis: false,
+	});
+
 	const validPromoCodes = ["UNLOCK2025", "HARMONIQ", "FENGSHUI"];
+
+	// Check URL parameters for chat-originated payments
+	useEffect(() => {
+		if (typeof window !== "undefined") {
+			const urlParams = new URLSearchParams(window.location.search);
+			const fromChat = urlParams.get("fromChat") === "true";
+			const concern = urlParams.get("concern") || "";
+			const specificProblem = urlParams.get("specificProblem") || "";
+			const isCoupleAnalysis =
+				urlParams.get("isCoupleAnalysis") === "true";
+			const paymentType = urlParams.get("type") || "";
+
+			// Additional couple parameters
+			const userBirthday = urlParams.get("userBirthday") || "";
+			const partnerBirthday = urlParams.get("partnerBirthday") || "";
+			const userGender = urlParams.get("userGender") || "";
+			const partnerGender = urlParams.get("partnerGender") || "";
+			const sessionId = urlParams.get("sessionId") || "";
+
+			if (fromChat || paymentType === "couple") {
+				setChatParams({
+					fromChat: fromChat || paymentType === "couple",
+					concern,
+					specificProblem,
+					isCoupleAnalysis:
+						isCoupleAnalysis || paymentType === "couple",
+					userBirthday,
+					partnerBirthday,
+					userGender,
+					partnerGender,
+					sessionId,
+				});
+
+				// Auto-trigger payment for chat-originated or couple payments
+				console.log("🚀 Payment detected:", {
+					concern,
+					specificProblem,
+					isCoupleAnalysis,
+					paymentType,
+					userBirthday,
+					partnerBirthday,
+				});
+
+				// Trigger payment after a short delay to ensure component is mounted
+				setTimeout(() => {
+					if (isCoupleAnalysis || paymentType === "couple") {
+						// For couple analysis, go to $88 couple payment
+						handleCouplePayment();
+					} else {
+						// For individual analysis, go to $38 fortune payment
+						handleFortunePayment(concern || "financial");
+					}
+				}, 500);
+			}
+		}
+	}, []);
+
+	// Get pricing info based on region
+	const getPricingInfo = () => {
+		if (selectedRegion === "china") {
+			return {
+				currency: "¥",
+				premiumPrice: "5",
+				subscriptionPrice: "10",
+				unit: t("perSqm"),
+				minimumValue: 38,
+				minimumNote: t("minimumAreaNote"),
+				inputLabel: t("areaInputLabel"),
+				placeholder: t("areaPlaceholder"),
+				validationError: t("areaValidationError"),
+			};
+		} else {
+			return {
+				currency: "$",
+				premiumPrice: "1",
+				subscriptionPrice: "3.8",
+				unit: t("perSqft"),
+				minimumValue: 380,
+				minimumNote: t("sqftMinimumNote"),
+				inputLabel: t("sqftInputLabelNew"),
+				placeholder: t("sqftPlaceholderNew"),
+				validationError: t("sqftValidationError"),
+			};
+		}
+	};
+
+	const pricingInfo = getPricingInfo();
 
 	// Get current domain dynamically
 	const getCurrentDomain = () => {
@@ -93,7 +191,6 @@ export default function YourPage() {
 					setExistingReport(data);
 				}
 			} catch (error) {
-				console.error("Error checking existing reports:", error);
 			} finally {
 				setCheckingExistingReport(false);
 			}
@@ -102,8 +199,8 @@ export default function YourPage() {
 		checkExistingReports();
 	}, [session?.user?.userId]);
 
-	// Handle premium button click
-	const handlePremiumClick = () => {
+	// Handle premium button click - Direct payment without sqft input
+	const handlePremiumClick = async () => {
 		// Check if user is logged in first
 		if (!session?.user?.userId) {
 			// Redirect to login page immediately
@@ -115,10 +212,58 @@ export default function YourPage() {
 			setShowExistingReportDialog(true);
 			setCurrentCardType("premium");
 		} else {
-			setCurrentCardType("premium");
-			setShowSqftPopup(true);
-			setSqftError("");
-			setSqftValue("");
+			// Skip sqft popup and go directly to payment
+			await handlePremiumDirectPayment();
+		}
+	};
+
+	// Handle direct premium payment without sqft calculation
+	const handlePremiumDirectPayment = async () => {
+		setIsProcessingPayment(true);
+		setCurrentCardType("premium");
+
+		try {
+			// Choose API endpoint based on region for direct payment
+			let endpoint;
+			if (selectedRegion === "china") {
+				endpoint = "/api/checkoutSessions/payment2-sqm";
+			} else {
+				endpoint = "/api/checkoutSessions/payment2";
+			}
+
+			// Create request body for one-time payment (no area multiplication)
+			const requestBody = {
+				quantity: 1, // Fixed quantity for one-time payment
+				region: selectedRegion,
+				directPayment: true, // Flag to indicate this is a direct payment without area calculation
+			};
+
+			// Create checkout session
+			const response = await fetch(endpoint, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(requestBody),
+			});
+
+			if (response.ok) {
+				const data = await response.json();
+				if (data.data?.url) {
+					// Redirect to Stripe checkout
+					window.location.href = data.data.url;
+				} else {
+					throw new Error("No checkout URL received");
+				}
+			} else {
+				const errorData = await response.json();
+				throw new Error(errorData.message || t("paymentError"));
+			}
+		} catch (error) {
+			console.error("Premium direct payment error:", error);
+			setIsProcessingPayment(false);
+			setCurrentCardType("");
+			// You could show an error message to the user here
 		}
 	};
 
@@ -166,23 +311,29 @@ export default function YourPage() {
 				isDelete: 1,
 			});
 
-			// Proceed to payment
-			setShowSqftPopup(true);
-			setSqftError("");
-			setSqftValue("");
+			// Proceed to payment based on card type
+			if (currentCardType === "premium") {
+				// Use direct payment for premium
+				await handlePremiumDirectPayment();
+			} else {
+				// Use sqft popup for subscription
+				setShowSqftPopup(true);
+				setSqftError("");
+				setSqftValue("");
+			}
 		} catch (error) {
-			console.error("Error preparing for retest:", error);
 			setSqftError("Failed to prepare for retest. Please try again.");
 		}
 	};
 
-	// Handle square feet submission
+	// Handle area submission (updated for region-based pricing)
 	const handleSqftSubmit = async () => {
-		const sqft = parseFloat(sqftValue);
+		const area = parseFloat(sqftValue);
+		const minValue = pricingInfo.minimumValue;
 
-		// Minimum 380 square feet validation
-		if (!sqftValue || isNaN(sqft) || sqft < 380) {
-			setSqftError(t("sqftValidationError"));
+		// Validation based on selected region
+		if (!sqftValue || isNaN(area) || area < minValue) {
+			setSqftError(pricingInfo.validationError);
 			return;
 		}
 
@@ -190,22 +341,43 @@ export default function YourPage() {
 		setSqftError("");
 
 		try {
-			// Choose API endpoint based on card type
-			const endpoint =
-				currentCardType === "premium"
-					? "/api/checkoutSessions/payment2"
-					: "/api/checkoutSessions/payment1";
+			// Choose API endpoint based on card type and region
+			let endpoint;
+			if (selectedRegion === "china") {
+				// Use China-specific square meter endpoints
+				endpoint =
+					currentCardType === "premium"
+						? "/api/checkoutSessions/payment2-sqm"
+						: "/api/checkoutSessions/payment1-sqm";
+			} else {
+				// Use regular Hong Kong endpoints
+				endpoint =
+					currentCardType === "premium"
+						? "/api/checkoutSessions/payment2"
+						: "/api/checkoutSessions/payment1";
+			}
 
-			// Create checkout session with square feet quantity
+			// Create request body based on region
+			const requestBody = {
+				quantity: Math.ceil(area), // Round up to nearest whole number
+			};
+
+			if (selectedRegion === "china") {
+				requestBody.squareMeters = area;
+			} else {
+				requestBody.squareFeet = area;
+			}
+
+			// Add region info
+			requestBody.region = selectedRegion;
+
+			// Create checkout session
 			const response = await fetch(endpoint, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({
-					quantity: Math.ceil(sqft), // Round up to nearest whole number
-					squareFeet: sqft,
-				}),
+				body: JSON.stringify(requestBody),
 			});
 
 			if (response.ok) {
@@ -221,9 +393,254 @@ export default function YourPage() {
 				throw new Error(errorData.message || t("paymentError"));
 			}
 		} catch (error) {
-			console.error("Payment error:", error);
 			setSqftError(t("paymentError"));
 			setIsProcessingPayment(false);
+		}
+	};
+
+	// Handle expert188 payment (direct payment without sqft)
+	const handleExpert188Payment = async () => {
+		setIsProcessingPayment(true);
+		setCurrentCardType("expert188");
+
+		try {
+			// Create checkout session for expert188
+			const response = await fetch("/api/checkoutSessions/payment3", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					quantity: 1, // Fixed quantity for expert plan
+				}),
+			});
+
+			if (response.ok) {
+				const data = await response.json();
+				console.log("Expert188 Payment Response:", data);
+				console.log(
+					"Looking for URL at data.data.url:",
+					data.data?.url
+				);
+
+				if (data.data?.url) {
+					// Redirect to Stripe checkout
+					window.location.href = data.data.url;
+				} else {
+					throw new Error("No checkout URL received");
+				}
+			} else {
+				const errorData = await response.json();
+				throw new Error(errorData.message || "Payment error");
+			}
+		} catch (error) {
+			console.error("Expert188 payment error:", error);
+			setIsProcessingPayment(false);
+			setCurrentCardType("");
+		}
+	};
+
+	// Handle expert88 payment (direct payment without sqft)
+	const handleExpert88Payment = async () => {
+		setIsProcessingPayment(true);
+		setCurrentCardType("expert88");
+
+		try {
+			// Create checkout session for expert88
+			const response = await fetch("/api/checkoutSessions/payment4", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					quantity: 1, // Fixed quantity for expert plan
+				}),
+			});
+
+			if (response.ok) {
+				const data = await response.json();
+				console.log("Expert88 Payment Response:", data);
+				console.log(
+					"Looking for URL at data.data.url:",
+					data.data?.url
+				);
+
+				if (data.data?.url) {
+					// Redirect to Stripe checkout
+					window.location.href = data.data.url;
+				} else {
+					throw new Error("No checkout URL received");
+				}
+			} else {
+				const errorData = await response.json();
+				throw new Error(errorData.message || "Payment error");
+			}
+		} catch (error) {
+			console.error("Expert88 payment error:", error);
+			setIsProcessingPayment(false);
+			setCurrentCardType("");
+		}
+	};
+
+	// Handle $38 fortune payment with concern type
+	const handleFortunePayment = async (concernType) => {
+		setIsProcessingPayment(true);
+		setCurrentCardType(`fortune_${concernType}`);
+
+		try {
+			// Get fresh locale from localStorage to ensure consistency
+			const storedRegion = localStorage.getItem("userRegion");
+			const regionToLocaleMap = {
+				china: "zh-CN",
+				hongkong: "zh-TW",
+				taiwan: "zh-TW",
+			};
+			const freshLocale =
+				regionToLocaleMap[storedRegion] || locale || "zh-TW";
+
+			console.log(
+				"💰 Price page individual payment - Using fresh locale:",
+				freshLocale,
+				"from stored region:",
+				storedRegion
+			);
+
+			// Prepare request body with chat context if available
+			const requestBody = {
+				concern: concernType, // financial, love, health, career
+				locale: freshLocale, // 🔥 Fix: Add locale parameter like couple payment
+			};
+
+			// Include chat-specific data if coming from chat
+			if (chatParams.fromChat) {
+				requestBody.specificProblem = chatParams.specificProblem;
+				requestBody.fromChat = true;
+				console.log(
+					"💬 Adding chat context to fortune payment:",
+					requestBody
+				);
+			}
+
+			// Create checkout session for fortune reading
+			const response = await fetch("/api/payment-fortune", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(requestBody),
+			});
+
+			if (response.ok) {
+				const data = await response.json();
+				console.log("Fortune Payment Response:", data);
+
+				if (data.sessionId) {
+					// Import Stripe and redirect to checkout
+					const stripe = await import("@stripe/stripe-js").then(
+						(mod) =>
+							mod.loadStripe(
+								process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+							)
+					);
+
+					if (stripe) {
+						await stripe.redirectToCheckout({
+							sessionId: data.sessionId,
+						});
+					} else {
+						throw new Error("Failed to load Stripe");
+					}
+				} else {
+					throw new Error("No session ID received");
+				}
+			} else {
+				const errorData = await response.json();
+				throw new Error(errorData.error || "Payment error");
+			}
+		} catch (error) {
+			console.error("Fortune payment error:", error);
+			setIsProcessingPayment(false);
+			setCurrentCardType("");
+			// You could show an error message to the user here
+		}
+	};
+
+	// Handle $88 couple payment
+	const handleCouplePayment = async () => {
+		setIsProcessingPayment(true);
+		setCurrentCardType("couple");
+
+		try {
+			// Prepare request body with chat context if available
+			const requestBody = {
+				locale: locale, // Use current locale instead of hardcoded "zh-TW"
+			};
+
+			// Include chat-specific data if coming from chat
+			if (chatParams.fromChat) {
+				requestBody.specificProblem = chatParams.specificProblem;
+				requestBody.concern = chatParams.concern;
+				requestBody.fromChat = true;
+
+				// Add couple-specific data
+				if (chatParams.userBirthday)
+					requestBody.userBirthday = chatParams.userBirthday;
+				if (chatParams.partnerBirthday)
+					requestBody.partnerBirthday = chatParams.partnerBirthday;
+				if (chatParams.userGender)
+					requestBody.userGender = chatParams.userGender;
+				if (chatParams.partnerGender)
+					requestBody.partnerGender = chatParams.partnerGender;
+				if (chatParams.sessionId)
+					requestBody.sessionId = chatParams.sessionId;
+
+				console.log(
+					"💬 Adding chat context to couple payment:",
+					requestBody
+				);
+			}
+
+			// Create checkout session for couple analysis
+			const response = await fetch("/api/payment-couple", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(requestBody),
+			});
+
+			if (response.ok) {
+				const data = await response.json();
+				console.log("Couple Payment Response:", data);
+
+				if (data.sessionId) {
+					// Import Stripe and redirect to checkout
+					const stripe = await import("@stripe/stripe-js").then(
+						(mod) =>
+							mod.loadStripe(
+								process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+							)
+					);
+
+					if (stripe) {
+						await stripe.redirectToCheckout({
+							sessionId: data.sessionId,
+						});
+					} else {
+						throw new Error("Failed to load Stripe");
+					}
+				} else {
+					throw new Error("No session ID received");
+				}
+			} else {
+				const errorData = await response.json();
+				throw new Error(errorData.error || "Payment error");
+			}
+		} catch (error) {
+			console.error("Couple payment error:", error);
+			setIsProcessingPayment(false);
+			setCurrentCardType("");
+			// You could show an error message to the user here
 		}
 	};
 
@@ -248,19 +665,12 @@ export default function YourPage() {
 				: "https://www.harmoniqfengshui.com/price";
 
 		// Add explicit content for sharing (fallback method)
-		const shareText = encodeURIComponent(
-			"🏠✨ 發現了一個超棒的風水分析網站！HarmoniQ幫我優化家居布局，讓生活更和諧幸福！現在還有特別優惠，快來試試看吧！"
-		);
+		const shareText = encodeURIComponent(t("shareText"));
 
 		// Try with more explicit parameters
 		const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
 			shareUrl
-		)}&quote=${shareText}`;
-
-		console.log("Opening Facebook share dialog:", facebookShareUrl);
-		console.log("Share URL:", shareUrl);
-
-		// Open Facebook share dialog in new window
+		)}&quote=${shareText}`; // Open Facebook share dialog in new window
 		const popup = window.open(
 			facebookShareUrl,
 			"facebook-share",
@@ -298,10 +708,7 @@ export default function YourPage() {
 		} else {
 			// Popup was blocked
 			setSharing(false);
-			alert(
-				"請允許彈出窗口以分享到Facebook，或手動複製網址分享：" +
-					shareUrl
-			);
+			alert(t("facebookShareAlert") + shareUrl);
 
 			// Show confirmation dialog anyway in case user shares manually
 			setTimeout(() => setShowShareConfirm(true), 1000);
@@ -313,12 +720,8 @@ export default function YourPage() {
 		if (navigator.clipboard && window.isSecureContext) {
 			navigator.clipboard
 				.writeText(text)
-				.then(() => {
-					console.log("Copied to clipboard:", text);
-				})
-				.catch((err) => {
-					console.error("Failed to copy: ", err);
-				});
+				.then(() => {})
+				.catch((err) => {});
 		} else {
 			// Fallback for older browsers or non-HTTPS
 			const textArea = document.createElement("textarea");
@@ -332,9 +735,7 @@ export default function YourPage() {
 			try {
 				document.execCommand("copy");
 				console.log("Copied to clipboard (fallback):", text);
-			} catch (err) {
-				console.error("Unable to copy to clipboard", err);
-			}
+			} catch (err) {}
 			document.body.removeChild(textArea);
 		}
 	};
@@ -362,25 +763,65 @@ export default function YourPage() {
 					setSharePromoCode(data.code);
 					setShowPromoModal(true);
 				} else {
-					console.error(
-						"Failed to get promo code:",
-						response.statusText
-					);
 				}
-			} catch (error) {
-				console.error("Error getting promo code:", error);
-			}
+			} catch (error) {}
 		}
 	};
 
+	// Create features array at component level to avoid hook issues
+	const mobileFeatures = [
+		{
+			title: featuresT("title1"),
+			description: featuresT("subtitle1"),
+			icon: "/images/hero/feature1.png",
+		},
+		{
+			title: featuresT("title2"),
+			description: featuresT("subtitle2"),
+			icon: "/images/hero/feature2.png",
+		},
+		{
+			title: featuresT("title3"),
+			description: featuresT("subtitle3"),
+			icon: "/images/hero/feature3.png",
+		},
+		{
+			title: featuresT("title4"),
+			description: featuresT("subtitle4"),
+			icon: "/images/hero/feature4.png",
+		},
+	];
+
+	const desktopFeatures = [
+		{
+			title: featuresT("title1"),
+			description: featuresT("subtitle1"),
+			icon: "/images/hero/feature1.png",
+		},
+		{
+			title: featuresT("title2"),
+			description: featuresT("subtitle2"),
+			icon: "/images/hero/feature2.png",
+		},
+		{
+			title: featuresT("title3"),
+			description: featuresT("subtitle3"),
+			icon: "/images/hero/feature3.png",
+		},
+		{
+			title: featuresT("title4"),
+			description: featuresT("subtitle4"),
+			icon: "/images/hero/feature4.png",
+		},
+	];
+
 	return (
 		<>
-			{/* Remove the entire Head component and its contents */}
 			<div
 				className="min-h-screen bg-center bg-no-repeat bg-cover"
 				style={{
 					backgroundImage: "url('/images/hero/Tipsbg.png')",
-					backgroundColor: "#f8f9fa",
+					backgroundColor: "#EFEFEF",
 					fontFamily: '"Noto Serif TC", serif',
 				}}
 			>
@@ -389,535 +830,1620 @@ export default function YourPage() {
 					className="self-stretch flex flex-col items-center justify-start mb-25 gap-16 sm:gap-24 lg:gap-[164px] max-w-full text-center text-2xl sm:text-3xl lg:text-[40px] text-[#073e31] font-[ABeeZee] px-4 sm:px-6 lg:px-0"
 					style={{ fontFamily: '"Noto Serif TC", serif' }}
 				>
-					<div className="w-full max-w-[996px] flex flex-col items-center justify-start mt-5 gap-16 sm:gap-20 lg:gap-[120px]">
+					<div className="w-full max-w-[1200px] flex flex-col items-center justify-start mt-18 gap-5 sm:gap-20 lg:gap-[90px]">
 						{/* Title Section */}
+						{/* Features Section */}
+
+						{/* Mobile Layout - Green Background Bar - Full Width */}
+						<div className="block lg:hidden w-screen bg-gradient-to-r from-[#A3B116] to-[#374A37] p-4 -mx-4 sm:-mx-6">
+							<div className="grid grid-cols-4 gap-2 max-w-[1200px] mx-auto">
+								{mobileFeatures.map((feature, index) => (
+									<div
+										key={index}
+										className="flex flex-col items-center text-center"
+									>
+										<img
+											src={feature.icon}
+											alt={feature.title}
+											className="w-10 h-10 mb-1 brightness-0 invert"
+										/>
+										<div className="text-sm font-extrabold mb-1 text-[#E8FF00]">
+											{feature.title}
+										</div>
+										<div className="text-[10px] font-medium text-white opacity-90">
+											{feature.description}
+										</div>
+									</div>
+								))}
+							</div>
+						</div>
+
+						<div className="w-full max-w-[1200px] px-4 sm:px-6 lg:px-0">
+							{/* Desktop Layout - Original Style */}
+							<div className="hidden grid-cols-4 gap-8 lg:grid place-items-center">
+								{desktopFeatures.map((feature, index) => (
+									<div
+										key={index}
+										className="flex flex-row items-center text-center"
+									>
+										<Image
+											src={feature.icon}
+											alt={feature.title}
+											width={40}
+											height={40}
+											className="object-contain mb-4"
+										/>
+										<div className="flex flex-col items-center justify-center ml-4">
+											<h3
+												className="mb-1 text-center"
+												style={{
+													fontFamily:
+														"Acme, sans-serif",
+													fontWeight: 400,
+													fontSize: "15px",
+													color: "#000",
+													fontStyle: "normal",
+												}}
+											>
+												{feature.title}
+											</h3>
+											<p
+												className="text-center"
+												style={{
+													fontFamily:
+														"ABeeZee, sans-serif",
+													fontWeight: 400,
+													fontSize: "13px",
+													color: "#073E31",
+													fontStyle: "normal",
+												}}
+											>
+												{feature.description}
+											</p>
+										</div>
+									</div>
+								))}
+							</div>
+						</div>
 						<div
-							className="w-full max-w-[960px] flex flex-col items-start justify-start gap-6 sm:gap-8 lg:gap-10"
+							className="w-full max-w-[960px] flex flex-col items-start justify-start gap-6 sm:gap-8 lg:gap-1 px-4 sm:px-6 lg:px-0"
 							style={{ fontFamily: '"Noto Serif TC", serif' }}
 						>
 							<h2
-								className="mt-6 sm:mt-8 lg:mt-10 self-stretch relative text-[length:inherit] font-bold font-[inherit] text-center sm:text-center"
-								style={{ fontFamily: '"Noto Serif TC", serif' }}
+								className="self-stretch relative text-center sm:text-center font-['Noto_Serif_TC'] text-black text-3xl sm:text-4xl md:text-5xl lg:text-[48px]"
+								style={{
+									fontFamily: '"Noto Serif TC", serif',
+									fontWeight: "800",
+								}}
 							>
 								{t("title")}
 							</h2>
-							<div
-								className="self-stretch leading-6 text-center sm:leading-7 lg:leading-8"
-								style={{ fontFamily: '"Noto Serif TC", serif' }}
-							>
-								<p className="mb-3 text-lg font-bold sm:mb-4 sm:text-xl">
-									{t("subtitle")}
-								</p>
-								<p className="text-base sm:text-lg">
-									{t("desc")}
-								</p>
-							</div>
-
-							{/* Facebook Share Button - Simplified */}
-							<div className="flex flex-col items-center w-full">
+							<div className="flex justify-center w-full sm:justify-end">
 								<button
-									onClick={handleFacebookShare}
-									disabled={sharing}
-									className="px-6 sm:px-8 lg:px-10 py-3 sm:py-4 bg-[#1877F2] text-white rounded-[50px] hover:bg-[#166fe5] transition-colors text-sm sm:text-base lg:text-lg font-medium shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-200 disabled:opacity-70 disabled:transform-none flex items-center gap-2 justify-center"
+									className="bg-[#A3B116] hover:bg-[#8B9914] text-white px-4 py-2 sm:px-6 sm:py-2 text-[16px] sm:text-[18px] md:text-[20px] rounded-full font-medium transition-colors duration-300"
 									style={{
 										boxShadow:
-											"0 6px 20px rgba(24, 119, 242, 0.4)",
-										fontFamily: '"Noto Serif TC", serif',
+											"0 4px 12px rgba(0, 0, 0, 0.25)",
 									}}
+									onClick={() => router.push("/demo")}
 								>
-									{/* Facebook Icon SVG */}
-									<svg
-										className="w-5 h-5 sm:w-6 sm:h-6"
-										fill="currentColor"
-										viewBox="0 0 24 24"
-									>
-										<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-									</svg>
-									{sharing
-										? t("shareProcessing")
-										: t("shareToFacebook")}
+									{t("previewButton")}
 								</button>
+							</div>
 
-								{/* Promo Code Display */}
-								{sharePromoCode && (
-									<div className="flex flex-col items-center w-full max-w-xs mx-auto mt-6">
+							{/* Region Selection Section - Updated to be bigger and more obvious */}
+							{/* <div className="flex flex-col items-center w-full">
+								<div>
+									<p
+										className="mb-4 text-xl font-bold text-[#073e31]"
+										style={{
+											fontFamily:
+												'"Noto Serif TC", serif',
+										}}
+									>
+										{t("regionSelection")}
+									</p>
+									<div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
 										<div
-											className="flex flex-col items-center w-full p-4 border-2 rounded-lg shadow-md"
+											onClick={() =>
+												setSelectedRegion("hongkong")
+											}
+											className={`cursor-pointer px-8 py-4 rounded-xl text-lg font-bold transition-all duration-300 border-3 ${
+												selectedRegion === "hongkong"
+													? "bg-[#096e56] text-white border-[#096e56] shadow-lg transform scale-105"
+													: "bg-white text-[#073e31] border-[#096e56] hover:bg-[#f0fdf4] hover:border-[#19ad6b]"
+											}`}
 											style={{
-												borderColor: "#096e56",
-												backgroundColor:
-													"rgba(9,110,86,0.08)",
-												backgroundImage: `url("data:image/svg+xml,%3Csvg width='120' height='60' viewBox='0 0 120 60' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='2' fill='%23096e56'/%3E%3Ccircle cx='60' cy='20' r='1.5' fill='%23fbbf24'/%3E%3Ccircle cx='100' cy='40' r='2' fill='%23f87171'/%3E%3Ccircle cx='30' cy='50' r='1.5' fill='%23096e56'/%3E%3Ccircle cx='80' cy='10' r='1.5' fill='%23096e56'/%3E%3Ccircle cx='110' cy='15' r='1' fill='%23fbbf24'/%3E%3Ccircle cx='50' cy='45' r='1' fill='%23f87171'/%3E%3C/svg%3E")`,
-												backgroundRepeat: "repeat",
 												fontFamily:
 													'"Noto Serif TC", serif',
 											}}
 										>
-											<div
-												className="mb-2 text-sm"
-												style={{
-													color: "#096e56",
-													fontFamily:
-														'"Noto Serif TC", serif',
-												}}
-											>
-												{t("yourPromoCode")}
-											</div>
-											<div
-												className="mb-2 text-2xl font-bold tracking-wider select-all"
-												style={{
-													color: "#096e56",
-													fontFamily:
-														'"Noto Serif TC", serif',
-												}}
-											>
-												{sharePromoCode}
-											</div>
-											<button
-												onClick={() => {
-													copyToClipboard(
-														sharePromoCode
-													);
-													setCopied(true);
-													setTimeout(
-														() => setCopied(false),
-														1500
-													);
-												}}
-												className="px-4 py-1 text-sm font-medium bg-[#096e56] text-white rounded transition-colors shadow hover:bg-[#19ad6b] hover:shadow-lg"
-												style={{
-													fontFamily:
-														'"Noto Serif TC", serif',
-												}}
-											>
-												{t("copyPromoCode")}
-											</button>
-											{copied && (
-												<div
-													className="mt-2 text-xs font-semibold text-green-600 animate-fade-in"
-													style={{
-														fontFamily:
-															'"Noto Serif TC", serif',
-													}}
-												>
-													{t("copied")}
+											🇭🇰 {t("regionHongKong")}
+											{selectedRegion === "hongkong" && (
+												<div className="mt-1 text-sm font-medium opacity-90">
+													✓ 已選擇
 												</div>
 											)}
-											<div
-												className="mt-2 text-xs text-center"
-												style={{
-													color: "#096e56",
-													opacity: 0.7,
-													fontFamily:
-														'"Noto Serif TC", serif',
-												}}
+										</div>
+										<div
+											onClick={() =>
+												setSelectedRegion("china")
+											}
+											className={`cursor-pointer px-8 py-4 rounded-xl text-lg font-bold transition-all duration-300 border-3 ${
+												selectedRegion === "china"
+													? "bg-[#096e56] text-white border-[#096e56] shadow-lg transform scale-105"
+													: "bg-white text-[#073e31] border-[#096e56] hover:bg-[#f0fdf4] hover:border-[#19ad6b]"
+											}`}
+											style={{
+												fontFamily:
+													'"Noto Serif TC", serif',
+											}}
+										>
+											🇨🇳 {t("regionChina")}
+											{selectedRegion === "china" && (
+												<div className="mt-1 text-sm font-medium opacity-90">
+													✓ 已選擇
+												</div>
+											)}
+										</div>
+									</div>
+								</div>
+							</div> */}
+						</div>
+
+						{/* New Hero Section with Image and Cards */}
+						{/* Mobile Layout - Matches attached image */}
+						<div className="block lg:hidden w-full max-w-[1200px] px-4 sm:px-6">
+							{/* Title */}
+							<h3 className="font-['Noto_Serif_TC'] text-[#073e31] mb-6 text-left text-3xl font-bold">
+								{t("fengShuiCalculation")}
+							</h3>
+
+							{/* Content Layout - Features left, Image right */}
+							<div className="flex gap-4 mb-6">
+								{/* Left side - Features List */}
+								<div className="flex-1">
+									{[
+										"premiumFeature2_1",
+										"premiumFeature2_2",
+										"premiumFeature2_3",
+										"premiumFeature2_4",
+										"premiumFeature2_5",
+										"premiumFeature2_6",
+									].map((featureKey, index) => (
+										<div
+											key={index}
+											className="flex items-center gap-3 mb-3"
+										>
+											<div className="w-3 h-3 bg-[#A3B116] rounded-full flex items-center justify-center flex-shrink-0">
+												<svg
+													className="w-2 h-2 text-white"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+											</div>
+											<span className="text-[#073e31] text-[11px] font-medium">
+												{t(featureKey)}
+											</span>
+										</div>
+									))}
+								</div>
+
+								{/* Right side - Furniture Images */}
+								<div className="flex flex-col gap-2 w-50">
+									<Image
+										src="/images/hero/button-2.png"
+										alt="furniture"
+										width={200}
+										height={100}
+										className="object-contain w-full h-auto rounded-lg"
+									/>
+								</div>
+							</div>
+
+							{/* Pricing Cards */}
+							<div className="relative">
+								{/* Green Limited Time Offer Card - On Top */}
+								<div className="bg-gradient-to-r from-[#E8F37A] to-[#A6B41B] rounded-2xl p-4 shadow-lg relative z-10">
+									<div className="flex items-center justify-between">
+										<div>
+											<div className="text-[#374A37] text-2xl font-extrabold mb-1">
+												{t("limitedTimeOffer")}
+											</div>
+											<button
+												onClick={handlePremiumClick}
+												className="bg-white text-[#A3B116] px-6 py-2 rounded-full text-sm font-bold"
 											>
-												{t("usePromoCodeBelow")}
+												{t("paymentCalculation")}
+											</button>
+										</div>
+										<div className="text-right">
+											<div className="text-5xl font-extrabold text-black">
+												$188
+											</div>
+											<div className="text-sm text-[#073e31] opacity-80">
+												/ {t("perTime")}
 											</div>
 										</div>
 									</div>
-								)}
+								</div>
+
+								{/* White Premium Version Card - Behind/Bottom */}
+								<div className="relative z-0 p-4 -mt-4 bg-white border border-gray-200 shadow-lg rounded-2xl">
+									<div className="flex items-center justify-between pt-4">
+										<div className="text-[#073e31] text-2xl font-bold">
+											{t("premiumVersion2")}
+										</div>
+										<div className="text-right">
+											<div className="text-3xl font-bold text-[#073e31] line-through opacity-70">
+												$388
+											</div>
+											<div className="text-sm text-[#073e31] opacity-80">
+												/ {t("perTime")}
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 
-						{/* Pricing Cards Section */}
-						<div className="self-stretch flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 lg:gap-[70px] max-w-full">
-							{/* First card - Free version */}
-							<section
-								className="group w-full max-w-[328px] sm:w-[280px] lg:w-[328px] h-auto sm:h-[480px] lg:h-[514px] rounded-[20px] bg-[#fff] border-[#066952] border-solid border-[1px] box-border flex flex-col items-center justify-between p-4 sm:p-6 lg:p-7 text-left text-2xl sm:text-3xl lg:text-4xl text-[#111827] font-[Inter] transition-all duration-200 hover:scale-105 sm:hover:scale-110 lg:hover:scale-120 hover:border-[#066952] hover:border-2 hover:bg-[#f2faf7] sm:flex-1 shadow-lg hover:shadow-xl"
-								style={{
-									boxShadow: "0 8px 25px rgba(0, 0, 0, 0.15)",
-								}}
-							>
-								<div className="w-full max-w-[232.7px] h-full flex flex-col items-center justify-between pt-0 px-0 box-border">
-									<div className="w-full max-w-[232px] flex flex-col items-start justify-start gap-4 sm:gap-5 lg:gap-6 flex-grow">
-										{/* Price Section */}
-										<div className="flex flex-col items-start self-stretch justify-start gap-3 sm:gap-4 lg:gap-5">
-											<div className="flex flex-row items-start justify-start w-full">
-												<div className="flex flex-row items-center justify-start gap-2">
-													<h2 className="m-0 relative text-[length:inherit] leading-8 sm:leading-10 lg:leading-[46px] font-[500] font-[inherit] inline-block shrink-0 text-xl sm:text-2xl lg:text-4xl">
-														$0
-													</h2>
-													<div className="relative text-sm sm:text-base lg:text-[17px] font-[500] text-[#848199] inline-block shrink-0">
-														/ {t("perSqft")}
-													</div>
-												</div>
-											</div>
-											<div className="self-stretch flex flex-row items-start justify-start text-xl sm:text-2xl lg:text-[28px]">
-												<h2 className="m-0 relative text-[length:inherit] font-[500] font-[inherit] inline-block">
-													{t("freeVersion")}
-												</h2>
-											</div>
-										</div>
-
-										{/* Features List */}
-										<div className="w-full flex flex-col items-start justify-start gap-2 text-xs sm:text-sm text-Font-Color font-[ABeeZee]">
-											{t
-												.raw("freeFeatures", {
-													returnObjects: true,
-												})
-												.map((feature, index) => (
-													<div
-														key={index}
-														className="self-stretch flex flex-row items-start justify-start h-auto min-h-[20px] text-sm sm:text-base font-['DM_Sans']"
-													>
-														<div className="w-full flex flex-row items-center justify-between gap-2.5">
-															<Image
-																className="relative w-4 h-4 sm:w-5 sm:h-5"
-																loading="lazy"
-																width={20}
-																height={20}
-																sizes="100vw"
-																alt=""
-																src="/images/hero/tick.svg"
-															/>
-															<div className="flex-1 relative leading-[14px] sm:leading-4 inline-block">
-																{feature}
-															</div>
-														</div>
-													</div>
-												))}
-
-											{/* Disabled features */}
-											{t
-												.raw("freeDisabled", {
-													returnObjects: true,
-												})
-												.map((feature, index) => (
-													<div
-														key={index}
-														className="self-stretch flex flex-row items-start justify-start h-auto min-h-[20px] text-sm sm:text-base font-['DM_Sans']"
-													>
-														<div className="w-full flex flex-row items-center justify-between gap-2.5">
-															<Image
-																className="relative w-4 h-4 sm:w-5 sm:h-5"
-																loading="lazy"
-																width={20}
-																height={20}
-																sizes="100vw"
-																alt=""
-																src="/images/hero/cross.svg"
-															/>
-															<div className="flex-1 relative leading-[14px] sm:leading-4 inline-block text-gray-400">
-																{feature}
-															</div>
-														</div>
-													</div>
-												))}
-										</div>
-									</div>
-
-									{/* Button */}
-									<div className="w-full mt-6 sm:w-auto">
-										<Link
-											href="/free"
-											className="w-full sm:w-auto"
-										>
-											<button
-												className="cursor-pointer [border:none] px-4 sm:px-6 lg:px-[67px] py-2 sm:py-3 lg:py-[4.1px] bg-[#096e56] rounded-[50px] sm:rounded-[75px] lg:rounded-[100px] overflow-hidden flex flex-row items-center justify-center shrink-0 transition-all duration-200 group-hover:bg-[#19ad6b] hover:bg-[#19ad6b] w-full sm:w-auto shadow-md hover:shadow-lg"
-												style={{
-													boxShadow:
-														"0 4px 15px rgba(0, 0, 0, 0.2)",
-												}}
-											>
-												<div className="text-sm sm:text-base leading-6 sm:leading-8 font-[ABeeZee] text-[#fff] text-center">
-													{t("freeBtn")}
-												</div>
-											</button>
-										</Link>
-									</div>
+						{/* Desktop Layout - Original */}
+						<div className="hidden lg:flex w-full max-w-[1200px] flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 px-4 sm:px-6 lg:px-0">
+							{/* Left side - Image (50% width) */}
+							<div className="relative flex flex-col items-center justify-center w-full lg:w-1/2">
+								<h3
+									className="absolute top-8 lg:top-[170px] font-['Noto_Serif_TC'] text-[#AEB116] mb-4 lg:mb-1 text-center w-full"
+									style={{
+										fontSize: "clamp(2rem, 8vw, 4rem)", // Responsive font size
+										fontWeight: "800",
+										WebkitTextStroke: "2px white",
+										textShadow:
+											"2px 2px 4px rgba(0,0,0,0.1)",
+									}}
+								>
+									{t("fengShuiCalculation")}
+								</h3>
+								<div className="relative max-w-[500px] w-full">
+									<Image
+										src="/images/hero/button-2.png"
+										alt={t("fengshuiCalculation")}
+										width={500}
+										height={400}
+										className="object-contain w-full h-auto"
+										priority
+									/>
 								</div>
-							</section>
+							</div>
 
-							{/* Second card - Premium version with button lock only */}
-							<section
-								className="relative w-full max-w-[328px] sm:w-[280px] lg:w-[328px] h-auto sm:h-[480px] lg:h-[514px] rounded-[20px] bg-[#fff] border-[#066952] border-solid border-[1px] box-border flex flex-col items-center justify-between p-4 sm:p-6 lg:p-7 text-left text-2xl sm:text-3xl lg:text-4xl text-[#111827] font-[Inter] transition-all duration-200 hover:scale-105 sm:hover:scale-110 lg:hover:scale-120 hover:border-[#066952] hover:border-2 hover:bg-[#f2faf7] sm:flex-1 shadow-lg hover:shadow-xl"
-								style={{
-									boxShadow: "0 8px 25px rgba(0, 0, 0, 0.15)",
-								}}
-							>
-								{/* Badge - always visible */}
-								<div className="absolute top-2 sm:top-[-10] right-2 sm:right-1 bg-[#0e8c6f] text-white text-xs sm:text-sm font-bold px-2 sm:px-3 py-1 rounded-md shadow-lg shadow-[#0e8c6f]/70 z-20">
-									{isUnlocked
-										? t("unlockedBadge")
-										: t("popularBadge")}
-								</div>
+							{/* Right side - 3D Hover Rotating Price Cards (50% width) */}
+							<div className="flex justify-center w-full lg:w-1/2">
+								{/* Left Side - Cards Container */}
+								<div className="flex flex-col items-center justify-center">
+									<div className="relative w-full max-w-2xl">
+										{/* Main white card - made responsive */}
+										<div className="relative w-full max-w-[520px] min-h-[430px] bg-white rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 border border-gray-200 mx-auto">
+											{/* Small green discount card overlay - positioned at top-left */}
+											<div className="absolute -top-2 sm:-top-4 -left-2 sm:-left-4 bg-gradient-to-r from-[#E9F47C] to-[#A3B116] rounded-2xl px-8 sm:px-12 lg:px-18 py-2 shadow-lg z-10">
+												{/* "最多用戶選擇" Badge */}
+												<div className="absolute -top-2 sm:-top-3 -left-2 sm:-left-3 transform bg-white text-[#111827] px-2 sm:px-3 py-1 rounded-full text-xs font-bold shadow-md whitespace-nowrap">
+													{t("mostUserChoice")}
+												</div>
 
-								<div className="w-full max-w-[232.7px] h-full flex flex-col items-center justify-between pt-0 px-0 box-border">
-									<div className="w-full max-w-[232px] flex flex-col items-start justify-start gap-4 sm:gap-5 lg:gap-6 flex-grow">
-										{/* Price Section */}
-										<div className="flex flex-col items-start self-stretch justify-start gap-3 sm:gap-4 lg:gap-5">
-											<div className="flex flex-row items-start justify-start w-full">
-												<div className="flex flex-row items-center justify-start gap-2">
-													<h2 className="m-0 relative text-[length:inherit] leading-8 sm:leading-10 lg:leading-[46px] font-[500] font-[inherit] inline-block shrink-0 text-xl sm:text-2xl lg:text-4xl">
-														$1
-														<span className="ml-1 text-sm text-gray-500 line-through sm:text-base">
-															$3.8
+												<div className="pt-1 text-center text-white">
+													<div className="flex items-baseline justify-center gap-1 mb-1">
+														<span
+															className="bg-gradient-to-r from-[#99A800] to-[#5D6600] bg-clip-text text-transparent"
+															style={{
+																fontSize:
+																	"clamp(2rem, 8vw, 4rem)", // Responsive font size
+																fontWeight:
+																	"900", // Extra thick font weight
+																WebkitTextStroke:
+																	"4px white", // Thicker white border
+																WebkitTextFillColor:
+																	"transparent",
+																backgroundImage:
+																	"linear-gradient(to right, #99A800, #5D6600)",
+																WebkitBackgroundClip:
+																	"text",
+																fontFamily:
+																	"Arial Black, sans-serif", // Use a naturally thick font
+															}}
+														>
+															$188
 														</span>
-													</h2>
-													<div className="relative text-sm sm:text-base lg:text-[17px] font-[500] text-[#848199] inline-block shrink-0">
-														/ {t("perSqft")}
+														<span className="text-xs text-black sm:text-sm opacity-90">
+															/ {t("perTime")}
+														</span>
+													</div>
+													<div className="font-['Noto_Serif_TC'] font-bold text-[#284628] text-lg sm:text-xl lg:text-[40px]">
+														{t("limitedTimeOffer")}
 													</div>
 												</div>
-											</div>
-											<div className="self-stretch flex flex-row items-start justify-start text-xl sm:text-2xl lg:text-[28px]">
-												<h2 className="m-0 relative text-[length:inherit] font-[500] font-[inherit] inline-block">
-													{t("premiumVersion")}
-												</h2>
-											</div>
-										</div>
+											</div>{" "}
+											{/* Main card content */}
+											<div className="flex flex-col h-full gap-5 pt-2">
+												{/* Original price section - moved to right */}
+												<div className="mb-6 text-right">
+													<div className="flex items-baseline justify-end gap-2 mb-2">
+														<span className="text-4xl font-bold text-gray-400 line-through">
+															$388
+														</span>
+														<span className="text-sm text-gray-400">
+															/ {t("perTime")}
+														</span>
+													</div>
+													<div className="text-4xl font-bold text-gray-600">
+														{t("premiumVersion2")}
+													</div>
+												</div>
 
-										{/* Features List */}
-										<div className="w-full flex flex-col items-start justify-start gap-2 text-xs sm:text-sm text-Font-Color font-[ABeeZee]">
-											{t
-												.raw("premiumFeatures", {
-													returnObjects: true,
-												})
-												.map((feature, index) => (
-													<div
-														key={index}
-														className="self-stretch flex flex-row items-start justify-start h-auto min-h-[20px] text-sm sm:text-base font-['DM_Sans']"
+												{/* Features in 2-column grid */}
+												<div className="flex-1 mb-8">
+													<div className="grid grid-cols-2 gap-y-4 gap-x-8">
+														{[
+															"premiumFeature2_1",
+															"premiumFeature2_2",
+															"premiumFeature2_3",
+															"premiumFeature2_4",
+															"premiumFeature2_5",
+															"premiumFeature2_6",
+														].map(
+															(
+																featureKey,
+																index
+															) => (
+																<div
+																	key={index}
+																	className="flex items-start gap-3"
+																>
+																	<svg
+																		className="w-5 h-5 text-black mt-0.5 flex-shrink-0"
+																		fill="currentColor"
+																		viewBox="0 0 20 20"
+																	>
+																		<path
+																			fillRule="evenodd"
+																			d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																			clipRule="evenodd"
+																		/>
+																	</svg>
+																	<span className="text-[17px] font-medium leading-relaxed text-black">
+																		{t(
+																			featureKey
+																		)}
+																	</span>
+																</div>
+															)
+														)}
+													</div>
+												</div>
+
+												{/* Button */}
+												<div className="flex justify-center">
+													<button
+														onClick={
+															handlePremiumClick
+														}
+														className="bg-gradient-to-r from-[#BDCF0C] to-[#7B8700] hover:from-[#A3B116] hover:to-[#5D6600] text-white font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+														style={{
+															width: "342px",
+															height: "48px",
+															borderRadius:
+																"20px",
+														}}
+														disabled={
+															isProcessingPayment &&
+															currentCardType ===
+																"expert88"
+														}
 													>
-														<div className="w-full flex flex-row items-center justify-between gap-2.5">
-															<Image
-																className="relative w-4 h-4 sm:w-5 sm:h-5"
-																loading="lazy"
-																width={20}
-																height={20}
-																sizes="100vw"
-																alt=""
-																src="/images/hero/tick.svg"
-															/>
-															<div className="flex-1 relative leading-[14px] sm:leading-4 inline-block">
-																{feature}
-															</div>
-														</div>
-													</div>
-												))}
-										</div>
-									</div>
-
-									{/* Button Area - with promo code input when locked */}
-									<div className="w-full mt-6 sm:w-auto">
-										{isUnlocked ? (
-											/* Unlocked State - Show promo section first, then button */
-											<div className="w-full space-y-3">
-												{/* Show promo code info when unlocked */}
-												<div className="text-center">
-													<p className="mb-2 text-xs text-gray-600">
-														{t("unlockedWithPromo")}
-													</p>
-													<div className="text-xs text-[#096e56] font-medium">
-														{t("promoCodeUsed")}
-													</div>
-												</div>
-
-												{/* Unlocked Button */}
-												<button
-													onClick={handlePremiumClick}
-													className="cursor-pointer [border:none] px-4 sm:px-6 lg:px-[67px] py-2 sm:py-3 lg:py-[4.1px] bg-[#096e56] rounded-[50px] sm:rounded-[75px] lg:rounded-[100px] overflow-hidden flex flex-row items-center justify-center shrink-0 transition-all duration-200 hover:bg-[#19ad6b] w-full sm:w-auto shadow-md hover:shadow-lg"
-													disabled={
-														isProcessingPayment
-													}
-													style={{
-														boxShadow:
-															"0 4px 15px rgba(0, 0, 0, 0.2)",
-													}}
-												>
-													<div className="text-sm sm:text-base leading-6 sm:leading-8 font-[ABeeZee] text-[#fff] text-center">
 														{isProcessingPayment &&
 														currentCardType ===
-															"premium"
+															"expert88"
 															? t("processing")
-															: t("premiumBtn")}
-													</div>
-												</button>
+															: t(
+																	"paymentCalculation"
+																)}
+													</button>
+												</div>
 											</div>
-										) : (
-											/* Locked State - Show promo section first, then button */
-											<div className="w-full space-y-3">
-												{/* Promo Code Section - Always visible when locked */}
-												{!showPromoInput ? (
-													/* Unlock with Promo Code */
-													<div className="text-center">
-														<p className="mb-2 text-xs text-gray-600">
-															{t("havePromoCode")}
-														</p>
-														<button
-															onClick={() =>
-																setShowPromoInput(
-																	true
-																)
-															}
-															className="text-xs text-[#096e56] hover:text-[#19ad6b] font-medium underline transition-colors"
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						{/* Second Hero Section with Cards on Left, Image on Right */}
+						{/* Mobile Layout - Same as first hero but image on left */}
+						<div className="block lg:hidden w-full max-w-[1200px] px-4 sm:px-6 mb-8">
+							{/* Title */}
+							<h3 className="font-['Noto_Serif_TC'] text-[#073e31] mb-6 text-left text-3xl font-bold">
+								{t("destinyCalculation")}
+							</h3>
+
+							{/* Content Layout - Image left, Features right */}
+							<div className="flex gap-4 mb-6">
+								{/* Left side - Image */}
+								<div className="flex flex-col gap-2 w-45">
+									<img
+										src="/images/hero/button-1.png"
+										alt={t("destinyCalculation")}
+										className="object-contain w-full h-auto rounded-lg"
+									/>
+								</div>
+
+								{/* Right side - Features List */}
+								<div className="flex-1">
+									{[
+										"destinyFeature_1",
+										"destinyFeature_2",
+										"destinyFeature_3",
+										"destinyFeature_4",
+										"destinyFeature_5",
+										"destinyFeature_6",
+									].map((featureKey, index) => (
+										<div
+											key={index}
+											className="flex items-center gap-3 mb-3"
+										>
+											<div className="w-3 h-3 bg-[#A3B116] rounded-full flex items-center justify-center flex-shrink-0">
+												<svg
+													className="w-2 h-2 text-white"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+											</div>
+											<span className="text-[#073e31] text-[12px] font-medium">
+												{t(featureKey)}
+											</span>
+										</div>
+									))}
+								</div>
+							</div>
+
+							{/* Pricing Cards */}
+							<div className="relative">
+								{/* Green Limited Time Offer Card - On Top */}
+								<div className="bg-gradient-to-r from-[#E8F37A] to-[#A6B41B] rounded-2xl p-4 shadow-lg relative z-10">
+									<div className="flex items-center justify-between">
+										<div>
+											<div className="text-[#374A37] text-2xl font-extrabold mb-1">
+												{t("limitedTimeOffer")}
+											</div>
+											<button
+												onClick={handleExpert88Payment}
+												className="bg-white text-[#A3B116] px-6 py-2 rounded-full text-sm font-bold"
+											>
+												{t("paymentCalculation")}
+											</button>
+										</div>
+										<div className="text-right">
+											<div className="text-5xl font-extrabold text-black">
+												$88
+											</div>
+											<div className="text-sm text-[#073e31] opacity-80">
+												/ {t("perTime")}
+											</div>
+										</div>
+									</div>
+								</div>
+
+								{/* White Premium Version Card - Behind/Bottom */}
+								<div className="relative z-0 p-4 -mt-4 bg-white border border-gray-200 shadow-lg rounded-2xl">
+									<div className="flex items-center justify-between pt-4">
+										<div className="text-[#073e31] text-2xl font-bold">
+											{t("premiumVersion2")}
+										</div>
+										<div className="text-right">
+											<div className="text-3xl font-bold text-[#073e31] line-through opacity-70">
+												$168
+											</div>
+											<div className="text-sm text-[#073e31] opacity-80">
+												/ {t("perTime")}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						{/* Desktop Layout - Original */}
+						<div className="hidden w-full px-4 mx-auto lg:block max-w-7xl">
+							<div className="grid items-center grid-cols-1 gap-8 lg:grid-cols-2">
+								{/* Left Side - Cards Container */}
+								<div className="flex flex-col items-center justify-center">
+									<div className="relative w-full max-w-2xl">
+										{/* Main white card - made responsive */}
+										<div className="relative w-full max-w-[520px] min-h-[430px] bg-white rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 border border-gray-200 mx-auto">
+											{/* Small green discount card overlay - positioned at top-left */}
+											<div className="absolute -top-2 sm:-top-4 -left-2 sm:-left-4 bg-gradient-to-r from-[#E9F47C] to-[#A3B116] rounded-2xl px-8 sm:px-12 lg:px-24 py-2 shadow-lg z-10">
+												{/* "最多用戶選擇" Badge */}
+												<div className="absolute -top-2 sm:-top-3 -left-2 sm:-left-3 transform bg-white text-[#111827] px-2 sm:px-3 py-1 rounded-full text-xs font-bold shadow-md whitespace-nowrap">
+													{t("mostUserChoice")}
+												</div>
+
+												<div className="pt-1 text-center text-white">
+													<div className="flex items-baseline justify-center gap-1 mb-1">
+														<span
+															className="bg-gradient-to-r from-[#99A800] to-[#5D6600] bg-clip-text text-transparent"
+															style={{
+																fontSize:
+																	"clamp(2rem, 8vw, 4rem)", // Responsive font size
+																fontWeight:
+																	"900", // Extra thick font weight
+																WebkitTextStroke:
+																	"4px white", // Thicker white border
+																WebkitTextFillColor:
+																	"transparent",
+																backgroundImage:
+																	"linear-gradient(to right, #99A800, #5D6600)",
+																WebkitBackgroundClip:
+																	"text",
+																fontFamily:
+																	"Arial Black, sans-serif", // Use a naturally thick font
+															}}
 														>
+															$88
+														</span>
+														<span className="text-xs text-black sm:text-sm opacity-90">
+															/ {t("perTime")}
+														</span>
+													</div>
+
+													<div className="font-['Noto_Serif_TC'] font-bold text-[#284628] text-lg sm:text-xl lg:text-[40px]">
+														{t("limitedTimeOffer")}
+													</div>
+												</div>
+											</div>{" "}
+											{/* Main card content */}
+											<div className="flex flex-col h-full gap-3 pt-2 sm:gap-4 lg:gap-5">
+												{/* Original price section - moved to right */}
+												<div className="mb-4 text-right sm:mb-6">
+													<div className="flex items-baseline justify-end gap-1 mb-1 sm:gap-2 sm:mb-2">
+														<span className="text-2xl font-bold text-gray-400 line-through sm:text-3xl lg:text-4xl">
+															$168
+														</span>
+														<span className="text-xs text-gray-400 sm:text-sm">
+															/ {t("perTime")}
+														</span>
+													</div>
+													<div className="text-2xl font-bold text-gray-600 sm:text-3xl lg:text-4xl">
+														{t("premiumVersion2")}
+													</div>
+												</div>
+
+												{/* Features in 2-column grid */}
+												<div className="flex-1 mb-6 sm:mb-8">
+													<div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 sm:gap-y-4 gap-x-4 sm:gap-x-6 lg:gap-x-8">
+														{[
+															"destinyFeature_1",
+															"destinyFeature_2",
+															"destinyFeature_3",
+															"destinyFeature_4",
+															"destinyFeature_5",
+															"destinyFeature_6",
+														].map(
+															(
+																featureKey,
+																index
+															) => (
+																<div
+																	key={index}
+																	className="flex items-start gap-2 sm:gap-3"
+																>
+																	<svg
+																		className="w-4 h-4 sm:w-5 sm:h-5 text-black mt-0.5 flex-shrink-0"
+																		fill="currentColor"
+																		viewBox="0 0 20 20"
+																	>
+																		<path
+																			fillRule="evenodd"
+																			d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																			clipRule="evenodd"
+																		/>
+																	</svg>
+																	<span className="text-sm sm:text-base lg:text-[17px] font-medium leading-relaxed text-black">
+																		{t(
+																			featureKey
+																		)}
+																	</span>
+																</div>
+															)
+														)}
+													</div>
+												</div>
+
+												{/* Button */}
+												<div className="flex justify-center">
+													<button
+														onClick={
+															handleExpert88Payment
+														}
+														className="bg-gradient-to-r from-[#BDCF0C] to-[#7B8700] hover:from-[#A3B116] hover:to-[#5D6600] text-white font-bold text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-xl px-4 sm:px-6 lg:px-8 py-2 sm:py-3 rounded-lg sm:rounded-xl lg:rounded-[20px] w-full max-w-[280px] sm:max-w-[320px] lg:max-w-[342px]"
+														disabled={
+															isProcessingPayment &&
+															currentCardType ===
+																"expert88"
+														}
+													>
+														{isProcessingPayment &&
+														currentCardType ===
+															"expert88"
+															? t("processing")
+															: t(
+																	"paymentCalculation"
+																)}
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								{/* Right Side - Image */}
+								<div className="flex flex-col items-center justify-center">
+									{/* Title above image */}
+									<h3
+										className="font-['Noto_Serif_TC'] text-[#AEB116] mb-1 text-center"
+										style={{
+											fontSize: "clamp(2rem, 8vw, 4rem)", // Responsive font size
+											fontWeight: "800",
+											WebkitTextStroke: "2px white",
+											textShadow:
+												"2px 2px 4px rgba(0,0,0,0.1)",
+										}}
+									>
+										{t("destinyCalculation")}
+									</h3>
+
+									<div className="relative max-w-[500px] w-full">
+										<img
+											src="/images/hero/button-1.png"
+											alt={t("destinyCalculation")}
+											className="object-contain w-full h-auto rounded-lg"
+										/>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						{/* Personal Fortune Analysis Section */}
+						<div className="w-full px-1 sm:px-4">
+							{/* Header */}
+							<div className="flex flex-col items-center justify-between gap-4 mb-8 sm:flex-row sm:gap-8 sm:mb-10 lg:mb-12">
+								<h2
+									className="font-['Noto_Serif_TC'] font-bold text-[#374A37] lg:text-[#AEB116] px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 text-left sm:text-left lg:[text-shadow:2px_2px_4px_rgba(0,0,0,0.3)] lg:[webkit-text-stroke:2px_white]"
+									style={{
+										fontSize: "clamp(2rem, 8vw, 4rem)", // Responsive font size
+									}}
+								>
+									{t("personalFortuneAnalysis")}
+								</h2>
+								<button
+									className="bg-[#A3B116] hover:bg-[#8B9914] text-white px-4 sm:px-6 py-2 text-base sm:text-lg lg:text-[20px] rounded-full font-medium transition-colors duration-300 shadow-lg"
+									onClick={() => router.push("/demo")}
+								>
+									{t("previewButton")}
+								</button>
+							</div>
+
+							{/* Cards Grid */}
+							<div className="max-w-[95%] sm:max-w-[85%] lg:max-w-[80%] mx-auto grid grid-cols-2 gap-2 sm:gap-6 md:grid-cols-2 lg:grid-cols-4">
+								{/* Financial Fortune Card */}
+								<div className="overflow-hidden bg-white shadow-lg rounded-2xl">
+									{/* Card Image Header */}
+									<div className="relative h-32 overflow-hidden">
+										<Image
+											src="/images/price/wealth.png"
+											alt={t("wealthFortune")}
+											fill
+										/>
+									</div>
+									{/* Card Content */}
+									<div className="p-4">
+										{/* Flip Card Container */}
+										<div className="relative h-32 mb-4 group perspective-1000">
+											{/* Card Inner (Flip Container) */}
+											<div className="relative w-full h-full transition-transform duration-700 transform-style-preserve-3d group-hover:rotate-y-180">
+												{/* Front Side - Premium Version ($88) */}
+												<div className="absolute inset-0 w-full h-full bg-white border-2 border-gray-300 rounded-lg shadow-sm backface-hidden">
+													<div className="flex flex-col justify-between h-full p-3">
+														<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+															<span className="text-[16px] sm:text-sm text-gray-600">
+																{t(
+																	"premiumPlan"
+																)}
+															</span>
+															<span className="text-[28px] sm:text-lg font-bold text-gray-600">
+																<span className="line-through">
+																	$88
+																</span>
+																/
+																<span className="text-[10px]">
+																	{t(
+																		"perTime"
+																	)}
+																</span>
+															</span>
+														</div>
+														<button className="w-full py-2 text-sm font-medium text-gray-700 transition-colors duration-300 bg-gray-100 rounded-lg hover:bg-gray-200">
 															{t(
-																"enterPromoCode"
+																"paymentCalculation"
 															)}
 														</button>
 													</div>
-												) : (
-													/* Promo Code Input */
-													<div className="space-y-2">
-														<input
-															type="text"
-															placeholder={t(
-																"inputPromoPlaceholder"
-															)}
-															value={promoCode}
-															onChange={(e) =>
-																setPromoCode(
-																	e.target
-																		.value
+												</div>
+
+												{/* Back Side - Light Version ($38) */}
+												<div className="absolute inset-0 w-full h-full backface-hidden bg-white rounded-lg border-2 border-[#A3B116] shadow-sm rotate-y-180">
+													<div className="flex flex-col justify-between h-full p-3">
+														<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+															<span className="text-[16px] sm:text-sm font-bold text-[#A3B116]">
+																{t("lightPlan")}
+															</span>
+															<span className="text-[28px] sm:text-lg font-bold text-[#A3B116]">
+																$38/
+																<span className="text-[10px]">
+																	{t(
+																		"perTime"
+																	)}
+																</span>
+															</span>
+														</div>
+														<button
+															className="w-full bg-[#A3B116] hover:bg-[#8B9914] text-white py-2 text-sm rounded-lg font-medium transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+															onClick={() =>
+																handleFortunePayment(
+																	"financial"
 																)
 															}
-															className="w-full px-3 py-2 text-sm text-black border border-gray-300 rounded-lg shadow-sm focus:border-[#096e56] focus:outline-none"
-															onKeyPress={(e) =>
-																e.key ===
-																	"Enter" &&
-																handlePromoSubmit()
+															disabled={
+																isProcessingPayment &&
+																currentCardType ===
+																	"fortune_financial"
 															}
-														/>
-														{promoError && (
-															<p className="text-xs text-center text-red-500">
-																{promoError}
-															</p>
-														)}
-														<div className="flex gap-2">
-															<button
-																onClick={
-																	handlePromoSubmit
-																}
-																className="px-4 py-2 bg-[#096e56] text-white rounded-lg text-sm hover:bg-[#19ad6b] transition-colors flex-1 shadow-sm hover:shadow-md"
-															>
-																{t(
-																	"confirmBtn"
-																)}
-															</button>
-															<button
-																onClick={() => {
-																	setShowPromoInput(
-																		false
-																	);
-																	setPromoCode(
-																		""
-																	);
-																	setPromoError(
-																		""
-																	);
-																}}
-																className="flex-1 px-4 py-2 text-sm text-white transition-colors bg-gray-500 rounded-lg shadow-sm hover:bg-gray-600 hover:shadow-md"
-															>
-																{t("cancelBtn")}
-															</button>
-														</div>
-													</div>
-												)}
-
-												{/* Locked Button - Moved to bottom */}
-												<button
-													className="cursor-not-allowed [border:none] px-4 sm:px-6 lg:px-[67px] py-2 sm:py-3 lg:py-[4.1px] bg-gray-400 rounded-[50px] sm:rounded-[75px] lg:rounded-[100px] overflow-hidden flex flex-row items-center justify-center shrink-0 w-full sm:w-auto shadow-md opacity-75"
-													disabled
-													style={{
-														boxShadow:
-															"0 4px 15px rgba(0, 0, 0, 0.2)",
-													}}
-												>
-													<div className="text-sm sm:text-base leading-6 sm:leading-8 font-[ABeeZee] text-[#fff] text-center">
-														{t("lockedBtn")}
-													</div>
-												</button>
-											</div>
-										)}
-									</div>
-								</div>
-							</section>
-
-							{/* Third card - Subscription version */}
-							<section
-								className="relative w-full max-w-[328px] sm:w-[280px] lg:w-[328px] h-auto sm:h-[480px] lg:h-[514px] rounded-[20px] bg-[#fff] border-[#066952] border-solid border-[1px] box-border flex flex-col items-center justify-between p-4 sm:p-6 lg:p-7 text-left text-2xl sm:text-3xl lg:text-4xl text-[#111827] font-[Inter] transition-all duration-200 hover:scale-105 sm:hover:scale-110 lg:hover:scale-120 hover:border-[#066952] hover:border-2 hover:bg-[#f2faf7] sm:flex-1 shadow-lg hover:shadow-xl"
-								style={{
-									boxShadow: "0 8px 25px rgba(0, 0, 0, 0.15)",
-								}}
-							>
-								<div className="w-full max-w-[232.7px] h-full flex flex-col items-center justify-between pt-0 px-0 box-border">
-									<div className="w-full max-w-[232px] flex flex-col items-start justify-start gap-4 sm:gap-5 lg:gap-6 flex-grow">
-										{/* Price Section */}
-										<div className="flex flex-col items-start self-stretch justify-start gap-3 sm:gap-4 lg:gap-5">
-											<div className="flex flex-row items-start justify-start w-full">
-												<div className="flex flex-row items-center justify-start gap-2">
-													<h2 className="m-0 relative text-[length:inherit] leading-8 sm:leading-10 lg:leading-[46px] font-[500] font-[inherit] inline-block shrink-0 text-xl sm:text-2xl lg:text-4xl">
-														$3.8
-													</h2>
-													<div className="relative text-sm sm:text-base lg:text-[17px] font-[500] text-[#848199] inline-block shrink-0">
-														/ {t("perSqft")}
+														>
+															{isProcessingPayment &&
+															currentCardType ===
+																"fortune_financial"
+																? t(
+																		"processing2"
+																	)
+																: t(
+																		"paymentCalculation"
+																	)}
+														</button>
 													</div>
 												</div>
 											</div>
-											<div className="self-stretch flex flex-row items-start justify-start text-xl sm:text-2xl lg:text-[28px]">
-												<h2 className="m-0 relative text-[length:inherit] font-[500] font-[inherit] inline-block">
-													{t("subVersion")}
-												</h2>
-											</div>
 										</div>
 
-										{/* Features List */}
-										<div className="w-full flex flex-col items-start justify-start gap-2 text-xs sm:text-sm text-Font-Color font-[ABeeZee]">
-											{t
-												.raw("premiumFeatures", {
-													returnObjects: true,
-												})
-												.map((feature, index) => (
-													<div
-														key={index}
-														className="self-stretch flex flex-row items-start justify-start h-auto min-h-[20px] text-sm sm:text-base font-['DM_Sans']"
-													>
-														<div className="w-full flex flex-row items-center justify-between gap-2.5">
-															<Image
-																className="relative w-4 h-4 sm:w-5 sm:h-5"
-																loading="lazy"
-																width={20}
-																height={20}
-																sizes="100vw"
-																alt=""
-																src="/images/hero/tick.svg"
-															/>
-															<div className="flex-1 relative leading-[14px] sm:leading-4 inline-block">
-																{feature}
-															</div>
-														</div>
-													</div>
-												))}
-										</div>
-									</div>
-
-									{/* Button */}
-									<div className="w-full mt-6 sm:w-auto">
-										<button
-											onClick={handleSubscriptionClick}
-											disabled={isProcessingPayment}
-											className="cursor-pointer [border:none] px-4 sm:px-6 lg:px-[67px] py-2 sm:py-3 lg:py-[4.1px] bg-[#096e56] rounded-[50px] sm:rounded-[75px] lg:rounded-[100px] overflow-hidden flex flex-row items-center justify-center shrink-0 transition-all duration-200 group-hover:bg-[#19ad6b] hover:bg-[#19ad6b] w-full sm:w-auto shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-											style={{
-												boxShadow:
-													"0 4px 15px rgba(0, 0, 0, 0.2)",
-											}}
-										>
-											<div className="text-sm sm:text-base leading-6 sm:leading-8 font-[ABeeZee] text-[#fff] text-center">
-												{isProcessingPayment &&
-												currentCardType ===
-													"subscription"
-													? t("processing")
-													: t("subBtn")}
+										{/* Features */}
+										<div className="space-y-2 text-xs">
+											<div className="flex items-center gap-2">
+												<svg
+													className="w-4 h-4 text-[#A3B116]"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												<span className="text-xs text-gray-700 sm:text-sm">
+													{t("basicAnalysis")}
+												</span>
 											</div>
-										</button>
+											<div className="flex items-center gap-2">
+												<svg
+													className="w-4 h-4 text-gray-300"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												<span className="text-xs text-gray-400 sm:text-sm">
+													{t("destinyExplanation")}
+												</span>
+											</div>
+											<div className="flex items-center gap-2">
+												<svg
+													className="w-4 h-4 text-[#A3B116]"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												<span className="text-xs text-gray-700 sm:text-sm">
+													{t("wealthAnalysis")}
+												</span>
+											</div>
+											<div className="flex items-center gap-2">
+												<svg
+													className="w-4 h-4 text-gray-300"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												<span className="text-xs text-gray-400 sm:text-sm">
+													{t("wealthSummary")}
+												</span>
+											</div>
+											<div className="flex items-center gap-2">
+												<svg
+													className="w-4 h-4 text-[#A3B116]"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												<span className="text-xs text-gray-700 sm:text-sm">
+													{t("luckAdvice")}
+												</span>
+											</div>
+										</div>
 									</div>
 								</div>
-							</section>
+
+								{/* Love Fortune Card */}
+								<div className="overflow-hidden bg-white shadow-lg rounded-2xl">
+									{/* Card Image Header */}
+									<div className="relative h-32 overflow-hidden bg-green-600">
+										<div className="relative h-32 overflow-hidden">
+											<Image
+												src="/images/price/relationship.jpg"
+												alt={t("loveFortune")}
+												fill
+											/>
+										</div>
+									</div>
+									{/* Card Content */}
+									<div className="p-4">
+										{/* Flip Card Container */}
+										<div className="relative h-32 mb-4 group perspective-1000">
+											{/* Card Inner (Flip Container) */}
+											<div className="relative w-full h-full transition-transform duration-700 transform-style-preserve-3d group-hover:rotate-y-180">
+												{/* Front Side - Premium Version ($88) */}
+												<div className="absolute inset-0 w-full h-full bg-white border-2 border-gray-300 rounded-lg shadow-sm backface-hidden">
+													<div className="flex flex-col justify-between h-full p-3">
+														<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+															<span className="text-[16px] sm:text-sm text-gray-600">
+																{t(
+																	"premiumPlan"
+																)}
+															</span>
+															<span className="text-[28px] sm:text-lg font-bold text-gray-600">
+																<span className="line-through">
+																	$88
+																</span>
+																/
+																<span className="text-[10px]">
+																	{t(
+																		"perTime"
+																	)}
+																</span>
+															</span>
+														</div>
+														<button className="w-full py-2 text-sm font-medium text-gray-700 transition-colors duration-300 bg-gray-100 rounded-lg hover:bg-gray-200">
+															{t(
+																"paymentCalculation"
+															)}
+														</button>
+													</div>
+												</div>
+
+												{/* Back Side - Light Version ($38) */}
+												<div className="absolute inset-0 w-full h-full backface-hidden bg-white rounded-lg border-2 border-[#A3B116] shadow-sm rotate-y-180">
+													<div className="flex flex-col justify-between h-full p-3">
+														<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+															<span className="text-[16px] sm:text-sm font-bold text-[#A3B116]">
+																{t("lightPlan")}
+															</span>
+															<span className="text-[28px] sm:text-lg font-bold text-[#A3B116]">
+																$38/
+																<span className="text-[10px]">
+																	{t(
+																		"perTime"
+																	)}
+																</span>
+															</span>
+														</div>
+														<button
+															className="w-full bg-[#A3B116] hover:bg-[#8B9914] text-white py-2 text-sm rounded-lg font-medium transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+															onClick={() =>
+																handleFortunePayment(
+																	"love"
+																)
+															}
+															disabled={
+																isProcessingPayment &&
+																currentCardType ===
+																	"fortune_love"
+															}
+														>
+															{isProcessingPayment &&
+															currentCardType ===
+																"fortune_love"
+																? t(
+																		"processing2"
+																	)
+																: t(
+																		"paymentCalculation"
+																	)}
+														</button>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										{/* Features */}
+										<div className="space-y-2 text-xs">
+											<div className="flex items-center gap-2">
+												<svg
+													className="w-4 h-4 text-[#A3B116]"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												<span className="text-xs text-gray-700 sm:text-sm">
+													{t("basicAnalysis")}
+												</span>
+											</div>
+											<div className="flex items-center gap-2">
+												<svg
+													className="w-4 h-4 text-gray-300"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												<span className="text-xs text-gray-400 sm:text-sm">
+													{t("destinyExplanation")}
+												</span>
+											</div>
+											<div className="flex items-center gap-2">
+												<svg
+													className="w-4 h-4 text-[#A3B116]"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												<span className="text-xs text-gray-700 sm:text-sm">
+													{t("loveAnalysis")}
+												</span>
+											</div>
+											<div className="flex items-center gap-2">
+												<svg
+													className="w-4 h-4 text-gray-300"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												<span className="text-xs text-gray-400 sm:text-sm">
+													{t("loveSummary")}
+												</span>
+											</div>
+											<div className="flex items-center gap-2">
+												<svg
+													className="w-4 h-4 text-[#A3B116]"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												<span className="text-xs text-gray-700 sm:text-sm">
+													{t("luckAdvice")}
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								{/* Health Fortune Card */}
+								<div className="overflow-hidden bg-white shadow-lg rounded-2xl">
+									{/* Card Image Header */}
+									<div className="relative h-32 overflow-hidden bg-green-600">
+										<div className="relative h-32 overflow-hidden">
+											<Image
+												src="/images/price/health.jpg"
+												alt={t("healthFortune")}
+												fill
+											/>
+										</div>
+									</div>
+									{/* Card Content */}
+									<div className="p-4">
+										{/* Flip Card Container */}
+										<div className="relative h-32 mb-4 group perspective-1000">
+											{/* Card Inner (Flip Container) */}
+											<div className="relative w-full h-full transition-transform duration-700 transform-style-preserve-3d group-hover:rotate-y-180">
+												{/* Front Side - Premium Version ($88) */}
+												<div className="absolute inset-0 w-full h-full bg-white border-2 border-gray-300 rounded-lg shadow-sm backface-hidden">
+													<div className="flex flex-col justify-between h-full p-3">
+														<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+															<span className="text-[16px] sm:text-sm text-gray-600">
+																{t(
+																	"premiumPlan"
+																)}
+															</span>
+															<span className="text-[28px] sm:text-lg font-bold text-gray-600">
+																<span className="line-through">
+																	$88
+																</span>
+																/
+																<span className="text-[10px]">
+																	{t(
+																		"perTime"
+																	)}
+																</span>
+															</span>
+														</div>
+														<button className="w-full py-2 text-sm font-medium text-gray-700 transition-colors duration-300 bg-gray-100 rounded-lg hover:bg-gray-200">
+															{t(
+																"paymentCalculation"
+															)}
+														</button>
+													</div>
+												</div>
+
+												{/* Back Side - Light Version ($38) */}
+												<div className="absolute inset-0 w-full h-full backface-hidden bg-white rounded-lg border-2 border-[#A3B116] shadow-sm rotate-y-180">
+													<div className="flex flex-col justify-between h-full p-3">
+														<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+															<span className="text-[16px] sm:text-sm font-bold text-[#A3B116]">
+																{t("lightPlan")}
+															</span>
+															<span className="text-[28px] sm:text-lg font-bold text-[#A3B116]">
+																$38/
+																<span className="text-[10px]">
+																	{t(
+																		"perTime"
+																	)}
+																</span>
+															</span>
+														</div>
+														<button
+															className="w-full bg-[#A3B116] hover:bg-[#8B9914] text-white py-2 text-sm rounded-lg font-medium transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+															onClick={() =>
+																handleFortunePayment(
+																	"health"
+																)
+															}
+															disabled={
+																isProcessingPayment &&
+																currentCardType ===
+																	"fortune_health"
+															}
+														>
+															{isProcessingPayment &&
+															currentCardType ===
+																"fortune_health"
+																? t(
+																		"processing2"
+																	)
+																: t(
+																		"paymentCalculation"
+																	)}
+														</button>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										{/* Features */}
+										<div className="space-y-2 text-xs">
+											<div className="flex items-center gap-2">
+												<svg
+													className="w-4 h-4 text-[#A3B116]"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												<span className="text-xs text-gray-700 sm:text-sm">
+													{t("basicAnalysis")}
+												</span>
+											</div>
+											<div className="flex items-center gap-2">
+												<svg
+													className="w-4 h-4 text-gray-300"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												<span className="text-xs text-gray-400 sm:text-sm">
+													{t("destinyExplanation")}
+												</span>
+											</div>
+											<div className="flex items-center gap-2">
+												<svg
+													className="w-4 h-4 text-[#A3B116]"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												<span className="text-xs text-gray-700 sm:text-sm">
+													{t("healthAnalysis")}
+												</span>
+											</div>
+											<div className="flex items-center gap-2">
+												<svg
+													className="w-4 h-4 text-gray-300"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												<span className="text-xs text-gray-400 sm:text-sm">
+													{t("healthSummary")}
+												</span>
+											</div>
+											<div className="flex items-center gap-2">
+												<svg
+													className="w-4 h-4 text-[#A3B116]"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												<span className="text-xs text-gray-700 sm:text-sm">
+													{t("luckAdvice")}
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								{/* Career Fortune Card */}
+								<div className="overflow-hidden bg-white shadow-lg rounded-2xl">
+									{/* Card Image Header */}
+									<div className="relative h-32 overflow-hidden">
+										<Image
+											src="/images/price/career.jpg"
+											alt={t("careerFortune")}
+											fill
+										/>
+									</div>
+
+									{/* Card Content */}
+									<div className="p-4">
+										{/* Flip Card Container */}
+										<div className="relative h-32 mb-4 group perspective-1000">
+											{/* Card Inner (Flip Container) */}
+											<div className="relative w-full h-full transition-transform duration-700 transform-style-preserve-3d group-hover:rotate-y-180">
+												{/* Front Side - Premium Version ($88) */}
+												<div className="absolute inset-0 w-full h-full bg-white border-2 border-gray-300 rounded-lg shadow-sm backface-hidden">
+													<div className="flex flex-col justify-between h-full p-3">
+														<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+															<span className="text-[16px] sm:text-sm text-gray-600">
+																{t(
+																	"premiumPlan"
+																)}
+															</span>
+															<span className="text-[28px] sm:text-lg font-bold text-gray-600">
+																<span className="line-through">
+																	$88
+																</span>
+																/
+																<span className="text-[10px]">
+																	{t(
+																		"perTime"
+																	)}
+																</span>
+															</span>
+														</div>
+														<button className="w-full py-2 text-sm font-medium text-gray-700 transition-colors duration-300 bg-gray-100 rounded-lg hover:bg-gray-200">
+															{t(
+																"paymentCalculation"
+															)}
+														</button>
+													</div>
+												</div>
+
+												{/* Back Side - Light Version ($38) */}
+												<div className="absolute inset-0 w-full h-full backface-hidden bg-white rounded-lg border-2 border-[#A3B116] shadow-sm rotate-y-180">
+													<div className="flex flex-col justify-between h-full p-3">
+														<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+															<span className="text-[16px] sm:text-sm font-bold text-[#A3B116]">
+																{t("lightPlan")}
+															</span>
+															<span className="text-[28px] sm:text-lg font-bold text-[#A3B116]">
+																$38/
+																<span className="text-[10px]">
+																	{t(
+																		"perTime"
+																	)}
+																</span>
+															</span>
+														</div>
+														<button
+															className="w-full bg-[#A3B116] hover:bg-[#8B9914] text-white py-2 text-sm rounded-lg font-medium transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+															onClick={() =>
+																handleFortunePayment(
+																	"career"
+																)
+															}
+															disabled={
+																isProcessingPayment &&
+																currentCardType ===
+																	"fortune_career"
+															}
+														>
+															{isProcessingPayment &&
+															currentCardType ===
+																"fortune_career"
+																? t(
+																		"processing2"
+																	)
+																: t(
+																		"paymentCalculation"
+																	)}
+														</button>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										{/* Features */}
+										<div className="space-y-2 text-xs">
+											<div className="flex items-center gap-2">
+												<svg
+													className="w-4 h-4 text-[#A3B116]"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												<span className="text-xs text-gray-700 sm:text-sm">
+													{t("basicAnalysis")}
+												</span>
+											</div>
+											<div className="flex items-center gap-2">
+												<svg
+													className="w-4 h-4 text-gray-300"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												<span className="text-xs text-gray-400 sm:text-sm">
+													{t("destinyExplanation")}
+												</span>
+											</div>
+											<div className="flex items-center gap-2">
+												<svg
+													className="w-4 h-4 text-[#A3B116]"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												<span className="text-xs text-gray-700 sm:text-sm">
+													{t("careerAnalysis")}
+												</span>
+											</div>
+											<div className="flex items-center gap-2">
+												<svg
+													className="w-4 h-4 text-gray-300"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												<span className="text-xs text-gray-400 sm:text-sm">
+													{t("careerSummary")}
+												</span>
+											</div>
+											<div className="flex items-center gap-2">
+												<svg
+													className="w-4 h-4 text-[#A3B116]"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												<span className="text-xs text-gray-700 sm:text-sm">
+													{t("luckAdvice")}
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						{/* Couple's Fortune Analysis Section */}
+						<div className="w-full px-4 mx-auto max-w-7xl">
+							{/* Header */}
+							<div className="flex flex-col items-center justify-between gap-4 mb-8 sm:flex-row sm:gap-8 sm:mb-10 lg:mb-12">
+								<h2
+									className="font-['Noto_Serif_TC'] font-bold text-[#374A37] lg:text-[#AEB116] px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 text-left sm:text-left lg:[text-shadow:2px_2px_4px_rgba(0,0,0,0.3)] lg:[webkit-text-stroke:2px_white]"
+									style={{
+										fontSize: "clamp(2rem, 8vw, 4rem)", // Responsive font size
+									}}
+								>
+									{t("coupleAnalysisTitle")}
+								</h2>
+								<button
+									className="bg-[#A3B116] hover:bg-[#8B9914] text-white px-4 sm:px-6 py-2 text-base sm:text-lg lg:text-[20px] rounded-full font-medium transition-colors duration-300 shadow-lg"
+									onClick={() => router.push("/demo")}
+								>
+									{t("previewButton")}
+								</button>
+							</div>
+
+							{/* Main Card Container */}
+							<div className="max-w-4xl mx-auto rounded-[30px] bg-white ">
+								<div className="flex flex-col lg:flex-row">
+									{/* Left Side - Image and Limited Time Offer */}
+									<div className="lg:w-1/2 relative bg-gradient-to-br from-[#A3B116] to-[#8B9914] p-4 sm:p-6 lg:p-8 rounded-3xl">
+										{/* Couple Image Placeholder */}
+										<div className="relative ">
+											<div className="p-1 rounded-2xl">
+												<img
+													src="/images/price/together.png"
+													alt={t("coupleAnalysis")}
+													className="object-cover mb-4 fill rounded-xl"
+												/>
+											</div>
+										</div>
+
+										{/* Limited Time Offer - Flip Card */}
+										<div className="relative group perspective-1000">
+											<div className="relative w-full transition-transform duration-700 ">
+												<button
+													onClick={
+														handleCouplePayment
+													}
+													disabled={
+														isProcessingPayment &&
+														currentCardType ===
+															"couple"
+													}
+													className="w-full py-2 sm:py-3 mt-4 font-black text-[#AEB116] bg-white rounded-xl hover:bg-white hover:text-[#AEB116] transition-all duration-300 hover:shadow-lg hover:scale-105 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+													style={{
+														fontSize:
+															"clamp(2rem, 8vw, 3rem)", // Responsive font size
+													}}
+												>
+													{isProcessingPayment &&
+													currentCardType === "couple"
+														? t("processing2")
+														: t(
+																"paymentCalculation"
+															)}
+												</button>
+											</div>
+										</div>
+									</div>
+
+									{/* Right Side - Features and Premium Option */}
+									<div className="p-4 sm:p-6 lg:p-8 lg:w-1/2 ">
+										{/* Features List */}
+										<div className="mb-6 space-y-3 sm:mb-8 sm:space-y-4 ">
+											<div className="flex items-center gap-2 sm:gap-3">
+												<div className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 rounded-full bg-[#A3B116] flex items-center justify-center">
+													<svg
+														className="w-2 h-2 text-white sm:w-3 sm:h-3 lg:w-4 lg:h-4"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span className="text-xs sm:text-sm lg:text-[30px] text-gray-700">
+													{t("basicAnalysis")}
+												</span>
+											</div>
+
+											<div className="flex items-center gap-2 sm:gap-3">
+												<div className="flex items-center justify-center w-4 h-4 bg-gray-300 rounded-full sm:w-5 sm:h-5 lg:w-6 lg:h-6">
+													<svg
+														className="w-2 h-2 text-white sm:w-3 sm:h-3 lg:w-4 lg:h-4"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span className="text-xs sm:text-sm lg:text-[30px] text-gray-400">
+													{t("destinyExplanation")}
+												</span>
+											</div>
+
+											<div className="flex items-center gap-2 sm:gap-3">
+												<div className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 rounded-full bg-[#A3B116] flex items-center justify-center">
+													<svg
+														className="w-2 h-2 text-white sm:w-3 sm:h-3 lg:w-4 lg:h-4"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span className="text-xs sm:text-sm lg:text-[30px] text-gray-700">
+													{t("wealthAnalysis")}
+												</span>
+											</div>
+
+											<div className="flex items-center gap-2 sm:gap-3">
+												<div className="flex items-center justify-center w-4 h-4 bg-gray-300 rounded-full sm:w-5 sm:h-5 lg:w-6 lg:h-6">
+													<svg
+														className="w-2 h-2 text-white sm:w-3 sm:h-3 lg:w-4 lg:h-4"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span className="text-xs sm:text-sm lg:text-[30px] text-gray-400">
+													{t("wealthSummary")}
+												</span>
+											</div>
+
+											<div className="flex items-center gap-2 sm:gap-3">
+												<div className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 rounded-full bg-[#A3B116] flex items-center justify-center">
+													<svg
+														className="w-2 h-2 text-white sm:w-3 sm:h-3 lg:w-4 lg:h-4"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span className="text-xs sm:text-sm lg:text-[30px] text-gray-400">
+													{t("luckAdvice")}
+												</span>
+											</div>
+										</div>
+
+										{/* Premium Version Pricing */}
+										<div className="mt-14 ">
+											<div className="flex flex-row gap-5 text-center">
+												<div
+													className="mb-2 text-[35px] sm:text-5xl font-semibold"
+													style={{ color: "#A1A1A1" }}
+												>
+													{t("premiumVersionTitle")}
+												</div>
+												<div
+													className="text-[40px] sm:text-6xl font-black"
+													style={{ color: "#A1A1A1" }}
+												>
+													<span className="line-through">
+														$168
+													</span>
+													<span className="text-[12px] sm:text-lg font-medium">
+														/ {t("perTimeUnit")}
+													</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</section>
 
-				{/* Square Feet Input Popup */}
+				{/* Area Input Popup (Updated for region-based input) */}
 				{showSqftPopup && (
 					<div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/20">
 						<div className="relative w-full max-w-md p-8 bg-white shadow-2xl rounded-2xl animate-fade-in">
@@ -935,14 +2461,14 @@ export default function YourPage() {
 									{t("sqftPopupDescNew")}
 									<br />
 									<span className="font-medium text-red-600">
-										{t("sqftMinimumNote")}
+										{pricingInfo.minimumNote}
 									</span>
 								</p>
 
 								{/* Input */}
 								<div className="mb-6">
 									<label className="block mb-2 text-sm font-medium text-left text-gray-700">
-										{t("sqftInputLabelNew")}
+										{pricingInfo.inputLabel}
 									</label>
 									<input
 										type="number"
@@ -950,9 +2476,9 @@ export default function YourPage() {
 										onChange={(e) =>
 											setSqftValue(e.target.value)
 										}
-										placeholder={t("sqftPlaceholderNew")}
+										placeholder={pricingInfo.placeholder}
 										className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-center text-lg focus:border-[#096e56] focus:outline-none transition-colors"
-										min="380"
+										min={pricingInfo.minimumValue}
 										step="1"
 										disabled={isProcessingPayment}
 									/>
@@ -968,7 +2494,7 @@ export default function YourPage() {
 									<button
 										onClick={handleSqftSubmit}
 										disabled={isProcessingPayment}
-										className="flex-1 px-6 py-3 font-medium text-white transition-all duration-200 bg-[#096e56] rounded-lg hover:bg-[#19ad6b] shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+										className="flex-1 px-6 py-3 font-medium text-white bg-[#096e56] hover:bg-[#19ad6b] transition-all duration-200 rounded-lg shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
 									>
 										{isProcessingPayment
 											? t("processing")
@@ -987,8 +2513,8 @@ export default function YourPage() {
 					</div>
 				)}
 
-				{/* Share Confirmation Modal */}
-				{showShareConfirm && (
+				{/* Share Confirmation Modal - Only show for Hong Kong */}
+				{selectedRegion === "hongkong" && showShareConfirm && (
 					<div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-white/30">
 						<div className="relative max-w-md p-6 bg-white shadow-2xl rounded-2xl">
 							<div className="text-center">
@@ -1055,17 +2581,16 @@ export default function YourPage() {
 
 				{/* Show loading state while checking for existing reports */}
 				{/* {checkingExistingReport && (
-					<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-						<div className="p-6 bg-white rounded-lg">
-							<div className="w-8 h-8 mx-auto border-b-2 border-green-500 rounded-full animate-spin"></div>
-							<p className="mt-2 text-center">
-								{t("checkingExistingReports")}
-							</p>
-						</div>
-					</div>
-				)} */}
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="p-6 bg-white rounded-lg">
+                            <div className="w-8 h-8 mx-auto border-b-2 border-green-500 rounded-full animate-spin"></div>
+                            <p className="mt-2 text-center">
+                                {t("checkingExistingReports")}
+                            </p>
+                        </div>
+                    </div>
+                )} */}
 
-				<PricePromo />
 				<FAQ />
 				<Footer />
 			</div>
@@ -1085,6 +2610,111 @@ export default function YourPage() {
 								opacity: 1;
 								transform: scale(1);
 							}
+						}
+
+						/* 3D Hover Circular Motion Animation Utilities */
+						.perspective-1000 {
+							perspective: 1000px;
+						}
+
+						.preserve-3d {
+							transform-style: preserve-3d;
+						}
+
+						.transform-gpu {
+							transform: translate3d(0, 0, 0);
+						}
+
+						/* Card Positioning in 3D Space - Side by side, clearly visible */
+						.card-orbit-front {
+							transform: rotateY(0deg) translateZ(20px);
+						}
+
+						.card-orbit-back {
+							transform: rotateY(-15deg) translateZ(-10px)
+								scale(0.95);
+						}
+
+						/* Hover effect for back card - circular motion to center front */
+						.card-orbit-back:hover {
+							transform: rotateY(0deg) translateZ(50px)
+								translateX(-140px) scale(1) !important;
+						}
+
+						/* Smooth transitions for all transforms */
+						.card-orbit-front,
+						.card-orbit-back {
+							transition: transform 1s ease-in-out;
+						}
+
+						/* Additional hover scale effects for front card */
+						.card-orbit-front:hover {
+							transform: rotateY(0deg) translateZ(30px)
+								scale(1.05);
+						}
+
+						/* Second Hero Section - Better positioning to match first section */
+						.card-orbit-front-right {
+							transform: rotateY(0deg) translateZ(20px)
+								translateX(20px);
+						}
+
+						.card-orbit-back-right {
+							transform: rotateY(-25deg) translateZ(-20px)
+								translateX(-80px) scale(0.9);
+						}
+
+						/* Hover effect for back card in second section - smooth motion to center-right */
+						.card-orbit-back-right:hover {
+							transform: rotateY(10deg) translateZ(50px)
+								translateX(20px) scale(1) !important;
+						}
+
+						/* Smooth transitions for second section cards */
+						.card-orbit-front-right,
+						.card-orbit-back-right {
+							transition: transform 1s ease-in-out;
+						}
+
+						/* Additional hover effects for front card in second section - minimal movement */
+						.card-orbit-front-right:hover {
+							transform: rotateY(-3deg) translateZ(30px)
+								translateX(15px) scale(1.05);
+						}
+
+						/* First Hero Section - Better positioning to avoid overlap */
+						.card-orbit-front-left {
+							transform: rotateY(0deg) translateZ(20px)
+								translateX(-20px);
+							z-index: 10;
+						}
+
+						.card-orbit-back-left {
+							transform: rotateY(25deg) translateZ(-20px)
+								translateX(80px) scale(0.9);
+							z-index: 5;
+						}
+
+						/* Hover effect for back card in first section - smooth motion to center-left */
+						.card-orbit-back-left:hover {
+							transform: rotateY(-10deg) translateZ(50px)
+								translateX(-20px) scale(1) !important;
+							z-index: 30 !important;
+						}
+
+						/* Smooth transitions for first section cards */
+						.card-orbit-front-left,
+						.card-orbit-back-left {
+							transition:
+								transform 1s ease-in-out,
+								z-index 0s ease-in-out;
+						}
+
+						/* Additional hover effects for front card in first section - minimal movement */
+						.card-orbit-front-left:hover {
+							transform: rotateY(3deg) translateZ(30px)
+								translateX(-15px) scale(1.05);
+							z-index: 15;
 						}
 					}
 				`}
