@@ -23,6 +23,7 @@ const nextConfig: NextConfig = {
 		],
 	},
 	reactStrictMode: false,
+	output: "standalone", // Enable standalone output for Docker
 	// experimental: {
 	//   turbo: {
 	//     resolveAlias: {

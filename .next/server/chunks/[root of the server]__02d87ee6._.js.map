@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 6, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"","debugId":null}},
-    {"offset": {"line": 52, "column": 0}, "map": {"version":3,"sources":["file:///Users/michaelng/Desktop/HarmoniqFengShui/FengShuiLayout/src/app/api/countdown-end/route.js"],"sourcesContent":["export async function GET() {\n\tconst endTime = new Date(\"2025-07-01T00:00:00Z\").getTime();\n\treturn Response.json({ endTime });\n}\n"],"names":[],"mappings":";;;AAAO,eAAe;IACrB,MAAM,UAAU,IAAI,KAAK,wBAAwB,OAAO;IACxD,OAAO,SAAS,IAAI,CAAC;QAAE;IAAQ;AAChC","debugId":null}}]
-}

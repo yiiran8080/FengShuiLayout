@@ -539,7 +539,7 @@ class EnhancedMessageAnalyzer {
 
 	// 檢測風水術語詢問
 	detectKnowledgeQuery(message) {
-		// 檢測是否在詢問專業術語
+		// 檢測是否在詢問專業術語 - 只匹配明確的定義性問題
 		const queryPatterns = [
 			/什麼是(.+?)[\?？]?$/,
 			/(.+?)是什麼[\?？]?$/,
@@ -566,18 +566,10 @@ class EnhancedMessageAnalyzer {
 			}
 		}
 
-		// 檢測直接提及術語
-		for (const term of Object.keys(this.fengShuiTerms)) {
-			if (message.includes(term) && message.length < 50) {
-				// 短消息更可能是詢問
-				return {
-					isKnowledgeQuery: true,
-					term: term,
-					queryType: "mention",
-					originalMessage: message,
-				};
-			}
-		}
+		// 移除直接術語檢測 - 避免干擾正常諮詢請求
+		// 只有明確的定義性問題才會被視為知識詢問
+		// 例如: "我想增桃花運" 是諮詢請求，不是知識詢問
+		// 例如: "什麼是桃花運?" 才是知識詢問
 
 		return { isKnowledgeQuery: false };
 	}
