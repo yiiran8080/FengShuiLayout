@@ -79,10 +79,10 @@
 	},
 	"home": {
 		"hero": {
-			"title": "打造和諧風水佈局",
-			"title2": "融合自然之力，優化氣場流動",
-			"subtitle1": "只要輕輕挪動房間的一個角落，幸運與幸福便悄悄降臨您的生活",
-			"subtitle2": "閱讀專屬於您的客製化評測報告，開啟專屬幸福人生的鑰匙",
+			"title": "打造您的命運指南",
+			"title2": "融合自然之力",
+			"subtitle1": "貼心解析命理與風水，陪伴你走好每一步",
+			"subtitle2": "專屬你的能量解讀，讓生活更美好",
 			"subtitle3": "家庭容易發生口角？",
 			"subtitle4": "試試移動房間的一個小角落，您將會變得更幸運，收穫幸福！",
 			"subtitle5": "阅读專屬科學訂製測評報告，解鎖幸福人生。",
@@ -183,7 +183,7 @@
 			"title": "為何選擇我們？",
 			"title1": "98%",
 			"subtitle1": "用戶滿意",
-			"title2": "24-7",
+			"title2": "24/7",
 			"subtitle2": "自助定製化服務",
 			"title3": "100%",
 			"subtitle3": "退款保障",
@@ -679,10 +679,10 @@
 		"premiumPlan": "尊享版",
 		"lightPlan": "限時優惠",
 		"processing2": "處理中...",
-		"coupleFeature_1": "命主八字基礎分析",
-		"coupleFeature_2": "八字命局格局心得解",
-		"coupleFeature_3": "財運流年解析",
-		"coupleFeature_4": "流年財運運勢總結",
+		"coupleFeature_1": "姻緣配對分析",
+		"coupleFeature_2": "合婚核心要素交互",
+		"coupleFeature_3": "流年季節解析",
+		"coupleFeature_4": "流年季節解析",
 		"coupleFeature_5": "流年開運建議",
 		"fengshuiCalculation": "風水測算",
 		"destinyExplanation": "八字命局心得解釋",
@@ -976,7 +976,11 @@
 				],
 				"description": "深度解析您的命理格局，洞察人生起伏規律，指導重要決策時機。",
 				"mainTitle": "命理流年測算",
-				"previewTitle": "命理流年報告預覽"
+				"previewTitle": "命理流年報告預覽",
+				"toggleButton1": "年運分析",
+				"toggleButton2": "運勢詳解",
+				"previewAlt1": "年運分析報告",
+				"previewAlt2": "運勢詳解報告"
 			},
 			"wealth": {
 				"title": "財運測算服務",
@@ -1036,7 +1040,7 @@
 				],
 				"description": "專業情侶合盤分析，預測感情發展方向，助您掌握愛情運勢。",
 				"mainTitle": "感情合盤流年測算",
-				"previewTitle": "感情合盤流年報告預覽"
+				"previewTitle": "感情合盤報告預覽"
 			}
 		},
 		"ui": {

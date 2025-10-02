@@ -183,7 +183,7 @@
 			"title": "为何选择我们？",
 			"title1": "98%",
 			"subtitle1": "用户满意",
-			"title2": "24-7",
+			"title2": "24/7",
 			"subtitle2": "自助定制化服务",
 			"title3": "100%",
 			"subtitle3": "退款保障",
@@ -676,10 +676,10 @@
 		"premiumPlan": "专享版",
 		"lightPlan": "限时优惠",
 		"processing2": "处理中...",
-		"coupleFeature_1": "命主八字基础分析",
-		"coupleFeature_2": "八字命局格局心得解",
-		"coupleFeature_3": "财运流年解析",
-		"coupleFeature_4": "流年财运运势总结",
+		"coupleFeature_1": "姻缘配对分析",
+		"coupleFeature_2": "合婚核心要素交互",
+		"coupleFeature_3": "流年季节解析",
+		"coupleFeature_4": "流年季节解析",
 		"coupleFeature_5": "流年开运建议",
 		"fengshuiCalculation": "风水测算",
 		"destinyExplanation": "八字命局心得解释",
@@ -970,7 +970,11 @@
 				],
 				"description": "深度解析您的命理格局，洞察人生起伏规律，指导重要决策时机。",
 				"mainTitle": "命理流年测算",
-				"previewTitle": "命理流年报告预览"
+				"previewTitle": "命理流年报告预览",
+				"toggleButton1": "年运分析",
+				"toggleButton2": "运势详解",
+				"previewAlt1": "年运分析报告",
+				"previewAlt2": "运势详解报告"
 			},
 			"wealth": {
 				"title": "财运测算服务",
@@ -1030,7 +1034,7 @@
 				],
 				"description": "专业情侣合盘分析，预测感情发展方向，助您掌握爱情运势。",
 				"mainTitle": "感情合盘流年测算",
-				"previewTitle": "感情合盘流年报告预览"
+				"previewTitle": "感情合盘报告预览"
 			}
 		},
 		"ui": {
