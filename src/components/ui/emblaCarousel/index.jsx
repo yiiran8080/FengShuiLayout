@@ -128,6 +128,18 @@ export default function CommentsCarousel() {
 							borderRadius: "15px",
 							top: "80%",
 							transform: "translate(-50%, -50%)",
+							overflow: "visible",
+						}}
+					></div>
+					<Image
+						src="/images/hero/carouselbg.png"
+						alt="Carousel Background"
+						fill
+						className="object-cover scale-130"
+						style={{
+							borderRadius: "15px",
+							transformOrigin: "center",
+							objectPosition: "top center", // Change this to adjust image position
 						}}
 					/>
 

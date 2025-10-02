@@ -830,13 +830,13 @@ export default function YourPage() {
 					className="self-stretch flex flex-col items-center justify-start mb-25 gap-16 sm:gap-24 lg:gap-[164px] max-w-full text-center text-2xl sm:text-3xl lg:text-[40px] text-[#073e31] font-[ABeeZee] px-4 sm:px-6 lg:px-0"
 					style={{ fontFamily: '"Noto Serif TC", serif' }}
 				>
-					<div className="w-full max-w-[1200px] flex flex-col items-center justify-start mt-18 gap-5 sm:gap-20 lg:gap-[90px]">
+					<div className="w-full max-w-[1200px] flex flex-col items-center justify-start mt-18 gap-5 sm:gap-20 lg:gap-[40px]">
 						{/* Title Section */}
 						{/* Features Section */}
 
 						{/* Mobile Layout - Green Background Bar - Full Width */}
-						<div className="block lg:hidden w-screen bg-gradient-to-r from-[#A3B116] to-[#374A37] p-4 -mx-4 sm:-mx-6">
-							<div className="grid grid-cols-4 gap-2 max-w-[1200px] mx-auto">
+						<div className="block lg:hidden w-screen bg-gradient-to-r from-[#A3B116] to-[#374A37] py-4 -mx-4 sm:-mx-6">
+							<div className="grid grid-cols-4  max-w-[1200px] mx-auto">
 								{mobileFeatures.map((feature, index) => (
 									<div
 										key={index}
@@ -845,12 +845,12 @@ export default function YourPage() {
 										<img
 											src={feature.icon}
 											alt={feature.title}
-											className="w-10 h-10 mb-1 brightness-0 invert"
+											className="w-20 h-20 brightness-0 invert"
 										/>
-										<div className="text-sm font-extrabold mb-1 text-[#E8FF00]">
+										<div className="text-[23px] font-black font-noto-sans-hk mb-1 text-[#E8FF00]">
 											{feature.title}
 										</div>
-										<div className="text-[10px] font-medium text-white opacity-90">
+										<div className="text-[12px] font-bold text-white opacity-90 font-noto-sans-hk">
 											{feature.description}
 										</div>
 									</div>
@@ -858,9 +858,9 @@ export default function YourPage() {
 							</div>
 						</div>
 
-						<div className="w-full max-w-[1200px] px-4 sm:px-6 lg:px-0">
+						<div className="w-full max-w-[1200px] px-4 sm:px-6  lg:px-0 flex justify-center">
 							{/* Desktop Layout - Original Style */}
-							<div className="hidden grid-cols-4 gap-8 lg:grid place-items-center">
+							<div className="w-[90%] hidden grid-cols-4 lg:grid place-items-center">
 								{desktopFeatures.map((feature, index) => (
 									<div
 										key={index}
@@ -869,11 +869,11 @@ export default function YourPage() {
 										<Image
 											src={feature.icon}
 											alt={feature.title}
-											width={40}
-											height={40}
+											width={100}
+											height={100}
 											className="object-contain mb-4"
 										/>
-										<div className="flex flex-col items-center justify-center ml-4">
+										<div className="flex flex-col items-center justify-center ">
 											<h3
 												className="mb-1 text-center"
 												style={{
@@ -906,16 +906,10 @@ export default function YourPage() {
 							</div>
 						</div>
 						<div
-							className="w-full max-w-[960px] flex flex-col items-start justify-start gap-6 sm:gap-8 lg:gap-1 px-4 sm:px-6 lg:px-0"
+							className="w-full max-w-[960px] flex flex-col items-start justify-start gap-3 sm:gap-8 lg:gap-1 px-4 sm:px-6 lg:px-0"
 							style={{ fontFamily: '"Noto Serif TC", serif' }}
 						>
-							<h2
-								className="self-stretch relative text-center sm:text-center font-['Noto_Serif_TC'] text-black text-3xl sm:text-4xl md:text-5xl lg:text-[48px]"
-								style={{
-									fontFamily: '"Noto Serif TC", serif',
-									fontWeight: "800",
-								}}
-							>
+							<h2 className="self-stretch relative text-center  font-bold sm:text-center text-black text-3xl sm:text-4xl md:text-5xl lg:text-[48px]">
 								{t("title")}
 							</h2>
 							<div className="flex justify-center w-full sm:justify-end">
@@ -995,12 +989,15 @@ export default function YourPage() {
 						{/* Mobile Layout - Matches attached image */}
 						<div className="block lg:hidden w-full max-w-[1200px] px-4 sm:px-6">
 							{/* Title */}
-							<h3 className="font-['Noto_Serif_TC'] text-[#073e31] mb-6 text-left text-3xl font-bold">
+							<h3
+								className=" text-[#073e31] mb-6 text-left text-3xl font-bold"
+								style={{ WebkitTextStroke: "0.5px #073e31" }}
+							>
 								{t("fengShuiCalculation")}
 							</h3>
 
 							{/* Content Layout - Features left, Image right */}
-							<div className="flex gap-4 mb-6">
+							<div className="flex gap-2 mb-6">
 								{/* Left side - Features List */}
 								<div className="flex-1">
 									{[
@@ -1028,7 +1025,7 @@ export default function YourPage() {
 													/>
 												</svg>
 											</div>
-											<span className="text-[#073e31] text-[11px] font-medium">
+											<span className="text-[#073e31] text-[15px] font-noto-sans-hk font-medium">
 												{t(featureKey)}
 											</span>
 										</div>
@@ -1036,38 +1033,50 @@ export default function YourPage() {
 								</div>
 
 								{/* Right side - Furniture Images */}
-								<div className="flex flex-col gap-2 w-50">
+								<div className="flex flex-col w-40 gap-2">
 									<Image
 										src="/images/hero/button-2.png"
 										alt="furniture"
-										width={200}
-										height={100}
+										width={150}
+										height={150}
 										className="object-contain w-full h-auto rounded-lg"
 									/>
 								</div>
 							</div>
 
 							{/* Pricing Cards */}
-							<div className="relative">
+							<div className="relative max-w-sm mx-auto">
 								{/* Green Limited Time Offer Card - On Top */}
-								<div className="bg-gradient-to-r from-[#E8F37A] to-[#A6B41B] rounded-2xl p-4 shadow-lg relative z-10">
+								<div
+									className="bg-gradient-to-r from-[#E8F37A] to-[#A6B41B] rounded-2xl p-4 relative z-10"
+									style={{
+										boxShadow:
+											"0 17px 15px rgba(87, 105, 103, 0.25)",
+									}}
+								>
 									<div className="flex items-center justify-between">
 										<div>
-											<div className="text-[#374A37] text-2xl font-extrabold mb-1">
+											<div
+												className="text-[#374A37] text-2xl sm:text-2xl  mb-1"
+												style={{
+													WebkitTextStroke:
+														"0.7px #374A37",
+												}}
+											>
 												{t("limitedTimeOffer")}
 											</div>
 											<button
 												onClick={handlePremiumClick}
-												className="bg-white text-[#A3B116] px-6 py-2 rounded-full text-sm font-bold"
+												className="bg-white text-[#A3B116] font-noto-sans-hk px-10 sm:px-6 py-2 rounded-full text-sm sm:text-sm font-bold"
 											>
 												{t("paymentCalculation")}
 											</button>
 										</div>
 										<div className="text-right">
-											<div className="text-5xl font-extrabold text-black">
+											<div className="mb-1 text-4xl font-extrabold text-black font-noto-sans-hk sm:text-5xl">
 												$188
 											</div>
-											<div className="text-sm text-[#073e31] opacity-80">
+											<div className="text-xs sm:text-sm text-[#073e31] opacity-80">
 												/ {t("perTime")}
 											</div>
 										</div>
@@ -1076,15 +1085,21 @@ export default function YourPage() {
 
 								{/* White Premium Version Card - Behind/Bottom */}
 								<div className="relative z-0 p-4 -mt-4 bg-white border border-gray-200 shadow-lg rounded-2xl">
-									<div className="flex items-center justify-between pt-4">
-										<div className="text-[#073e31] text-2xl font-bold">
+									<div className="flex items-center justify-between pt-4 ml-6">
+										<div
+											className="text-[#374A37] text-2xl sm:text-2xl  mb-1"
+											style={{
+												WebkitTextStroke:
+													"0.7px #374A37",
+											}}
+										>
 											{t("premiumVersion2")}
 										</div>
 										<div className="text-right">
-											<div className="text-3xl font-bold text-[#073e31] line-through opacity-70">
+											<div className="text-4xl sm:text-3xl font-noto-sans-hk font-bold text-[#073e31] line-through opacity-70">
 												$388
 											</div>
-											<div className="text-sm text-[#073e31] opacity-80">
+											<div className="text-xs sm:text-sm text-[#073e31] opacity-80">
 												/ {t("perTime")}
 											</div>
 										</div>
@@ -1094,26 +1109,14 @@ export default function YourPage() {
 						</div>
 
 						{/* Desktop Layout - Original */}
-						<div className="hidden lg:flex w-full max-w-[1200px] flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 px-4 sm:px-6 lg:px-0">
+						<div className="hidden lg:flex w-full max-w-[1200px] flex-col lg:flex-row items-center justify-center gap-8 lg:gap-8 px-4 sm:px-6 lg:px-0">
 							{/* Left side - Image (50% width) */}
 							<div className="relative flex flex-col items-center justify-center w-full lg:w-1/2">
-								<h3
-									className="absolute top-8 lg:top-[170px] font-['Noto_Serif_TC'] text-[#AEB116] mb-4 lg:mb-1 text-center w-full"
-									style={{
-										fontSize: "clamp(2rem, 8vw, 4rem)", // Responsive font size
-										fontWeight: "800",
-										WebkitTextStroke: "2px white",
-										textShadow:
-											"2px 2px 4px rgba(0,0,0,0.1)",
-									}}
-								>
-									{t("fengShuiCalculation")}
-								</h3>
-								<div className="relative max-w-[500px] w-full">
+								<div className="relative max-w-[600px] w-full">
 									<Image
-										src="/images/hero/button-2.png"
+										src="/images/hero/button-4.png"
 										alt={t("fengshuiCalculation")}
-										width={500}
+										width={400}
 										height={400}
 										className="object-contain w-full h-auto"
 										priority
@@ -1127,16 +1130,16 @@ export default function YourPage() {
 								<div className="flex flex-col items-center justify-center">
 									<div className="relative w-full max-w-2xl">
 										{/* Main white card - made responsive */}
-										<div className="relative w-full max-w-[520px] min-h-[430px] bg-white rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 border border-gray-200 mx-auto">
+										<div className="relative w-full max-w-[700px] min-h-[400px] bg-white rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 border border-gray-200 mx-auto">
 											{/* Small green discount card overlay - positioned at top-left */}
-											<div className="absolute -top-2 sm:-top-4 -left-2 sm:-left-4 bg-gradient-to-r from-[#E9F47C] to-[#A3B116] rounded-2xl px-8 sm:px-12 lg:px-18 py-2 shadow-lg z-10">
+											<div className="absolute -top-2 sm:-top-4 -left-2 sm:-left-4 bg-gradient-to-b from-[#E9F47C] to-[#A3B116] rounded-2xl px-8 sm:px-12 lg:px-18 py-2 shadow-lg z-10">
 												{/* "最多用戶選擇" Badge */}
-												<div className="absolute -top-2 sm:-top-3 -left-2 sm:-left-3 transform bg-white text-[#111827] px-2 sm:px-3 py-1 rounded-full text-xs font-bold shadow-md whitespace-nowrap">
+												<div className="absolute  -right-1 sm:-right-[-0.5rem] transform bg-white/50 text-[#111827] px-2 sm:px-3 py-1 rounded-full text-xs font-bold shadow-md whitespace-nowrap">
 													{t("mostUserChoice")}
 												</div>
 
 												<div className="pt-1 text-center text-white">
-													<div className="flex items-baseline justify-center gap-1 mb-1">
+													<div className="flex items-baseline justify-center gap-1 mb-1 -translate-x-10">
 														<span
 															className="bg-gradient-to-r from-[#99A800] to-[#5D6600] bg-clip-text text-transparent"
 															style={{
@@ -1158,34 +1161,46 @@ export default function YourPage() {
 														>
 															$188
 														</span>
-														<span className="text-xs text-black sm:text-sm opacity-90">
+														<span className="text-xs font-bold text-black sm:text-sm opacity-90">
 															/ {t("perTime")}
 														</span>
 													</div>
-													<div className="font-['Noto_Serif_TC'] font-bold text-[#284628] text-lg sm:text-xl lg:text-[40px]">
+													<div
+														className="font-['Noto_Serif_TC, serif'] font-extrabold text-[#284628] text-lg sm:text-xl lg:text-[45px] translate-x-15"
+														style={{
+															WebkitTextStroke:
+																"1.5px #284628",
+														}}
+													>
 														{t("limitedTimeOffer")}
 													</div>
 												</div>
 											</div>{" "}
 											{/* Main card content */}
-											<div className="flex flex-col h-full gap-5 pt-2">
+											<div className="flex flex-col w-full h-full gap-5 pt-2">
 												{/* Original price section - moved to right */}
 												<div className="mb-6 text-right">
 													<div className="flex items-baseline justify-end gap-2 mb-2">
 														<span className="text-4xl font-bold text-gray-400 line-through">
 															$388
 														</span>
-														<span className="text-sm text-gray-400">
+														<span className="text-sm font-bold text-gray-400">
 															/ {t("perTime")}
 														</span>
 													</div>
-													<div className="text-4xl font-bold text-gray-600">
+													<div
+														className="text-4xl font-bold text-gray-400"
+														style={{
+															WebkitTextStroke:
+																"1px #9CA3AF",
+														}}
+													>
 														{t("premiumVersion2")}
 													</div>
 												</div>
 
 												{/* Features in 2-column grid */}
-												<div className="flex-1 mb-8">
+												<div className="flex-1 mb-3">
 													<div className="grid grid-cols-2 gap-y-4 gap-x-8">
 														{[
 															"premiumFeature2_1",
@@ -1203,18 +1218,32 @@ export default function YourPage() {
 																	key={index}
 																	className="flex items-start gap-3"
 																>
-																	<svg
-																		className="w-5 h-5 text-black mt-0.5 flex-shrink-0"
-																		fill="currentColor"
-																		viewBox="0 0 20 20"
+																	<div
+																		className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+																		style={{
+																			backgroundColor:
+																				"#E8E2DA",
+																		}}
 																	>
-																		<path
-																			fillRule="evenodd"
-																			d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-																			clipRule="evenodd"
-																		/>
-																	</svg>
-																	<span className="text-[17px] font-medium leading-relaxed text-black">
+																		<svg
+																			className="w-4 h-4 text-black"
+																			fill="currentColor"
+																			viewBox="0 0 20 20"
+																		>
+																			<path
+																				fillRule="evenodd"
+																				d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																				clipRule="evenodd"
+																			/>
+																		</svg>
+																	</div>
+																	<span
+																		className="text-[17px] leading-relaxed text-black"
+																		style={{
+																			fontFamily:
+																				'"Noto sans HK',
+																		}}
+																	>
 																		{t(
 																			featureKey
 																		)}
@@ -1231,7 +1260,7 @@ export default function YourPage() {
 														onClick={
 															handlePremiumClick
 														}
-														className="bg-gradient-to-r from-[#BDCF0C] to-[#7B8700] hover:from-[#A3B116] hover:to-[#5D6600] text-white font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+														className="bg-gradient-to-b from-[#BDCF0C] to-[#7B8700] hover:from-[#A3B116] hover:to-[#5D6600] text-white font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
 														style={{
 															width: "342px",
 															height: "48px",
@@ -1261,20 +1290,25 @@ export default function YourPage() {
 						</div>
 
 						{/* Second Hero Section with Cards on Left, Image on Right */}
-						{/* Mobile Layout - Same as first hero but image on left */}
+						{/* Mobile Layout - Matches first hero section format */}
 						<div className="block lg:hidden w-full max-w-[1200px] px-4 sm:px-6 mb-8">
 							{/* Title */}
-							<h3 className="font-['Noto_Serif_TC'] text-[#073e31] mb-6 text-left text-3xl font-bold">
+							<h3
+								className=" text-[#073e31] mb-6 text-left text-3xl font-bold"
+								style={{ WebkitTextStroke: "0.5px #073e31" }}
+							>
 								{t("destinyCalculation")}
 							</h3>
 
 							{/* Content Layout - Image left, Features right */}
-							<div className="flex gap-4 mb-6">
+							<div className="flex gap-2 mb-6">
 								{/* Left side - Image */}
-								<div className="flex flex-col gap-2 w-45">
-									<img
+								<div className="flex flex-col w-40 gap-2">
+									<Image
 										src="/images/hero/button-1.png"
 										alt={t("destinyCalculation")}
+										width={150}
+										height={150}
 										className="object-contain w-full h-auto rounded-lg"
 									/>
 								</div>
@@ -1306,7 +1340,7 @@ export default function YourPage() {
 													/>
 												</svg>
 											</div>
-											<span className="text-[#073e31] text-[12px] font-medium">
+											<span className="text-[#073e31] text-[15px] font-noto-sans-hk font-medium">
 												{t(featureKey)}
 											</span>
 										</div>
@@ -1315,26 +1349,38 @@ export default function YourPage() {
 							</div>
 
 							{/* Pricing Cards */}
-							<div className="relative">
+							<div className="relative max-w-sm mx-auto">
 								{/* Green Limited Time Offer Card - On Top */}
-								<div className="bg-gradient-to-r from-[#E8F37A] to-[#A6B41B] rounded-2xl p-4 shadow-lg relative z-10">
+								<div
+									className="bg-gradient-to-r from-[#E8F37A] to-[#A6B41B] rounded-2xl p-4 relative z-10"
+									style={{
+										boxShadow:
+											"0 17px 15px rgba(87, 105, 103, 0.25)",
+									}}
+								>
 									<div className="flex items-center justify-between">
 										<div>
-											<div className="text-[#374A37] text-2xl font-extrabold mb-1">
+											<div
+												className="text-[#374A37] text-2xl sm:text-2xl  mb-1"
+												style={{
+													WebkitTextStroke:
+														"0.7px #374A37",
+												}}
+											>
 												{t("limitedTimeOffer")}
 											</div>
 											<button
 												onClick={handleExpert88Payment}
-												className="bg-white text-[#A3B116] px-6 py-2 rounded-full text-sm font-bold"
+												className="bg-white text-[#A3B116] font-noto-sans-hk px-10 sm:px-6 py-2 rounded-full text-sm sm:text-sm font-bold"
 											>
 												{t("paymentCalculation")}
 											</button>
 										</div>
 										<div className="text-right">
-											<div className="text-5xl font-extrabold text-black">
-												$88
+											<div className="mb-1 text-4xl font-extrabold text-black font-noto-sans-hk sm:text-5xl">
+												$38
 											</div>
-											<div className="text-sm text-[#073e31] opacity-80">
+											<div className="text-xs sm:text-sm text-[#073e31] opacity-80">
 												/ {t("perTime")}
 											</div>
 										</div>
@@ -1343,15 +1389,21 @@ export default function YourPage() {
 
 								{/* White Premium Version Card - Behind/Bottom */}
 								<div className="relative z-0 p-4 -mt-4 bg-white border border-gray-200 shadow-lg rounded-2xl">
-									<div className="flex items-center justify-between pt-4">
-										<div className="text-[#073e31] text-2xl font-bold">
+									<div className="flex items-center justify-between pt-4 ml-6">
+										<div
+											className="text-[#374A37] text-2xl sm:text-2xl  mb-1"
+											style={{
+												WebkitTextStroke:
+													"0.7px #374A37",
+											}}
+										>
 											{t("premiumVersion2")}
 										</div>
 										<div className="text-right">
-											<div className="text-3xl font-bold text-[#073e31] line-through opacity-70">
-												$168
+											<div className="mb-1 text-3xl font-extrabold text-black line-through font-noto-sans-hk opacity-70 sm:text-4xl">
+												$88
 											</div>
-											<div className="text-sm text-[#073e31] opacity-80">
+											<div className="text-xs sm:text-sm text-[#073e31] opacity-80">
 												/ {t("perTime")}
 											</div>
 										</div>
@@ -1367,16 +1419,16 @@ export default function YourPage() {
 								<div className="flex flex-col items-center justify-center">
 									<div className="relative w-full max-w-2xl">
 										{/* Main white card - made responsive */}
-										<div className="relative w-full max-w-[520px] min-h-[430px] bg-white rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 border border-gray-200 mx-auto">
+										<div className="relative w-full max-w-[550px] min-h-[400px] bg-white rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 border border-gray-200 mx-auto">
 											{/* Small green discount card overlay - positioned at top-left */}
-											<div className="absolute -top-2 sm:-top-4 -left-2 sm:-left-4 bg-gradient-to-r from-[#E9F47C] to-[#A3B116] rounded-2xl px-8 sm:px-12 lg:px-24 py-2 shadow-lg z-10">
+											<div className="absolute -top-2 sm:-top-4 -left-2 sm:-left-4 bg-gradient-to-b from-[#E9F47C] to-[#A3B116] rounded-2xl px-8 sm:px-12 lg:px-24 py-2 shadow-lg z-10">
 												{/* "最多用戶選擇" Badge */}
-												<div className="absolute -top-2 sm:-top-3 -left-2 sm:-left-3 transform bg-white text-[#111827] px-2 sm:px-3 py-1 rounded-full text-xs font-bold shadow-md whitespace-nowrap">
+												<div className="absolute -right-1 sm:-right-[-0.5rem] transform bg-white/50 text-[#111827] px-2 sm:px-3 py-1 rounded-full text-xs font-bold shadow-md whitespace-nowrap">
 													{t("mostUserChoice")}
 												</div>
 
 												<div className="pt-1 text-center text-white">
-													<div className="flex items-baseline justify-center gap-1 mb-1">
+													<div className="flex items-baseline justify-center gap-1 mb-1 -translate-x-10">
 														<span
 															className="bg-gradient-to-r from-[#99A800] to-[#5D6600] bg-clip-text text-transparent"
 															style={{
@@ -1398,36 +1450,47 @@ export default function YourPage() {
 														>
 															$88
 														</span>
-														<span className="text-xs text-black sm:text-sm opacity-90">
+														<span className="text-xs font-bold text-black sm:text-sm opacity-90">
 															/ {t("perTime")}
 														</span>
 													</div>
-
-													<div className="font-['Noto_Serif_TC'] font-bold text-[#284628] text-lg sm:text-xl lg:text-[40px]">
+													<div
+														className="font-['Noto_Serif_TC, serif'] font-extrabold text-[#284628] text-lg sm:text-xl lg:text-[45px] translate-x-15"
+														style={{
+															WebkitTextStroke:
+																"1.5px #284628",
+														}}
+													>
 														{t("limitedTimeOffer")}
 													</div>
 												</div>
 											</div>{" "}
 											{/* Main card content */}
-											<div className="flex flex-col h-full gap-3 pt-2 sm:gap-4 lg:gap-5">
+											<div className="flex flex-col w-full h-full gap-5 pt-2">
 												{/* Original price section - moved to right */}
-												<div className="mb-4 text-right sm:mb-6">
-													<div className="flex items-baseline justify-end gap-1 mb-1 sm:gap-2 sm:mb-2">
-														<span className="text-2xl font-bold text-gray-400 line-through sm:text-3xl lg:text-4xl">
+												<div className="mb-6 text-right">
+													<div className="flex items-baseline justify-end gap-2 mb-2">
+														<span className="text-4xl font-bold text-gray-400 line-through">
 															$168
 														</span>
-														<span className="text-xs text-gray-400 sm:text-sm">
+														<span className="text-sm font-bold text-gray-400">
 															/ {t("perTime")}
 														</span>
 													</div>
-													<div className="text-2xl font-bold text-gray-600 sm:text-3xl lg:text-4xl">
+													<div
+														className="text-4xl font-bold text-gray-400"
+														style={{
+															WebkitTextStroke:
+																"1px #9CA3AF",
+														}}
+													>
 														{t("premiumVersion2")}
 													</div>
 												</div>
 
 												{/* Features in 2-column grid */}
-												<div className="flex-1 mb-6 sm:mb-8">
-													<div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 sm:gap-y-4 gap-x-4 sm:gap-x-6 lg:gap-x-8">
+												<div className="flex-1 mb-3">
+													<div className="grid grid-cols-2 gap-y-4 gap-x-8">
 														{[
 															"destinyFeature_1",
 															"destinyFeature_2",
@@ -1442,20 +1505,34 @@ export default function YourPage() {
 															) => (
 																<div
 																	key={index}
-																	className="flex items-start gap-2 sm:gap-3"
+																	className="flex items-start gap-3"
 																>
-																	<svg
-																		className="w-4 h-4 sm:w-5 sm:h-5 text-black mt-0.5 flex-shrink-0"
-																		fill="currentColor"
-																		viewBox="0 0 20 20"
+																	<div
+																		className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+																		style={{
+																			backgroundColor:
+																				"#E8E2DA",
+																		}}
 																	>
-																		<path
-																			fillRule="evenodd"
-																			d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-																			clipRule="evenodd"
-																		/>
-																	</svg>
-																	<span className="text-sm sm:text-base lg:text-[17px] font-medium leading-relaxed text-black">
+																		<svg
+																			className="w-4 h-4 text-black"
+																			fill="currentColor"
+																			viewBox="0 0 20 20"
+																		>
+																			<path
+																				fillRule="evenodd"
+																				d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																				clipRule="evenodd"
+																			/>
+																		</svg>
+																	</div>
+																	<span
+																		className="text-[17px] leading-relaxed text-black"
+																		style={{
+																			fontFamily:
+																				'"Noto sans HK',
+																		}}
+																	>
 																		{t(
 																			featureKey
 																		)}
@@ -1472,7 +1549,13 @@ export default function YourPage() {
 														onClick={
 															handleExpert88Payment
 														}
-														className="bg-gradient-to-r from-[#BDCF0C] to-[#7B8700] hover:from-[#A3B116] hover:to-[#5D6600] text-white font-bold text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-xl px-4 sm:px-6 lg:px-8 py-2 sm:py-3 rounded-lg sm:rounded-xl lg:rounded-[20px] w-full max-w-[280px] sm:max-w-[320px] lg:max-w-[342px]"
+														className="bg-gradient-to-b from-[#BDCF0C] to-[#7B8700] hover:from-[#A3B116] hover:to-[#5D6600] text-white font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+														style={{
+															width: "342px",
+															height: "48px",
+															borderRadius:
+																"20px",
+														}}
 														disabled={
 															isProcessingPayment &&
 															currentCardType ===
@@ -1496,22 +1579,10 @@ export default function YourPage() {
 								{/* Right Side - Image */}
 								<div className="flex flex-col items-center justify-center">
 									{/* Title above image */}
-									<h3
-										className="font-['Noto_Serif_TC'] text-[#AEB116] mb-1 text-center"
-										style={{
-											fontSize: "clamp(2rem, 8vw, 4rem)", // Responsive font size
-											fontWeight: "800",
-											WebkitTextStroke: "2px white",
-											textShadow:
-												"2px 2px 4px rgba(0,0,0,0.1)",
-										}}
-									>
-										{t("destinyCalculation")}
-									</h3>
 
-									<div className="relative max-w-[500px] w-full">
+									<div className="relative max-w-[600px] w-full">
 										<img
-											src="/images/hero/button-1.png"
+											src="/images/hero/button-5.png"
 											alt={t("destinyCalculation")}
 											className="object-contain w-full h-auto rounded-lg"
 										/>
@@ -1525,7 +1596,7 @@ export default function YourPage() {
 							{/* Header */}
 							<div className="flex flex-col items-center justify-between gap-4 mb-8 sm:flex-row sm:gap-8 sm:mb-10 lg:mb-12">
 								<h2
-									className="font-['Noto_Serif_TC'] font-bold text-[#374A37] lg:text-[#AEB116] px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 text-left sm:text-left lg:[text-shadow:2px_2px_4px_rgba(0,0,0,0.3)] lg:[webkit-text-stroke:2px_white]"
+									className=" font-bold text-[#374A37] lg:text-[#AEB116] px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 text-left sm:text-left lg:[text-shadow:2px_2px_4px_rgba(0,0,0,0.3)] lg:[webkit-text-stroke:2px_white]"
 									style={{
 										fontSize: "clamp(2rem, 8vw, 4rem)", // Responsive font size
 									}}
@@ -1541,11 +1612,233 @@ export default function YourPage() {
 							</div>
 
 							{/* Cards Grid */}
-							<div className="max-w-[95%] sm:max-w-[85%] lg:max-w-[80%] mx-auto grid grid-cols-2 gap-2 sm:gap-6 md:grid-cols-2 lg:grid-cols-4">
+							<div className="w-full max-w-[95%] sm:max-w-[90%] md:max-w-[85%] lg:max-w-[80%] xl:max-w-[75%] mx-auto grid  lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
 								{/* Financial Fortune Card */}
-								<div className="overflow-hidden bg-white shadow-lg rounded-2xl">
+								{/* Mobile Version */}
+								<div className="block w-full max-w-sm mx-auto my-8 lg:hidden">
+									<div className="relative w-full max-w-lg bg-white shadow-lg rounded-2xl">
+										{/* Top Section - Green with image and title */}
+										<div className="absolute px-4 py-3 top-[-40px] left-[-30px]">
+											<div className="w-50">
+												<img
+													src="/images/price/wealth-mobile.png"
+													alt={t("coupleAnalysis")}
+													className="object-cover w-full h-full"
+												/>
+											</div>
+										</div>
+
+										{/* Bottom Section - White with features and pricing */}
+										<div className="px-4 py-10">
+											<div className="flex gap-4">
+												{/* Left - Features List */}
+												<div className="flex-1 mt-3 space-y-1">
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t("basicAnalysis")}
+														</span>
+													</div>
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t(
+																"formatPatternAnalysis"
+															)}
+														</span>
+													</div>
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t(
+																"wealthAnalysis"
+															)}
+														</span>
+													</div>
+
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t(
+																"fortuneSummary"
+															)}
+														</span>
+													</div>
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t("fortuneAdvice")}
+														</span>
+													</div>
+												</div>
+
+												{/* Right - Pricing Section */}
+												<div className="flex flex-col items-end gap-2">
+													{/* Light Version */}
+													<div className="absolute top-[-25px] right-[0px] rounded-[20px] px-10 py-2 min-w-[80px] flex flex-col items-start bg-gradient-to-br from-[#E1ED71] to-[#A9B720]">
+														<div
+															className="mb-1 font-bold"
+															style={{
+																fontSize:
+																	"20px",
+																color: "#3F581F",
+																WebkitTextStroke:
+																	"0.5px #3F581F",
+															}}
+														>
+															輕享版
+														</div>
+														<div className="flex flex-row items-end">
+															<div
+																className="w-full font-bold font-noto-sans-hk"
+																style={{
+																	fontSize:
+																		"28px",
+																	color: "#3F581F",
+																	textAlign:
+																		"end",
+																}}
+															>
+																$38
+															</div>
+															<div
+																className="w-full font-noto-sans-hk"
+																style={{
+																	fontSize:
+																		"14px",
+																	color: "#3F581F",
+																}}
+															>
+																/ 每次
+															</div>
+														</div>
+														<button
+															onClick={() =>
+																handleFortunePayment(
+																	"financial"
+																)
+															}
+															disabled={
+																isProcessingPayment &&
+																currentCardType ===
+																	"fortune_financial"
+															}
+															className="mt-2 w-full bg-white text-[#A3B116] text-xs font-medium py-1 px-2 rounded-[30px] hover:bg-gray-100 transition-colors"
+															style={{
+																WebkitTextStroke:
+																	"0.5px #A3B116",
+															}}
+														>
+															{isProcessingPayment &&
+															currentCardType ===
+																"fortune_financial"
+																? t(
+																		"processing2"
+																	)
+																: t(
+																		"paymentCalculation"
+																	)}
+														</button>
+													</div>
+
+													{/* Premium Version */}
+													<div className="text-start mt-15 min-w-[80px]">
+														<div
+															className="mb-1 text-[24px] font-medium text-[#A1A1A1]"
+															style={{
+																WebkitTextStroke:
+																	"1px #A1A1A1",
+															}}
+														>
+															尊享版
+														</div>
+														<div className="flex flex-row items-end justify-end">
+															<div
+																className="text-[32px] font-nano-sans-hk line-through"
+																style={{
+																	color: "#A1A1A1",
+																	WebkitTextStroke:
+																		"1px #A1A1A1",
+																	fontWeight:
+																		"extrabold",
+																}}
+															>
+																$88
+															</div>
+															<div className="text-xs text-[#A1A1A1]">
+																/ 每次
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								{/* Financial Fortune Card-Desktop */}
+								<div className="hidden w-full max-w-xs mx-auto overflow-hidden bg-white shadow-lg lg:block rounded-xl sm:rounded-2xl">
 									{/* Card Image Header */}
-									<div className="relative h-32 overflow-hidden">
+									<div className="relative h-32 overflow-hidden sm:h-28 lg:h-32">
 										<Image
 											src="/images/price/wealth.png"
 											alt={t("wealthFortune")}
@@ -1553,7 +1846,7 @@ export default function YourPage() {
 										/>
 									</div>
 									{/* Card Content */}
-									<div className="p-4">
+									<div className="p-3 sm:p-4">
 										{/* Flip Card Container */}
 										<div className="relative h-32 mb-4 group perspective-1000">
 											{/* Card Inner (Flip Container) */}
@@ -1634,82 +1927,152 @@ export default function YourPage() {
 										{/* Features */}
 										<div className="space-y-2 text-xs">
 											<div className="flex items-center gap-2">
-												<svg
-													className="w-4 h-4 text-[#A3B116]"
-													fill="currentColor"
-													viewBox="0 0 20 20"
+												<div
+													className="flex items-center justify-center w-5 h-5 rounded-full"
+													style={{
+														backgroundColor:
+															"#A3B116",
+													}}
 												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												<span className="text-xs text-gray-700 sm:text-sm">
+													<svg
+														className="w-3 h-3 text-white"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span
+													className="text-xs sm:text-sm text-[#111827]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
 													{t("basicAnalysis")}
 												</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<svg
-													className="w-4 h-4 text-gray-300"
-													fill="currentColor"
-													viewBox="0 0 20 20"
+												<div
+													className="flex items-center justify-center w-5 h-5 rounded-full"
+													style={{
+														backgroundColor:
+															"#A3B116",
+													}}
 												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												<span className="text-xs text-gray-400 sm:text-sm">
+													<svg
+														className="w-3 h-3 text-white"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span
+													className="text-xs sm:text-sm text-[#111827]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
 													{t("destinyExplanation")}
 												</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<svg
-													className="w-4 h-4 text-[#A3B116]"
-													fill="currentColor"
-													viewBox="0 0 20 20"
+												<div
+													className="flex items-center justify-center w-5 h-5 rounded-full"
+													style={{
+														backgroundColor:
+															"#A3B116",
+													}}
 												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												<span className="text-xs text-gray-700 sm:text-sm">
+													<svg
+														className="w-3 h-3 text-white"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span
+													className="text-xs sm:text-sm text-[#111827]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
 													{t("wealthAnalysis")}
 												</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<svg
-													className="w-4 h-4 text-gray-300"
-													fill="currentColor"
-													viewBox="0 0 20 20"
+												<div
+													className="flex items-center justify-center w-5 h-5 rounded-full"
+													style={{
+														backgroundColor:
+															"#A3B116",
+													}}
 												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												<span className="text-xs text-gray-400 sm:text-sm">
+													<svg
+														className="w-3 h-3 text-white"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span
+													className="text-xs sm:text-sm text-[#111827]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
 													{t("wealthSummary")}
 												</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<svg
-													className="w-4 h-4 text-[#A3B116]"
-													fill="currentColor"
-													viewBox="0 0 20 20"
+												<div
+													className="flex items-center justify-center w-5 h-5 rounded-full"
+													style={{
+														backgroundColor:
+															"#A3B116",
+													}}
 												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												<span className="text-xs text-gray-700 sm:text-sm">
+													<svg
+														className="w-3 h-3 text-white"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span
+													className="text-xs sm:text-sm text-[#111827]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
 													{t("luckAdvice")}
 												</span>
 											</div>
@@ -1718,7 +2081,225 @@ export default function YourPage() {
 								</div>
 
 								{/* Love Fortune Card */}
-								<div className="overflow-hidden bg-white shadow-lg rounded-2xl">
+								{/* Mobile Version */}
+								<div className="block w-full max-w-sm mx-auto my-8 lg:hidden">
+									<div className="relative w-full max-w-lg bg-white shadow-lg rounded-2xl">
+										{/* Top Section - Green with image and title */}
+										<div className="absolute px-4 py-3 top-[-40px] left-[-30px]">
+											<div className="w-50">
+												<img
+													src="/images/price/love-mobile.png"
+													alt={t("coupleAnalysis")}
+													className="object-cover w-full h-full"
+												/>
+											</div>
+										</div>
+
+										{/* Bottom Section - White with features and pricing */}
+										<div className="px-4 py-10">
+											<div className="flex gap-4">
+												{/* Left - Features List */}
+												<div className="flex-1 mt-3 space-y-1">
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t("basicAnalysis")}
+														</span>
+													</div>
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t(
+																"formatPatternAnalysis"
+															)}
+														</span>
+													</div>
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t("loveAnalysis")}
+														</span>
+													</div>
+
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t("loveSummary")}
+														</span>
+													</div>
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t("fortuneAdvice")}
+														</span>
+													</div>
+												</div>
+
+												{/* Right - Pricing Section */}
+												<div className="flex flex-col items-end gap-2">
+													{/* Light Version */}
+													<div className="absolute top-[-25px] right-[0px] rounded-[20px] px-10 py-2 min-w-[80px] flex flex-col items-start bg-gradient-to-br from-[#E1ED71] to-[#A9B720]">
+														<div
+															className="mb-1 font-bold"
+															style={{
+																fontSize:
+																	"20px",
+																color: "#3F581F",
+																WebkitTextStroke:
+																	"0.5px #3F581F",
+															}}
+														>
+															輕享版
+														</div>
+														<div className="flex flex-row items-end">
+															<div
+																className="w-full font-bold font-noto-sans-hk"
+																style={{
+																	fontSize:
+																		"28px",
+																	color: "#3F581F",
+																	textAlign:
+																		"end",
+																}}
+															>
+																$38
+															</div>
+															<div
+																className="w-full font-noto-sans-hk"
+																style={{
+																	fontSize:
+																		"14px",
+																	color: "#3F581F",
+																}}
+															>
+																/ 每次
+															</div>
+														</div>
+														<button
+															onClick={() =>
+																handleFortunePayment(
+																	"love"
+																)
+															}
+															disabled={
+																isProcessingPayment &&
+																currentCardType ===
+																	"fortune_love"
+															}
+															className="mt-2 w-full bg-white text-[#A3B116] text-xs font-medium py-1 px-2 rounded-[30px] hover:bg-gray-100 transition-colors"
+															style={{
+																WebkitTextStroke:
+																	"0.5px #A3B116",
+															}}
+														>
+															{isProcessingPayment &&
+															currentCardType ===
+																"fortune_love"
+																? t(
+																		"processing2"
+																	)
+																: t(
+																		"paymentCalculation"
+																	)}
+														</button>
+													</div>
+
+													{/* Premium Version */}
+													<div className="text-start mt-15 min-w-[80px]">
+														<div
+															className="mb-1 text-[24px] font-medium text-[#A1A1A1]"
+															style={{
+																WebkitTextStroke:
+																	"1px #A1A1A1",
+															}}
+														>
+															尊享版
+														</div>
+														<div className="flex flex-row items-end justify-end">
+															<div
+																className="text-[32px] font-nano-sans-hk line-through"
+																style={{
+																	color: "#A1A1A1",
+																	WebkitTextStroke:
+																		"1px #A1A1A1",
+																	fontWeight:
+																		"extrabold",
+																}}
+															>
+																$88
+															</div>
+															<div className="text-xs text-[#A1A1A1]">
+																/ 每次
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								{/* Love Fortune Card-Desktop */}
+								<div className="hidden overflow-hidden bg-white shadow-lg lg:block rounded-2xl">
 									{/* Card Image Header */}
 									<div className="relative h-32 overflow-hidden bg-green-600">
 										<div className="relative h-32 overflow-hidden">
@@ -1811,82 +2392,152 @@ export default function YourPage() {
 										{/* Features */}
 										<div className="space-y-2 text-xs">
 											<div className="flex items-center gap-2">
-												<svg
-													className="w-4 h-4 text-[#A3B116]"
-													fill="currentColor"
-													viewBox="0 0 20 20"
+												<div
+													className="flex items-center justify-center w-5 h-5 rounded-full"
+													style={{
+														backgroundColor:
+															"#A3B116",
+													}}
 												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												<span className="text-xs text-gray-700 sm:text-sm">
+													<svg
+														className="w-3 h-3 text-white"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span
+													className="text-xs sm:text-sm text-[#111827]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
 													{t("basicAnalysis")}
 												</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<svg
-													className="w-4 h-4 text-gray-300"
-													fill="currentColor"
-													viewBox="0 0 20 20"
+												<div
+													className="flex items-center justify-center w-5 h-5 rounded-full"
+													style={{
+														backgroundColor:
+															"#A3B116",
+													}}
 												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												<span className="text-xs text-gray-400 sm:text-sm">
+													<svg
+														className="w-3 h-3 text-white"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span
+													className="text-xs sm:text-sm text-[#111827]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
 													{t("destinyExplanation")}
 												</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<svg
-													className="w-4 h-4 text-[#A3B116]"
-													fill="currentColor"
-													viewBox="0 0 20 20"
+												<div
+													className="flex items-center justify-center w-5 h-5 rounded-full"
+													style={{
+														backgroundColor:
+															"#A3B116",
+													}}
 												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												<span className="text-xs text-gray-700 sm:text-sm">
+													<svg
+														className="w-3 h-3 text-white"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span
+													className="text-xs sm:text-sm text-[#111827]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
 													{t("loveAnalysis")}
 												</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<svg
-													className="w-4 h-4 text-gray-300"
-													fill="currentColor"
-													viewBox="0 0 20 20"
+												<div
+													className="flex items-center justify-center w-5 h-5 rounded-full"
+													style={{
+														backgroundColor:
+															"#A3B116",
+													}}
 												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												<span className="text-xs text-gray-400 sm:text-sm">
+													<svg
+														className="w-3 h-3 text-white"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span
+													className="text-xs sm:text-sm text-[#111827]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
 													{t("loveSummary")}
 												</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<svg
-													className="w-4 h-4 text-[#A3B116]"
-													fill="currentColor"
-													viewBox="0 0 20 20"
+												<div
+													className="flex items-center justify-center w-5 h-5 rounded-full"
+													style={{
+														backgroundColor:
+															"#A3B116",
+													}}
 												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												<span className="text-xs text-gray-700 sm:text-sm">
+													<svg
+														className="w-3 h-3 text-white"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span
+													className="text-xs sm:text-sm text-[#111827]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
 													{t("luckAdvice")}
 												</span>
 											</div>
@@ -1895,7 +2546,227 @@ export default function YourPage() {
 								</div>
 
 								{/* Health Fortune Card */}
-								<div className="overflow-hidden bg-white shadow-lg rounded-2xl">
+								{/* Mobile Version */}
+								<div className="block w-full max-w-sm mx-auto my-8 lg:hidden">
+									<div className="relative w-full max-w-lg bg-white shadow-lg rounded-2xl">
+										{/* Top Section - Green with image and title */}
+										<div className="absolute px-4 py-3 top-[-40px] left-[-30px]">
+											<div className="w-50">
+												<img
+													src="/images/price/health-mobile.png"
+													alt={t("coupleAnalysis")}
+													className="object-cover w-full h-full"
+												/>
+											</div>
+										</div>
+
+										{/* Bottom Section - White with features and pricing */}
+										<div className="px-4 py-10">
+											<div className="flex gap-4">
+												{/* Left - Features List */}
+												<div className="flex-1 mt-3 space-y-1">
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t("basicAnalysis")}
+														</span>
+													</div>
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t(
+																"formatPatternAnalysis"
+															)}
+														</span>
+													</div>
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t(
+																"healthAnalysis"
+															)}
+														</span>
+													</div>
+
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t("healthSummary")}
+														</span>
+													</div>
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t("fortuneAdvice")}
+														</span>
+													</div>
+												</div>
+
+												{/* Right - Pricing Section */}
+												<div className="flex flex-col items-end gap-2">
+													{/* Light Version */}
+													<div className="absolute top-[-25px] right-[0px] rounded-[20px] px-10 py-2 min-w-[80px] flex flex-col items-start bg-gradient-to-br from-[#E1ED71] to-[#A9B720]">
+														<div
+															className="mb-1 font-bold"
+															style={{
+																fontSize:
+																	"20px",
+																color: "#3F581F",
+																WebkitTextStroke:
+																	"0.5px #3F581F",
+															}}
+														>
+															輕享版
+														</div>
+														<div className="flex flex-row items-end">
+															<div
+																className="w-full font-bold font-noto-sans-hk"
+																style={{
+																	fontSize:
+																		"28px",
+																	color: "#3F581F",
+																	textAlign:
+																		"end",
+																}}
+															>
+																$38
+															</div>
+															<div
+																className="w-full font-noto-sans-hk"
+																style={{
+																	fontSize:
+																		"14px",
+																	color: "#3F581F",
+																}}
+															>
+																/ 每次
+															</div>
+														</div>
+														<button
+															onClick={() =>
+																handleFortunePayment(
+																	"health"
+																)
+															}
+															disabled={
+																isProcessingPayment &&
+																currentCardType ===
+																	"fortune_health"
+															}
+															className="mt-2 w-full bg-white text-[#A3B116] text-xs font-medium py-1 px-2 rounded-[30px] hover:bg-gray-100 transition-colors"
+															style={{
+																WebkitTextStroke:
+																	"0.5px #A3B116",
+															}}
+														>
+															{isProcessingPayment &&
+															currentCardType ===
+																"fortune_health"
+																? t(
+																		"processing2"
+																	)
+																: t(
+																		"paymentCalculation"
+																	)}
+														</button>
+													</div>
+
+													{/* Premium Version */}
+													<div className="text-start mt-15 min-w-[80px]">
+														<div
+															className="mb-1 text-[24px] font-medium text-[#A1A1A1]"
+															style={{
+																WebkitTextStroke:
+																	"1px #A1A1A1",
+															}}
+														>
+															尊享版
+														</div>
+														<div className="flex flex-row items-end justify-end">
+															<div
+																className="text-[32px] font-nano-sans-hk line-through"
+																style={{
+																	color: "#A1A1A1",
+																	WebkitTextStroke:
+																		"1px #A1A1A1",
+																	fontWeight:
+																		"extrabold",
+																}}
+															>
+																$88
+															</div>
+															<div className="text-xs text-[#A1A1A1]">
+																/ 每次
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								{/* Health Fortune Card-Desktop */}
+								<div className="hidden w-full max-w-xs mx-auto overflow-hidden bg-white shadow-lg lg:block rounded-2xl">
 									{/* Card Image Header */}
 									<div className="relative h-32 overflow-hidden bg-green-600">
 										<div className="relative h-32 overflow-hidden">
@@ -1988,82 +2859,152 @@ export default function YourPage() {
 										{/* Features */}
 										<div className="space-y-2 text-xs">
 											<div className="flex items-center gap-2">
-												<svg
-													className="w-4 h-4 text-[#A3B116]"
-													fill="currentColor"
-													viewBox="0 0 20 20"
+												<div
+													className="flex items-center justify-center w-5 h-5 rounded-full"
+													style={{
+														backgroundColor:
+															"#A3B116",
+													}}
 												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												<span className="text-xs text-gray-700 sm:text-sm">
+													<svg
+														className="w-3 h-3 text-white"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span
+													className="text-xs sm:text-sm text-[#111827]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
 													{t("basicAnalysis")}
 												</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<svg
-													className="w-4 h-4 text-gray-300"
-													fill="currentColor"
-													viewBox="0 0 20 20"
+												<div
+													className="flex items-center justify-center w-5 h-5 rounded-full"
+													style={{
+														backgroundColor:
+															"#A3B116",
+													}}
 												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												<span className="text-xs text-gray-400 sm:text-sm">
+													<svg
+														className="w-3 h-3 text-white"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span
+													className="text-xs sm:text-sm text-[#111827]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
 													{t("destinyExplanation")}
 												</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<svg
-													className="w-4 h-4 text-[#A3B116]"
-													fill="currentColor"
-													viewBox="0 0 20 20"
+												<div
+													className="flex items-center justify-center w-5 h-5 rounded-full"
+													style={{
+														backgroundColor:
+															"#A3B116",
+													}}
 												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												<span className="text-xs text-gray-700 sm:text-sm">
+													<svg
+														className="w-3 h-3 text-white"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span
+													className="text-xs sm:text-sm text-[#111827]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
 													{t("healthAnalysis")}
 												</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<svg
-													className="w-4 h-4 text-gray-300"
-													fill="currentColor"
-													viewBox="0 0 20 20"
+												<div
+													className="flex items-center justify-center w-5 h-5 rounded-full"
+													style={{
+														backgroundColor:
+															"#A3B116",
+													}}
 												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												<span className="text-xs text-gray-400 sm:text-sm">
+													<svg
+														className="w-3 h-3 text-white"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span
+													className="text-xs sm:text-sm text-[#111827]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
 													{t("healthSummary")}
 												</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<svg
-													className="w-4 h-4 text-[#A3B116]"
-													fill="currentColor"
-													viewBox="0 0 20 20"
+												<div
+													className="flex items-center justify-center w-5 h-5 rounded-full"
+													style={{
+														backgroundColor:
+															"#A3B116",
+													}}
 												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												<span className="text-xs text-gray-700 sm:text-sm">
+													<svg
+														className="w-3 h-3 text-white"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span
+													className="text-xs sm:text-sm text-[#111827]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
 													{t("luckAdvice")}
 												</span>
 											</div>
@@ -2072,7 +3013,227 @@ export default function YourPage() {
 								</div>
 
 								{/* Career Fortune Card */}
-								<div className="overflow-hidden bg-white shadow-lg rounded-2xl">
+								{/* Mobile Version */}
+								<div className="block w-full max-w-sm mx-auto my-8 lg:hidden">
+									<div className="relative w-full max-w-lg bg-white shadow-lg rounded-2xl">
+										{/* Top Section - Green with image and title */}
+										<div className="absolute px-4 py-3 top-[-40px] left-[-30px]">
+											<div className="w-50">
+												<img
+													src="/images/price/career-mobile.png"
+													alt={t("coupleAnalysis")}
+													className="object-cover w-full h-full"
+												/>
+											</div>
+										</div>
+
+										{/* Bottom Section - White with features and pricing */}
+										<div className="px-4 py-10">
+											<div className="flex gap-4">
+												{/* Left - Features List */}
+												<div className="flex-1 mt-3 space-y-1">
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t("basicAnalysis")}
+														</span>
+													</div>
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t(
+																"formatPatternAnalysis"
+															)}
+														</span>
+													</div>
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t(
+																"careerAnalysis"
+															)}
+														</span>
+													</div>
+
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t("careerSummary")}
+														</span>
+													</div>
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t("fortuneAdvice")}
+														</span>
+													</div>
+												</div>
+
+												{/* Right - Pricing Section */}
+												<div className="flex flex-col items-end gap-2">
+													{/* Light Version */}
+													<div className="absolute top-[-25px] right-[0px] rounded-[20px] px-10 py-2 min-w-[80px] flex flex-col items-start bg-gradient-to-br from-[#E1ED71] to-[#A9B720]">
+														<div
+															className="mb-1 font-bold"
+															style={{
+																fontSize:
+																	"20px",
+																color: "#3F581F",
+																WebkitTextStroke:
+																	"0.5px #3F581F",
+															}}
+														>
+															輕享版
+														</div>
+														<div className="flex flex-row items-end">
+															<div
+																className="w-full font-bold font-noto-sans-hk"
+																style={{
+																	fontSize:
+																		"28px",
+																	color: "#3F581F",
+																	textAlign:
+																		"end",
+																}}
+															>
+																$38
+															</div>
+															<div
+																className="w-full font-noto-sans-hk"
+																style={{
+																	fontSize:
+																		"14px",
+																	color: "#3F581F",
+																}}
+															>
+																/ 每次
+															</div>
+														</div>
+														<button
+															onClick={() =>
+																handleFortunePayment(
+																	"career"
+																)
+															}
+															disabled={
+																isProcessingPayment &&
+																currentCardType ===
+																	"fortune_career"
+															}
+															className="mt-2 w-full bg-white text-[#A3B116] text-xs font-medium py-1 px-2 rounded-[30px] hover:bg-gray-100 transition-colors"
+															style={{
+																WebkitTextStroke:
+																	"0.5px #A3B116",
+															}}
+														>
+															{isProcessingPayment &&
+															currentCardType ===
+																"fortune_career"
+																? t(
+																		"processing2"
+																	)
+																: t(
+																		"paymentCalculation"
+																	)}
+														</button>
+													</div>
+
+													{/* Premium Version */}
+													<div className="text-start mt-15 min-w-[80px]">
+														<div
+															className="mb-1 text-[24px] font-medium text-[#A1A1A1]"
+															style={{
+																WebkitTextStroke:
+																	"1px #A1A1A1",
+															}}
+														>
+															尊享版
+														</div>
+														<div className="flex flex-row items-end justify-end">
+															<div
+																className="text-[32px] font-nano-sans-hk line-through"
+																style={{
+																	color: "#A1A1A1",
+																	WebkitTextStroke:
+																		"1px #A1A1A1",
+																	fontWeight:
+																		"extrabold",
+																}}
+															>
+																$88
+															</div>
+															<div className="text-xs text-[#A1A1A1]">
+																/ 每次
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								{/* Career Fortune Card-Desktop */}
+								<div className="hidden overflow-hidden bg-white shadow-lg lg:block rounded-2xl">
 									{/* Card Image Header */}
 									<div className="relative h-32 overflow-hidden">
 										<Image
@@ -2164,82 +3325,152 @@ export default function YourPage() {
 										{/* Features */}
 										<div className="space-y-2 text-xs">
 											<div className="flex items-center gap-2">
-												<svg
-													className="w-4 h-4 text-[#A3B116]"
-													fill="currentColor"
-													viewBox="0 0 20 20"
+												<div
+													className="flex items-center justify-center w-5 h-5 rounded-full"
+													style={{
+														backgroundColor:
+															"#A3B116",
+													}}
 												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												<span className="text-xs text-gray-700 sm:text-sm">
+													<svg
+														className="w-3 h-3 text-white"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span
+													className="text-xs sm:text-sm text-[#111827]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
 													{t("basicAnalysis")}
 												</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<svg
-													className="w-4 h-4 text-gray-300"
-													fill="currentColor"
-													viewBox="0 0 20 20"
+												<div
+													className="flex items-center justify-center w-5 h-5 rounded-full"
+													style={{
+														backgroundColor:
+															"#A3B116",
+													}}
 												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												<span className="text-xs text-gray-400 sm:text-sm">
+													<svg
+														className="w-3 h-3 text-white"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span
+													className="text-xs sm:text-sm text-[#111827]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
 													{t("destinyExplanation")}
 												</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<svg
-													className="w-4 h-4 text-[#A3B116]"
-													fill="currentColor"
-													viewBox="0 0 20 20"
+												<div
+													className="flex items-center justify-center w-5 h-5 rounded-full"
+													style={{
+														backgroundColor:
+															"#A3B116",
+													}}
 												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												<span className="text-xs text-gray-700 sm:text-sm">
+													<svg
+														className="w-3 h-3 text-white"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span
+													className="text-xs sm:text-sm text-[#111827]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
 													{t("careerAnalysis")}
 												</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<svg
-													className="w-4 h-4 text-gray-300"
-													fill="currentColor"
-													viewBox="0 0 20 20"
+												<div
+													className="flex items-center justify-center w-5 h-5 rounded-full"
+													style={{
+														backgroundColor:
+															"#A3B116",
+													}}
 												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												<span className="text-xs text-gray-400 sm:text-sm">
+													<svg
+														className="w-3 h-3 text-white"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span
+													className="text-xs sm:text-sm text-[#111827]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
 													{t("careerSummary")}
 												</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<svg
-													className="w-4 h-4 text-[#A3B116]"
-													fill="currentColor"
-													viewBox="0 0 20 20"
+												<div
+													className="flex items-center justify-center w-5 h-5 rounded-full"
+													style={{
+														backgroundColor:
+															"#A3B116",
+													}}
 												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-												<span className="text-xs text-gray-700 sm:text-sm">
+													<svg
+														className="w-3 h-3 text-white"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path
+															fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</div>
+												<span
+													className="text-xs sm:text-sm text-[#111827]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+													}}
+												>
 													{t("luckAdvice")}
 												</span>
 											</div>
@@ -2250,11 +3481,11 @@ export default function YourPage() {
 						</div>
 
 						{/* Couple's Fortune Analysis Section */}
-						<div className="w-full px-4 mx-auto max-w-7xl">
+						<div className="w-full px-2 mx-auto sm:px-4 max-w-7xl">
 							{/* Header */}
 							<div className="flex flex-col items-center justify-between gap-4 mb-8 sm:flex-row sm:gap-8 sm:mb-10 lg:mb-12">
 								<h2
-									className="font-['Noto_Serif_TC'] font-bold text-[#374A37] lg:text-[#AEB116] px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 text-left sm:text-left lg:[text-shadow:2px_2px_4px_rgba(0,0,0,0.3)] lg:[webkit-text-stroke:2px_white]"
+									className=" font-bold text-[#374A37] lg:text-[#AEB116] px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 text-left sm:text-left lg:[text-shadow:2px_2px_4px_rgba(0,0,0,0.3)] lg:[webkit-text-stroke:2px_white]"
 									style={{
 										fontSize: "clamp(2rem, 8vw, 4rem)", // Responsive font size
 									}}
@@ -2269,170 +3500,453 @@ export default function YourPage() {
 								</button>
 							</div>
 
-							{/* Main Card Container */}
-							<div className="max-w-4xl mx-auto rounded-[30px] bg-white ">
-								<div className="flex flex-col lg:flex-row">
-									{/* Left Side - Image and Limited Time Offer */}
-									<div className="lg:w-1/2 relative bg-gradient-to-br from-[#A3B116] to-[#8B9914] p-4 sm:p-6 lg:p-8 rounded-3xl">
-										{/* Couple Image Placeholder */}
-										<div className="relative ">
-											<div className="p-1 rounded-2xl">
+							{/* Main Card Container - Mobile-first design matching image */}
+							<div className="relative w-full max-w-4xl px-2 mx-auto sm:px-0">
+								{/* Mobile Layout - Single unified card */}
+								<div className="flex justify-center block mt-15 lg:hidden">
+									<div className="relative w-full max-w-lg bg-white shadow-lg rounded-2xl">
+										{/* Top Section - Green with image and title */}
+										<div className="absolute px-4 py-3 top-[-60px] left-[-30px]">
+											<div className="w-40 h-30 ">
 												<img
-													src="/images/price/together.png"
+													src="/images/price/couple.png"
 													alt={t("coupleAnalysis")}
-													className="object-cover mb-4 fill rounded-xl"
+													className="object-cover w-full h-full"
 												/>
 											</div>
 										</div>
 
-										{/* Limited Time Offer - Flip Card */}
-										<div className="relative group perspective-1000">
-											<div className="relative w-full transition-transform duration-700 ">
-												<button
-													onClick={
-														handleCouplePayment
-													}
-													disabled={
-														isProcessingPayment &&
+										{/* Bottom Section - White with features and pricing */}
+										<div className="px-4 py-10">
+											<div className="flex gap-4">
+												{/* Left - Features List */}
+												<div className="flex-1 space-y-1 mt-7">
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t(
+																"coupleFeature_1"
+															)}
+														</span>
+													</div>
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t(
+																"coupleFeature_2"
+															)}
+														</span>
+													</div>
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t(
+																"coupleFeature_3"
+															)}
+														</span>
+													</div>
+
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t(
+																"coupleFeature_4"
+															)}
+														</span>
+													</div>
+													<div className="flex items-center gap-2">
+														<div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#A3B116]">
+															<svg
+																className="w-2 h-2 text-white"
+																fill="currentColor"
+																viewBox="0 0 20 20"
+															>
+																<path
+																	fillRule="evenodd"
+																	d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																	clipRule="evenodd"
+																/>
+															</svg>
+														</div>
+														<span className="text-sm text-gray-700 font-noto-sans-hk">
+															{t(
+																"coupleFeature_5"
+															)}
+														</span>
+													</div>
+												</div>
+
+												{/* Right - Pricing Section */}
+												<div className="flex flex-col items-end gap-2">
+													{/* Light Version */}
+													<div className="absolute top-[-25px] right-[0px] rounded-[20px] px-10 py-2 min-w-[80px] flex flex-col items-start bg-gradient-to-br from-[#E1ED71] to-[#A9B720]">
+														<div
+															className="mb-1 font-bold"
+															style={{
+																fontSize:
+																	"20px",
+																color: "#3F581F",
+																WebkitTextStroke:
+																	"0.5px #3F581F",
+															}}
+														>
+															輕享版
+														</div>
+														<div className="flex flex-row items-end">
+															<div
+																className="w-full font-bold font-noto-sans-hk"
+																style={{
+																	fontSize:
+																		"28px",
+																	color: "#3F581F",
+																	textAlign:
+																		"end",
+																}}
+															>
+																$88
+															</div>
+															<div
+																className="w-full font-noto-sans-hk"
+																style={{
+																	fontSize:
+																		"14px",
+																	color: "#3F581F",
+																}}
+															>
+																/ 每次
+															</div>
+														</div>
+														<button
+															onClick={
+																handleCouplePayment
+															}
+															disabled={
+																isProcessingPayment &&
+																currentCardType ===
+																	"couple"
+															}
+															className="mt-2 w-full bg-white text-[#A3B116] text-xs font-medium py-1 px-2 rounded-[30px] hover:bg-gray-100 transition-colors"
+															style={{
+																WebkitTextStroke:
+																	"0.5px #A3B116",
+															}}
+														>
+															付費測算
+														</button>
+													</div>
+
+													{/* Premium Version */}
+													<div className="text-start mt-15 min-w-[80px]">
+														<div
+															className="mb-1 text-[24px] font-medium text-[#A1A1A1]"
+															style={{
+																WebkitTextStroke:
+																	"1px #A1A1A1",
+															}}
+														>
+															尊享版
+														</div>
+														<div className="flex flex-row items-end justify-end">
+															<div
+																className="text-[32px] font-nano-sans-hk line-through"
+																style={{
+																	color: "#A1A1A1",
+																	WebkitTextStroke:
+																		"1px #A1A1A1",
+																	fontWeight:
+																		"extrabold",
+																}}
+															>
+																$168
+															</div>
+															<div className="text-xs text-[#A1A1A1]">
+																/ 每次
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								{/* Desktop Layout - Original overlay design */}
+								<div className="hidden lg:block">
+									{/* Image Card - Separate and positioned higher, more to the left */}
+									<div className="relative z-20 mb-[-370px]">
+										<div className="w-[400px] h-[400px] lg:-ml-1 bg-gradient-to-br from-[#A3B116] to-[#8B9914] p-4 rounded-3xl shadow-2xl">
+											{/* Couple Image Placeholder */}
+											<div className="relative">
+												<div className="rounded-2xl">
+													<img
+														src="/images/price/together.png"
+														alt={t(
+															"coupleAnalysis"
+														)}
+														className="object-cover fill rounded-xl"
+													/>
+												</div>
+												<div className="relative w-full mt-5 transition-transform duration-700">
+													<button
+														onClick={
+															handleCouplePayment
+														}
+														disabled={
+															isProcessingPayment &&
+															currentCardType ===
+																"couple"
+														}
+														className="w-full py-2 mt-4 font-black text-[#AEB116] bg-white border-2 border-[#A3B116] rounded-[40px] hover:bg-[#A3B116] hover:text-white transition-all duration-300 hover:shadow-lg hover:scale-105 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+														style={{
+															fontSize:
+																"clamp(1rem, 6vw, 2rem)",
+														}}
+													>
+														{isProcessingPayment &&
 														currentCardType ===
 															"couple"
-													}
-													className="w-full py-2 sm:py-3 mt-4 font-black text-[#AEB116] bg-white rounded-xl hover:bg-white hover:text-[#AEB116] transition-all duration-300 hover:shadow-lg hover:scale-105 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-													style={{
-														fontSize:
-															"clamp(2rem, 8vw, 3rem)", // Responsive font size
-													}}
-												>
-													{isProcessingPayment &&
-													currentCardType === "couple"
-														? t("processing2")
-														: t(
-																"paymentCalculation"
-															)}
-												</button>
+															? t("processing2")
+															: t(
+																	"paymentCalculation"
+																)}
+													</button>
+												</div>
 											</div>
 										</div>
 									</div>
 
-									{/* Right Side - Features and Premium Option */}
-									<div className="p-4 sm:p-6 lg:p-8 lg:w-1/2 ">
-										{/* Features List */}
-										<div className="mb-6 space-y-3 sm:mb-8 sm:space-y-4 ">
-											<div className="flex items-center gap-2 sm:gap-3">
-												<div className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 rounded-full bg-[#A3B116] flex items-center justify-center">
-													<svg
-														className="w-2 h-2 text-white sm:w-3 sm:h-3 lg:w-4 lg:h-4"
-														fill="currentColor"
-														viewBox="0 0 20 20"
-													>
-														<path
-															fillRule="evenodd"
-															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-															clipRule="evenodd"
-														/>
-													</svg>
+									{/* Button Card - White background overlapping below */}
+									<div
+										className="relative z-10 w-full max-w-[742px] min-h-[385px] bg-white rounded-[30px] ml-16"
+										style={{
+											boxShadow:
+												"0 12px 15.5px rgba(49, 67, 67, 0.2)",
+										}}
+									>
+										<div className="flex flex-col h-full">
+											{/* Content aligned to right side */}
+											<div className="flex flex-col items-end justify-start w-full p-8">
+												<div className="flex justify-end w-full">
+													{/* Features List - Right aligned */}
+													<div className="mb-6 space-y-4 mr-30">
+														<div className="flex items-center gap-3">
+															<div className="flex items-center justify-center w-6 h-6 rounded-full bg-[#E3E3E3]">
+																<svg
+																	className="w-4 h-4"
+																	fill="#999999"
+																	viewBox="0 0 20 20"
+																>
+																	<path
+																		fillRule="evenodd"
+																		d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																		clipRule="evenodd"
+																	/>
+																</svg>
+															</div>
+															<span
+																className="text-[20px]"
+																style={{
+																	color: "#111827",
+																	fontFamily:
+																		"Noto Sans HK, sans-serif",
+																}}
+															>
+																{t(
+																	"coupleFeature_1"
+																)}
+															</span>
+														</div>
+														<div className="flex items-center gap-3">
+															<div className="flex items-center justify-center w-6 h-6 rounded-full bg-[#E3E3E3]">
+																<svg
+																	className="w-4 h-4"
+																	fill="#999999"
+																	viewBox="0 0 20 20"
+																>
+																	<path
+																		fillRule="evenodd"
+																		d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																		clipRule="evenodd"
+																	/>
+																</svg>
+															</div>
+															<span
+																className="text-[20px]"
+																style={{
+																	color: "#111827",
+																	fontFamily:
+																		"Noto Sans HK, sans-serif",
+																}}
+															>
+																{t(
+																	"coupleFeature_2"
+																)}
+															</span>
+														</div>
+														<div className="flex items-center gap-3">
+															<div className="flex items-center justify-center w-6 h-6 rounded-full bg-[#E3E3E3]">
+																<svg
+																	className="w-4 h-4"
+																	fill="#999999"
+																	viewBox="0 0 20 20"
+																>
+																	<path
+																		fillRule="evenodd"
+																		d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																		clipRule="evenodd"
+																	/>
+																</svg>
+															</div>
+															<span
+																className="text-[20px]"
+																style={{
+																	color: "#111827",
+																	fontFamily:
+																		"Noto Sans HK, sans-serif",
+																}}
+															>
+																{t(
+																	"coupleFeature_3"
+																)}
+															</span>
+														</div>
+														<div className="flex items-center gap-3">
+															<div className="flex items-center justify-center w-6 h-6 rounded-full bg-[#E3E3E3]">
+																<svg
+																	className="w-4 h-4"
+																	fill="#999999"
+																	viewBox="0 0 20 20"
+																>
+																	<path
+																		fillRule="evenodd"
+																		d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																		clipRule="evenodd"
+																	/>
+																</svg>
+															</div>
+															<span
+																className="text-[20px]"
+																style={{
+																	color: "#111827",
+																	fontFamily:
+																		"Noto Sans HK, sans-serif",
+																}}
+															>
+																{t(
+																	"coupleFeature_4"
+																)}
+															</span>
+														</div>
+														<div className="flex items-center gap-3">
+															<div className="flex items-center justify-center w-6 h-6 rounded-full bg-[#E3E3E3]">
+																<svg
+																	className="w-4 h-4"
+																	fill="#999999"
+																	viewBox="0 0 20 20"
+																>
+																	<path
+																		fillRule="evenodd"
+																		d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																		clipRule="evenodd"
+																	/>
+																</svg>
+															</div>
+															<span
+																className="text-[20px]"
+																style={{
+																	color: "#111827",
+																	fontFamily:
+																		"Noto Sans HK, sans-serif",
+																}}
+															>
+																{t(
+																	"coupleFeature_5"
+																)}
+															</span>
+														</div>
+													</div>
 												</div>
-												<span className="text-xs sm:text-sm lg:text-[30px] text-gray-700">
-													{t("basicAnalysis")}
-												</span>
-											</div>
 
-											<div className="flex items-center gap-2 sm:gap-3">
-												<div className="flex items-center justify-center w-4 h-4 bg-gray-300 rounded-full sm:w-5 sm:h-5 lg:w-6 lg:h-6">
-													<svg
-														className="w-2 h-2 text-white sm:w-3 sm:h-3 lg:w-4 lg:h-4"
-														fill="currentColor"
-														viewBox="0 0 20 20"
-													>
-														<path
-															fillRule="evenodd"
-															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-															clipRule="evenodd"
-														/>
-													</svg>
-												</div>
-												<span className="text-xs sm:text-sm lg:text-[30px] text-gray-400">
-													{t("destinyExplanation")}
-												</span>
-											</div>
-
-											<div className="flex items-center gap-2 sm:gap-3">
-												<div className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 rounded-full bg-[#A3B116] flex items-center justify-center">
-													<svg
-														className="w-2 h-2 text-white sm:w-3 sm:h-3 lg:w-4 lg:h-4"
-														fill="currentColor"
-														viewBox="0 0 20 20"
-													>
-														<path
-															fillRule="evenodd"
-															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-															clipRule="evenodd"
-														/>
-													</svg>
-												</div>
-												<span className="text-xs sm:text-sm lg:text-[30px] text-gray-700">
-													{t("wealthAnalysis")}
-												</span>
-											</div>
-
-											<div className="flex items-center gap-2 sm:gap-3">
-												<div className="flex items-center justify-center w-4 h-4 bg-gray-300 rounded-full sm:w-5 sm:h-5 lg:w-6 lg:h-6">
-													<svg
-														className="w-2 h-2 text-white sm:w-3 sm:h-3 lg:w-4 lg:h-4"
-														fill="currentColor"
-														viewBox="0 0 20 20"
-													>
-														<path
-															fillRule="evenodd"
-															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-															clipRule="evenodd"
-														/>
-													</svg>
-												</div>
-												<span className="text-xs sm:text-sm lg:text-[30px] text-gray-400">
-													{t("wealthSummary")}
-												</span>
-											</div>
-
-											<div className="flex items-center gap-2 sm:gap-3">
-												<div className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 rounded-full bg-[#A3B116] flex items-center justify-center">
-													<svg
-														className="w-2 h-2 text-white sm:w-3 sm:h-3 lg:w-4 lg:h-4"
-														fill="currentColor"
-														viewBox="0 0 20 20"
-													>
-														<path
-															fillRule="evenodd"
-															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-															clipRule="evenodd"
-														/>
-													</svg>
-												</div>
-												<span className="text-xs sm:text-sm lg:text-[30px] text-gray-400">
-													{t("luckAdvice")}
-												</span>
-											</div>
-										</div>
-
-										{/* Premium Version Pricing */}
-										<div className="mt-14 ">
-											<div className="flex flex-row gap-5 text-center">
-												<div
-													className="mb-2 text-[35px] sm:text-5xl font-semibold"
-													style={{ color: "#A1A1A1" }}
-												>
-													{t("premiumVersionTitle")}
-												</div>
-												<div
-													className="text-[40px] sm:text-6xl font-black"
-													style={{ color: "#A1A1A1" }}
-												>
-													<span className="line-through">
-														$168
-													</span>
-													<span className="text-[12px] sm:text-lg font-medium">
-														/ {t("perTimeUnit")}
-													</span>
+												{/* Premium Version Pricing - Right aligned */}
+												<div className="flex justify-end mt-7">
+													<div className="flex flex-row gap-5 text-right align-center">
+														<div
+															className="mt-2 text-5xl font-semibold"
+															style={{
+																color: "#A1A1A1",
+																WebkitTextStroke:
+																	"1px #A1A1A1",
+															}}
+														>
+															{t(
+																"premiumVersionTitle"
+															)}
+														</div>
+														<div
+															className="text-6xl font-black"
+															style={{
+																color: "#A1A1A1",
+															}}
+														>
+															<span className="line-through font-noto-sans-hk">
+																$168
+															</span>
+															<span className="text-lg font-medium">
+																/{" "}
+																{t(
+																	"perTimeUnit"
+																)}
+															</span>
+														</div>
+													</div>
 												</div>
 											</div>
 										</div>

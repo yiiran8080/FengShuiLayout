@@ -5,9 +5,28 @@ import useMobile from "../../app/hooks/useMobile";
 const Step = ({ steps }) => {
 	const isMobile = useMobile();
 	const [isClient, setIsClient] = useState(false);
+	const [isSmallDesktop, setIsSmallDesktop] = useState(false);
 
 	useEffect(() => {
 		setIsClient(true);
+	}, []);
+
+	// Check for screen width to adjust layout
+	useEffect(() => {
+		const checkScreenSize = () => {
+			if (typeof window !== "undefined") {
+				setIsSmallDesktop(window.innerWidth < 1078);
+			}
+		};
+
+		// Check on mount (only runs on client)
+		checkScreenSize();
+
+		// Add resize listener
+		if (typeof window !== "undefined") {
+			window.addEventListener("resize", checkScreenSize);
+			return () => window.removeEventListener("resize", checkScreenSize);
+		}
 	}, []);
 
 	// During SSR and initial hydration, render desktop layout to prevent mismatch
@@ -17,7 +36,7 @@ const Step = ({ steps }) => {
 				<div
 					className="flex w-full p-4 ml-4 md:p-6 lg:p-8 md:ml-6 lg:ml-10"
 					style={{
-						minHeight: "100px",
+						minHeight: "150px",
 					}}
 				>
 					{steps.map((step) => (
@@ -212,9 +231,13 @@ const Step = ({ steps }) => {
 
 	// DESKTOP LAYOUT - Keep MacBook Air 13" appearance but make it screen responsive
 	return (
-		<div className="w-[90%] flex items-center">
+		<div className="flex items-center w-full">
 			<div
-				className="flex w-full p-4 ml-4 md:p-6 lg:p-8 md:ml-6 lg:ml-10"
+				className={`w-full p-4 ml-4 md:p-6 lg:p-8 md:ml-6 lg:ml-10 ${
+					isSmallDesktop
+						? "grid grid-cols-2 gap-4 place-items-center justify-center"
+						: "flex"
+				}`}
 				style={{
 					minHeight: "150px",
 				}}
@@ -222,10 +245,15 @@ const Step = ({ steps }) => {
 				{steps.map((step) => (
 					<div
 						key={step.num}
-						className="relative flex flex-col items-start justify-center flex-1 ml-3 overflow-hidden rounded-lg md:ml-5 lg:ml-7"
+						className={`relative flex flex-col items-start justify-center overflow-hidden rounded-lg ${
+							isSmallDesktop
+								? "w-full"
+								: "flex-1 ml-3 md:ml-5 lg:ml-7"
+						}`}
 						style={{
 							borderRadius: "20px",
 							position: "relative",
+							minHeight: isSmallDesktop ? "120px" : "auto",
 						}}
 					>
 						{/* Background Image */}

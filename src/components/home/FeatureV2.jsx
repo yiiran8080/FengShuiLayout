@@ -1,17 +1,29 @@
 "use client";
+import { useState, useEffect } from "react";
 import Comments from "./Comments";
 import Features from "./Features";
 import ImageCarousel from "./ImageCarousel";
 import { useResponsiveScale } from "../../hooks/useResponsiveScale";
 
 const FeatureV2 = () => {
-	const { scaleRatio, isMobileLayout } = useResponsiveScale();
+	const { scaleRatio } = useResponsiveScale();
+	const [isMobileView, setIsMobileView] = useState(false);
 
-	// MOBILE LAYOUT
-	if (isMobileLayout) {
+	useEffect(() => {
+		const checkScreenSize = () => {
+			setIsMobileView(window.innerWidth < 1218);
+		};
+
+		checkScreenSize();
+		window.addEventListener("resize", checkScreenSize);
+		return () => window.removeEventListener("resize", checkScreenSize);
+	}, []);
+
+	// MOBILE LAYOUT (screen < 1218px)
+	if (isMobileView) {
 		return (
 			<div
-				className="flex flex-col w-full bg-[#EFEFEF] min-h-screen px-4 py-6"
+				className="flex flex-col w-full bg-[#EFEFEF]  px-4 py-0"
 				style={{
 					fontFamily: "Noto Serif TC, serif",
 					maxWidth: "100vw",
@@ -19,12 +31,12 @@ const FeatureV2 = () => {
 				}}
 			>
 				{/* Features Section - Top */}
-				<div className="flex-shrink-0 w-full mb-8">
+				<div className="flex-shrink-0 w-full mb-0">
 					<Features />
 				</div>
 
 				{/* Comments Section - Middle */}
-				<div className="flex-shrink-0 w-full mb-8">
+				<div className="flex-shrink-0 w-full mb-0">
 					<Comments />
 				</div>
 

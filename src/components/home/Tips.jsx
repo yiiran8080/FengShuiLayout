@@ -7,8 +7,20 @@ import { useResponsiveScale } from "../../hooks/useResponsiveScale";
 export default function Tips({ onHeightChange }) {
 	const t = useTranslations("home.tips");
 	const [activeTip, setActiveTip] = useState(null);
+	const [isSmallScreen, setIsSmallScreen] = useState(false);
 	const tipsRef = useRef(null);
 	const { scaleRatio, isMobileLayout } = useResponsiveScale();
+
+	// Listen for screen size changes
+	useEffect(() => {
+		const checkScreenSize = () => {
+			setIsSmallScreen(window.innerWidth < 1089);
+		};
+
+		checkScreenSize();
+		window.addEventListener("resize", checkScreenSize);
+		return () => window.removeEventListener("resize", checkScreenSize);
+	}, []);
 
 	const handleTipClick = (index) => {
 		if (activeTip === index) {
@@ -215,9 +227,19 @@ export default function Tips({ onHeightChange }) {
 			}}
 		>
 			{/* Top Section: Title and Description */}
-			<div className="flex flex-row w-full max-w-[1400px] mb-16">
+			<div
+				className="flex w-full max-w-[1400px] mb-16"
+				style={{
+					flexDirection: isSmallScreen ? "column" : "row",
+				}}
+			>
 				{/* Left: Title */}
-				<div className="flex items-center flex-1">
+				<div
+					className="flex items-center flex-1"
+					style={{
+						marginBottom: isSmallScreen ? "20px" : "0",
+					}}
+				>
 					<h1
 						style={{
 							fontFamily: "Noto Serif TC, serif",
@@ -226,6 +248,7 @@ export default function Tips({ onHeightChange }) {
 							fontSize: "76px", // Original size
 							color: "#E8E2DA",
 							lineHeight: "1.1",
+							textAlign: isSmallScreen ? "center" : "left",
 						}}
 					>
 						{t("title")}
@@ -242,7 +265,7 @@ export default function Tips({ onHeightChange }) {
 							color: "#E8E2DA",
 							lineHeight: "1.6",
 							maxWidth: "600px",
-							textAlign: "right",
+							textAlign: isSmallScreen ? "center" : "right",
 						}}
 					>
 						<span style={{ display: "block" }}>
@@ -258,7 +281,7 @@ export default function Tips({ onHeightChange }) {
 			{/* Tips List */}
 			<div className="flex justify-start w-full">
 				<div
-					className="w-full max-w-[1000px] flex flex-col"
+					className="flex flex-col w-full "
 					style={{ marginLeft: "0px" }}
 				>
 					{Array.from({ length: 6 }, (_, index) => (

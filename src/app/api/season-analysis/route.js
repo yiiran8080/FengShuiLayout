@@ -1,3 +1,6 @@
+// Set API timeout to 60 seconds for this route
+export const maxDuration = 60;
+
 export async function POST(req) {
 	try {
 		const { userInfo } = await req.json();

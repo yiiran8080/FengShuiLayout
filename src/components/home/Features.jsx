@@ -34,7 +34,7 @@ export default function Features() {
 		// Mobile layout - optimized for small screens
 		return (
 			<section
-				className="w-full px-4 py-6 sm:px-6 sm:py-8"
+				className="w-full px-4 py-0 sm:px-6 sm:py-0"
 				style={{ fontFamily: "Noto Serif TC, serif" }}
 			>
 				{/* Green line above title - responsive width */}
@@ -61,31 +61,26 @@ export default function Features() {
 					{t("title")}
 				</h3>
 
-				{/* Mobile grid - responsive 2 columns with better spacing */}
-				<div className="grid w-full grid-cols-2 gap-4 my-6 sm:gap-6 sm:my-8">
+				{/* Mobile grid - single column layout */}
+				<div className="flex flex-row justify-center w-full gap-4 my-6 sm:gap-6 sm:my-8">
 					{features.map((feature, index) => (
 						<div
 							key={index}
-							className="flex flex-col items-center p-3 text-center transition-transform duration-200 rounded-lg bg-white/50 hover:scale-105 sm:p-4"
+							className="flex flex-col items-center p-0 text-center transition-transform duration-200 rounded-lg hover:scale-105 sm:p-4"
 						>
-							<div className="flex items-center justify-center mb-3 sm:mb-4">
+							<div className="flex items-center justify-center">
 								<Image
 									src={feature.icon}
 									alt={feature.title}
-									width={50}
-									height={50}
+									width={120}
+									height={120}
 									className="object-contain"
-									style={{
-										width: "clamp(32px, 8vw, 50px)",
-										height: "clamp(32px, 8vw, 50px)",
-									}}
 								/>
 							</div>
 							<h3
-								className="mb-2 text-center"
+								className="mb-2 text-center font-nano-sans-hk"
 								style={{
-									fontFamily: "Acme, sans-serif",
-									fontWeight: 400,
+									fontWeight: 800,
 									fontSize: "clamp(14px, 4vw, 18px)", // Responsive font size
 									color: "#000",
 									fontStyle: "normal",
@@ -95,11 +90,10 @@ export default function Features() {
 								{feature.title}
 							</h3>
 							<p
-								className="text-center"
+								className="text-center font-nano-sans-hk"
 								style={{
-									fontFamily: "ABeeZee, sans-serif",
-									fontWeight: 400,
-									fontSize: "clamp(11px, 3vw, 14px)", // Responsive font size
+									fontWeight: 800,
+									fontSize: "clamp(10px, 3vw, 10px)", // Responsive font size
 									color: "#073E31",
 									fontStyle: "normal",
 									lineHeight: "1.4",
@@ -208,8 +202,8 @@ export default function Features() {
 							<Image
 								src={feature.icon}
 								alt={feature.title}
-								width={45}
-								height={45}
+								width={105}
+								height={105}
 								className="object-contain mb-4"
 							/>
 							<h3

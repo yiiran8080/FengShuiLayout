@@ -45,14 +45,12 @@ const ServiceSection = () => {
 
 	return (
 		<section
-			className="w-full py-8 md:py-16 bg-[#EFEFEF] md:rounded-t-[80px] relative z-10"
-			style={{
-				marginTop: isClient && isMobile ? "0" : "-70px",
-				paddingTop: isClient && isMobile ? "0" : "70px",
-			}}
+			className={`w-full py-8 md:py-16 bg-[#EFEFEF] rounded-t-[40px] md:rounded-t-[80px] relative z-10 ${
+				isClient && isMobile ? "mt-0 pt-0" : "-mt-[70px] pt-[70px]"
+			}`}
 		>
 			{/* Step Component at the top */}
-			<div className="flex justify-center w-full mb-8 md:mb-16">
+			<div className="flex justify-center hidden w-full mb-8 md:block md:mb-16">
 				<Step steps={steps} />
 			</div>
 

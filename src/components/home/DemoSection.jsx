@@ -227,18 +227,14 @@ export default function DemoSection() {
 	};
 
 	return (
-		<section className="w-full mb-16 sm:mb-20 md:mb-24 lg:mb-30 bg-[#EFEFEF] overflow-hidden">
+		<section className="w-full mb-12 sm:mb-16 md:mb-20 lg:mb-24 xl:mb-32 bg-[#EFEFEF] overflow-hidden">
 			<div className="px-3 mx-auto sm:px-4 md:px-6 lg:px-8 max-w-7xl">
 				{/* Title - Responsive sizing */}
 				<div className="mb-8 sm:mb-10 md:mb-12 text-start">
 					<h2
-						className="font-bold text-[#635D3B] mb-3 sm:mb-4"
+						className="font-bold text-[#635D3B] mb-3 sm:mb-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
 						style={{
 							fontFamily: "Noto Serif TC, serif",
-							fontSize:
-								isClient && isMobile
-									? "clamp(2rem, 8vw, 3rem)"
-									: "clamp(3rem, 5vw, 6rem)",
 						}}
 					>
 						{t("title")}
@@ -246,16 +242,13 @@ export default function DemoSection() {
 				</div>
 
 				{/* Draggable Tags - Auto-scroll on desktop, drag on mobile */}
-				<div className="mb-12 overflow-hidden sm:mb-14 md:mb-16">
+				<div className="mb-8 overflow-hidden sm:mb-10 md:mb-12 lg:mb-14 xl:mb-16">
 					<div
 						ref={scrollContainerRef}
-						className="flex pb-3 space-x-4 overflow-x-auto sm:pb-4 sm:space-x-6 scrollbar-hide"
+						className="flex pb-3 pl-5 space-x-4 overflow-x-auto sm:pb-4 sm:space-x-6 scrollbar-hide sm:pl-10 md:pl-20 lg:pl-25"
 						style={{
 							scrollbarWidth: "none",
 							msOverflowStyle: "none",
-							width: "calc(100%)",
-							paddingLeft:
-								isClient && isMobile ? "20px" : "100px",
 							cursor: isMobile
 								? isDragging
 									? "grabbing"
@@ -291,31 +284,15 @@ export default function DemoSection() {
 									<img
 										src={tag.image}
 										alt={tag.name}
-										className="object-cover"
-										style={{
-											width:
-												isClient && isMobile
-													? "180px"
-													: "240px",
-											height:
-												isClient && isMobile
-													? "225px"
-													: "300px",
-										}}
+										className="object-cover h-56 w-44 sm:w-48 sm:h-60 md:w-56 md:h-72 lg:w-60 lg:h-75"
 										draggable={false}
 									/>
 
 									{/* Start Button - Responsive positioning and sizing */}
-									<div
-										className={`absolute ${isClient && isMobile ? "bottom-2 right-2" : "bottom-4 right-4"}`}
-									>
+									<div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 md:bottom-4 md:right-4">
 										<Link
 											href={`/demo?category=${tag.id}`}
-											className={`flex items-center space-x-1 font-bold text-gray-800 transition-colors duration-300 bg-white rounded-lg hover:bg-gray-100 ${
-												isClient && isMobile
-													? "px-2 py-1 text-xs"
-													: "px-4 py-1 text-sm"
-											}`}
+											className="flex items-center space-x-1 font-bold text-gray-800 transition-colors duration-300 bg-white rounded-lg hover:bg-gray-100 px-2 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2 md:text-base"
 											onClick={(e) => {
 												// Prevent event bubbling to parent click handler
 												e.stopPropagation();
@@ -323,11 +300,7 @@ export default function DemoSection() {
 										>
 											<span>{t("startButton")}</span>
 											<svg
-												className={
-													isClient && isMobile
-														? "w-3 h-3"
-														: "w-4 h-4"
-												}
+												className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4"
 												fill="none"
 												stroke="currentColor"
 												viewBox="0 0 24 24"
@@ -350,20 +323,20 @@ export default function DemoSection() {
 				{/* Demo Preview Section - Responsive layout */}
 				{isClient && isMobile ? (
 					/* Mobile Layout - Stacked design */
-					<div className="flex flex-col items-center w-full space-y-6">
+					<div className="flex flex-col items-center w-full space-y-6 sm:space-y-8">
 						{/* Main Image */}
-						<div className="relative w-full max-w-md">
+						<div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md">
 							<img
-								src="/images/demo/Demo.png"
+								src="/images/demo/Demo-2.png"
 								alt={t("demoAltText")}
 								className="w-full h-auto shadow-lg rounded-xl"
 							/>
 						</div>
 
 						{/* Content Section */}
-						<div className="px-4 text-center">
+						<div className="max-w-md px-4 text-center sm:px-6 sm:max-w-lg">
 							<h3
-								className="text-2xl font-bold text-[#5E5A43] mb-4"
+								className="text-xl sm:text-2xl font-bold text-[#5E5A43] mb-4"
 								style={{
 									fontFamily: "Noto Serif TC",
 								}}
@@ -373,7 +346,7 @@ export default function DemoSection() {
 
 							<div className="space-y-3 text-[#5E5A43] mb-6">
 								<p
-									className="text-base font-bold leading-relaxed"
+									className="text-sm font-bold leading-relaxed sm:text-base"
 									style={{
 										fontFamily: "Noto Serif TC",
 									}}
@@ -381,7 +354,7 @@ export default function DemoSection() {
 									{t("previewDescription1")}
 								</p>
 								<p
-									className="text-base font-bold leading-relaxed"
+									className="text-sm font-bold leading-relaxed sm:text-base"
 									style={{
 										fontFamily: "Noto Serif TC",
 									}}
@@ -393,7 +366,7 @@ export default function DemoSection() {
 							{/* Preview Button */}
 							<Link
 								href="/demo"
-								className="bg-[#A3B116] text-white px-8 py-3 rounded-full font-bold text-base hover:bg-[#8B9914] transition-colors duration-300 inline-flex items-center space-x-2 shadow-lg"
+								className="bg-[#A3B116] text-white px-6 py-3 sm:px-8 sm:py-4 rounded-full font-bold text-sm sm:text-base hover:bg-[#8B9914] transition-colors duration-300 inline-flex items-center space-x-2 shadow-lg"
 							>
 								<span>{t("previewButton")}</span>
 							</Link>
@@ -403,76 +376,21 @@ export default function DemoSection() {
 					/* Desktop Layout - Keep MacBook Air 13" appearance but make responsive */
 					<div className="relative flex justify-center w-full">
 						{/* Center Image with overlapping elements */}
-						<div className="relative max-w-4xl">
+						<div className="relative w-full max-w-4xl lg:max-w-5xl xl:max-w-6xl">
 							<img
 								src="/images/demo/Demo.png"
 								alt={t("demoAltText")}
-								className="w-full h-auto shadow-lg rounded-xl"
+								className="w-full h-auto ml-8 max-w-none sm:ml-4 md:ml-5 lg:ml-8 xl:ml-10"
 							/>
 
 							{/* Green Button - Responsive positioning */}
-							<div className="absolute bottom-4 md:bottom-6 left-[-40px] md:left-[-70px]">
+							<div className="absolute bottom-4 left-[-45px] sm:bottom-6 sm:left-[-15px] md:bottom-8 md:left-[-20px] lg:bottom-10 lg:left-[-35px] xl:bottom-12 xl:left-[-80px]">
 								<Link
 									href="/demo"
-									className="bg-[#A3B116] text-white rounded-full font-bold hover:bg-[#8B9914] transition-colors duration-300 inline-flex items-center space-x-2 shadow-lg"
-									style={{
-										padding:
-											"clamp(12px, 1.5vw, 16px) clamp(24px, 3vw, 48px)",
-										fontSize: "clamp(14px, 1.2vw, 18px)",
-									}}
+									className="bg-[#A3B116] text-white rounded-full font-bold hover:bg-[#8B9914] transition-colors duration-300 inline-flex items-center space-x-2 shadow-lg px-6 py-3 sm:px-8 sm:py-4 md:px-10 md:py-5 text-sm sm:text-base md:text-lg"
 								>
 									<span>{t("previewButton")}</span>
 								</Link>
-							</div>
-						</div>
-
-						{/* Right Side - Content overlapping right side of image */}
-						<div className="absolute right-[-30px] md:right-[-50px] max-w-xs md:max-w-md pl-4 md:pl-8 transform -translate-y-1/2 top-[70%]">
-							<div className="p-4 md:p-8">
-								<h3
-									className="font-bold text-[#5E5A43] mb-4 md:mb-6"
-									style={{
-										fontFamily: "Noto Serif TC",
-										WebkitTextStroke: "0.5px #5E5A43",
-										color: "#5E5A43",
-										textShadow:
-											"2px 0 0 white, -2px 0 0 white, 0 2px 0 white, 0 -2px 0 white",
-										fontSize: "clamp(24px, 3vw, 48px)",
-									}}
-								>
-									{t("previewTitle")}
-								</h3>
-
-								<div className="space-y-3 md:space-y-4 text-[#5E5A43]">
-									<p
-										className="font-bold leading-relaxed"
-										style={{
-											fontFamily: "Noto Serif TC",
-											WebkitTextStroke: "0.5px #5E5A43",
-											color: "#5E5A43",
-											textShadow:
-												"2px 0 0 white, -2px 0 0 white, 0 2px 0 white, 0 -2px 0 white",
-											fontSize:
-												"clamp(14px, 1.5vw, 20px)",
-										}}
-									>
-										{t("previewDescription1")}
-									</p>
-									<p
-										className="font-bold leading-relaxed"
-										style={{
-											fontFamily: "Noto Serif TC",
-											WebkitTextStroke: "0.5px #5E5A43",
-											color: "#5E5A43",
-											textShadow:
-												"2px 0 0 white, -2px 0 0 white, 0 2px 0 white, 0 -2px 0 white",
-											fontSize:
-												"clamp(14px, 1.5vw, 20px)",
-										}}
-									>
-										{t("previewDescription2")}
-									</p>
-								</div>
 							</div>
 						</div>
 					</div>

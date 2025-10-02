@@ -670,7 +670,10 @@ export default function DemoPage() {
 											<h2
 												className="relative inline-block text-center text-[32px] md:text-[64px] font-extrabold text-[#635D3B] leading-[40px] md:leading-[90px]"
 												style={{
-													fontFamily: "Noto Serif TC",
+													fontFamily:
+														"Noto Serif TC,serif",
+													WebkitTextStroke:
+														"1px #635D3B",
 												}}
 											>
 												{content.mainTitle}
@@ -679,38 +682,71 @@ export default function DemoPage() {
 										</div>
 										<div className="flex justify-center px-2 space-x-4 md:px-4 md:space-x-8">
 											{/* Overlapping Cards Container */}
-											<div className="relative w-full max-w-sm mb-4 md:max-w-md lg:max-w-lg md:mb-0">
+											<div className="relative flex items-center justify-center w-full max-w-sm mb-4 mr-8 sm:mr-20 md:max-w-sm lg:max-w-md md:mb-0">
 												{/* Top Card - 限時優惠 (Green Discount) */}
 												<div
-													className="relative z-20 flex items-center w-full h-16 px-2 py-2 shadow-xl md:h-24 md:px-6 md:py-4 rounded-xl"
+													className="relative z-20 flex items-center w-full h-20 px-4 sm:h-23 md:h-28 sm:px-4 md:px-6 rounded-xl"
 													style={{
 														background:
 															"linear-gradient(to right, #E8F37A, #A6B41B)",
+														boxShadow:
+															"3px 6px 11.4px rgba(0, 0, 0, 0.25)",
 													}}
 												>
-													<div
-														className="px-2 py-1 text-xl font-bold md:px-3 md:py-2 md:text-2xl"
-														style={{
-															background:
-																"linear-gradient(to bottom, #697304, #838A53)",
-															WebkitBackgroundClip:
-																"text",
-															WebkitTextFillColor:
-																"transparent",
-															backgroundClip:
-																"text",
-														}}
-													>
-														{t("ui.limitedOffer")}
+													<div className="flex flex-col">
+														<div
+															className="px-2 py-1 text-xl sm:text-3xl md:px-3 md:py-2 md:text-[36px]"
+															style={{
+																fontFamily:
+																	"Noto Serif TC, serif",
+																WebkitTextStroke:
+																	" 1.5px #838A53",
+															}}
+														>
+															{t(
+																"ui.limitedOffer"
+															)}
+														</div>
+														{/* Right Side Button */}
+														<div className="flex items-center mb-2">
+															<button
+																className="bg-white text-[#A3B116] px-6 sm:px-10 rounded-full text-xs sm:text-sm md:text-base font-extrabold hover:bg-gray-100 hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+																style={{
+																	background:
+																		"linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)",
+																	boxShadow:
+																		"0 4px 4px rgba(0, 0, 0, 0.25)",
+																	color: "#A1B00E",
+																	fontFamily:
+																		"Noto Sans HK",
+																}}
+																onClick={
+																	handleDiscountPayment
+																}
+																disabled={
+																	isProcessingPayment &&
+																	currentCardType ===
+																		"discount"
+																}
+															>
+																{isProcessingPayment &&
+																currentCardType ===
+																	"discount"
+																	? t(
+																			"ui.processing"
+																		)
+																	: t(
+																			"ui.paymentCalculation"
+																		)}
+															</button>
+														</div>
 													</div>
 
 													{/* Centered Price */}
-													<div className="flex justify-center flex-1">
+													<div className="flex flex-row justify-center flex-1">
 														<div
-															className="text-2xl font-extrabold text-center md:text-5xl"
+															className="text-5xl font-extrabold text-center sm:text-5xl font-noto-sans-hk md:text-6xl"
 															style={{
-																fontFamily:
-																	"Noto Sans HK",
 																background:
 																	"linear-gradient(to bottom, #697304, #838A53)",
 																WebkitBackgroundClip:
@@ -720,7 +756,7 @@ export default function DemoPage() {
 																backgroundClip:
 																	"text",
 																WebkitTextStroke:
-																	"1px white",
+																	"2px white",
 																filter: "drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25))",
 															}}
 														>
@@ -728,62 +764,51 @@ export default function DemoPage() {
 																getPricing()
 																	.discountPrice
 															}
-															<span className="text-xs font-normal md:text-base">
-																{
-																	getPricing()
-																		.unit
-																}
-															</span>
 														</div>
-													</div>
-
-													{/* Right Side Button */}
-													<div className="flex items-center">
-														<button
-															className="payment-button bg-white text-[#A3B116] px-1 md:px-3 py-1 md:py-3 rounded-lg md:rounded-xl text-xs md:text-base font-extrabold hover:bg-gray-100 hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg border-2 border-white"
+														<div
+															className="text-xs text-white sm:text-sm font-noto-sans-hk md:text-base"
 															style={{
-																background:
-																	"linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)",
-																boxShadow:
-																	"0 8px 20px rgba(163, 177, 22, 0.3), 0 4px 8px rgba(0,0,0,0.1)",
-																color: "#A1B00E",
-																fontFamily:
-																	"Noto Sans HK",
+																marginTop:
+																	"auto",
+																marginBottom:
+																	"8px",
+																marginLeft:
+																	"4px",
+																fontWeight:
+																	"bold",
 															}}
-															onClick={
-																handleDiscountPayment
-															}
-															disabled={
-																isProcessingPayment &&
-																currentCardType ===
-																	"discount"
-															}
 														>
-															{isProcessingPayment &&
-															currentCardType ===
-																"discount"
-																? t(
-																		"ui.processing"
-																	)
-																: t(
-																		"ui.paymentCalculation"
-																	)}
-														</button>
+															{getPricing().unit}
+														</div>
 													</div>
 												</div>
 
 												{/* Bottom Card - 專享版 (White Premium) - Partially Visible */}
-												<div className="absolute z-10 flex items-center justify-between w-full h-16 px-2 py-2 bg-white border-2 border-gray-300 shadow-lg left-6 top-12 md:left-8 md:top-18 md:h-24 md:px-6 md:py-4 rounded-xl">
-													<div className="bg-[#A3B116] text-white px-2 md:px-3 py-1 md:py-2 rounded-lg font-bold text-xs md:text-sm">
+												<div
+													className="absolute z-10 flex items-center justify-between w-full h-12 px-2 py-2 bg-white border-2 border-gray-300 sm:h-16 left-8 top-18 sm:left-16 sm:top-22 md:left-48 md:top-24 md:h-24 sm:px-4 md:px-6 md:py-4 rounded-xl"
+													style={{
+														boxShadow:
+															"0 4px 8px rgba(0, 0, 0, 0.25)",
+													}}
+												>
+													<div
+														className="px-2 py-1 text-lg sm:text-2xl md:text-[36px] font-bold text-[#A1A1A1]"
+														style={{
+															fontFamily:
+																"Noto Serif TC, serif",
+															WebkitTextStroke:
+																" 1.0px #A1A1A1",
+														}}
+													>
 														{t("ui.premiumVersion")}
 													</div>
 													<div className="flex flex-col items-center">
 														<div
-															className="text-2xl font-extrabold text-center md:text-5xl"
+															className="text-2xl font-extrabold text-center sm:text-4xl md:text-5xl"
 															style={{
 																fontFamily:
 																	"Noto Sans HK",
-																color: "#111827",
+																color: "#A1A1A1",
 															}}
 														>
 															<span
@@ -802,7 +827,7 @@ export default function DemoPage() {
 																}
 															</span>
 															<span
-																className="text-xs font-normal md:text-base"
+																className="text-xs font-normal sm:text-sm md:text-base"
 																style={{
 																	textDecoration:
 																		"none !important",
@@ -828,7 +853,10 @@ export default function DemoPage() {
 											<h2
 												className="relative inline-block text-start text-[32px] md:text-[64px] ml-2 md:ml-10 font-extrabold text-[#635D3B] leading-[40px] md:leading-[90px] flex-1"
 												style={{
-													fontFamily: "Noto Serif TC",
+													fontFamily:
+														"Noto Serif TC, serif",
+													WebkitTextStroke:
+														"1px #635D3B",
 												}}
 											>
 												{t("sections.materialsNeeded")}
@@ -878,11 +906,14 @@ export default function DemoPage() {
 											<h2
 												className="relative inline-block text-start ml-2 md:ml-10 text-[32px] md:text-[64px] font-extrabold text-[#635D3B] leading-[40px] md:leading-[90px]"
 												style={{
-													fontFamily: "Noto Serif TC",
+													fontFamily:
+														"Noto Serif TC, serif",
+													WebkitTextStroke:
+														"1px #635D3B",
 												}}
 											>
 												{content.previewTitle}
-												<div className="absolute bottom-0 left-0 right-0 h-0.5 mt-2"></div>
+												<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-400 mt-2"></div>
 											</h2>
 										</div>
 
@@ -890,14 +921,15 @@ export default function DemoPage() {
 										{activeTag === "couple" ? (
 											<div className="flex flex-col items-center px-4 space-y-6 md:px-0">
 												{/* Toggle Buttons */}
-												<div className="flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-4">
+												{/* Toggle Buttons */}
+												<div className="flex flex-row space-x-2 md:flex-row md:space-y-0 md:space-x-14">
 													<button
 														onClick={() =>
 															setCouplePreviewType(
 																"compatibility"
 															)
 														}
-														className={`px-6 md:px-8 py-3 font-bold text-sm md:text-lg transition-colors duration-300 ${
+														className={`px-10 md:px-18 py-3 font-bold text-sm md:text-lg transition-colors duration-300 ${
 															couplePreviewType ===
 															"compatibility"
 																? "bg-[#A3B116] text-white"
@@ -906,6 +938,13 @@ export default function DemoPage() {
 														style={{
 															borderRadius:
 																"100px",
+															fontFamily:
+																"Noto Serif TC, serif",
+															WebkitTextStroke:
+																couplePreviewType ===
+																"compatibility"
+																	? "0.5px #FFFFFF"
+																	: "0.5px #000000",
 														}}
 													>
 														{t(
@@ -918,7 +957,7 @@ export default function DemoPage() {
 																"exclusive"
 															)
 														}
-														className={`px-6 md:px-8 py-3 font-bold text-sm md:text-lg transition-colors duration-300 ${
+														className={`px-10 md:px-18 py-3 font-bold text-sm md:text-lg transition-colors duration-300 ${
 															couplePreviewType ===
 															"exclusive"
 																? "bg-[#A3B116] text-white"
@@ -927,6 +966,13 @@ export default function DemoPage() {
 														style={{
 															borderRadius:
 																"100px",
+															fontFamily:
+																"Noto Serif TC, serif",
+															WebkitTextStroke:
+																couplePreviewType ===
+																"exclusive"
+																	? "0.5px #FFFFFF"
+																	: "0.5px #000000",
 														}}
 													>
 														{t("ui.exclusivePlan")}
@@ -951,6 +997,94 @@ export default function DemoPage() {
 																: t(
 																		"ui.exclusivePlanReport"
 																	)
+														}
+														className="h-auto max-w-[70%]"
+													/>
+												</div>
+											</div>
+										) : activeTag === "life" ? (
+											/* Special life preview section with toggle buttons */
+											<div className="flex flex-col items-center px-4 space-y-6 md:px-0">
+												{/* Toggle Buttons */}
+												<div className="flex flex-row space-x-2 md:flex-row md:space-y-0 md:space-x-14">
+													<button
+														onClick={() =>
+															setCouplePreviewType(
+																"compatibility"
+															)
+														}
+														className={`px-10 md:px-18 py-3 font-bold text-sm md:text-lg transition-colors duration-300 ${
+															couplePreviewType ===
+															"compatibility"
+																? "bg-[#A3B116] text-white"
+																: "bg-[#C1C1C1] text-black"
+														}`}
+														style={{
+															borderRadius:
+																"100px",
+															fontFamily:
+																"Noto Serif TC, serif",
+															WebkitTextStroke:
+																couplePreviewType ===
+																"compatibility"
+																	? "0.5px #FFFFFF"
+																	: "0.5px #000000",
+														}}
+													>
+														{t(
+															"content.life.toggleButton1"
+														) || "年運分析"}
+													</button>
+													<button
+														onClick={() =>
+															setCouplePreviewType(
+																"exclusive"
+															)
+														}
+														className={`px-10 md:px-18 py-3 font-bold text-sm md:text-lg transition-colors duration-300 ${
+															couplePreviewType ===
+															"exclusive"
+																? "bg-[#A3B116] text-white"
+																: "bg-[#C1C1C1] text-black"
+														}`}
+														style={{
+															borderRadius:
+																"100px",
+															fontFamily:
+																"Noto Serif TC, serif",
+															WebkitTextStroke:
+																couplePreviewType ===
+																"exclusive"
+																	? "0.5px #FFFFFF"
+																	: "0.5px #000000",
+														}}
+													>
+														{t(
+															"content.life.toggleButton2"
+														) || "命格詳解"}
+													</button>
+												</div>
+
+												{/* Dynamic Image based on selection */}
+												<div className="flex justify-center">
+													<img
+														src={
+															couplePreviewType ===
+															"compatibility"
+																? "/images/demo/命理.png"
+																: "/images/demo/命理2.png"
+														}
+														alt={
+															couplePreviewType ===
+															"compatibility"
+																? t(
+																		"content.life.previewAlt1"
+																	) ||
+																	"年運分析報告"
+																: t(
+																		"content.life.previewAlt2"
+																	) ||
+																	"命格詳解報告"
 														}
 														className="h-auto max-w-[70%]"
 													/>

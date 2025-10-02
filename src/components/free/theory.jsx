@@ -14,6 +14,7 @@ export default function Theory({ bgColor }) {
 				className="flex flex-col items-center justify-center p-6"
 				style={{
 					width: "100%",
+					maxWidth: "704px",
 					background: "rgba(232, 226, 218, 0.25)",
 					backdropFilter: "blur(10px)",
 					WebkitBackdropFilter: "blur(10px)",
@@ -349,11 +350,21 @@ export default function Theory({ bgColor }) {
 				}}
 			>
 				{/* Title and Description Row */}
-				<div className="flex flex-row w-full px-20 pb-10">
+				<div
+					className="flex w-full px-20 pb-10"
+					style={{
+						flexDirection:
+							window.innerWidth < 1120 ? "column" : "row",
+					}}
+				>
 					{/* Title - left side (35%) */}
 					<div
 						className="flex flex-col items-start"
-						style={{ width: "35%" }}
+						style={{
+							width: window.innerWidth < 1120 ? "100%" : "35%",
+							marginBottom:
+								window.innerWidth < 1120 ? "20px" : "0",
+						}}
 					>
 						<h2
 							style={{
@@ -414,8 +425,11 @@ export default function Theory({ bgColor }) {
 
 					{/* Description - right side (65%) */}
 					<div
-						className="flex flex-col items-start ml-10"
-						style={{ width: "65%" }}
+						className="flex flex-col items-start"
+						style={{
+							width: window.innerWidth < 1120 ? "100%" : "65%",
+							marginLeft: window.innerWidth < 1120 ? "0" : "40px",
+						}}
 					>
 						<div
 							style={{
@@ -467,8 +481,21 @@ export default function Theory({ bgColor }) {
 
 				{/* Cards Section */}
 				<section
-					className="flex flex-col items-stretch justify-center w-full gap-4 px-16 text-left md:flex-row sm:gap-6 md:gap-8"
-					style={{ position: "relative", zIndex: 1 }}
+					className="grid w-1/2 grid-cols-2 grid-rows-2 gap-4 px-16"
+					style={{
+						position: "relative",
+						zIndex: 1,
+						marginLeft: 0,
+						marginRight: "auto",
+						...(window.innerWidth >= 1440 && {
+							display: "flex",
+							flexDirection: "row",
+							alignItems: "stretch",
+							justifyContent: "center",
+							gap: "32px",
+							width: "100%",
+						}),
+					}}
 				>
 					{/* Card 1 */}
 					<div

@@ -1131,7 +1131,7 @@ export default function Home() {
 			<div className="relative flex h-[calc(100vh-4rem)] mt-16 overflow-hidden">
 				{/* 移動端菜單按鈕 */}
 				<button
-					className="fixed z-50 p-2 bg-white rounded-lg shadow-lg md:hidden top-20 left-2"
+					className="fixed z-50 p-2 bg-white rounded-lg shadow-lg xl:hidden top-20 left-2"
 					onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
 				>
 					{isMobileMenuOpen ? (
@@ -1145,8 +1145,8 @@ export default function Home() {
 				<div
 					className={`
 					${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
-					md:translate-x-0 transition-transform duration-300 ease-in-out
-					fixed md:relative z-40 w-72 sm:w-80 md:w-80 bg-[#EFEFEF] flex flex-col h-full
+					xl:translate-x-0 transition-transform duration-300 ease-in-out
+					fixed xl:relative z-40 w-72 sm:w-80 xl:w-80 bg-[#EFEFEF] flex flex-col h-full
 				`}
 				>
 					{/* 建立新的對話 */}
@@ -1351,7 +1351,7 @@ export default function Home() {
 				{/* 移動端遮罩層 */}
 				{isMobileMenuOpen && (
 					<div
-						className="fixed inset-0 z-30 bg-black bg-opacity-50 md:hidden"
+						className="fixed inset-0 z-30 bg-transparent xl:hidden"
 						onClick={() => setIsMobileMenuOpen(false)}
 						style={{ width: "100vw", height: "100vh" }}
 					/>
@@ -1359,7 +1359,7 @@ export default function Home() {
 
 				{/* 右側聊天區域 - 更新背景樣式和響應式設計 */}
 				<div
-					className="flex flex-col flex-1 w-full min-h-0 md:ml-0"
+					className="flex flex-col flex-1 w-full min-h-0 xl:ml-0"
 					style={{
 						backgroundColor: "#EFEFEF",
 						backgroundImage:
@@ -1466,7 +1466,7 @@ export default function Home() {
 
 									{/* 快捷標籤 - 自動滾動 */}
 									<div className="w-full max-w-4xl mx-auto mt-3 overflow-hidden sm:mt-5">
-										<div className="flex gap-2 sm:gap-3 animate-scroll-left">
+										<div className="flex gap-2 sm:gap-3 animate-scroll-continuous">
 											{/* 第一組標籤 */}
 											<button
 												onClick={() =>
@@ -2032,6 +2032,15 @@ export default function Home() {
 					}
 				}
 
+				@keyframes scroll-continuous {
+					0% {
+						transform: translateX(0%);
+					}
+					100% {
+						transform: translateX(-50%);
+					}
+				}
+
 				.animate-progress-bar {
 					animation: progress-bar 15s linear infinite;
 				}
@@ -2043,6 +2052,16 @@ export default function Home() {
 				}
 
 				.animate-scroll-left:hover {
+					animation-play-state: paused;
+				}
+
+				.animate-scroll-continuous {
+					animation: scroll-continuous 30s linear infinite;
+					width: max-content;
+					display: flex;
+				}
+
+				.animate-scroll-continuous:hover {
 					animation-play-state: paused;
 				}
 			`}</style>

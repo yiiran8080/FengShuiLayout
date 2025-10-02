@@ -1332,8 +1332,19 @@ ${baseServices}
 				},
 			]);
 
-			const analysis = JSON.parse(response.choices[0].message.content);
-			console.log("🤖 Enhanced AI Analysis Result:", analysis);
+			let analysis;
+			try {
+				analysis = JSON.parse(response.choices[0].message.content);
+				console.log("🤖 Enhanced AI Analysis Result:", analysis);
+			} catch (parseError) {
+				console.error("🚨 JSON解析失敗，AI回應格式不正確:", {
+					error: parseError.message,
+					rawResponse: response.choices[0].message.content,
+					message: message,
+				});
+				// 使用備用分析邏輯
+				throw new Error(`JSON解析失敗: ${parseError.message}`);
+			}
 
 			// 🧠 ENHANCEMENT: Store conversation history
 			if (sessionId) {
@@ -1714,9 +1725,14 @@ ${baseServices}
 	}
 
 	// 🎯 生成服務引導回應
+
 	async generateServiceGuidance(analysis, originalMessage, sessionId = null) {
 		if (analysis.isWithinScope) {
-			return await this.generateScopeResponse(analysis, originalMessage);
+			return await this.generateScopeResponse(
+				analysis,
+				originalMessage,
+				sessionId
+			);
 		} else {
 			return await this.generateOutOfScopeResponse(
 				analysis,
@@ -1727,7 +1743,7 @@ ${baseServices}
 	}
 
 	// 🎯 生成範圍內問題的回應
-	async generateScopeResponse(analysis, originalMessage) {
+	async generateScopeResponse(analysis, originalMessage, sessionId = null) {
 		const topic = analysis.detectedTopic;
 
 		// 為不同核心領域提供個性化的流程引導

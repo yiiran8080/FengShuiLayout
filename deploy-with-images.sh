@@ -36,6 +36,9 @@ ssh -i "$SSH_KEY" "$EC2_USER@$EC2_HOST" << 'EOF'
   cp -r public .next/standalone/
   cp .env .next/standalone/.env
   
+  echo "📦 Copying static assets for standalone build..."
+  cp -r .next/static .next/standalone/.next/
+  
   echo "✅ Verifying image files are accessible:"
   ls -la .next/standalone/public/images/logo/ | head -3
   

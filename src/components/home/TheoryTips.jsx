@@ -78,19 +78,19 @@ const TheoryTips = () => {
 				>
 					<Theory bgColor="bg-transparent" />
 				</div>
+			</div>
 
-				{/* Tips component - positioned to start after Theory and allow expansion */}
-				<div
-					style={{
-						position: "absolute",
-						top: "1100px", // Original MacBook Air 13" position
-						left: "0",
-						right: "0",
-						zIndex: 1,
-					}}
-				>
-					<Tips onHeightChange={setTipsHeight} />
-				</div>
+			{/* Tips component - positioned to start after Theory and allow expansion */}
+			<div
+				style={{
+					position: "absolute",
+					top: "1100px", // Original MacBook Air 13" position
+					left: "0",
+					right: "0",
+					zIndex: 1,
+				}}
+			>
+				<Tips onHeightChange={setTipsHeight} />
 			</div>
 		</div>
 	);

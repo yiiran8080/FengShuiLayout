@@ -43,7 +43,7 @@ function PaymentThankYou({ paymentType, onStartDataEntry }) {
 				{/* Success icon - responsive sizing */}
 				<div className="flex justify-center mb-8 sm:mb-12 md:mb-16">
 					<img
-						src="/images/hero/tick2.png"
+						src="/images/hero/Tick2.png"
 						alt="Success"
 						className="object-contain w-24 h-24 animate-bounce sm:w-32 sm:h-32 md:w-40 md:h-40"
 						style={{
