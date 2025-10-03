@@ -220,7 +220,7 @@ export default function Tips({ onHeightChange }) {
 	return (
 		<section
 			ref={tipsRef}
-			className="flex flex-col items-center justify-center w-full px-8 py-12"
+			className="flex flex-col items-center justify-center w-[70%] px-8 py-12"
 			style={{
 				background: "transparent",
 				position: "relative",

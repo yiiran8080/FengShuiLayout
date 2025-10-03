@@ -11,7 +11,7 @@ export default function Theory({ bgColor }) {
 		// Mobile layout - completely different structure
 		return (
 			<section
-				className="flex flex-col items-center justify-center p-6"
+				className="flex flex-col items-center justify-center p-3"
 				style={{
 					width: "100%",
 					maxWidth: "704px",
@@ -101,7 +101,7 @@ export default function Theory({ bgColor }) {
 				</button>
  */}
 				{/* Mobile Cards - 2x2 Grid */}
-				<div className="grid w-full grid-cols-2 gap-4">
+				<div className="grid w-full grid-cols-2 gap-2">
 					{/* Card 1 */}
 					<div
 						className="flex flex-col items-center p-4 rounded-lg"
@@ -502,7 +502,6 @@ export default function Theory({ bgColor }) {
 						className="w-full md:w-72 rounded-[10px] box-border flex flex-col items-center justify-center mb-4 md:mb-0 p-4 sm:p-6"
 						style={{
 							background: "#F5F5F5",
-							border: "1px solid #25826c",
 						}}
 					>
 						<div className="w-full md:w-60 h-[170px] sm:h-[180px] md:h-[211px] flex flex-col items-start justify-start gap-4 sm:gap-[11px]">
@@ -562,7 +561,6 @@ export default function Theory({ bgColor }) {
 						className="w-full md:w-72 rounded-[10px] box-border flex flex-col items-center justify-center mb-4 md:mb-0 p-4 sm:p-6"
 						style={{
 							background: "#F5F5F5",
-							border: "1px solid #25826c",
 						}}
 					>
 						<div className="w-full md:w-60 h-[170px] sm:h-[180px] md:h-[211px] flex flex-col items-start justify-start gap-4 sm:gap-[11px]">
@@ -580,10 +578,10 @@ export default function Theory({ bgColor }) {
 									}}
 								>
 									<Image
-										className="w-8 h-8 sm:w-10 sm:h-[40.9px] object-contain"
+										className="w-8 h-8 sm:w-10 sm:h-[15.9px] object-contain"
 										loading="lazy"
-										width={40}
-										height={40.9}
+										width={20}
+										height={20.9}
 										sizes="100vw"
 										alt=""
 										src="/images/report/theory-2.png"
@@ -622,7 +620,6 @@ export default function Theory({ bgColor }) {
 						className="w-full md:w-72 rounded-[10px] box-border flex flex-col items-center justify-center mb-4 md:mb-0 p-4 sm:p-6"
 						style={{
 							background: "#F5F5F5",
-							border: "1px solid #25826c",
 						}}
 					>
 						<div className="w-full md:w-60 h-[170px] sm:h-[180px] md:h-[211px] flex flex-col items-start justify-start gap-4 sm:gap-[11px]">
@@ -682,7 +679,6 @@ export default function Theory({ bgColor }) {
 						className="w-full md:w-72 rounded-[10px] box-border flex flex-col items-center justify-center p-4 sm:p-6"
 						style={{
 							background: "#F5F5F5",
-							border: "1px solid #25826c",
 						}}
 					>
 						<div className="w-full md:w-60 h-[170px] sm:h-[180px] md:h-[209px] flex flex-col items-start justify-start gap-4 sm:gap-[11px]">

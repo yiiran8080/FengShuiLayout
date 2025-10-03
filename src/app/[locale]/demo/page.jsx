@@ -682,10 +682,10 @@ export default function DemoPage() {
 										</div>
 										<div className="flex justify-center px-2 space-x-4 md:px-4 md:space-x-8">
 											{/* Overlapping Cards Container */}
-											<div className="relative flex items-center justify-center w-full max-w-sm mb-4 mr-8 sm:mr-20 md:max-w-sm lg:max-w-md md:mb-0">
+											<div className="relative flex items-center justify-center w-full max-w-sm mb-4 mr-8 sm:mr-20 md:max-w-md lg:max-w-md md:mb-0">
 												{/* Top Card - 限時優惠 (Green Discount) */}
 												<div
-													className="relative z-20 flex items-center w-full h-20 px-4 sm:h-23 md:h-28 sm:px-4 md:px-6 rounded-xl"
+													className="relative z-20 flex items-center w-full h-20 gap-1 px-5 sm:h-23 md:h-28 sm:px-5 md:px-7 rounded-xl"
 													style={{
 														background:
 															"linear-gradient(to right, #E8F37A, #A6B41B)",
@@ -745,7 +745,7 @@ export default function DemoPage() {
 													{/* Centered Price */}
 													<div className="flex flex-row justify-center flex-1">
 														<div
-															className="text-5xl font-extrabold text-center sm:text-5xl font-noto-sans-hk md:text-6xl"
+															className="text-[45px] font-extrabold text-center sm:text-5xl font-arial-black md:text-7xl"
 															style={{
 																background:
 																	"linear-gradient(to bottom, #697304, #838A53)",
@@ -756,7 +756,7 @@ export default function DemoPage() {
 																backgroundClip:
 																	"text",
 																WebkitTextStroke:
-																	"2px white",
+																	"2.5px white",
 																filter: "drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25))",
 															}}
 														>

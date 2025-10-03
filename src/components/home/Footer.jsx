@@ -34,7 +34,7 @@ export default function Footer() {
 			}}
 		>
 			<div className="container px-4 mx-auto py-30">
-				<div className="justify-center item-center text-[50px] font-bold text-white text-center mt-20 mb-20">
+				<div className="hidden sm:block justify-center item-center text-[50px] font-bold text-white text-center mt-20 mb-20">
 					<h1
 						className="text-white"
 						style={{
@@ -76,11 +76,11 @@ export default function Footer() {
 				</div>
 				<div className="flex flex-wrap items-start justify-between gap-5">
 					{/* Left side: Product links and Company links grouped together */}
-					<div className="flex gap-12">
+					<div className="flex justify-between gap-32 sm:gap-12 ">
 						{/* Product links */}
 						<div>
 							<h3
-								className="mb-4 text-xl font-semibold text-white"
+								className="mb-4 text-lg font-semibold text-white sm:text-xl md:text-xl lg:text-xl xl:text-xl"
 								style={{ fontFamily: "Noto Serif TC, serif" }}
 							>
 								{t("consult")}
@@ -90,7 +90,7 @@ export default function Footer() {
 									<li key={link.name}>
 										<Link
 											href={link.href}
-											className="text-xl transition-colors hover:text-white"
+											className="text-lg font-semibold text-white transition-colors sm:text-xl md:text-xl hover:text-white"
 											style={{
 												fontFamily:
 													"Noto Serif TC, serif",
@@ -105,7 +105,7 @@ export default function Footer() {
 						{/* Company links */}
 						<div>
 							<h3
-								className="mb-4 text-xl font-semibold text-white"
+								className="mb-4 text-lg font-semibold text-white sm:text-xl md:text-xl"
 								style={{ fontFamily: "Noto Serif TC, serif" }}
 							>
 								{t("law")}
@@ -115,7 +115,7 @@ export default function Footer() {
 									<li key={link.name}>
 										<Link
 											href={link.href}
-											className="text-xl transition-colors hover:text-white"
+											className="text-lg font-semibold text-white transition-colors sm:text-xl md:text-xl hover:text-white"
 											style={{
 												fontFamily:
 													"Noto Serif TC, serif",
@@ -131,7 +131,7 @@ export default function Footer() {
 					{/* Right side: Social links */}
 					<div>
 						<h3
-							className="mb-4 text-xl font-semibold text-white min-w-30"
+							className="mb-4 text-lg font-semibold text-white sm:text-xl md:text-xl min-w-30"
 							style={{ fontFamily: "Noto Serif TC, serif" }}
 						>
 							{t("focus")}

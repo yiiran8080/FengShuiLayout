@@ -6,6 +6,7 @@ import Image from "next/image";
 import LanguageToggle from "./LanguageToggle";
 import RegionLanguageSelector from "./RegionLanguageSelector";
 import useMobile from "../app/hooks/useMobile";
+import useNavbarMobile from "../app/hooks/useNavbarMobile";
 import { useSession } from "next-auth/react";
 import { Separator } from "@/components/ui/separator";
 import { useTranslations } from "next-intl";
@@ -19,6 +20,7 @@ export default function Navbar({ from, backgroundColor = "transparent" }) {
 	const pathname = usePathname();
 
 	const isMobile = useMobile();
+	const isNavbarMobile = useNavbarMobile();
 	const { data: session, status } = useSession();
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -26,7 +28,8 @@ export default function Navbar({ from, backgroundColor = "transparent" }) {
 	const isLoading = status === "loading";
 
 	const isHome = pathname === "/home";
-	const navTextColor = isHome ? "#fff" : "#000";
+	const isContact = pathname === "/customer/contact";
+	const navTextColor = isContact ? "#fff" : isNavbarMobile ? "#fff" : "#000";
 
 	const scrollToSection = (sectionId) => {
 		const element = document.getElementById(sectionId);
@@ -60,24 +63,24 @@ export default function Navbar({ from, backgroundColor = "transparent" }) {
 
 	return (
 		<nav
-			className={`absolute top-0 left-0 right-0 z-[70] h-16 ${
-				!isHome ? "bg-white shadow-sm" : ""
+			className={`${isHome ? "fixed" : "absolute"} top-0 left-0 right-0 z-[70] h-16 ${isHome ? "backdrop-blur-[3px]" : "backdrop-blur-[0px]"}  ${
+				!isHome && !isContact ? "bg-white shadow-sm" : ""
 			}`}
 			style={{
 				fontFamily: "Noto Serif TC, serif",
 				backgroundColor:
 					backgroundColor === "transparent"
-						? "transparent"
+						? "rgba(255, 255, 255, 0.1)"
 						: `#${backgroundColor.replace("#", "")}`,
 			}}
 		>
 			<div className="h-full px-4">
-				<div className="max-w-7xl mx-auto flex items-center justify-between h-full">
+				<div className="flex items-center justify-between h-full mx-auto max-w-7xl">
 					<div className="flex items-center gap-6">
 						<Link href="/home" className="flex items-center gap-2">
 							<Image
 								src={
-									isHome
+									navTextColor === "#fff"
 										? "/images/logo/logo-white.png"
 										: "/images/logo/logo-black.png"
 								}
@@ -98,24 +101,29 @@ export default function Navbar({ from, backgroundColor = "transparent" }) {
 						</Link>
 
 						{/* Navigation Links */}
-						{!isMobile && (
-							<div className="flex items-center gap-10 ml-6">
+						{!isNavbarMobile && (
+							<div className="flex items-center gap-10 ">
 								<Link
 									href="/home"
-									className="transition-colors hover:opacity-80"
+									className={`px-3 py-1 rounded-full transition-all font-noto-sans-hk duration-200 hover:opacity-80 ${
+										isHome ? "bg-[#A3B116]" : ""
+									}`}
 									style={{
-										fontFamily: "Noto Serif TC, serif",
-										color: navTextColor,
+										color: isHome ? "#fff" : navTextColor,
 									}}
 								>
 									{t("home")}
 								</Link>
 								<Link
 									href="/"
-									className="transition-colors hover:opacity-80"
+									className={`px-3 py-1 rounded-full transition-all font-noto-sans-hk duration-200 hover:opacity-80 ${
+										pathname === "/" ? "bg-[#A3B116]" : ""
+									}`}
 									style={{
-										fontFamily: "Noto Serif TC, serif",
-										color: navTextColor,
+										color:
+											pathname === "/"
+												? "#fff"
+												: navTextColor,
 									}}
 								>
 									{t("smartChat")}
@@ -132,20 +140,36 @@ export default function Navbar({ from, backgroundColor = "transparent" }) {
 								</button> */}
 								<Link
 									href="/price"
-									className="transition-colors hover:opacity-80"
+									className={`px-3 py-1 rounded-full transition-all font-noto-sans-hk duration-200 hover:opacity-80 ${
+										pathname === "/price"
+											? "bg-[#A3B116]"
+											: ""
+									}`}
 									style={{
-										fontFamily: "Noto Serif TC, serif",
-										color: navTextColor,
+										color:
+											pathname === "/price"
+												? "#fff"
+												: navTextColor,
 									}}
 								>
 									{t("pricing")}
 								</Link>
 								<button
 									onClick={() => navigateToSection("faq")}
-									className="transition-colors cursor-pointer hover:opacity-80"
+									className={`px-3 py-1 rounded-full transition-all duration-200 font-noto-sans-hk cursor-pointer hover:opacity-80 ${
+										pathname === "/home" &&
+										typeof window !== "undefined" &&
+										window.location.hash === "#faq"
+											? "bg-[#A3B116]"
+											: ""
+									}`}
 									style={{
-										fontFamily: "Noto Serif TC, serif",
-										color: navTextColor,
+										color:
+											pathname === "/home" &&
+											typeof window !== "undefined" &&
+											window.location.hash === "#faq"
+												? "#fff"
+												: navTextColor,
 									}}
 								>
 									{t("faq")}
@@ -156,13 +180,13 @@ export default function Navbar({ from, backgroundColor = "transparent" }) {
 
 					<div className="flex items-center md:space-x-6">
 						{/* Mobile Menu Button */}
-						{isMobile && (
+						{isNavbarMobile && (
 							<button
 								onClick={() =>
 									setIsMobileMenuOpen(!isMobileMenuOpen)
 								}
-								className="p-2 rounded-md hover:bg-gray-100 mr-2"
-								style={{ color: navTextColor }}
+								className="p-2 mr-2 text-white rounded-md hover:bg-gray-100"
+								style={{ color: "#fff" }}
 							>
 								{isMobileMenuOpen ? (
 									<svg
@@ -196,7 +220,7 @@ export default function Navbar({ from, backgroundColor = "transparent" }) {
 							</button>
 						)}
 
-						{!isMobile && (
+						{!isNavbarMobile && (
 							<div className="flex items-center space-x-4">
 								<RegionLanguageSelector
 									navTextColor={navTextColor}
@@ -227,12 +251,12 @@ export default function Navbar({ from, backgroundColor = "transparent" }) {
 			</div>
 
 			{/* Mobile Menu Dropdown */}
-			{isMobile && isMobileMenuOpen && (
-				<div className="absolute top-16 left-0 right-0 bg-white border-b shadow-lg z-[80]">
+			{isNavbarMobile && isMobileMenuOpen && (
+				<div className="absolute top-16 left-0 right-0 bg-white/90 backdrop-blur-sm  border-b shadow-lg z-[80]">
 					<div className="px-4 py-2 space-y-2">
 						<Link
 							href="/home"
-							className="block py-2 px-4 text-gray-800 hover:bg-gray-100 rounded transition-colors"
+							className="block px-4 py-2 text-gray-800 transition-colors rounded hover:bg-gray-100"
 							onClick={() => setIsMobileMenuOpen(false)}
 							style={{ fontFamily: "Noto Serif TC, serif" }}
 						>
@@ -240,7 +264,7 @@ export default function Navbar({ from, backgroundColor = "transparent" }) {
 						</Link>
 						<Link
 							href="/"
-							className="block py-2 px-4 text-gray-800 hover:bg-gray-100 rounded transition-colors"
+							className="block px-4 py-2 text-gray-800 transition-colors rounded hover:bg-gray-100"
 							onClick={() => setIsMobileMenuOpen(false)}
 							style={{ fontFamily: "Noto Serif TC, serif" }}
 						>
@@ -248,7 +272,7 @@ export default function Navbar({ from, backgroundColor = "transparent" }) {
 						</Link>
 						<Link
 							href="/price"
-							className="block py-2 px-4 text-gray-800 hover:bg-gray-100 rounded transition-colors"
+							className="block px-4 py-2 text-gray-800 transition-colors rounded hover:bg-gray-100"
 							onClick={() => setIsMobileMenuOpen(false)}
 							style={{ fontFamily: "Noto Serif TC, serif" }}
 						>
@@ -259,12 +283,12 @@ export default function Navbar({ from, backgroundColor = "transparent" }) {
 								navigateToSection("faq");
 								setIsMobileMenuOpen(false);
 							}}
-							className="block w-full text-left py-2 px-4 text-gray-800 hover:bg-gray-100 rounded transition-colors"
+							className="block w-full px-4 py-2 text-left text-gray-800 transition-colors rounded hover:bg-gray-100"
 							style={{ fontFamily: "Noto Serif TC, serif" }}
 						>
 							{t("faq")}
 						</button>
-						<div className="border-t pt-2 mt-2">
+						<div className="pt-2 mt-2 border-t">
 							<RegionLanguageSelector navTextColor="#000" />
 						</div>
 					</div>
@@ -272,9 +296,9 @@ export default function Navbar({ from, backgroundColor = "transparent" }) {
 			)}
 
 			{/* Mobile Menu Overlay */}
-			{isMobile && isMobileMenuOpen && (
+			{isNavbarMobile && isMobileMenuOpen && (
 				<div
-					className="fixed inset-0 bg-black bg-opacity-25 z-[75]"
+					className="fixed inset-0 bg-transparent bg-opacity-25 z-[75]"
 					onClick={() => setIsMobileMenuOpen(false)}
 				></div>
 			)}

@@ -47,7 +47,7 @@ export default function DemoSection() {
 		{
 			id: "relationship",
 			name: t("tags.relationship.name"),
-			image: "/images/demo/relationship.png",
+			image: "/images/demo/couple.png",
 			description: t("tags.relationship.description"),
 		},
 		{
@@ -227,7 +227,7 @@ export default function DemoSection() {
 	};
 
 	return (
-		<section className="w-full mb-12 sm:mb-16 md:mb-20 lg:mb-24 xl:mb-32 bg-[#EFEFEF] overflow-hidden">
+		<section className="w-full mb-15 p-2 sm:mb-16 md:mb-23 lg:mb-27 xl:mb-32 bg-[#EFEFEF] overflow-hidden">
 			<div className="px-3 mx-auto sm:px-4 md:px-6 lg:px-8 max-w-7xl">
 				{/* Title - Responsive sizing */}
 				<div className="mb-8 sm:mb-10 md:mb-12 text-start">
@@ -287,33 +287,6 @@ export default function DemoSection() {
 										className="object-cover h-56 w-44 sm:w-48 sm:h-60 md:w-56 md:h-72 lg:w-60 lg:h-75"
 										draggable={false}
 									/>
-
-									{/* Start Button - Responsive positioning and sizing */}
-									<div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 md:bottom-4 md:right-4">
-										<Link
-											href={`/demo?category=${tag.id}`}
-											className="flex items-center space-x-1 font-bold text-gray-800 transition-colors duration-300 bg-white rounded-lg hover:bg-gray-100 px-2 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2 md:text-base"
-											onClick={(e) => {
-												// Prevent event bubbling to parent click handler
-												e.stopPropagation();
-											}}
-										>
-											<span>{t("startButton")}</span>
-											<svg
-												className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4"
-												fill="none"
-												stroke="currentColor"
-												viewBox="0 0 24 24"
-											>
-												<path
-													strokeLinecap="round"
-													strokeLinejoin="round"
-													strokeWidth={2}
-													d="M9 5l7 7-7 7"
-												/>
-											</svg>
-										</Link>
-									</div>
 								</div>
 							</div>
 						))}
@@ -322,58 +295,7 @@ export default function DemoSection() {
 
 				{/* Demo Preview Section - Responsive layout */}
 				{isClient && isMobile ? (
-					/* Mobile Layout - Stacked design */
-					<div className="flex flex-col items-center w-full space-y-6 sm:space-y-8">
-						{/* Main Image */}
-						<div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md">
-							<img
-								src="/images/demo/Demo-2.png"
-								alt={t("demoAltText")}
-								className="w-full h-auto shadow-lg rounded-xl"
-							/>
-						</div>
-
-						{/* Content Section */}
-						<div className="max-w-md px-4 text-center sm:px-6 sm:max-w-lg">
-							<h3
-								className="text-xl sm:text-2xl font-bold text-[#5E5A43] mb-4"
-								style={{
-									fontFamily: "Noto Serif TC",
-								}}
-							>
-								{t("previewTitle")}
-							</h3>
-
-							<div className="space-y-3 text-[#5E5A43] mb-6">
-								<p
-									className="text-sm font-bold leading-relaxed sm:text-base"
-									style={{
-										fontFamily: "Noto Serif TC",
-									}}
-								>
-									{t("previewDescription1")}
-								</p>
-								<p
-									className="text-sm font-bold leading-relaxed sm:text-base"
-									style={{
-										fontFamily: "Noto Serif TC",
-									}}
-								>
-									{t("previewDescription2")}
-								</p>
-							</div>
-
-							{/* Preview Button */}
-							<Link
-								href="/demo"
-								className="bg-[#A3B116] text-white px-6 py-3 sm:px-8 sm:py-4 rounded-full font-bold text-sm sm:text-base hover:bg-[#8B9914] transition-colors duration-300 inline-flex items-center space-x-2 shadow-lg"
-							>
-								<span>{t("previewButton")}</span>
-							</Link>
-						</div>
-					</div>
-				) : (
-					/* Desktop Layout - Keep MacBook Air 13" appearance but make responsive */
+					/* Mobile Layout - Original desktop layout moved to mobile only */
 					<div className="relative flex justify-center w-full">
 						{/* Center Image with overlapping elements */}
 						<div className="relative w-full max-w-4xl lg:max-w-5xl xl:max-w-6xl">
@@ -394,6 +316,49 @@ export default function DemoSection() {
 							</div>
 						</div>
 					</div>
+				) : (
+					/* Desktop Layout - New design with 風水妹 character - Responsive */
+					<Link href="/price" className="block">
+						<div className="relative flex flex-col sm:flex-row items-center justify-center p-3 sm:p-4 md:p-6 w-full sm:w-[85%] md:w-[75%] lg:w-[65%] xl:w-[60%] min-h-[180px] sm:min-h-[200px] md:min-h-[220px] lg:min-h-[240px] bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_4px_4px_rgba(0,0,0,0.3)] mx-auto cursor-pointer hover:shadow-[0_6px_6px_rgba(0,0,0,0.35)] transition-shadow duration-300">
+							{/* Left side - Text content */}
+							<div className="relative z-10 flex justify-center flex-1 w-full px-4 sm:max-w-md sm:px-6 md:px-8 lg:px-12">
+								<div className="text-center sm:text-left">
+									<h3 className="mb-2 leading-tight sm:mb-4 md:mb-6">
+										<span
+											className="block font-bold text-[#7c8806] text-[32px] sm:text-[40px] md:text-[48px] lg:text-[56px] xl:text-[64px]"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+											}}
+										>
+											立即
+										</span>
+										<span
+											className="block font-bold text-[#7c8806] text-[48px] sm:text-[64px] md:text-[80px] lg:text-[96px] xl:text-[128px]"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+											}}
+										>
+											測算
+										</span>
+									</h3>
+								</div>
+							</div>
+
+							{/* Right side - 風水妹 character */}
+							<div className="relative z-10 flex items-center justify-center flex-1 mt-2 sm:mt-0">
+								<div className="relative">
+									{/* Main character image - Responsive sizing */}
+									<img
+										src="/images/風水妹/風水妹.png"
+										alt="風水妹 Character"
+										className="w-24 h-auto sm:w-32 md:w-36 lg:w-40 xl:w-[200px] drop-shadow-2xl"
+									/>
+								</div>
+							</div>
+						</div>
+					</Link>
 				)}
 			</div>
 

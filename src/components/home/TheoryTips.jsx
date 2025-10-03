@@ -82,6 +82,7 @@ const TheoryTips = () => {
 
 			{/* Tips component - positioned to start after Theory and allow expansion */}
 			<div
+				className="flex items-center justify-center w-full"
 				style={{
 					position: "absolute",
 					top: "1100px", // Original MacBook Air 13" position

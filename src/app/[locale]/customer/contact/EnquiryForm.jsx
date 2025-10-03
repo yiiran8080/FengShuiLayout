@@ -114,7 +114,7 @@ const EnquiryForm = () => {
 	}
 
 	return (
-		<div className="p-6 bg-white shadow-sm rounded-xl sm:p-8">
+		<div className="p-6 bg-white w-[80%] sm:w-full shadow-sm rounded-xl sm:p-8">
 			<AntdSpin
 				fullscreen={true}
 				spinning={loading}
@@ -125,7 +125,7 @@ const EnquiryForm = () => {
 				<div>
 					<label
 						htmlFor="name"
-						className="block mb-2 text-sm font-medium font-lora text-brown"
+						className="block mb-2 text-md font-medium font-lora text-[#A3B116]"
 					>
 						{t("name.label")}
 					</label>
@@ -136,7 +136,7 @@ const EnquiryForm = () => {
 						value={formData.name}
 						onChange={handleInputChange}
 						required
-						className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+						className="w-full px-4 py-3 bg-[#E7E7E7] rounded-full focus:ring-2 focus:ring-primary focus:border-primary"
 						placeholder={t("name.placeholder")}
 					/>
 				</div>
@@ -144,7 +144,7 @@ const EnquiryForm = () => {
 				<div>
 					<label
 						htmlFor="email"
-						className="block mb-2 text-sm font-medium font-lora text-brown"
+						className="block mb-2 text-md font-medium font-lora text-[#A3B116]"
 					>
 						{t("email.label")}
 					</label>
@@ -155,7 +155,7 @@ const EnquiryForm = () => {
 						value={formData.email}
 						onChange={handleInputChange}
 						required
-						className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+						className="w-full px-4 py-3 bg-[#E7E7E7] rounded-full focus:ring-2 focus:ring-primary focus:border-primary"
 						placeholder={t("email.placeholder")}
 					/>
 				</div>
@@ -163,7 +163,7 @@ const EnquiryForm = () => {
 				<div>
 					<label
 						htmlFor="category"
-						className="block mb-2 text-sm font-medium font-lora text-brown"
+						className="block mb-2 text-md font-medium font-lora text-[#A3B116]"
 					>
 						{t("category.label")}
 					</label>
@@ -174,7 +174,7 @@ const EnquiryForm = () => {
 							value={formData.category}
 							onChange={handleInputChange}
 							required
-							className="w-full px-4 py-3 border border-gray-200 rounded-lg appearance-none focus:ring-2 focus:ring-primary focus:border-primary"
+							className="w-full px-4 py-3 bg-[#E7E7E7] rounded-full appearance-none focus:ring-2 focus:ring-primary focus:border-primary"
 						>
 							<option value="">
 								{t("category.placeholder")}
@@ -201,7 +201,7 @@ const EnquiryForm = () => {
 							value={formData.otherCategory}
 							onChange={handleInputChange}
 							required
-							className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+							className="w-full px-4 py-3 bg-[#E7E7E7] rounded-full focus:ring-2 focus:ring-primary focus:border-primary"
 							placeholder={t("category.otherPlaceholder")}
 						/>
 					</div>
@@ -210,7 +210,7 @@ const EnquiryForm = () => {
 				<div>
 					<label
 						htmlFor="message"
-						className="block mb-2 text-sm font-medium font-lora text-brown"
+						className="block mb-2 text-md font-medium font-lora text-[#A3B116]"
 					>
 						{t("message.label")}
 					</label>
@@ -221,19 +221,20 @@ const EnquiryForm = () => {
 						onChange={handleInputChange}
 						required
 						rows={4}
-						className="w-full px-4 py-3 border border-gray-200 rounded-lg resize-none focus:ring-2 focus:ring-primary focus:border-primary"
+						className="w-full px-4 py-3 bg-[#E7E7E7] rounded-lg resize-none focus:ring-2 focus:ring-primary focus:border-primary"
 						placeholder={t("message.placeholder")}
 					/>
 				</div>
-
-				<button
-					disabled={loading}
-					type="submit"
-					className="flex items-center justify-center w-full gap-2 py-3 font-medium text-white transition-colors rounded-lg bg-primary hover:bg-primary-dark"
-				>
-					<Send className="w-5 h-5" />
-					{loading ? t("submitting") : t("submit")}
-				</button>
+				<div className="flex justify-center">
+					<button
+						disabled={loading}
+						type="submit"
+						className="flex items-center justify-center w-[40%] gap-2 py-3 font-medium text-white transition-colors rounded-full bg-[#A3B116] hover:bg-primary-dark"
+					>
+						<Send className="w-5 h-5" />
+						{loading ? t("submitting") : t("submit")}
+					</button>
+				</div>
 			</form>
 		</div>
 	);

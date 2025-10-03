@@ -102,7 +102,7 @@ const ServiceSection = () => {
 									{t("fengshui.description")}
 								</p>
 
-								<Link href="/price">
+								<Link href="/demo?category=fengshui">
 									<button className="bg-[#A3B116] hover:bg-[#8A9A14] text-white px-6 md:px-8 lg:px-12 py-3 md:py-4 lg:py-5 rounded-full font-bold transition-colors duration-300 w-full sm:w-auto">
 										<span
 											style={{
@@ -176,7 +176,7 @@ const ServiceSection = () => {
 									{t("destiny.description")}
 								</p>
 
-								<Link href="/price">
+								<Link href="/demo?category=life">
 									<button className="bg-[#A3B116] hover:bg-[#8A9A14] text-white px-6 md:px-8 lg:px-12 py-3 md:py-4 lg:py-5 rounded-full font-bold transition-colors duration-300 w-full sm:w-auto">
 										<span
 											style={{

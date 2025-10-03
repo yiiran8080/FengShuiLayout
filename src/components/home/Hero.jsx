@@ -140,7 +140,7 @@ export default function Hero() {
 			num: 2,
 			image: "/images/hero/hero-2-white.png",
 			title: "選擇報告",
-			subtitle: "挑選心儀測算模式（可預覽）",
+			subtitle: "挑選心儀測算模式",
 		},
 		{
 			num: 3,
@@ -156,163 +156,6 @@ export default function Hero() {
 		},
 	];
 
-	// During SSR and initial hydration, render desktop layout to prevent mismatch
-	if (!isClient) {
-		return (
-			<div className="relative w-full overflow-hidden">
-				<section
-					className="relative flex items-center overflow-hidden"
-					style={{
-						fontFamily: "Noto Serif TC, serif",
-						minHeight: "100vh",
-						transform: `scale(${scaleRatio})`,
-						transformOrigin: "top center",
-						width: `${100 / scaleRatio}%`,
-						marginLeft: "auto",
-						marginRight: "auto",
-					}}
-				>
-					{/* Static Background Image */}
-					<div className="absolute inset-0 z-0 w-full">
-						<Image
-							src="/images/hero/hero-bg.png"
-							alt="Hero background"
-							fill
-							className="object-cover scale-115"
-							style={{ objectPosition: "70% top" }}
-							priority={true}
-						/>
-					</div>
-
-					{/* Current overlay */}
-					<div
-						className="absolute inset-0 w-full z-1"
-						style={{
-							backgroundColor: backgroundOverlayEffects[0].color,
-							opacity: backgroundOverlayEffects[0].opacity,
-						}}
-					/>
-
-					{/* Title 1 above the line */}
-					<div
-						className="absolute z-20 -translate-x-1/2 left-1/2"
-						style={{
-							top: "25%",
-							left: "33%",
-							width: "832px",
-							height: "160px",
-							display: "flex",
-							alignItems: "center",
-							justifyContent: "center",
-							overflow: "hidden",
-							pointerEvents: "none",
-						}}
-					>
-						<span
-							className="block whitespace-nowrap"
-							style={{
-								fontSize: "95px",
-								lineHeight: "160px",
-								fontWeight: 800,
-								color: "#FEF8EF",
-								fontFamily: "Noto Serif TC, serif",
-								width: "100%",
-								textAlign: "center",
-							}}
-						>
-							{t("title")}
-						</span>
-					</div>
-
-					{/* Decorative: Centered White Horizontal Line */}
-					<div
-						className="absolute left-0 right-0 z-10 pointer-events-none"
-						style={{
-							top: "45%",
-							height: 0,
-							borderTop: `${2 * scaleRatio}px solid #FEF8EF`,
-							width: "100%",
-							opacity: 0.7,
-						}}
-					/>
-
-					{/* Group below the line: title2, subtitle1 */}
-					<div
-						className="absolute z-20 flex flex-col items-start -translate-x-1/2 left-[40%]"
-						style={{
-							top: "calc(38% + 60px)",
-							width: "947px",
-							pointerEvents: "none",
-						}}
-					>
-						<span
-							className="block whitespace-nowrap"
-							style={{
-								fontSize: "25px",
-								lineHeight: "36px",
-								fontWeight: 500,
-								color: "#FEF8EF",
-								fontFamily: "Noto Serif TC, serif",
-								textAlign: "start",
-							}}
-						>
-							{t("title2")}
-						</span>
-						<span
-							className="block mt-2 whitespace-nowrap"
-							style={{
-								fontSize: "25px",
-								lineHeight: "36px",
-								fontWeight: 500,
-								color: "#FEF8EF",
-								fontFamily: "Noto Serif TC, serif",
-								textAlign: "start",
-							}}
-						>
-							{t("subtitle1")}
-						</span>
-					</div>
-
-					{/* Button positioned further right */}
-					<div
-						className="absolute z-20"
-						style={{
-							top: "calc(38%)",
-							right: "5%",
-							pointerEvents: "auto",
-						}}
-					>
-						<Link
-							href="/"
-							className="flex items-center justify-center transition-transform duration-200 hover:scale-105"
-						>
-							<Image
-								src="/images/風水妹/chart-button.png"
-								alt={t("cta")}
-								width={400}
-								height={150}
-								className="cursor-pointer"
-								style={{
-									filter: "drop-shadow(0 8px 32px rgba(163, 177, 22, 0.22))",
-								}}
-							/>
-						</Link>
-					</div>
-
-					{/* Extended Bottom Section - Creates seamless transition */}
-					<div
-						className="absolute bottom-0 left-0 right-0 z-5"
-						style={{
-							height: "200px",
-							background:
-								"linear-gradient(to bottom, transparent 0%, rgba(239, 239, 239, 0.3) 70%, rgba(239, 239, 239, 0.8) 100%)",
-						}}
-					/>
-				</section>
-			</div>
-		);
-	}
-
 	// MOBILE LAYOUT - Redesigned according to requirements
 	if (isMobile) {
 		return (
@@ -323,7 +166,7 @@ export default function Hero() {
 						src="/images/hero/mainmobilebg.png" // <-- updated here
 						alt="Hero background"
 						fill
-						className="object-cover object-top"
+						className="object-cover object-center"
 						priority={true}
 					/>
 				</div>
@@ -342,55 +185,47 @@ export default function Hero() {
 				/> */}
 
 				{/* Main Content Container */}
-				<div className="relative z-10 flex flex-col px-3 py-8 mt-15">
+				<div className="relative z-10 flex flex-col px-4 py-8 mt-15">
 					{/* Header Section */}
-					<div className="flex-shrink-0 pt-1 pb-1">
+					<div className="flex flex-col pt-5 pb-1 ml-7">
 						{/* HarmoniQ Brand Name - right aligned */}
-						<div className="flex justify-end mb-2 ">
-							<span
-								style={{
-									fontFamily: "Noto Serif TC, serif",
-									fontWeight: 1000,
-									fontSize: "55px",
-									color: "#E8E2DA",
-									letterSpacing: "2px",
-									lineHeight: "1",
-								}}
-							>
-								HarmoniQ
-							</span>
-						</div>
+						<p
+							className="mb-1 ml-2 "
+							style={{
+								fontFamily: "Noto Serif TC, serif",
+								fontSize: "25px",
+								color: "#E8E2DA",
+								fontWeight: 800,
+								lineHeight: "1",
+							}}
+						>
+							{" "}
+							打造您的
+						</p>
 						{/* Main Title */}
 						<h1
-							className="justify-center px-2 mb-8 text-start"
+							className="justify-center px-2 mb-8 text-[60px] sm:text-[90px] md:text-[100px] text-start"
 							style={{
 								fontFamily: "Noto Serif TC, serif",
 								fontWeight: 800,
-								fontSize: "32px",
 								color: "#E8E2DA",
 								lineHeight: "1.2",
 								textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+								letterSpacing: "0.1em",
 							}}
 						>
 							{t("title")}
 						</h1>
 						{/* Title2 */}
-						<div className="px-2 mb-0">
-							<p className="text-lg sm:text-xl  text-[#FEF8EF] font-nano-sans-hk">
-								{t("title2")}
-							</p>
-						</div>
-					</div>
-
-					{/* Steps Section */}
-					<div className="flex flex-col justify-center flex-1 px-2">
-						{/* Steps Title with Subtitle1 and Button in a row */}
+						<p className="px-2 text-start text-lg sm:text-xl  text-[#FEF8EF] font-nano-sans-hk">
+							{t("title2")}
+						</p>
 						<div
-							className="relative flex items-start mb-0"
+							className="relative flex items-start mb-0 ml-2"
 							style={{ minHeight: "60px" }}
 						>
 							<div className="w-full">
-								<p className="text-base sm:text-lg font-nano-sans-hk  text-[#FEF8EF] mb-2">
+								<p className="text-base sm:text-lg font-nano-sans-hk  text-[#FEF8EF] mb-0">
 									{t("subtitle1")}
 								</p>
 								<p className="text-base sm:text-lg font-nano-sans-hk  text-[#FEF8EF] mb-2">
@@ -398,6 +233,11 @@ export default function Hero() {
 								</p>
 							</div>
 						</div>
+					</div>
+
+					{/* Steps Section */}
+					<div className="flex flex-col justify-center flex-1 px-2">
+						{/* Steps Title with Subtitle1 and Button in a row */}
 						<div className="flex justify-end mb-0">
 							<Link
 								href="/"
@@ -422,7 +262,7 @@ export default function Hero() {
 								className="relative p-3 border w-[90%] shadow-xl backdrop-blur-sm bg-white/15 border-white/30 rounded-3xl"
 								style={{
 									minHeight: "180px",
-									height: "180px",
+									height: "200px",
 								}}
 							>
 								{/* Steps Grid - 2x2 Layout */}
@@ -430,7 +270,7 @@ export default function Hero() {
 									{steps.map((step, index) => (
 										<div
 											key={step.num}
-											className="relative flex flex-col items-center justify-center p-1 overflow-hidden rounded-xl"
+											className="relative flex flex-col items-start justify-start p-1 overflow-hidden rounded-xl"
 											style={{
 												minHeight: "70px",
 											}}
@@ -442,7 +282,7 @@ export default function Hero() {
 													backgroundImage: `url(${step.image})`,
 													backgroundSize: "35% auto",
 													backgroundPosition:
-														"right center",
+														"85% center",
 													backgroundRepeat:
 														"no-repeat",
 													opacity: 0.7,
@@ -451,7 +291,7 @@ export default function Hero() {
 
 											{/* Large Number in Background */}
 											<div
-												className="absolute inset-0 flex items-center justify-center z-1"
+												className="absolute inset-0 flex items-start justify-start z-1"
 												style={{
 													fontSize: "60px",
 													fontWeight: "900",
@@ -470,7 +310,7 @@ export default function Hero() {
 												{/* Step Content */}
 												<div className="px-1 space-y-1">
 													<h4
-														className="text-[#FEF8EF] font-bold text-xs leading-tight"
+														className="text-[#FEF8EF] font-bold text-sm sm:text-[20px] leading-tight"
 														style={{
 															fontFamily:
 																"Noto Sans HK, sans-serif",
@@ -481,7 +321,7 @@ export default function Hero() {
 														{step.title}
 													</h4>
 													<p
-														className="text-[#FEF8EF] text-[10px] opacity-90 leading-tight"
+														className="text-[#FEF8EF] text-[10px] sm:text-[14px] opacity-90 leading-tight"
 														style={{
 															fontFamily:
 																"Noto Sans HK, sans-serif",
@@ -536,14 +376,14 @@ export default function Hero() {
 			>
 				{/* Static Background Image - Responsive (right side only) */}
 				<div
-					className="absolute inset-0 z-0"
+					className="inset-0 z-0 "
 					style={{ width: `${100 / scaleRatio}%` }}
 				>
 					<Image
 						src="/images/hero/hero-bg.png"
 						alt="Hero background"
 						fill
-						className="object-cover object-center object-top scale-115 sm:object-right-top md:object-[right_top] lg:object-[right_top]"
+						className="object-cover  scale-110 sm:object-left-top md:object-[left_top] lg:object-[left_top]"
 						priority={true}
 					/>
 				</div>
@@ -655,6 +495,9 @@ export default function Hero() {
 									alt=""
 									width={40}
 									height={40}
+									style={{
+										filter: "brightness(0) invert(1)",
+									}}
 								/>
 							</a>
 						) : (
@@ -664,6 +507,7 @@ export default function Hero() {
 								alt=""
 								width={30}
 								height={30}
+								style={{ filter: "brightness(0) invert(1)" }}
 							/>
 						)
 					)}
@@ -710,7 +554,7 @@ export default function Hero() {
 				<div
 					className="absolute z-20"
 					style={{
-						top: "calc(38%)",
+						top: "calc(43%)",
 						right: "5%",
 						pointerEvents: "auto",
 					}}
@@ -724,7 +568,7 @@ export default function Hero() {
 							alt={t("cta")}
 							width={400}
 							height={150}
-							className="cursor-pointer"
+							className="cursor-pointer w-[300px] h-[300px] md:w-[300px] md:h-[300px] lg:w-[400px] lg:h-[400px]"
 							style={{
 								filter: "drop-shadow(0 8px 32px rgba(163, 177, 22, 0.22))",
 							}}
