@@ -1,11 +1,29 @@
 "use client";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { useState, useEffect } from "react";
 import { useResponsiveScale } from "../../hooks/useResponsiveScale";
 
 export default function Theory({ bgColor }) {
 	const t = useTranslations("theory");
 	const { scaleRatio, isMobileLayout } = useResponsiveScale();
+	
+	// Client-side window width state to prevent SSR issues
+	const [windowWidth, setWindowWidth] = useState(1200); // Default desktop width
+	
+	useEffect(() => {
+		// Set initial width on client-side
+		if (typeof window !== 'undefined') {
+			setWindowWidth(window.innerWidth);
+			
+			// Add resize listener
+			const handleResize = () => setWindowWidth(window.innerWidth);
+			window.addEventListener('resize', handleResize);
+			
+			// Cleanup
+			return () => window.removeEventListener('resize', handleResize);
+		}
+	}, []);
 
 	if (isMobileLayout) {
 		// Mobile layout - completely different structure
@@ -354,16 +372,16 @@ export default function Theory({ bgColor }) {
 					className="flex w-full px-20 pb-10"
 					style={{
 						flexDirection:
-							window.innerWidth < 1120 ? "column" : "row",
+							windowWidth < 1120 ? "column" : "row",
 					}}
 				>
 					{/* Title - left side (35%) */}
 					<div
 						className="flex flex-col items-start"
 						style={{
-							width: window.innerWidth < 1120 ? "100%" : "35%",
+							width: windowWidth < 1120 ? "100%" : "35%",
 							marginBottom:
-								window.innerWidth < 1120 ? "20px" : "0",
+								windowWidth < 1120 ? "20px" : "0",
 						}}
 					>
 						<h2
@@ -427,8 +445,8 @@ export default function Theory({ bgColor }) {
 					<div
 						className="flex flex-col items-start"
 						style={{
-							width: window.innerWidth < 1120 ? "100%" : "65%",
-							marginLeft: window.innerWidth < 1120 ? "0" : "40px",
+							width: windowWidth < 1120 ? "100%" : "65%",
+							marginLeft: windowWidth < 1120 ? "0" : "40px",
 						}}
 					>
 						<div
@@ -487,7 +505,7 @@ export default function Theory({ bgColor }) {
 						zIndex: 1,
 						marginLeft: 0,
 						marginRight: "auto",
-						...(window.innerWidth >= 1440 && {
+						...(windowWidth >= 1440 && {
 							display: "flex",
 							flexDirection: "row",
 							alignItems: "stretch",

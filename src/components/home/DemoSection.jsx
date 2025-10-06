@@ -351,7 +351,7 @@ export default function DemoSection() {
 								<div className="relative">
 									{/* Main character image - Responsive sizing */}
 									<img
-										src="/images/風水妹/風水妹.png"
+										src="/images/風水妹/風水妹3.png"
 										alt="風水妹 Character"
 										className="w-24 h-auto sm:w-32 md:w-36 lg:w-40 xl:w-[200px] drop-shadow-2xl"
 									/>
