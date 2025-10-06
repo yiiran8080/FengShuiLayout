@@ -27,7 +27,20 @@ const JiXiong = memo(function JiXiong({
 				setIsLoading(true);
 				setError(null);
 
-				console.log("� JiXiong always generating fresh AI analysis");
+				// Check if data already exists in component data store (for historical reports)
+				if (
+					typeof window !== "undefined" &&
+					window.componentDataStore?.jiXiongAnalysis
+				) {
+					console.log(
+						"📖 Using existing JiXiong data from component store"
+					);
+					setAnalysisData(window.componentDataStore.jiXiongAnalysis);
+					setIsLoading(false);
+					return;
+				}
+
+				console.log("� JiXiong generating fresh AI analysis");
 
 				// Calculate traditional analysis data
 				let calculatedWuxing = null;
@@ -105,6 +118,13 @@ const JiXiong = memo(function JiXiong({
 				};
 
 				setAnalysisData(analysis);
+
+				// Store data globally for database saving
+				if (typeof window !== "undefined") {
+					window.componentDataStore = window.componentDataStore || {};
+					window.componentDataStore.jiXiongAnalysis = analysis;
+					console.log("📊 Stored JiXiong data:", "SUCCESS");
+				}
 
 				// Set global report data for report page
 				if (setGlobalReportData) {

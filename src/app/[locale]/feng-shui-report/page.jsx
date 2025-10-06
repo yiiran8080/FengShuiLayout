@@ -23,12 +23,40 @@ import Footer from "@/components/home/Footer";
 import ReportStatusBanner from "@/components/ReportStatusBanner";
 import { getConcernColor } from "@/utils/colorTheme";
 
+// Global data store for component-generated data
+if (typeof window !== "undefined") {
+	window.componentDataStore = window.componentDataStore || {};
+}
+
 export default function FengShuiReportPage() {
 	const [reportData, setReportData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
+	const [historicalDataReady, setHistoricalDataReady] = useState(false);
 	const searchParams = useSearchParams();
 	const router = useRouter();
+
+	// Helper function to determine if components should render
+	const shouldRenderComponents = () => {
+		const hasReportData = !!reportData;
+		const isHistorical = reportData?.isHistoricalReport;
+		const dataReady = historicalDataReady;
+
+		console.log("🎯 shouldRenderComponents check:", {
+			hasReportData,
+			isHistorical,
+			dataReady,
+			result: hasReportData && (!isHistorical || dataReady),
+		});
+
+		if (!reportData) return false;
+		// For historical reports, wait until data is ready
+		if (reportData.isHistoricalReport) {
+			return historicalDataReady;
+		}
+		// For fresh reports, render immediately
+		return true;
+	};
 
 	// Helper function to get concern-specific section titles
 	const getSectionTitle = (concern) => {
@@ -204,8 +232,9 @@ export default function FengShuiReportPage() {
 
 	const checkAndGenerateReport = async () => {
 		try {
-			// Get session ID from URL parameters
-			const sessionId = searchParams.get("session_id");
+			// Get session ID from URL parameters (check both possible parameter names)
+			const sessionId =
+				searchParams.get("sessionId") || searchParams.get("session_id");
 
 			if (!sessionId) {
 				setError("缺少支付會話ID，請重新進行支付");
@@ -267,18 +296,39 @@ export default function FengShuiReportPage() {
 			const showHistorical =
 				searchParams.get("showHistorical") === "true";
 
+			// Check if report content actually has meaningful data
+			const hasActualContent =
+				checkData.data?.reportContent &&
+				Object.values(checkData.data.reportContent).some(
+					(value) => value !== null && value !== undefined
+				);
+
+			console.log("🔍 Content check:", {
+				reportExists: checkData.reportExists,
+				reportGenerated: checkData.reportGenerated,
+				hasActualContent: hasActualContent,
+				showHistorical: showHistorical,
+				reportContent: checkData.data?.reportContent,
+			});
+
 			if (
 				checkData.reportExists &&
 				checkData.reportGenerated &&
-				checkData.data?.reportContent &&
+				hasActualContent &&
 				showHistorical
 			) {
 				// Show saved historical content
 				console.log("✅ Displaying saved historical report content");
 				await displaySavedReport(checkData.data);
 			} else if (checkData.data?.canGenerateNew) {
-				// Generate fresh content (default behavior)
-				console.log("✅ Generating fresh content for this session");
+				// Generate fresh content (default behavior or no saved content)
+				if (showHistorical && !hasActualContent) {
+					console.log(
+						"⚠️ Historical content requested but no saved data found, generating fresh content"
+					);
+				} else {
+					console.log("✅ Generating fresh content for this session");
+				}
 				await generateNewReport(sessionId, checkData.data.userInputs);
 			} else {
 				console.error("❌ Cannot generate report!");
@@ -300,6 +350,113 @@ export default function FengShuiReportPage() {
 		try {
 			console.log("📖 Displaying saved report content:", savedData);
 
+			// Double-check that we actually have content to display
+			if (
+				!savedData.reportContent ||
+				Object.keys(savedData.reportContent).length === 0
+			) {
+				console.log(
+					"⚠️ Saved data exists but reportContent is empty, falling back to fresh generation"
+				);
+				await generateNewReport(
+					savedData.sessionId,
+					savedData.userInputs
+				);
+				return;
+			}
+
+			// Import component data store utility
+			const { storeComponentData, clearComponentData } = await import(
+				"../../../utils/componentDataStore"
+			);
+
+			// Clear any existing data
+			clearComponentData();
+
+			// Pre-populate component data store with saved content
+			console.log(
+				"📥 Pre-populating component data store with saved content..."
+			);
+
+			// Map saved content to component data store
+			const { reportContent } = savedData;
+
+			if (reportContent.fiveElementAnalysis) {
+				storeComponentData(
+					"fiveElementAnalysis",
+					reportContent.fiveElementAnalysis
+				);
+			}
+
+			if (reportContent.zodiacAnalysis) {
+				storeComponentData(
+					"zodiacAnalysis",
+					reportContent.zodiacAnalysis
+				);
+			}
+
+			if (reportContent.liuNianKeyWordAnalysis) {
+				// Parse JSON string if it's stored as string
+				const liuNianData =
+					typeof reportContent.liuNianKeyWordAnalysis === "string"
+						? JSON.parse(reportContent.liuNianKeyWordAnalysis)
+						: reportContent.liuNianKeyWordAnalysis;
+				storeComponentData("liuNianKeyWordAnalysis", liuNianData);
+			}
+
+			if (reportContent.mingJuAnalysis) {
+				storeComponentData(
+					"mingJuAnalysis",
+					reportContent.mingJuAnalysis
+				);
+			}
+
+			if (reportContent.ganZhiAnalysis) {
+				storeComponentData(
+					"ganZhiAnalysis",
+					reportContent.ganZhiAnalysis
+				);
+			}
+
+			if (reportContent.jiXiongAnalysis) {
+				storeComponentData(
+					"jiXiongAnalysis",
+					reportContent.jiXiongAnalysis
+				);
+			}
+
+			if (reportContent.seasonAnalysis) {
+				storeComponentData(
+					"seasonAnalysis",
+					reportContent.seasonAnalysis
+				);
+			}
+
+			if (reportContent.coreSuggestionAnalysis) {
+				storeComponentData(
+					"coreSuggestionAnalysis",
+					reportContent.coreSuggestionAnalysis
+				);
+			}
+
+			if (reportContent.specificSuggestionAnalysis) {
+				storeComponentData(
+					"specificSuggestionAnalysis",
+					reportContent.specificSuggestionAnalysis
+				);
+			}
+
+			if (reportContent.questionFocusAnalysis) {
+				storeComponentData(
+					"questionFocusAnalysis",
+					reportContent.questionFocusAnalysis
+				);
+			}
+
+			console.log(
+				"✅ Component data store populated with historical content"
+			);
+
 			// Create report data structure from saved content
 			const reportData = {
 				birthday: savedData.userInputs.birthday,
@@ -312,6 +469,8 @@ export default function FengShuiReportPage() {
 				isHistoricalReport: true,
 			};
 
+			// Set historical data as ready
+			setHistoricalDataReady(true);
 			setReportData(reportData);
 			setLoading(false);
 		} catch (err) {
@@ -491,6 +650,7 @@ export default function FengShuiReportPage() {
 				);
 			}
 
+			setHistoricalDataReady(false); // This is fresh content, not historical
 			setReportData(reportData);
 			setLoading(false);
 
@@ -504,7 +664,7 @@ export default function FengShuiReportPage() {
 					partnerBirthday,
 					gender
 				);
-			}, 20000); // Wait 20 seconds for components to load
+			}, 80000); // Wait 80 seconds for all AI components to complete (extended for Season)
 		} catch (err) {
 			console.error("Report generation error:", err);
 			setError("生成報告時出現錯誤");
@@ -526,8 +686,8 @@ export default function FengShuiReportPage() {
 			);
 			console.log("📋 Session ID for background save:", sessionId);
 
-			// Wait a bit more to ensure all components are fully loaded
-			await new Promise((resolve) => setTimeout(resolve, 5000));
+			// Wait additional time to ensure all components are fully loaded
+			await new Promise((resolve) => setTimeout(resolve, 15000));
 
 			// Try to collect actual data from the loaded components
 			const completeReportContent = await collectLoadedComponentData(
@@ -574,280 +734,86 @@ export default function FengShuiReportPage() {
 		problem,
 		gender
 	) => {
-		// This function attempts to collect data from loaded components
-		// Since components load asynchronously, we need to make direct API calls
-		// to get the component-specific analysis data
+		console.log(
+			"🗃️ Checking for component-generated data in global store..."
+		);
+		console.log(
+			"🗃️ Available keys:",
+			Object.keys(window.componentDataStore || {})
+		);
 
+		// Log what we have from the global store
+		console.log("📊 Data from component store:");
+		const componentFields = [
+			"fiveElementAnalysis",
+			"zodiacAnalysis",
+			"liuNianKeyWordAnalysis",
+			"mingJuAnalysis",
+			"ganZhiAnalysis",
+			"jiXiongAnalysis",
+			"seasonAnalysis",
+			"coreSuggestionAnalysis",
+			"specificSuggestionAnalysis",
+			"questionFocusAnalysis",
+		];
+
+		componentFields.forEach((field) => {
+			const hasData = window.componentDataStore?.[field];
+			console.log(`  ${field}: ${hasData ? "HAS_DATA" : "MISSING"}`);
+		});
+
+		// Use data from global store (generated by components) as primary source
 		const completeContent = {
-			fiveElementAnalysis: null,
-			zodiacAnalysis: null,
-			liuNianKeyWordAnalysis: null,
-			mingJuAnalysis: null, // MingJu component handles analysis internally
-			ganZhiAnalysis: null,
-			jiXiongAnalysis: null,
-			seasonAnalysis: null,
-			coreSuggestionAnalysis: null,
-			specificSuggestionAnalysis: null,
+			fiveElementAnalysis:
+				window.componentDataStore?.fiveElementAnalysis || null,
+			zodiacAnalysis: window.componentDataStore?.zodiacAnalysis || null,
+			liuNianKeyWordAnalysis:
+				window.componentDataStore?.liuNianKeyWordAnalysis || null,
+			mingJuAnalysis: window.componentDataStore?.mingJuAnalysis || null,
+			ganZhiAnalysis: window.componentDataStore?.ganZhiAnalysis || null,
+			jiXiongAnalysis: window.componentDataStore?.jiXiongAnalysis || null,
+			seasonAnalysis: window.componentDataStore?.seasonAnalysis || null,
+			coreSuggestionAnalysis:
+				window.componentDataStore?.coreSuggestionAnalysis || null,
+			specificSuggestionAnalysis:
+				window.componentDataStore?.specificSuggestionAnalysis || null,
+			questionFocusAnalysis:
+				window.componentDataStore?.questionFocusAnalysis || null,
 			reportGeneratedAt: new Date().toISOString(),
 		};
 
-		try {
-			// Get user info structure for component API calls
-			// Convert Date object to string for API calls
-			const birthdayString =
-				birthdayDate instanceof Date
-					? birthdayDate.toISOString().split("T")[0]
-					: birthdayDate;
-
-			const userInfoForAPIs = {
-				birthDateTime: birthdayString,
-				birthday: birthdayString,
-				gender: gender || "male",
-				concern: concern,
-				problem: problem,
-				time: "00:00:00", // TODO: Should use actual user-selected birth time instead of hardcoded midnight
-			};
-
+		// Log collection results
+		componentFields.forEach((field) => {
+			const hasData = completeContent[field];
 			console.log(
-				"🔄 Collecting component data with userInfo:",
-				userInfoForAPIs
+				`✅ Collected ${field}: ${hasData ? "SUCCESS" : "NULL"}`
 			);
+		});
 
-			// Collect data from all component APIs in parallel
-			const componentPromises = [
-				// Five Element (WuXing) analysis
-				fetch("/api/wuxing-analysis", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						userInfo: {
-							birthDateTime: birthdayString,
-							gender: gender || "male",
-							concern: concern,
-							problem: problem,
-						},
-					}),
-				})
-					.then(async (res) => {
-						const data = await res.json();
-						console.log("🔍 Five Element API response:", data);
-						return {
-							type: "fiveElementAnalysis",
-							data: data.success ? data.data : null,
-						};
-					})
-					.catch((err) => {
-						console.error("❌ Five Element API failed:", err);
-						return { type: "fiveElementAnalysis", data: null };
-					}),
-
-				// Note: MingJu analysis is handled internally by the MingJu component
-				// No separate API endpoint exists for this component
-
-				// LiuNianKeyWord analysis
-				fetch("/api/ai-analysis", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						concern: concern,
-						userBirthday: birthdayString,
-						gender: gender || "male",
-					}),
-				})
-					.then(async (res) => {
-						const data = await res.json();
-						console.log("🔍 LiuNianKeyWord API response:", data);
-						return {
-							type: "liuNianKeyWordAnalysis",
-							data: data.success
-								? data.data || data.content
-								: null, // Handle both data and content fields
-						};
-					})
-					.catch((err) => {
-						console.error("❌ LiuNianKeyWord API failed:", err);
-						return { type: "liuNianKeyWordAnalysis", data: null };
-					}),
-
-				// GanZhi analysis
-				fetch("/api/ganzhi-analysis", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						userInfo: {
-							birthDateTime: birthdayString,
-							gender: gender || "male",
-							concern: concern,
-							problem: problem,
-						},
-					}),
-				})
-					.then(async (res) => {
-						const data = await res.json();
-						console.log("🔍 GanZhi API response:", data);
-						return {
-							type: "ganZhiAnalysis",
-							data: data.success
-								? data.data || data.analysis
-								: null, // Handle both data and analysis fields
-						};
-					})
-					.catch((err) => {
-						console.error("❌ GanZhi API failed:", err);
-						return { type: "ganZhiAnalysis", data: null };
-					}),
-
-				// JiXiong analysis (with fixed parameters)
-				fetch("/api/jixiong-analysis", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						userInfo: {
-							birthday: birthdayString, // Fixed: JiXiong expects birthday
-							gender: gender || "male",
-							time: "00:00:00",
-							concern: concern,
-						},
-					}),
-				})
-					.then(async (res) => {
-						const data = await res.json();
-						console.log("🔍 JiXiong API response:", data);
-						return {
-							type: "jiXiongAnalysis",
-							data: data.success ? data.analysis : null,
-						};
-					})
-					.catch((err) => {
-						console.error("❌ JiXiong API failed:", err);
-						return { type: "jiXiongAnalysis", data: null };
-					}),
-
-				// Season analysis (with fixed parameters)
-				fetch("/api/season-analysis", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						userInfo: {
-							birthday: birthdayString,
-							gender: gender || "male",
-							time: "00:00:00", // TODO: Use actual birth time
-							concern: concern,
-						},
-					}),
-				})
-					.then(async (res) => {
-						const data = await res.json();
-						console.log("🔍 Season API response:", data);
-						return {
-							type: "seasonAnalysis",
-							data: data.success ? data.analysis : null,
-						};
-					})
-					.catch((err) => {
-						console.error("❌ Season API failed:", err);
-						return { type: "seasonAnalysis", data: null };
-					}),
-
-				// Core Suggestion analysis
-				fetch("/api/core-suggestion-analysis", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						userInfo: {
-							birthday: birthdayString,
-							gender: gender || "male",
-							concern: concern,
-							time: "00:00:00",
-						},
-					}),
-				})
-					.then(async (res) => {
-						const data = await res.json();
-						console.log("🔍 Core Suggestion API response:", data);
-						return {
-							type: "coreSuggestionAnalysis",
-							data: data.success
-								? data.data || data.analysis
-								: null, // Handle both data and analysis fields
-						};
-					})
-					.catch((err) => {
-						console.error("❌ CoreSuggestion API failed:", err);
-						return { type: "coreSuggestionAnalysis", data: null };
-					}),
-
-				// Specific Suggestion analysis
-				fetch("/api/specific-suggestion-analysis", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						userInfo: {
-							birthDateTime: birthdayString, // Fixed: SpecificSuggestion expects birthDateTime
-							gender: gender || "male",
-							concern: concern,
-							problem: problem, // Fixed: Added problem parameter
-						},
-					}),
-				})
-					.then(async (res) => {
-						const data = await res.json();
-						console.log(
-							"🔍 Specific Suggestion API response:",
-							data
-						);
-						return {
-							type: "specificSuggestionAnalysis",
-							data: data.success ? data.data : null,
-						};
-					})
-					.catch((err) => {
-						console.error("❌ SpecificSuggestion API failed:", err);
-						return {
-							type: "specificSuggestionAnalysis",
-							data: null,
-						};
-					}),
-			];
-
-			// Wait for all component API calls to complete
-			const componentResults = await Promise.all(componentPromises);
-
-			// Map results to completeContent structure
-			componentResults.forEach((result) => {
-				if (result.data) {
-					completeContent[result.type] = result.data;
-					console.log(
-						`✅ Collected ${result.type}:`,
-						result.data ? "SUCCESS" : "NULL"
-					);
-				}
-			});
-
-			console.log("� Complete component data collection results:", {
-				liuNianKeyWordAnalysis: completeContent.liuNianKeyWordAnalysis
+		console.log("📊 Complete component data collection results:", {
+			liuNianKeyWordAnalysis: completeContent.liuNianKeyWordAnalysis
+				? "HAS_DATA"
+				: "NULL",
+			ganZhiAnalysis: completeContent.ganZhiAnalysis
+				? "HAS_DATA"
+				: "NULL",
+			jiXiongAnalysis: completeContent.jiXiongAnalysis
+				? "HAS_DATA"
+				: "NULL",
+			seasonAnalysis: completeContent.seasonAnalysis
+				? "HAS_DATA"
+				: "NULL",
+			coreSuggestionAnalysis: completeContent.coreSuggestionAnalysis
+				? "HAS_DATA"
+				: "NULL",
+			specificSuggestionAnalysis:
+				completeContent.specificSuggestionAnalysis
 					? "HAS_DATA"
 					: "NULL",
-				ganZhiAnalysis: completeContent.ganZhiAnalysis
-					? "HAS_DATA"
-					: "NULL",
-				jiXiongAnalysis: completeContent.jiXiongAnalysis
-					? "HAS_DATA"
-					: "NULL",
-				seasonAnalysis: completeContent.seasonAnalysis
-					? "HAS_DATA"
-					: "NULL",
-				coreSuggestionAnalysis: completeContent.coreSuggestionAnalysis
-					? "HAS_DATA"
-					: "NULL",
-				specificSuggestionAnalysis:
-					completeContent.specificSuggestionAnalysis
-						? "HAS_DATA"
-						: "NULL",
-			});
-		} catch (error) {
-			console.error("❌ Error collecting loaded component data:", error);
-		}
+			questionFocusAnalysis: completeContent.questionFocusAnalysis
+				? "HAS_DATA"
+				: "NULL",
+		});
 
 		return completeContent;
 	};
@@ -891,42 +857,8 @@ export default function FengShuiReportPage() {
 		router.push("/price?newReport=true");
 	};
 
-	// Check if this is a historical report display
-	if (reportData?.isHistoricalReport) {
-		return (
-			<div className="min-h-screen bg-[#EFEFEF]">
-				<Navbar from="report" />
-				<div
-					className="container w-full px-4 py-8 mx-auto"
-					style={{ paddingTop: "80px" }}
-				>
-					<div className="p-4 mb-4 border border-yellow-200 rounded-lg bg-yellow-50">
-						<p className="text-yellow-800">
-							<strong>注意：</strong>
-							您正在查看已保存的歷史報告內容。
-							<a
-								href={`${window.location.pathname}${window.location.search.replace("showHistorical=true", "").replace("&showHistorical=true", "").replace("?showHistorical=true&", "?")}`}
-								className="ml-2 text-blue-600 underline hover:text-blue-800"
-							>
-								點擊這裡生成新的報告
-							</a>
-						</p>
-					</div>
-					<SavedReportDisplay
-						savedContent={reportData.savedReportContent}
-						userInputs={{
-							birthday: reportData.birthday,
-							gender: reportData.gender,
-							concern: reportData.concern,
-							problem: reportData.problem,
-							partnerBirthday: reportData.partnerBirthday,
-						}}
-					/>
-				</div>
-				<Footer />
-			</div>
-		);
-	}
+	// For historical reports, add a banner but use normal component rendering
+	const showHistoricalBanner = reportData?.isHistoricalReport;
 
 	return (
 		<div className="min-h-screen bg-[#EFEFEF]">
@@ -936,6 +868,22 @@ export default function FengShuiReportPage() {
 					className="container w-full px-4 py-8 mx-auto"
 					style={{ paddingTop: "80px" }}
 				>
+					{/* Historical Report Banner */}
+					{showHistoricalBanner && (
+						<div className="p-4 mb-4 border border-yellow-200 rounded-lg bg-yellow-50">
+							<p className="text-yellow-800">
+								<strong>注意：</strong>
+								您正在查看已保存的歷史報告內容。
+								<a
+									href={`${window.location.pathname}${window.location.search.replace("showHistorical=true", "").replace("&showHistorical=true", "").replace("?showHistorical=true&", "?")}`}
+									className="ml-2 text-blue-600 underline hover:text-blue-800"
+								>
+									點擊這裡生成新的報告
+								</a>
+							</p>
+						</div>
+					)}
+
 					{/* 頭部 */}
 					<div className="mb-8 ml-0 md:ml-[5%]">
 						<h1
@@ -955,7 +903,7 @@ export default function FengShuiReportPage() {
 					</div>
 
 					{/* Five Elements Analysis */}
-					{reportData && (
+					{shouldRenderComponents() && (
 						<div className="mb-6" style={{ width: "100%" }}>
 							<FiveElement
 								userInfo={{
@@ -972,7 +920,7 @@ export default function FengShuiReportPage() {
 					)}
 
 					{/* Zodiac and Four Pillars Analysis */}
-					{reportData && (
+					{shouldRenderComponents() && (
 						<div className="mb-6">
 							<Zodiac
 								userInfo={{
@@ -991,7 +939,7 @@ export default function FengShuiReportPage() {
 					)}
 
 					{/* Question Focus Section */}
-					{reportData && (
+					{shouldRenderComponents() && (
 						<div className="mb-6">
 							<QuestionFocus
 								userInfo={{
@@ -1005,7 +953,7 @@ export default function FengShuiReportPage() {
 					)}
 
 					{/* Liu Nian Key Word Analysis */}
-					{reportData && (
+					{shouldRenderComponents() && (
 						<div className="mb-6">
 							<LiuNianKeyWord
 								userInfo={{
@@ -1035,7 +983,7 @@ export default function FengShuiReportPage() {
 						</h1>
 					</div>
 					{/* Ming Ju Core Analysis */}
-					{reportData && (
+					{shouldRenderComponents() && (
 						<div className="mb-6">
 							<MingJu
 								userInfo={{
@@ -1065,7 +1013,7 @@ export default function FengShuiReportPage() {
 						</h1>
 					</div>
 					{/* Gan Zhi Detailed Analysis */}
-					{reportData && (
+					{shouldRenderComponents() && (
 						<div className="mb-6">
 							<GanZhi
 								userInfo={{
@@ -1095,7 +1043,7 @@ export default function FengShuiReportPage() {
 						</h1>
 					</div>
 					{/* Ji Xiong Analysis */}
-					{reportData && (
+					{shouldRenderComponents() && (
 						<div className="flex justify-center mb-6">
 							<JiXiong
 								userInfo={{
@@ -1114,7 +1062,7 @@ export default function FengShuiReportPage() {
 					)}
 
 					{/* Season Analysis */}
-					{reportData && (
+					{shouldRenderComponents() && (
 						<div className="mb-6">
 							<Season
 								userInfo={{
@@ -1144,7 +1092,7 @@ export default function FengShuiReportPage() {
 						</h1>
 					</div>
 					{/* Core Suggestion Analysis */}
-					{reportData && (
+					{shouldRenderComponents() && (
 						<div className="mb-6">
 							<CoreSuggestion
 								userInfo={{
@@ -1159,7 +1107,7 @@ export default function FengShuiReportPage() {
 					)}
 
 					{/* Specific Suggestion Analysis */}
-					{reportData && (
+					{shouldRenderComponents() && (
 						<div className="mb-6">
 							<SpecificSuggestion
 								userInfo={{

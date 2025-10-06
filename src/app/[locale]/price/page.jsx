@@ -2361,7 +2361,7 @@ export default function YourPage() {
 									<div className="relative h-32 overflow-hidden bg-green-600">
 										<div className="relative h-32 overflow-hidden">
 											<Image
-												src="/images/price/relationship.jpg"
+												src="/images/price/relationship.png"
 												alt={t("loveFortune")}
 												fill
 											/>
@@ -2846,7 +2846,7 @@ export default function YourPage() {
 									<div className="relative h-32 overflow-hidden bg-green-600">
 										<div className="relative h-32 overflow-hidden">
 											<Image
-												src="/images/price/health.jpg"
+												src="/images/price/health.png"
 												alt={t("healthFortune")}
 												fill
 											/>
@@ -3330,7 +3330,7 @@ export default function YourPage() {
 									{/* Card Image Header */}
 									<div className="relative h-32 overflow-hidden">
 										<Image
-											src="/images/price/career.jpg"
+											src="/images/price/career.png"
 											alt={t("careerFortune")}
 											fill
 										/>

@@ -781,10 +781,30 @@ export default function GanZhi({ userInfo, currentYear = 2025 }) {
 		const loadAnalysis = async () => {
 			setIsLoading(true);
 			try {
-				console.log("� GanZhi always generating fresh AI analysis");
+				// Check if data already exists in component data store (for historical reports)
+				if (
+					typeof window !== "undefined" &&
+					window.componentDataStore?.ganZhiAnalysis
+				) {
+					console.log(
+						"📖 Using existing GanZhi data from component store"
+					);
+					setAnalysisData(window.componentDataStore.ganZhiAnalysis);
+					setActiveSection("tianGan");
+					setIsLoading(false);
+					return;
+				}
+
+				console.log("� GanZhi generating fresh AI analysis");
 
 				const aiData = await generateAIAnalysis(userInfo, currentYear);
 				setAnalysisData(aiData);
+				// Store data globally for database saving
+				if (typeof window !== "undefined") {
+					window.componentDataStore = window.componentDataStore || {};
+					window.componentDataStore.ganZhiAnalysis = aiData;
+					console.log("📊 Stored GanZhi data:", "SUCCESS");
+				}
 				// Set the active section to the first toggle option
 				setActiveSection("tianGan");
 			} catch (error) {

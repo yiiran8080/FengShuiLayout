@@ -295,10 +295,36 @@ export default function CoreSuggestion({ userInfo, currentYear = 2025 }) {
 
 	useEffect(() => {
 		if (userInfo?.concern && userInfo?.birthDateTime) {
+			// Check if data already exists in component data store (for historical reports)
+			if (
+				typeof window !== "undefined" &&
+				window.componentDataStore?.coreSuggestionAnalysis
+			) {
+				console.log(
+					"📖 Using existing CoreSuggestion data from component store"
+				);
+				setAnalysisData(
+					window.componentDataStore.coreSuggestionAnalysis
+				);
+				setIsLoading(false);
+				return;
+			}
+
 			setIsLoading(true);
 			generateCoreSuggestionAnalysis(userInfo, currentYear)
 				.then((analysis) => {
 					setAnalysisData(analysis);
+					// Store data globally for database saving
+					if (typeof window !== "undefined") {
+						window.componentDataStore =
+							window.componentDataStore || {};
+						window.componentDataStore.coreSuggestionAnalysis =
+							analysis;
+						console.log(
+							"📊 Stored CoreSuggestion data:",
+							"SUCCESS"
+						);
+					}
 					setIsLoading(false);
 				})
 				.catch((error) => {

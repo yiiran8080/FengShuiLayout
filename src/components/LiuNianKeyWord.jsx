@@ -3,6 +3,10 @@
 import { useState, useEffect } from "react";
 import { ComponentErrorBoundary } from "./ErrorHandling";
 import { getConcernColor } from "../utils/colorTheme";
+import {
+	getComponentData,
+	storeComponentData,
+} from "../utils/componentDataStore";
 
 export default function LiuNianKeyWord({ userInfo, currentYear = 2025 }) {
 	const [analysisData, setAnalysisData] = useState(null);
@@ -403,6 +407,21 @@ export default function LiuNianKeyWord({ userInfo, currentYear = 2025 }) {
 
 	useEffect(() => {
 		const generateAnalysis = async () => {
+			// Check if data already exists in component data store (for historical reports)
+			const existingData = getComponentData("liuNianKeyWordAnalysis");
+			if (existingData) {
+				console.log(
+					"📖 LiuNianKeyWord using existing data from component store"
+				);
+				const parsedData =
+					typeof existingData === "string"
+						? JSON.parse(existingData)
+						: existingData;
+				setAnalysisData(parsedData);
+				setIsLoading(false);
+				return;
+			}
+
 			setIsLoading(true);
 			console.log("🔮 LiuNian starting analysis...");
 			console.log("🔮 userInfo:", userInfo);
@@ -413,6 +432,12 @@ export default function LiuNianKeyWord({ userInfo, currentYear = 2025 }) {
 				const aiData = await generateAIAnalysis();
 				console.log("✅ LiuNian AI analysis successful:", aiData);
 				setAnalysisData(aiData);
+				// Store data for database saving
+				storeComponentData(
+					"liuNianKeyWordAnalysis",
+					JSON.stringify(aiData)
+				);
+				console.log("📊 Stored LiuNianKeyWord fresh data:", "SUCCESS");
 				setIsLoading(false);
 				return;
 			} catch (error) {
@@ -427,6 +452,15 @@ export default function LiuNianKeyWord({ userInfo, currentYear = 2025 }) {
 				const fallbackData = generatePersonalizedFallback();
 				console.log("LiuNian using personalized fallback");
 				setAnalysisData(fallbackData);
+				// Store fallback data
+				storeComponentData(
+					"liuNianKeyWordAnalysis",
+					JSON.stringify(fallbackData)
+				);
+				console.log(
+					"📊 Stored LiuNianKeyWord fallback data:",
+					"SUCCESS"
+				);
 				setIsLoading(false);
 				return;
 			} catch (fallbackError) {

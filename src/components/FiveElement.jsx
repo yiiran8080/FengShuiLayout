@@ -2,6 +2,10 @@
 
 import Image from "next/image";
 import { ComponentErrorBoundary } from "./ErrorHandling";
+import {
+	getComponentData,
+	storeComponentData,
+} from "../utils/componentDataStore";
 
 // Five Elements constants
 const ELEMENTS = ["金", "木", "水", "火", "土"];
@@ -26,16 +30,46 @@ const FiveElement = ({
 		return null;
 	}
 
-	const analysis = calculateWuxingAnalysis(userInfo);
-	if (!analysis) {
-		return null;
-	}
+	// First check if we have existing historical data
+	const existingData = getComponentData("fiveElementAnalysis");
+	console.log(
+		"🔍 FiveElement checking for existing data:",
+		existingData ? "FOUND" : "NOT_FOUND"
+	);
 
-	const { elementCounts, missingElements } = analysis;
+	let elementCounts, missingElements;
+
+	if (existingData) {
+		// Use historical data
+		console.log("📚 FiveElement using historical data");
+		elementCounts = existingData.elementCounts;
+		missingElements = existingData.missingElements;
+	} else {
+		// Generate fresh analysis
+		console.log("🆕 FiveElement generating fresh analysis");
+		const analysis = calculateWuxingAnalysis(userInfo);
+		if (!analysis) {
+			return null;
+		}
+
+		elementCounts = analysis.elementCounts;
+		missingElements = analysis.missingElements;
+
+		// Store analysis data for database saving
+		const analysisData = {
+			elementCounts,
+			missingElements,
+			hasFullElements: missingElements.length === 0,
+			timestamp: new Date().toISOString(),
+		};
+
+		storeComponentData("fiveElementAnalysis", analysisData);
+		console.log("📊 Stored FiveElement fresh data:", "SUCCESS");
+	}
 
 	return (
 		<ComponentErrorBoundary componentName="FiveElement">
-			<section className="w-full sm:w-[90%] lg:w-[95%] mx-auto bg-white rounded-[30px] sm:rounded-[60px] lg:rounded-[160px] p-4 sm:p-6 lg:p-3 mb-6 sm:mb-10 shadow-[0_2px_5.3px_rgba(0,0,0,0.25)]">
+			<section className="w-full sm:w-[85%] lg:w-[85%] mx-auto bg-white rounded-[30px] sm:rounded-[60px] lg:rounded-[160px] p-4 sm:p-6 lg:p-3 mb-6 sm:mb-10 shadow-[0_2px_5.3px_rgba(0,0,0,0.25)]">
 				<style>{`
 					@media (min-width: 1024px) and (max-width: 1090px) {
 						.five-element-flex {

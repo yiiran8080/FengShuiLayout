@@ -3,6 +3,10 @@
 import { useState, useEffect } from "react";
 import { ComponentErrorBoundary } from "./ErrorHandling";
 import { getConcernColor } from "../utils/colorTheme";
+import {
+	getComponentData,
+	storeComponentData,
+} from "../utils/componentDataStore";
 
 export default function Season({ userInfo, currentYear = 2025 }) {
 	const [analysisData, setAnalysisData] = useState(null);
@@ -163,6 +167,17 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 
 		// Validate required parameters before making API call
 		if (userInfo && (userInfo.birthDateTime || userInfo.birthday)) {
+			// Check if data already exists in component data store (for historical reports)
+			const existingData = getComponentData("seasonAnalysis");
+			if (existingData) {
+				console.log(
+					"📖 Season using existing data from component store"
+				);
+				setAnalysisData(existingData);
+				setIsLoading(false);
+				return;
+			}
+
 			setIsLoading(true);
 			setError(null);
 
@@ -171,6 +186,9 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 				.then((analysis) => {
 					if (isMounted && analysis) {
 						setAnalysisData(analysis);
+						// Store data for database saving
+						storeComponentData("seasonAnalysis", analysis);
+						console.log("📊 Stored Season fresh data:", "SUCCESS");
 					}
 				})
 				.catch((error) => {

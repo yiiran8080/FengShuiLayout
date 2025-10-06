@@ -2,6 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { getConcernColor } from "../utils/colorTheme";
+import {
+	getComponentData,
+	storeComponentData,
+} from "../utils/componentDataStore";
 
 export default function QuestionFocus({ userInfo }) {
 	const [solution, setSolution] = useState(null);
@@ -33,7 +37,17 @@ export default function QuestionFocus({ userInfo }) {
 	// Generate AI-powered solution
 	useEffect(() => {
 		const generateAISolution = async () => {
+			// First check if we have existing historical data
+			const existingData = getComponentData("questionFocusAnalysis");
+			if (existingData) {
+				console.log("📚 QuestionFocus using existing historical data");
+				setSolution(existingData);
+				setLoading(false);
+				return;
+			}
+
 			try {
+				console.log("🆕 QuestionFocus generating fresh analysis");
 				setLoading(true);
 				setError(null);
 
@@ -51,6 +65,12 @@ export default function QuestionFocus({ userInfo }) {
 
 				if (data.success) {
 					setSolution(data.solution);
+					// Store the solution data for database saving
+					storeComponentData("questionFocusAnalysis", data.solution);
+					console.log(
+						"📊 Stored QuestionFocus fresh data:",
+						"SUCCESS"
+					);
 				} else {
 					throw new Error(data.error || "分析失敗");
 				}
@@ -82,12 +102,19 @@ export default function QuestionFocus({ userInfo }) {
 					},
 				};
 
-				setSolution(
-					fallbackSolutions[userInfo.concern] || {
-						title: "綜合指導原則",
-						content:
-							"建議採取務實穩健的態度面對問題，充分收集資訊後再做決策。保持積極心態，但也要有合理預期。",
-					}
+				const fallbackSolution = fallbackSolutions[
+					userInfo.concern
+				] || {
+					title: "綜合指導原則",
+					content:
+						"建議採取務實穩健的態度面對問題，充分收集資訊後再做決策。保持積極心態，但也要有合理預期。",
+				};
+				setSolution(fallbackSolution);
+				// Store fallback data too
+				storeComponentData("questionFocusAnalysis", fallbackSolution);
+				console.log(
+					"📊 Stored QuestionFocus fallback data:",
+					"SUCCESS"
 				);
 			} finally {
 				setLoading(false);

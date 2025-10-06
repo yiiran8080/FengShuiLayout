@@ -60,6 +60,22 @@ const Zodiac = memo(function Zodiac({
 		userInfo: userInfo,
 	});
 
+	// Store analysis data for database saving
+	if (typeof window !== "undefined") {
+		const zodiacData = {
+			userZodiac,
+			birthYear,
+			strengthAnalysis,
+			usefulGods,
+			enhancedAnalysis,
+			timestamp: new Date().toISOString(),
+		};
+
+		window.componentDataStore = window.componentDataStore || {};
+		window.componentDataStore.zodiacAnalysis = zodiacData;
+		console.log("📊 Stored Zodiac data:", "SUCCESS");
+	}
+
 	return (
 		<section className="w-full max-w-full sm:w-[95%] mx-auto bg-white rounded-[24px] sm:rounded-[48px] lg:rounded-[80px] p-3 sm:p-3 lg:p-12 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.18)]">
 			<div className="flex flex-col items-center gap-0 lg:flex-row lg:items-start lg:gap-10">

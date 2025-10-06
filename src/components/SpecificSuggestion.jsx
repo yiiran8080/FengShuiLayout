@@ -137,11 +137,37 @@ export default function SpecificSuggestion({ userInfo, currentYear = 2025 }) {
 
 	useEffect(() => {
 		if (userInfo) {
+			// Check if data already exists in component data store (for historical reports)
+			if (
+				typeof window !== "undefined" &&
+				window.componentDataStore?.specificSuggestionAnalysis
+			) {
+				console.log(
+					"📖 Using existing SpecificSuggestion data from component store"
+				);
+				setAnalysisData(
+					window.componentDataStore.specificSuggestionAnalysis
+				);
+				setIsLoading(false);
+				return;
+			}
+
 			setIsLoading(true);
 			// Generate AI analysis
 			generateSpecificSuggestionAnalysis(userInfo, currentYear)
 				.then((analysis) => {
 					setAnalysisData(analysis);
+					// Store data globally for database saving
+					if (typeof window !== "undefined") {
+						window.componentDataStore =
+							window.componentDataStore || {};
+						window.componentDataStore.specificSuggestionAnalysis =
+							analysis;
+						console.log(
+							"📊 Stored SpecificSuggestion data:",
+							"SUCCESS"
+						);
+					}
 					setIsLoading(false);
 				})
 				.catch((error) => {
