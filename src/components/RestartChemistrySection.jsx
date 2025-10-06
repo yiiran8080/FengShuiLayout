@@ -160,10 +160,25 @@ const RestartChemistrySection = ({ femaleUser, maleUser, analysisData }) => {
 
 	if (loading) {
 		return (
-			<div className="w-full p-8 bg-white rounded-[30px] shadow-lg">
+			<div
+				className="w-full bg-white shadow-lg"
+				style={{
+					padding: "clamp(20px, 5vw, 32px)",
+					borderRadius: "clamp(20px, 5vw, 30px)",
+				}}
+			>
 				<div className="flex items-center justify-center">
-					<div className="w-6 h-6 border-b-2 border-pink-500 rounded-full animate-spin"></div>
-					<span className="ml-2 text-gray-600">
+					<div
+						className="border-b-2 border-pink-500 rounded-full animate-spin"
+						style={{
+							width: "clamp(20px, 5vw, 24px)",
+							height: "clamp(20px, 5vw, 24px)",
+						}}
+					></div>
+					<span
+						className="ml-2 text-gray-600"
+						style={{ fontSize: "clamp(13px, 3.2vw, 15px)" }}
+					>
 						生成重啟默契方案中...
 					</span>
 				</div>
@@ -176,13 +191,19 @@ const RestartChemistrySection = ({ femaleUser, maleUser, analysisData }) => {
 	}
 
 	return (
-		<div className="w-full bg-white rounded-[30px] shadow-lg p-8">
+		<div
+			className="w-full bg-white shadow-lg"
+			style={{
+				padding: "clamp(20px, 5vw, 32px)",
+				borderRadius: "clamp(20px, 5vw, 30px)",
+			}}
+		>
 			{/* Subtitle */}
-			<div className="mb-8">
+			<div style={{ marginBottom: "clamp(24px, 6vw, 32px)" }}>
 				<h3
 					className="font-bold text-[#C74772]"
 					style={{
-						fontSize: "42px",
+						fontSize: "clamp(24px, 6vw, 42px)",
 						fontFamily: "Noto Serif TC, serif",
 					}}
 				>
@@ -191,17 +212,33 @@ const RestartChemistrySection = ({ femaleUser, maleUser, analysisData }) => {
 			</div>
 
 			{/* Ice Breaker Activities Grid */}
-			<div className="grid grid-cols-1 gap-6 mb-8 lg:grid-cols-3">
+			<div
+				className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+				style={{
+					gap: "clamp(16px, 4vw, 24px)",
+					marginBottom: "clamp(24px, 6vw, 32px)",
+				}}
+			>
 				{chemistryData.iceBreakers?.map((item, index) => (
 					<div
 						key={index}
-						className="space-y-4 bg-[#EFEFEF] p-6 rounded-lg"
+						className="bg-[#EFEFEF]"
+						style={{
+							padding: "clamp(16px, 4vw, 24px)",
+							borderRadius: "clamp(8px, 2vw, 12px)",
+							gap: "clamp(12px, 3vw, 16px)",
+							display: "flex",
+							flexDirection: "column",
+						}}
 					>
 						{/* Title Badge */}
 						<div className="flex justify-center">
 							<div
-								className="inline-block px-6 py-3 text-base font-bold text-white rounded-full"
+								className="inline-block font-bold text-white rounded-full"
 								style={{
+									padding:
+										"clamp(8px, 2vw, 12px) clamp(16px, 4vw, 24px)",
+									fontSize: "clamp(13px, 3.2vw, 16px)",
 									background: item.gradient,
 									fontFamily: "Noto Serif TC, serif",
 								}}
@@ -211,15 +248,28 @@ const RestartChemistrySection = ({ femaleUser, maleUser, analysisData }) => {
 						</div>
 
 						{/* Steps */}
-						<div className="space-y-3">
+						<div
+							style={{
+								display: "flex",
+								flexDirection: "column",
+								gap: "clamp(10px, 2.5vw, 12px)",
+							}}
+						>
 							{item.steps?.map((step, stepIndex) => (
 								<div
 									key={stepIndex}
 									className="flex items-start"
 								>
 									<div
-										className="flex items-center justify-center flex-shrink-0 w-6 h-6 mt-1 mr-3 text-sm font-bold text-white rounded-full"
+										className="flex items-center justify-center flex-shrink-0 font-bold text-white rounded-full"
 										style={{
+											width: "clamp(20px, 5vw, 24px)",
+											height: "clamp(20px, 5vw, 24px)",
+											fontSize:
+												"clamp(10px, 2.5vw, 14px)",
+											marginTop: "clamp(2px, 0.5vw, 4px)",
+											marginRight:
+												"clamp(8px, 2vw, 12px)",
 											background:
 												"linear-gradient(135deg, #C74772 0%, #D09900 100%)",
 										}}
@@ -227,8 +277,10 @@ const RestartChemistrySection = ({ femaleUser, maleUser, analysisData }) => {
 										{stepIndex + 1}
 									</div>
 									<p
-										className="text-sm leading-relaxed text-gray-800"
+										className="text-gray-800"
 										style={{
+											fontSize: "clamp(12px, 3vw, 14px)",
+											lineHeight: "1.6",
 											fontFamily:
 												"Noto Sans TC, sans-serif",
 										}}
@@ -240,10 +292,19 @@ const RestartChemistrySection = ({ femaleUser, maleUser, analysisData }) => {
 						</div>
 
 						{/* Principle Box */}
-						<div className="p-3 mt-4 border-red-400 rounded-lg bg-gradient-to-r from-red-50 to-yellow-50">
+						<div
+							className="border-red-400 bg-gradient-to-r from-red-50 to-yellow-50"
+							style={{
+								padding: "clamp(10px, 2.5vw, 12px)",
+								marginTop: "clamp(12px, 3vw, 16px)",
+								borderRadius: "clamp(6px, 1.5vw, 8px)",
+							}}
+						>
 							<p
-								className="text-xs font-medium text-center text-red-700"
+								className="font-medium text-center text-red-700"
 								style={{
+									fontSize: "clamp(11px, 2.8vw, 12px)",
+									lineHeight: "1.5",
 									fontFamily: "Noto Sans TC, sans-serif",
 								}}
 							>
@@ -255,10 +316,20 @@ const RestartChemistrySection = ({ femaleUser, maleUser, analysisData }) => {
 			</div>
 
 			{/* General Communication Advice */}
-			<div className="p-6 border border-gray-200 rounded-lg bg-gradient-to-r from-gray-50 to-blue-50">
+			<div
+				className="border border-gray-200 bg-gradient-to-r from-gray-50 to-blue-50"
+				style={{
+					padding: "clamp(16px, 4vw, 24px)",
+					borderRadius: "clamp(8px, 2vw, 12px)",
+				}}
+			>
 				<p
-					className="text-sm leading-relaxed text-gray-700"
-					style={{ fontFamily: "Noto Sans TC, sans-serif" }}
+					className="text-gray-700"
+					style={{
+						fontSize: "clamp(12px, 3vw, 14px)",
+						lineHeight: "1.6",
+						fontFamily: "Noto Sans TC, sans-serif",
+					}}
 				>
 					{chemistryData.generalAdvice}
 				</p>

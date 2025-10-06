@@ -632,16 +632,16 @@ const CoupleAnnualAnalysis = ({
 	};
 
 	return (
-		<div className="space-y-6">
-			{/* Main Analysis Section with New Layout */}
-			<div className="flex flex-col gap-6 p-6 lg:flex-row">
-				{/* Left Side: Large Compatibility Circle (Full Height) */}
-				<div className="flex items-center justify-center py-8 lg:w-1/3">
+		<div className="space-y-4 sm:space-y-6">
+			{/* Main Analysis Section with Responsive Layout */}
+			<div className="flex flex-col gap-4 p-3 sm:gap-6 sm:p-6 lg:flex-row">
+				{/* Left Side: Compatibility Circle - Responsive Size */}
+				<div className="flex items-center justify-center py-4 sm:py-8 lg:w-1/3">
 					<div className="relative">
-						{/* Larger Circular Progress */}
-						<div className="relative w-80 h-80">
+						{/* Responsive Circular Progress */}
+						<div className="relative w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80">
 							<svg
-								className="transform -rotate-90 w-80 h-80"
+								className="w-full h-full transform -rotate-90"
 								viewBox="0 0 100 100"
 							>
 								{/* Background circle */}
@@ -686,12 +686,22 @@ const CoupleAnnualAnalysis = ({
 									</linearGradient>
 								</defs>
 							</svg>
-							{/* Score display */}
+							{/* Score display - Responsive Typography */}
 							<div className="absolute inset-0 flex flex-col items-center justify-center">
-								<span className="font-bold text-8xl text-amber-600">
+								<span
+									className="font-bold text-amber-600"
+									style={{
+										fontSize: "clamp(32px, 12vw, 64px)",
+									}}
+								>
 									{compatibility.score}
 								</span>
-								<span className="mt-2 text-lg font-medium text-gray-600">
+								<span
+									className="mt-1 font-medium text-gray-600"
+									style={{
+										fontSize: "clamp(12px, 3vw, 18px)",
+									}}
+								>
 									{compatibility.level}
 								</span>
 							</div>
@@ -700,44 +710,69 @@ const CoupleAnnualAnalysis = ({
 				</div>
 
 				{/* Right Side: Top and Bottom Sections */}
-				<div className="flex flex-col gap-6 lg:w-2/3">
-					{/* Top: Element Combination */}
-					<div className="p-4 border-2 border-gray-200 rounded-full shadow-md bg-gradient-to-r from-pink-50 to-blue-50">
-						{/* Element Combination Display */}
-						<div className="flex items-center justify-center gap-3 mb-4">
+				<div className="flex flex-col w-95% gap-4 sm:gap-6 lg:w-2/3">
+					{/* Top: Element Combination - Mobile Stacked, Desktop Inline */}
+					<div className="p-3 border-2 border-gray-200 shadow-md sm:p-4 rounded-2xl sm:rounded-full bg-gradient-to-r from-pink-50 to-blue-50">
+						{/* Element Combination Display - Single Row Layout */}
+						<div className="flex items-center justify-center w-full gap-2 mb-3 sm:gap-3 sm:mb-4">
 							{/* User 1 Element */}
-							<div className="flex items-center gap-2 px-4 py-2 bg-pink-100 rounded-full">
-								<div className="flex items-center justify-center w-6 h-6 text-sm font-bold text-white bg-pink-500 rounded-full">
+							<div className="flex items-center gap-2 px-4 py-2 bg-pink-100 rounded-full sm:px-4">
+								<div className="flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-pink-500 rounded-full sm:w-6 sm:h-6 sm:text-sm">
 									{user1Analysis.dominantElement}
 								</div>
-								<span className="text-sm font-semibold text-pink-600">
+								<span
+									className="font-semibold text-pink-600"
+									style={{
+										fontSize: "clamp(7px, 3vw, 14px)",
+									}}
+								>
 									{user1Analysis.elementType}
 								</span>
 							</div>
 
-							{/* Plus Sign */}
-							<div className="text-xl font-bold text-gray-400">
+							{/* Plus Sign - Always visible */}
+							<div
+								className="font-bold text-gray-400"
+								style={{
+									fontSize: "clamp(10px, 3.5vw, 20px)",
+								}}
+							>
 								+
 							</div>
 
 							{/* User 2 Element */}
-							<div className="flex items-center gap-2 px-4 py-2 bg-blue-100 rounded-full">
-								<div className="flex items-center justify-center w-6 h-6 text-sm font-bold text-white bg-blue-500 rounded-full">
+							<div className="flex items-center gap-2 px-4 py-2 bg-blue-100 rounded-full sm:px-4">
+								<div className="flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-blue-500 rounded-full sm:w-6 sm:h-6 sm:text-sm">
 									{user2Analysis.dominantElement}
 								</div>
-								<span className="text-sm font-semibold text-blue-600">
+								<span
+									className="font-semibold text-blue-600"
+									style={{
+										fontSize: "clamp(7px, 3vw, 14px)",
+									}}
+								>
 									{user2Analysis.elementType}
 								</span>
 							</div>
 
-							{/* Equals Sign */}
-							<div className="text-xl font-bold text-gray-400">
+							{/* Equals Sign - Hidden on very small mobile */}
+							<div
+								className="hidden font-bold text-gray-400 sm:block"
+								style={{
+									fontSize: "clamp(10px, 4vw, 20px)",
+								}}
+							>
 								=
 							</div>
 
 							{/* Smart Result */}
-							<div className="px-4 py-2 bg-gray-100 rounded-full">
-								<span className="text-sm font-semibold text-gray-700">
+							<div className="px-3 py-2 bg-gray-100 rounded-full sm:px-4">
+								<span
+									className="font-semibold text-gray-700"
+									style={{
+										fontSize: "clamp(7px, 2.8vw, 14px)",
+									}}
+								>
 									{getElementCombinationResult(
 										user1Analysis.dominantElement,
 										user2Analysis.dominantElement
@@ -748,42 +783,49 @@ const CoupleAnnualAnalysis = ({
 
 						{/* Element Balance Description */}
 						<div className="text-center">
-							<p className="text-sm leading-relaxed text-gray-600">
+							<p
+								className="leading-relaxed text-gray-600"
+								style={{
+									fontSize: "clamp(8px, 3vw, 14px)",
+								}}
+							>
 								{elementInteraction.balance}
 							</p>
 						</div>
 					</div>
 
 					{/* Bottom: Annual Strategy Section */}
-					<div className="bg-white rounded-[30px] shadow-md p-8">
-						{/* Title with gradient */}
-						<div className="mb-6 text-start">
+					<div className="bg-white w-full rounded-[20px] sm:rounded-[30px] shadow-md p-4 sm:p-8">
+						{/* Title with gradient - Responsive */}
+						<div className="mb-4 text-start sm:mb-6">
 							<h3
-								className="text-4xl font-bold bg-gradient-to-r from-[#C74772] to-[#D09900] bg-clip-text text-transparent"
+								className="font-bold bg-gradient-to-r from-[#C74772] to-[#D09900] bg-clip-text text-transparent"
 								style={{
 									fontFamily: "Noto Serif TC",
-									fontSize: "35px",
+									fontSize: "clamp(20px, 6vw, 35px)",
 								}}
 							>
 								2025&2026流年關鍵應對策略
 							</h3>
 						</div>
 
-						{/* Year Headers - Left and Right Layout */}
-						<div className="flex justify-between gap-6">
+						{/* Year Headers - Responsive Layout */}
+						<div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:gap-6">
 							{Object.entries(annualStrategy).map(
 								([year, strategy], index) => (
 									<div key={year} className="flex-1">
 										{/* Year Container with E7E7E7 background */}
-										<div className="bg-[#E7E7E7] rounded-lg p-4">
+										<div className="bg-[#E7E7E7] rounded-lg p-3 sm:p-4">
 											{/* Year Title with border */}
 											<div className="mb-3 text-center">
-												<div className="inline-block px-4 py-2 border-2 border-[#C74772] rounded-full">
+												<div className="inline-block px-3 py-2 border-2 border-[#C74772] rounded-full sm:px-4">
 													<h4
-														className="text-sm font-semibold text-[#C74773]"
+														className="font-semibold text-[#C74773]"
 														style={{
 															fontFamily:
 																"Noto Sans HK",
+															fontSize:
+																"clamp(12px, 3vw, 14px)",
 														}}
 													>
 														{year === "2025"
@@ -796,10 +838,12 @@ const CoupleAnnualAnalysis = ({
 											{/* Content */}
 											<div className="text-center">
 												<p
-													className="text-sm leading-relaxed text-black"
+													className="leading-relaxed text-black"
 													style={{
 														fontFamily:
 															"Noto Sans HK",
+														fontSize:
+															"clamp(11px, 2.8vw, 14px)",
 													}}
 												>
 													{strategy.monthlyFocus}
@@ -815,32 +859,33 @@ const CoupleAnnualAnalysis = ({
 			</div>
 
 			{/* Element Interaction Analysis */}
-			<div className="bg-white rounded-[30px] shadow-md p-8">
-				{/* Title with gradient */}
-				<div className="mb-6 text-start">
+			<div className="bg-white rounded-[20px] sm:rounded-[30px] shadow-md p-4 sm:p-8">
+				{/* Title with gradient - Responsive */}
+				<div className="mb-4 text-start sm:mb-6">
 					<h3
-						className="text-4xl font-bold bg-gradient-to-r from-[#C74772] to-[#D09900] bg-clip-text text-transparent"
+						className="font-bold bg-gradient-to-r from-[#C74772] to-[#D09900] bg-clip-text text-transparent"
 						style={{
 							fontFamily: "Noto Serif TC",
-							fontSize: "35px",
+							fontSize: "clamp(20px, 6vw, 35px)",
 						}}
 					>
 						五行互動分析
 					</h3>
 				</div>
 
-				{/* Content Layout - Left and Right */}
-				<div className="flex justify-between gap-6">
+				{/* Content Layout - Mobile Stacked, Desktop Side by Side */}
+				<div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:gap-6">
 					{/* Left: Element Interaction */}
 					<div className="flex-1">
-						<div className="bg-[#E7E7E7] rounded-lg p-4">
+						<div className="bg-[#E7E7E7] rounded-lg p-3 sm:p-4">
 							{/* Title with border */}
 							<div className="mb-3 text-center">
-								<div className="inline-block px-4 py-2 border-2 border-[#C74772] rounded-full">
+								<div className="inline-block px-3 py-2 border-2 border-[#C74772] rounded-full sm:px-4">
 									<h4
-										className="text-sm font-semibold text-[#C74773]"
+										className="font-semibold text-[#C74773]"
 										style={{
 											fontFamily: "Noto Sans HK",
+											fontSize: "clamp(12px, 3vw, 14px)",
 										}}
 									>
 										元素互動
@@ -851,17 +896,19 @@ const CoupleAnnualAnalysis = ({
 							{/* Content */}
 							<div className="space-y-2 text-center">
 								<p
-									className="text-sm leading-relaxed text-black"
+									className="leading-relaxed text-black"
 									style={{
 										fontFamily: "Noto Sans HK",
+										fontSize: "clamp(11px, 2.8vw, 14px)",
 									}}
 								>
 									{elementInteraction.balance}
 								</p>
 								<p
-									className="text-xs leading-relaxed text-black"
+									className="leading-relaxed text-black"
 									style={{
 										fontFamily: "Noto Sans HK",
+										fontSize: "clamp(10px, 2.5vw, 12px)",
 									}}
 								>
 									{elementInteraction.missing}
@@ -872,14 +919,15 @@ const CoupleAnnualAnalysis = ({
 
 					{/* Right: Relationship Advice */}
 					<div className="flex-1">
-						<div className="bg-[#E7E7E7] rounded-lg p-4">
+						<div className="bg-[#E7E7E7] rounded-lg p-3 sm:p-4">
 							{/* Title with border */}
 							<div className="mb-3 text-center">
-								<div className="inline-block px-4 py-2 border-2 border-[#C74772] rounded-full">
+								<div className="inline-block px-3 py-2 border-2 border-[#C74772] rounded-full sm:px-4">
 									<h4
-										className="text-sm font-semibold text-[#C74773]"
+										className="font-semibold text-[#C74773]"
 										style={{
 											fontFamily: "Noto Sans HK",
+											fontSize: "clamp(12px, 3vw, 14px)",
 										}}
 									>
 										關係建議
@@ -890,9 +938,10 @@ const CoupleAnnualAnalysis = ({
 							{/* Content */}
 							<div className="text-center">
 								<p
-									className="text-sm leading-relaxed text-black"
+									className="leading-relaxed text-black"
 									style={{
 										fontFamily: "Noto Sans HK",
+										fontSize: "clamp(11px, 2.8vw, 14px)",
 									}}
 								>
 									{elementInteraction.advice}
@@ -1517,36 +1566,42 @@ const IndividualAnalysisSection = ({
 	}
 
 	return (
-		<div className="bg-white rounded-[30px] shadow-md p-8 mb-6">
-			{/* Header with gender and birth date */}
-			<div className="flex items-center gap-4 mb-8">
+		<div className="bg-white rounded-[20px] sm:rounded-[30px] shadow-md p-4 sm:p-8 mb-4 sm:mb-6">
+			{/* Header with gender and birth date - Responsive Layout */}
+			<div className="flex flex-col items-start gap-3 mb-6 sm:flex-row sm:items-center sm:gap-4 sm:mb-8">
 				{/* Gender Title */}
 				<h3
-					className={`text-4xl font-bold ${colorScheme === "pink" ? "text-[#C74772]" : "text-[#4A90E2]"}`}
-					style={{ fontFamily: "Noto Serif TC" }}
+					className={`font-bold ${colorScheme === "pink" ? "text-[#C74772]" : "text-[#4A90E2]"}`}
+					style={{
+						fontFamily: "Noto Serif TC",
+						fontSize: "clamp(24px, 6vw, 48px)",
+					}}
 				>
 					{gender}
 				</h3>
 
 				{/* Birth Date Pill */}
 				<div
-					className={`px-6 py-2 rounded-full border-2 ${
+					className={`px-4 py-2 rounded-full border-2 sm:px-6 ${
 						colorScheme === "pink"
 							? "border-[#C74772] text-[#C74772]"
 							: "border-[#4A90E2] text-[#4A90E2]"
 					}`}
 				>
 					<span
-						className="text-lg font-medium"
-						style={{ fontFamily: "Noto Sans HK" }}
+						className="font-medium"
+						style={{
+							fontFamily: "Noto Sans HK",
+							fontSize: "clamp(12px, 3vw, 18px)",
+						}}
 					>
 						{user.birthDateTime}
 					</span>
 				</div>
 			</div>
 
-			{/* Four Pillars Grid */}
-			<div className="grid grid-cols-1 gap-4 mb-8 md:grid-cols-2 lg:grid-cols-4">
+			{/* Four Pillars Grid - Responsive Grid */}
+			<div className="grid grid-cols-1 gap-3 mb-6 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 sm:mb-8">
 				{Object.entries(individualAnalysis.pillarsAnalysis).map(
 					([pillarName, pillarData]) => (
 						<div
@@ -1555,37 +1610,49 @@ const IndividualAnalysisSection = ({
 						>
 							{/* Pillar Header */}
 							<div
-								className={`p-4 text-center text-white ${
+								className={`p-3 text-center text-white sm:p-4 ${
 									colorScheme === "pink"
 										? "bg-[#C74772]"
 										: "bg-[#4A90E2]"
 								}`}
 							>
 								<h4
-									className="text-lg font-bold"
-									style={{ fontFamily: "Noto Sans HK" }}
+									className="font-bold"
+									style={{
+										fontFamily: "Noto Sans HK",
+										fontSize: "clamp(14px, 3.5vw, 18px)",
+									}}
 								>
 									{pillarName}
 								</h4>
 								<p
-									className="text-sm opacity-90"
-									style={{ fontFamily: "Noto Sans HK" }}
+									className="opacity-90"
+									style={{
+										fontFamily: "Noto Sans HK",
+										fontSize: "clamp(11px, 2.8vw, 14px)",
+									}}
 								>
 									{pillarData.title.split("-")[1]}
 								</p>
 							</div>
 
 							{/* Pillar Content */}
-							<div className="p-4 bg-gray-100">
+							<div className="p-3 bg-gray-100 sm:p-4">
 								<p
-									className="mb-2 text-sm leading-relaxed text-gray-700"
-									style={{ fontFamily: "Noto Sans HK" }}
+									className="mb-2 leading-relaxed text-gray-700"
+									style={{
+										fontFamily: "Noto Sans HK",
+										fontSize: "clamp(10px, 2.5vw, 13px)",
+									}}
 								>
 									{pillarData.subtitle}
 								</p>
 								<p
-									className="text-xs leading-relaxed text-gray-600"
-									style={{ fontFamily: "Noto Sans HK" }}
+									className="leading-relaxed text-gray-600"
+									style={{
+										fontFamily: "Noto Sans HK",
+										fontSize: "clamp(9px, 2.2vw, 11px)",
+									}}
 								>
 									{pillarData.description}
 								</p>
@@ -1597,16 +1664,19 @@ const IndividualAnalysisSection = ({
 
 			{/* Element Characteristics Section */}
 			<div
-				className={`rounded-[20px] p-6 ${
+				className={`rounded-[16px] sm:rounded-[20px] p-4 sm:p-6 ${
 					colorScheme === "pink" ? "bg-pink-50" : "bg-blue-50"
 				}`}
 			>
 				{/* Section Title */}
 				<div className="mb-4">
-					<div className="inline-block px-4 py-2 border-2 border-[#C74772] rounded-full mb-4">
+					<div className="inline-block px-3 py-2 border-2 border-[#C74772] rounded-full mb-4 sm:px-4">
 						<h4
-							className="text-lg font-semibold text-[#C74773]"
-							style={{ fontFamily: "Noto Sans HK" }}
+							className="font-semibold text-[#C74773]"
+							style={{
+								fontFamily: "Noto Sans HK",
+								fontSize: "clamp(14px, 3.5vw, 18px)",
+							}}
 						>
 							{gender}
 							{userAnalysis?.elementType}特性
@@ -1615,22 +1685,28 @@ const IndividualAnalysisSection = ({
 				</div>
 
 				{/* Characteristics Description */}
-				<div className="p-4 mb-4 bg-white rounded-lg">
+				<div className="p-3 mb-4 bg-white rounded-lg sm:p-4">
 					<p
-						className="text-base leading-relaxed text-black"
-						style={{ fontFamily: "Noto Sans HK" }}
+						className="leading-relaxed text-black"
+						style={{
+							fontFamily: "Noto Sans HK",
+							fontSize: "clamp(12px, 3vw, 16px)",
+						}}
 					>
 						{individualAnalysis.characteristics}
 					</p>
 				</div>
 
-				{/* Strengths and Suggestions Layout */}
-				<div className="grid gap-6 md:grid-cols-2">
+				{/* Strengths and Suggestions Layout - Mobile Stacked, Desktop Side by Side */}
+				<div className="grid gap-4 sm:gap-6 md:grid-cols-2">
 					{/* Strengths */}
-					<div className="p-4 bg-white rounded-lg">
+					<div className="p-3 bg-white rounded-lg sm:p-4">
 						<h5
-							className="mb-3 text-lg font-semibold text-gray-800"
-							style={{ fontFamily: "Noto Sans HK" }}
+							className="mb-3 font-semibold text-gray-800"
+							style={{
+								fontFamily: "Noto Sans HK",
+								fontSize: "clamp(14px, 3.5vw, 18px)",
+							}}
 						>
 							主要優勢：
 						</h5>
@@ -1639,10 +1715,10 @@ const IndividualAnalysisSection = ({
 								(strength, index) => (
 									<li
 										key={index}
-										className="flex items-center gap-3 text-sm text-gray-700"
+										className="flex items-start gap-2 text-gray-700 sm:items-center sm:gap-3"
 									>
 										<div
-											className={`w-3 h-3 rounded-full ${
+											className={`w-2 h-2 rounded-full mt-2 sm:w-3 sm:h-3 sm:mt-0 flex-shrink-0 ${
 												colorScheme === "pink"
 													? "bg-[#C74772]"
 													: "bg-[#4A90E2]"
@@ -1651,6 +1727,8 @@ const IndividualAnalysisSection = ({
 										<span
 											style={{
 												fontFamily: "Noto Sans HK",
+												fontSize:
+													"clamp(11px, 2.8vw, 14px)",
 											}}
 										>
 											{typeof strength === "string"
@@ -1667,10 +1745,13 @@ const IndividualAnalysisSection = ({
 					</div>
 
 					{/* Suggestions */}
-					<div className="p-4 bg-white rounded-lg">
+					<div className="p-3 bg-white rounded-lg sm:p-4">
 						<h5
-							className="mb-3 text-lg font-semibold text-gray-800"
-							style={{ fontFamily: "Noto Sans HK" }}
+							className="mb-3 font-semibold text-gray-800"
+							style={{
+								fontFamily: "Noto Sans HK",
+								fontSize: "clamp(14px, 3.5vw, 18px)",
+							}}
 						>
 							發展建議：
 						</h5>
@@ -1679,10 +1760,10 @@ const IndividualAnalysisSection = ({
 								(suggestion, index) => (
 									<li
 										key={index}
-										className="flex items-center gap-3 text-sm text-gray-700"
+										className="flex items-start gap-2 text-gray-700 sm:items-center sm:gap-3"
 									>
 										<div
-											className={`w-3 h-3 rounded-full ${
+											className={`w-2 h-2 rounded-full mt-2 sm:w-3 sm:h-3 sm:mt-0 flex-shrink-0 ${
 												colorScheme === "pink"
 													? "bg-[#C74772]"
 													: "bg-[#4A90E2]"
@@ -1691,6 +1772,8 @@ const IndividualAnalysisSection = ({
 										<span
 											style={{
 												fontFamily: "Noto Sans HK",
+												fontSize:
+													"clamp(11px, 2.8vw, 14px)",
 											}}
 										>
 											{typeof suggestion === "string"

@@ -900,13 +900,13 @@ export default function FengShuiReportPage() {
 					className="container w-full px-4 py-8 mx-auto"
 					style={{ paddingTop: "80px" }}
 				>
-					<div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+					<div className="p-4 mb-4 border border-yellow-200 rounded-lg bg-yellow-50">
 						<p className="text-yellow-800">
 							<strong>注意：</strong>
 							您正在查看已保存的歷史報告內容。
 							<a
 								href={`${window.location.pathname}${window.location.search.replace("showHistorical=true", "").replace("&showHistorical=true", "").replace("?showHistorical=true&", "?")}`}
-								className="ml-2 text-blue-600 hover:text-blue-800 underline"
+								className="ml-2 text-blue-600 underline hover:text-blue-800"
 							>
 								點擊這裡生成新的報告
 							</a>
@@ -937,16 +937,17 @@ export default function FengShuiReportPage() {
 					style={{ paddingTop: "80px" }}
 				>
 					{/* 頭部 */}
-					<div className="mb-8" style={{ marginLeft: "5%" }}>
+					<div className="mb-8 ml-0 md:ml-[5%]">
 						<h1
-							className="mb-2 font-extrabold"
+							className="mb-2 font-extrabold text-center md:text-left"
 							style={{
 								fontFamily: "Noto Serif TC, Serif",
 								fontWeight: 800,
-								fontSize: "60px",
 								color: getConcernColor({
 									concern: reportData?.concern,
 								}),
+								fontSize: "clamp(2rem, 6vw, 60px)",
+								lineHeight: 1.1,
 							}}
 						>
 							命主基礎分析
@@ -1017,16 +1018,17 @@ export default function FengShuiReportPage() {
 							/>
 						</div>
 					)}
-					<div className="mb-8" style={{ marginLeft: "5%" }}>
+					<div className="mb-8 ml-0 md:ml-[5%]">
 						<h1
-							className="mb-2 font-extrabold"
+							className="mb-2 font-extrabold text-center md:text-left"
 							style={{
 								fontFamily: "Noto Serif TC, Serif",
 								fontWeight: 800,
-								fontSize: "60px",
 								color: getConcernColor({
 									concern: reportData?.concern,
 								}),
+								fontSize: "clamp(2rem, 6vw, 60px)",
+								lineHeight: 1.1,
 							}}
 						>
 							命局核心解析詳解
@@ -1046,16 +1048,17 @@ export default function FengShuiReportPage() {
 							/>
 						</div>
 					)}
-					<div className="mb-8" style={{ marginLeft: "5%" }}>
+					<div className="mb-6 sm:mb-8 ml-0 md:ml-[5%]">
 						<h1
-							className="mb-2 font-extrabold"
+							className="mb-2 font-extrabold text-center md:text-left"
 							style={{
 								fontFamily: "Noto Serif TC, Serif",
 								fontWeight: 800,
-								fontSize: "60px",
 								color: getConcernColor({
 									concern: reportData?.concern,
 								}),
+								fontSize: "clamp(2rem, 6vw, 60px)",
+								lineHeight: 1.1,
 							}}
 						>
 							2025乙巳流年詳解
@@ -1075,16 +1078,17 @@ export default function FengShuiReportPage() {
 							/>
 						</div>
 					)}
-					<div className="mb-8" style={{ marginLeft: "5%" }}>
+					<div className="mb-6 sm:mb-8 ml-0 md:ml-[5%]">
 						<h1
-							className="mb-2 font-extrabold"
+							className="mb-2 font-extrabold text-center md:text-left"
 							style={{
 								fontFamily: "Noto Serif TC, Serif",
 								fontWeight: 800,
-								fontSize: "60px",
 								color: getConcernColor({
 									concern: reportData?.concern,
 								}),
+								fontSize: "clamp(2rem, 6vw, 60px)",
+								lineHeight: 1.1,
 							}}
 						>
 							{getSectionTitle(reportData?.concern)}
@@ -1092,7 +1096,7 @@ export default function FengShuiReportPage() {
 					</div>
 					{/* Ji Xiong Analysis */}
 					{reportData && (
-						<div className="mb-6">
+						<div className="flex justify-center mb-6">
 							<JiXiong
 								userInfo={{
 									birthDateTime: reportData.birthday,
@@ -1123,16 +1127,17 @@ export default function FengShuiReportPage() {
 							/>
 						</div>
 					)}
-					<div className="mb-8" style={{ marginLeft: "5%" }}>
+					<div className="mb-8 ml-0 md:ml-[5%]">
 						<h1
-							className="mb-2 font-extrabold"
+							className="mb-2 font-extrabold text-center md:text-left"
 							style={{
 								fontFamily: "Noto Serif TC, Serif",
 								fontWeight: 800,
-								fontSize: "60px",
 								color: getConcernColor({
 									concern: reportData?.concern,
 								}),
+								fontSize: "clamp(2rem, 6vw, 60px)",
+								lineHeight: 1.1,
 							}}
 						>
 							開運建議

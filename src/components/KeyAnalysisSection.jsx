@@ -156,10 +156,25 @@ const KeyAnalysisSection = ({ femaleUser, maleUser, analysisData }) => {
 
 	if (loading) {
 		return (
-			<div className="w-full p-8 bg-white rounded-[30px] shadow-lg">
+			<div
+				className="w-full bg-white shadow-lg"
+				style={{
+					padding: "clamp(20px, 5vw, 32px)",
+					borderRadius: "clamp(20px, 5vw, 30px)",
+				}}
+			>
 				<div className="flex items-center justify-center">
-					<div className="w-6 h-6 border-b-2 border-pink-500 rounded-full animate-spin"></div>
-					<span className="ml-2 text-gray-600">
+					<div
+						className="border-b-2 border-pink-500 rounded-full animate-spin"
+						style={{
+							width: "clamp(20px, 5vw, 24px)",
+							height: "clamp(20px, 5vw, 24px)",
+						}}
+					></div>
+					<span
+						className="ml-2 text-gray-600"
+						style={{ fontSize: "clamp(13px, 3.2vw, 15px)" }}
+					>
 						生成關鍵分析中...
 					</span>
 				</div>
@@ -196,35 +211,59 @@ const KeyAnalysisSection = ({ femaleUser, maleUser, analysisData }) => {
 	];
 
 	return (
-		<div className="w-full bg-white rounded-[30px] shadow-lg p-8">
+		<div
+			className="w-full bg-white shadow-lg"
+			style={{
+				padding: "clamp(20px, 5vw, 32px)",
+				borderRadius: "clamp(20px, 5vw, 30px)",
+			}}
+		>
 			{/* Interactive Tags Section */}
-			<div className="mb-8">
+			<div style={{ marginBottom: "clamp(24px, 6vw, 32px)" }}>
 				{/* Three interactive tags */}
-				<div className="flex justify-center gap-10 mb-6 space-x-8">
+				<div
+					className="flex flex-wrap justify-center"
+					style={{
+						gap: "clamp(16px, 4vw, 40px)",
+						marginBottom: "clamp(20px, 5vw, 24px)",
+					}}
+				>
 					{tags.map((tag) => (
 						<div
 							key={tag.id}
 							className="flex flex-col items-center"
 						>
 							<div
-								className={`w-20 h-20 rounded-full flex items-center justify-center mb-3 cursor-pointer transition-all duration-300 ${
+								className={`rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 ${
 									activeTag === tag.id
 										? tag.selectedBg
 										: tag.unselectedBg
 								}`}
+								style={{
+									width: "clamp(60px, 15vw, 80px)",
+									height: "clamp(60px, 15vw, 80px)",
+									marginBottom: "clamp(8px, 2vw, 12px)",
+								}}
 								onClick={() => setActiveTag(tag.id)}
 							>
 								<img
 									src={tag.image}
 									alt={tag.label}
-									className={`w-10 h-10 transition-all duration-300 ${
+									className={`transition-all duration-300 ${
 										activeTag === tag.id
 											? "filter brightness-0 invert"
 											: ""
 									}`}
+									style={{
+										width: "clamp(30px, 7.5vw, 40px)",
+										height: "clamp(30px, 7.5vw, 40px)",
+									}}
 								/>
 							</div>
-							<span className="text-sm font-medium text-gray-700">
+							<span
+								className="font-medium text-center text-gray-700"
+								style={{ fontSize: "clamp(11px, 2.8vw, 14px)" }}
+							>
 								{tag.label}
 							</span>
 						</div>
@@ -235,20 +274,51 @@ const KeyAnalysisSection = ({ femaleUser, maleUser, analysisData }) => {
 				{activeTag === "fiveElements" && (
 					<>
 						{/* Female and Male Analysis Cards */}
-						<div className="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
+						<div
+							className="grid grid-cols-1 lg:grid-cols-2"
+							style={{
+								gap: "clamp(16px, 4vw, 24px)",
+								marginBottom: "clamp(20px, 5vw, 24px)",
+							}}
+						>
 							{/* Female Card */}
-							<div className="p-6 border border-pink-200 rounded-lg bg-gradient-to-r from-pink-50 to-red-50">
-								<div className="flex items-center justify-between mb-4">
+							<div
+								className="border border-pink-200 bg-gradient-to-r from-pink-50 to-red-50"
+								style={{
+									padding: "clamp(16px, 4vw, 24px)",
+									borderRadius: "clamp(8px, 2vw, 12px)",
+								}}
+							>
+								<div
+									className="flex flex-wrap items-center justify-between"
+									style={{
+										marginBottom: "clamp(12px, 3vw, 16px)",
+										gap: "clamp(8px, 2vw, 12px)",
+									}}
+								>
 									<h4
-										className="font-bold text-[#C74772] text-xl"
+										className="font-bold text-[#C74772]"
 										style={{
+											fontSize: "clamp(16px, 4vw, 20px)",
 											fontFamily: "Noto Serif TC, serif",
 										}}
 									>
 										女方
 									</h4>
-									<div className="px-4 py-2 bg-white border-2 border-[#C74772] rounded-full">
-										<span className="text-sm font-medium text-[#C74772]">
+									<div
+										className="bg-white border-2 border-[#C74772] rounded-full"
+										style={{
+											padding:
+												"clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px)",
+										}}
+									>
+										<span
+											className="font-medium text-[#C74772]"
+											style={{
+												fontSize:
+													"clamp(11px, 2.8vw, 14px)",
+											}}
+										>
 											{
 												keyAnalysisData
 													.fiveElementsCompatibility
@@ -258,8 +328,10 @@ const KeyAnalysisSection = ({ femaleUser, maleUser, analysisData }) => {
 									</div>
 								</div>
 								<p
-									className="text-sm leading-relaxed text-gray-700"
+									className="text-gray-700"
 									style={{
+										fontSize: "clamp(12px, 3vw, 14px)",
+										lineHeight: "1.6",
 										fontFamily: "Noto Sans TC, sans-serif",
 									}}
 								>
@@ -272,18 +344,43 @@ const KeyAnalysisSection = ({ femaleUser, maleUser, analysisData }) => {
 							</div>
 
 							{/* Male Card */}
-							<div className="p-6 border border-blue-200 rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50">
-								<div className="flex items-center justify-between mb-4">
+							<div
+								className="border border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50"
+								style={{
+									padding: "clamp(16px, 4vw, 24px)",
+									borderRadius: "clamp(8px, 2vw, 12px)",
+								}}
+							>
+								<div
+									className="flex flex-wrap items-center justify-between"
+									style={{
+										marginBottom: "clamp(12px, 3vw, 16px)",
+										gap: "clamp(8px, 2vw, 12px)",
+									}}
+								>
 									<h4
-										className="font-bold text-[#C74772] text-xl"
+										className="font-bold text-[#C74772]"
 										style={{
+											fontSize: "clamp(16px, 4vw, 20px)",
 											fontFamily: "Noto Serif TC, serif",
 										}}
 									>
 										男方
 									</h4>
-									<div className="px-4 py-2 bg-white border-2 border-[#C74772] rounded-full">
-										<span className="text-sm font-medium text-[#C74772]">
+									<div
+										className="bg-white border-2 border-[#C74772] rounded-full"
+										style={{
+											padding:
+												"clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px)",
+										}}
+									>
+										<span
+											className="font-medium text-[#C74772]"
+											style={{
+												fontSize:
+													"clamp(11px, 2.8vw, 14px)",
+											}}
+										>
 											{
 												keyAnalysisData
 													.fiveElementsCompatibility
@@ -293,8 +390,10 @@ const KeyAnalysisSection = ({ femaleUser, maleUser, analysisData }) => {
 									</div>
 								</div>
 								<p
-									className="text-sm leading-relaxed text-gray-700"
+									className="text-gray-700"
 									style={{
+										fontSize: "clamp(12px, 3vw, 14px)",
+										lineHeight: "1.6",
 										fontFamily: "Noto Sans TC, sans-serif",
 									}}
 								>
@@ -308,12 +407,35 @@ const KeyAnalysisSection = ({ femaleUser, maleUser, analysisData }) => {
 						</div>
 
 						{/* Overall Energy Analysis */}
-						<div className="p-6 border rounded-lg bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200">
-							<h5 className="mb-3 text-lg font-bold text-amber-700">
+						<div
+							className="border bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200"
+							style={{
+								padding: "clamp(16px, 4vw, 24px)",
+								borderRadius: "clamp(8px, 2vw, 12px)",
+							}}
+						>
+							<h5
+								className="font-bold text-amber-700"
+								style={{
+									fontSize: "clamp(14px, 3.5vw, 18px)",
+									marginBottom: "clamp(10px, 2.5vw, 12px)",
+								}}
+							>
 								能量互補分析
 							</h5>
-							<div className="space-y-2">
-								<p className="text-sm text-gray-700">
+							<div
+								style={{
+									display: "flex",
+									flexDirection: "column",
+									gap: "clamp(6px, 1.5vw, 8px)",
+								}}
+							>
+								<p
+									className="text-gray-700"
+									style={{
+										fontSize: "clamp(12px, 3vw, 14px)",
+									}}
+								>
 									<span className="font-medium">
 										整體能量：
 									</span>
@@ -323,7 +445,12 @@ const KeyAnalysisSection = ({ femaleUser, maleUser, analysisData }) => {
 											.overallEnergy
 									}
 								</p>
-								<p className="text-sm text-gray-700">
+								<p
+									className="text-gray-700"
+									style={{
+										fontSize: "clamp(12px, 3vw, 14px)",
+									}}
+								>
 									<span className="font-medium">
 										互補性：
 									</span>
@@ -333,7 +460,12 @@ const KeyAnalysisSection = ({ femaleUser, maleUser, analysisData }) => {
 											.complementarity
 									}
 								</p>
-								<p className="text-sm text-gray-700">
+								<p
+									className="text-gray-700"
+									style={{
+										fontSize: "clamp(12px, 3vw, 14px)",
+									}}
+								>
 									<span className="font-medium">本質：</span>
 									{
 										keyAnalysisData
@@ -346,13 +478,35 @@ const KeyAnalysisSection = ({ femaleUser, maleUser, analysisData }) => {
 				)}
 
 				{activeTag === "spouseStar" && (
-					<div className="p-6 border border-purple-200 rounded-lg bg-gradient-to-r from-purple-50 to-indigo-50">
-						<div className="space-y-4">
+					<div
+						className="border border-purple-200 bg-gradient-to-r from-purple-50 to-indigo-50"
+						style={{
+							padding: "clamp(16px, 4vw, 24px)",
+							borderRadius: "clamp(8px, 2vw, 12px)",
+						}}
+					>
+						<div
+							style={{
+								display: "flex",
+								flexDirection: "column",
+								gap: "clamp(12px, 3vw, 16px)",
+							}}
+						>
 							<div>
-								<span className="font-medium text-purple-700">
+								<span
+									className="font-medium text-purple-700"
+									style={{
+										fontSize: "clamp(12px, 3vw, 14px)",
+									}}
+								>
 									用戶配置：
 								</span>
-								<span className="ml-2 text-sm text-gray-700">
+								<span
+									className="ml-2 text-gray-700"
+									style={{
+										fontSize: "clamp(12px, 3vw, 14px)",
+									}}
+								>
 									{
 										keyAnalysisData.spouseStarStatus
 											.userStatus
@@ -360,18 +514,40 @@ const KeyAnalysisSection = ({ femaleUser, maleUser, analysisData }) => {
 								</span>
 							</div>
 							<div>
-								<span className="font-medium text-purple-700">
+								<span
+									className="font-medium text-purple-700"
+									style={{
+										fontSize: "clamp(12px, 3vw, 14px)",
+									}}
+								>
 									伴侶配置：
 								</span>
-								<span className="ml-2 text-sm text-gray-700">
+								<span
+									className="ml-2 text-gray-700"
+									style={{
+										fontSize: "clamp(12px, 3vw, 14px)",
+									}}
+								>
 									{
 										keyAnalysisData.spouseStarStatus
 											.partnerConfiguration
 									}
 								</span>
 							</div>
-							<div className="p-4 bg-white border border-purple-100 rounded-lg">
-								<p className="text-sm leading-relaxed text-gray-700">
+							<div
+								className="bg-white border border-purple-100"
+								style={{
+									padding: "clamp(12px, 3vw, 16px)",
+									borderRadius: "clamp(6px, 1.5vw, 8px)",
+								}}
+							>
+								<p
+									className="text-gray-700"
+									style={{
+										fontSize: "clamp(12px, 3vw, 14px)",
+										lineHeight: "1.6",
+									}}
+								>
 									{keyAnalysisData.spouseStarStatus.analysis}
 								</p>
 							</div>
@@ -380,21 +556,62 @@ const KeyAnalysisSection = ({ femaleUser, maleUser, analysisData }) => {
 				)}
 
 				{activeTag === "attention" && (
-					<div className="p-6 border border-red-200 rounded-lg bg-gradient-to-r from-red-50 to-orange-50">
-						<div className="space-y-4">
+					<div
+						className="border border-red-200 bg-gradient-to-r from-red-50 to-orange-50"
+						style={{
+							padding: "clamp(16px, 4vw, 24px)",
+							borderRadius: "clamp(8px, 2vw, 12px)",
+						}}
+					>
+						<div
+							style={{
+								display: "flex",
+								flexDirection: "column",
+								gap: "clamp(12px, 3vw, 16px)",
+							}}
+						>
 							<div>
-								<h5 className="mb-3 font-medium text-red-700">
+								<h5
+									className="font-medium text-red-700"
+									style={{
+										fontSize: "clamp(13px, 3.2vw, 15px)",
+										marginBottom:
+											"clamp(10px, 2.5vw, 12px)",
+									}}
+								>
 									潛在細節：
 								</h5>
-								<div className="space-y-2">
+								<div
+									style={{
+										display: "flex",
+										flexDirection: "column",
+										gap: "clamp(6px, 1.5vw, 8px)",
+									}}
+								>
 									{keyAnalysisData.attentionNeededConfigurations.potentialIssues.map(
 										(issue, index) => (
 											<div
 												key={index}
 												className="flex items-start"
 											>
-												<div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-red-500 rounded-full"></div>
-												<span className="text-sm text-gray-700">
+												<div
+													className="flex-shrink-0 bg-red-500 rounded-full"
+													style={{
+														width: "clamp(6px, 1.5vw, 8px)",
+														height: "clamp(6px, 1.5vw, 8px)",
+														marginTop:
+															"clamp(6px, 1.5vw, 8px)",
+														marginRight:
+															"clamp(8px, 2vw, 12px)",
+													}}
+												></div>
+												<span
+													className="text-gray-700"
+													style={{
+														fontSize:
+															"clamp(12px, 3vw, 14px)",
+													}}
+												>
 													{issue}
 												</span>
 											</div>
@@ -402,15 +619,33 @@ const KeyAnalysisSection = ({ femaleUser, maleUser, analysisData }) => {
 									)}
 								</div>
 							</div>
-							<div className="p-4 bg-white border border-red-100 rounded-lg">
-								<p className="mb-2 text-sm leading-relaxed text-gray-700">
+							<div
+								className="bg-white border border-red-100"
+								style={{
+									padding: "clamp(12px, 3vw, 16px)",
+									borderRadius: "clamp(6px, 1.5vw, 8px)",
+								}}
+							>
+								<p
+									className="text-gray-700"
+									style={{
+										fontSize: "clamp(12px, 3vw, 14px)",
+										lineHeight: "1.6",
+										marginBottom: "clamp(6px, 1.5vw, 8px)",
+									}}
+								>
 									{
 										keyAnalysisData
 											.attentionNeededConfigurations
 											.description
 									}
 								</p>
-								<p className="text-sm font-medium text-red-600">
+								<p
+									className="font-medium text-red-600"
+									style={{
+										fontSize: "clamp(12px, 3vw, 14px)",
+									}}
+								>
 									調整方式：
 									{
 										keyAnalysisData

@@ -187,10 +187,25 @@ const FengShuiTransformationSection = ({
 
 	if (loading) {
 		return (
-			<div className="w-full p-8 bg-white rounded-[30px] shadow-lg">
+			<div
+				className="w-full bg-white shadow-lg"
+				style={{
+					padding: "clamp(20px, 5vw, 32px)",
+					borderRadius: "clamp(20px, 5vw, 30px)",
+				}}
+			>
 				<div className="flex items-center justify-center">
-					<div className="w-6 h-6 border-b-2 border-pink-500 rounded-full animate-spin"></div>
-					<span className="ml-2 text-gray-600">
+					<div
+						className="border-b-2 border-pink-500 rounded-full animate-spin"
+						style={{
+							width: "clamp(20px, 5vw, 24px)",
+							height: "clamp(20px, 5vw, 24px)",
+						}}
+					></div>
+					<span
+						className="ml-2 text-gray-600"
+						style={{ fontSize: "clamp(13px, 3.2vw, 15px)" }}
+					>
 						生成風水轉化方案中..
 					</span>
 				</div>
@@ -203,13 +218,19 @@ const FengShuiTransformationSection = ({
 	}
 
 	return (
-		<div className="w-full bg-white rounded-[30px] shadow-lg p-8">
+		<div
+			className="w-full bg-white shadow-lg"
+			style={{
+				padding: "clamp(20px, 5vw, 32px)",
+				borderRadius: "clamp(20px, 5vw, 30px)",
+			}}
+		>
 			{/* Subtitle */}
-			<div className="mb-8">
+			<div style={{ marginBottom: "clamp(24px, 6vw, 32px)" }}>
 				<h3
 					className="font-bold text-[#C74772]"
 					style={{
-						fontSize: "42px",
+						fontSize: "clamp(24px, 6vw, 42px)",
 						fontFamily: "Noto Serif TC, serif",
 					}}
 				>
@@ -218,17 +239,33 @@ const FengShuiTransformationSection = ({
 			</div>
 
 			{/* Transformation Grid */}
-			<div className="grid grid-cols-1 gap-6 mb-8 lg:grid-cols-2">
+			<div
+				className="grid grid-cols-1 lg:grid-cols-2"
+				style={{
+					gap: "clamp(16px, 4vw, 24px)",
+					marginBottom: "clamp(24px, 6vw, 32px)",
+				}}
+			>
 				{transformationData.transformations?.map((item, index) => (
 					<div
 						key={index}
-						className="space-y-4 bg-[#EFEFEF] p-6 rounded-lg"
+						className="bg-[#EFEFEF]"
+						style={{
+							padding: "clamp(16px, 4vw, 24px)",
+							borderRadius: "clamp(8px, 2vw, 12px)",
+							gap: "clamp(12px, 3vw, 16px)",
+							display: "flex",
+							flexDirection: "column",
+						}}
 					>
 						{/* Title Badge */}
 						<div className="flex justify-center">
 							<div
-								className="inline-block px-6 py-3 text-base font-bold text-white rounded-full"
+								className="inline-block font-bold text-white rounded-full"
 								style={{
+									padding:
+										"clamp(8px, 2vw, 12px) clamp(16px, 4vw, 24px)",
+									fontSize: "clamp(13px, 3.2vw, 16px)",
 									background: item.gradient,
 									fontFamily: "Noto Serif TC, serif",
 								}}
@@ -238,15 +275,28 @@ const FengShuiTransformationSection = ({
 						</div>
 
 						{/* Steps */}
-						<div className="space-y-3">
+						<div
+							style={{
+								display: "flex",
+								flexDirection: "column",
+								gap: "clamp(10px, 2.5vw, 12px)",
+							}}
+						>
 							{item.steps?.map((step, stepIndex) => (
 								<div
 									key={stepIndex}
 									className="flex items-start"
 								>
 									<div
-										className="flex items-center justify-center flex-shrink-0 w-6 h-6 mt-1 mr-3 text-sm font-bold text-white rounded-full"
+										className="flex items-center justify-center flex-shrink-0 font-bold text-white rounded-full"
 										style={{
+											width: "clamp(20px, 5vw, 24px)",
+											height: "clamp(20px, 5vw, 24px)",
+											fontSize:
+												"clamp(10px, 2.5vw, 14px)",
+											marginTop: "clamp(2px, 0.5vw, 4px)",
+											marginRight:
+												"clamp(8px, 2vw, 12px)",
 											background:
 												"linear-gradient(135deg, #C74772 0%, #D09900 100%)",
 										}}
@@ -254,8 +304,10 @@ const FengShuiTransformationSection = ({
 										{stepIndex + 1}
 									</div>
 									<p
-										className="text-sm leading-relaxed text-gray-800"
+										className="text-gray-800"
 										style={{
+											fontSize: "clamp(12px, 3vw, 14px)",
+											lineHeight: "1.6",
 											fontFamily:
 												"Noto Sans TC, sans-serif",
 										}}
@@ -267,10 +319,19 @@ const FengShuiTransformationSection = ({
 						</div>
 
 						{/* Principle Box */}
-						<div className="p-3 mt-4 border-l-4 border-orange-400 rounded-lg bg-gradient-to-r from-orange-50 to-yellow-50">
+						<div
+							className="border-l-4 border-orange-400 bg-gradient-to-r from-orange-50 to-yellow-50"
+							style={{
+								padding: "clamp(10px, 2.5vw, 12px)",
+								marginTop: "clamp(12px, 3vw, 16px)",
+								borderRadius: "clamp(6px, 1.5vw, 8px)",
+							}}
+						>
 							<p
-								className="text-xs font-medium text-center text-orange-700"
+								className="font-medium text-center text-orange-700"
 								style={{
+									fontSize: "clamp(11px, 2.8vw, 12px)",
+									lineHeight: "1.5",
 									fontFamily: "Noto Sans TC, sans-serif",
 								}}
 							>
@@ -282,21 +343,50 @@ const FengShuiTransformationSection = ({
 			</div>
 
 			{/* Action Principle */}
-			<div className="p-6 border rounded-lg bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
-				<div className="flex items-center mb-3">
-					<div className="flex items-center justify-center w-8 h-8 mr-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-500">
-						<span className="text-sm font-bold text-white">✦</span>
+			<div
+				className="border bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200"
+				style={{
+					padding: "clamp(16px, 4vw, 24px)",
+					borderRadius: "clamp(8px, 2vw, 12px)",
+				}}
+			>
+				<div
+					className="flex items-center"
+					style={{ marginBottom: "clamp(10px, 2.5vw, 12px)" }}
+				>
+					<div
+						className="flex items-center justify-center rounded-full bg-gradient-to-r from-amber-500 to-orange-500"
+						style={{
+							width: "clamp(24px, 6vw, 32px)",
+							height: "clamp(24px, 6vw, 32px)",
+							marginRight: "clamp(8px, 2vw, 12px)",
+						}}
+					>
+						<span
+							className="font-bold text-white"
+							style={{ fontSize: "clamp(12px, 3vw, 14px)" }}
+						>
+							✦
+						</span>
 					</div>
 					<h4
-						className="text-lg font-bold text-amber-700"
-						style={{ fontFamily: "Noto Serif TC, serif" }}
+						className="font-bold text-amber-700"
+						style={{
+							fontSize: "clamp(14px, 3.5vw, 18px)",
+							fontFamily: "Noto Serif TC, serif",
+						}}
 					>
 						轉化原理
 					</h4>
 				</div>
 				<p
-					className="text-sm leading-relaxed text-gray-700 ml-11"
-					style={{ fontFamily: "Noto Sans TC, sans-serif" }}
+					className="text-gray-700"
+					style={{
+						fontSize: "clamp(12px, 3vw, 14px)",
+						lineHeight: "1.6",
+						marginLeft: "clamp(32px, 8vw, 44px)",
+						fontFamily: "Noto Sans TC, sans-serif",
+					}}
 				>
 					{transformationData.actionPrinciple}
 				</p>

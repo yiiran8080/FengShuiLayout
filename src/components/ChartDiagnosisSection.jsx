@@ -101,10 +101,25 @@ const ChartDiagnosisSection = ({ femaleUser, maleUser, analysisData }) => {
 
 	if (loading) {
 		return (
-			<div className="w-full p-8 bg-white rounded-[30px] shadow-lg">
+			<div
+				className="w-full bg-white shadow-lg"
+				style={{
+					padding: "clamp(20px, 5vw, 32px)",
+					borderRadius: "clamp(20px, 5vw, 30px)",
+				}}
+			>
 				<div className="flex items-center justify-center">
-					<div className="w-6 h-6 border-b-2 border-pink-500 rounded-full animate-spin"></div>
-					<span className="ml-2 text-gray-600">
+					<div
+						className="border-b-2 border-pink-500 rounded-full animate-spin"
+						style={{
+							width: "clamp(20px, 5vw, 24px)",
+							height: "clamp(20px, 5vw, 24px)",
+						}}
+					></div>
+					<span
+						className="ml-2 text-gray-600"
+						style={{ fontSize: "clamp(13px, 3.2vw, 15px)" }}
+					>
 						生成盤面診斷中...
 					</span>
 				</div>
@@ -117,62 +132,141 @@ const ChartDiagnosisSection = ({ femaleUser, maleUser, analysisData }) => {
 	}
 
 	return (
-		<div className="w-full bg-white rounded-[30px] shadow-lg p-8">
+		<div
+			className="w-full bg-white shadow-lg"
+			style={{
+				padding: "clamp(20px, 5vw, 32px)",
+				borderRadius: "clamp(20px, 5vw, 30px)",
+			}}
+		>
 			{/* Content Layout */}
-			<div className="space-y-6">
+			<div
+				style={{
+					display: "flex",
+					flexDirection: "column",
+					gap: "clamp(20px, 5vw, 24px)",
+				}}
+			>
 				{/* Female and Male Analysis - Side by Side */}
-				<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+				<div
+					className="grid grid-cols-1 lg:grid-cols-2"
+					style={{ gap: "clamp(16px, 4vw, 24px)" }}
+				>
 					{/* Female Analysis */}
-					<div className="space-y-4">
+					<div
+						style={{
+							display: "flex",
+							flexDirection: "column",
+							gap: "clamp(12px, 3vw, 16px)",
+						}}
+					>
 						{/* Title Section */}
-						<div className="flex items-center gap-4">
+						<div
+							className="flex flex-wrap items-center"
+							style={{ gap: "clamp(8px, 2vw, 16px)" }}
+						>
 							<h3
 								className="font-bold text-[#C74772]"
 								style={{
-									fontSize: "30px",
+									fontSize: "clamp(20px, 5vw, 30px)",
 									fontFamily: "Noto Serif TC, serif",
 								}}
 							>
 								女方
 							</h3>
-							<div className="px-4 py-2 bg-white border-2 border-[#C74772] rounded-full">
-								<span className="text-sm font-medium text-[#C74772]">
+							<div
+								className="bg-white border-2 border-[#C74772] rounded-full"
+								style={{
+									padding:
+										"clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px)",
+								}}
+							>
+								<span
+									className="font-medium text-[#C74772]"
+									style={{
+										fontSize: "clamp(11px, 2.8vw, 14px)",
+									}}
+								>
 									{diagnosisData.female.title}
 								</span>
 							</div>
 						</div>
 
 						{/* Content */}
-						<div className="p-4 bg-gray-100 rounded-lg">
-							<p className="text-sm leading-relaxed text-gray-800">
+						<div
+							className="bg-gray-100"
+							style={{
+								padding: "clamp(12px, 3vw, 16px)",
+								borderRadius: "clamp(6px, 1.5vw, 8px)",
+							}}
+						>
+							<p
+								className="text-gray-800"
+								style={{
+									fontSize: "clamp(12px, 3vw, 14px)",
+									lineHeight: "1.6",
+								}}
+							>
 								{diagnosisData.female.content}
 							</p>
 						</div>
 					</div>
 
 					{/* Male Analysis */}
-					<div className="space-y-4">
+					<div
+						style={{
+							display: "flex",
+							flexDirection: "column",
+							gap: "clamp(12px, 3vw, 16px)",
+						}}
+					>
 						{/* Title Section */}
-						<div className="flex items-center gap-4">
+						<div
+							className="flex flex-wrap items-center"
+							style={{ gap: "clamp(8px, 2vw, 16px)" }}
+						>
 							<h3
 								className="font-bold text-[#3263C4]"
 								style={{
-									fontSize: "30px",
+									fontSize: "clamp(20px, 5vw, 30px)",
 									fontFamily: "Noto Serif TC, serif",
 								}}
 							>
 								男方
 							</h3>
-							<div className="px-4 py-2 bg-white border-2 border-[#3263C4] rounded-full">
-								<span className="text-sm font-medium text-[#3263C4]">
+							<div
+								className="bg-white border-2 border-[#3263C4] rounded-full"
+								style={{
+									padding:
+										"clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px)",
+								}}
+							>
+								<span
+									className="font-medium text-[#3263C4]"
+									style={{
+										fontSize: "clamp(11px, 2.8vw, 14px)",
+									}}
+								>
 									{diagnosisData.male.title}
 								</span>
 							</div>
 						</div>
 
 						{/* Content */}
-						<div className="p-4 bg-gray-100 rounded-lg">
-							<p className="text-sm leading-relaxed text-gray-800">
+						<div
+							className="bg-gray-100"
+							style={{
+								padding: "clamp(12px, 3vw, 16px)",
+								borderRadius: "clamp(6px, 1.5vw, 8px)",
+							}}
+						>
+							<p
+								className="text-gray-800"
+								style={{
+									fontSize: "clamp(12px, 3vw, 14px)",
+									lineHeight: "1.6",
+								}}
+							>
 								{diagnosisData.male.content}
 							</p>
 						</div>
@@ -180,13 +274,26 @@ const ChartDiagnosisSection = ({ femaleUser, maleUser, analysisData }) => {
 				</div>
 
 				{/* Key Symptoms Section */}
-				<div className="space-y-4">
+				<div
+					style={{
+						display: "flex",
+						flexDirection: "column",
+						gap: "clamp(12px, 3vw, 16px)",
+					}}
+				>
 					{/* Title */}
 					<div className="flex items-center">
-						<div className="px-4 py-2 bg-white border-2 border-[#C74772] rounded-full">
+						<div
+							className="bg-white border-2 border-[#C74772] rounded-full"
+							style={{
+								padding:
+									"clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px)",
+							}}
+						>
 							<span
-								className="text-[20px] font-bold text-[#C74772]"
+								className="font-bold text-[#C74772]"
 								style={{
+									fontSize: "clamp(16px, 4vw, 20px)",
 									fontFamily: "Noto Serif TC, serif",
 								}}
 							>
@@ -196,8 +303,20 @@ const ChartDiagnosisSection = ({ femaleUser, maleUser, analysisData }) => {
 					</div>
 
 					{/* Content */}
-					<div className="p-6 bg-gray-100 rounded-lg">
-						<p className="text-sm leading-relaxed text-gray-800">
+					<div
+						className="bg-gray-100"
+						style={{
+							padding: "clamp(16px, 4vw, 24px)",
+							borderRadius: "clamp(6px, 1.5vw, 8px)",
+						}}
+					>
+						<p
+							className="text-gray-800"
+							style={{
+								fontSize: "clamp(12px, 3vw, 14px)",
+								lineHeight: "1.6",
+							}}
+						>
 							{diagnosisData.keySymptoms}
 						</p>
 					</div>

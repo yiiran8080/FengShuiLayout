@@ -189,29 +189,39 @@ const RelationshipFortuneAnalysis = ({ userInfo, wuxingData }) => {
 	return (
 		<div className="w-full">
 			{/* Header */}
-			<div className="mb-8">
-				<div className="flex items-center gap-3 mb-4">
+			<div className="mb-4 sm:mb-8">
+				<div className="flex items-center gap-2 mb-3 sm:gap-3 sm:mb-4">
 					<h2
-						className="text-4xl font-bold text-[#374A37]"
-						style={{ fontFamily: "Noto Serif TC, serif" }}
+						className="font-bold text-[#374A37]"
+						style={{
+							fontFamily: "Noto Serif TC, serif",
+							fontSize: "clamp(24px, 5vw, 36px)",
+						}}
 					>
 						感情運勢分析
 					</h2>
 				</div>
 
 				{/* Summary Section */}
-				<div className="bg-gradient-to-r from-[#C74772] to-[#A03A5A] rounded-full px-6 py-3 mb-6 inline-block">
+				<div className="bg-gradient-to-r from-[#C74772] to-[#A03A5A] rounded-full px-4 sm:px-6 py-2 sm:py-3 mb-4 sm:mb-6 inline-block">
 					<h3
-						className="text-xl font-bold text-white"
-						style={{ fontFamily: "Noto Serif TC, serif" }}
+						className="font-bold text-white"
+						style={{
+							fontFamily: "Noto Serif TC, serif",
+							fontSize: "clamp(16px, 3.5vw, 20px)",
+						}}
 					>
 						總結：{relationshipAnalysis.summary.title}
 					</h3>
 				</div>
 
 				<p
-					className="text-lg text-[#374A37] leading-relaxed mb-8"
-					style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+					className="text-[#374A37] leading-relaxed mb-4 sm:mb-8"
+					style={{
+						fontFamily: "Noto Sans HK, sans-serif",
+						fontSize: "clamp(14px, 3vw, 18px)",
+						lineHeight: 1.6,
+					}}
 				>
 					{relationshipAnalysis.summary.description}
 				</p>
@@ -219,29 +229,33 @@ const RelationshipFortuneAnalysis = ({ userInfo, wuxingData }) => {
 
 			{/* Relationship Analysis Sections */}
 			<div
-				className="bg-[#EFEFEF] rounded-xl p-6 mb-6"
+				className="bg-[#EFEFEF] rounded-xl p-3 sm:p-6 mb-4 sm:mb-6"
 				style={{ boxShadow: "inset 0 4px 4px rgba(0, 0, 0, 0.25)" }}
 			>
 				<h3
-					className="text-3xl font-bold text-[#C74772] mb-6"
-					style={{ fontFamily: "Noto Serif TC, serif" }}
+					className="font-bold text-[#C74772] mb-4 sm:mb-6"
+					style={{
+						fontFamily: "Noto Serif TC, serif",
+						fontSize: "clamp(20px, 4vw, 28px)",
+					}}
 				>
 					感情全週期透視
 				</h3>
 
 				{/* Tab Navigation */}
-				<div className="flex flex-wrap justify-center gap-6 mb-8">
+				<div className="flex flex-col justify-center gap-3 mb-6 sm:flex-row sm:gap-6 sm:mb-8">
 					{tabs.map((tab) => (
 						<button
 							key={tab}
 							onClick={() => setActiveTab(tab)}
-							className={`px-8 py-4 rounded-full font-semibold text-lg transition-all duration-200 ${
+							className={`px-4 sm:px-8 py-2 sm:py-4 rounded-full font-semibold transition-all duration-200 ${
 								activeTab === tab
 									? "bg-[#C74772] text-white"
 									: "bg-white text-[#757575] hover:bg-gray-50"
 							}`}
 							style={{
 								fontFamily: "Noto Serif TC, serif",
+								fontSize: "clamp(14px, 3vw, 18px)",
 								boxShadow: "0 4px 4px rgba(0, 0, 0, 0.25)",
 							}}
 						>
@@ -251,33 +265,38 @@ const RelationshipFortuneAnalysis = ({ userInfo, wuxingData }) => {
 				</div>
 
 				{/* Tab Content */}
-				<div className="mb-8">
+				<div className="mb-4 sm:mb-8">
 					{activeTab === "正緣特徵三重認證" && (
-						<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+						<div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
 							{/* 基本屬性 */}
 							<div
-								className="p-4 bg-white rounded-lg"
+								className="p-3 bg-white rounded-lg sm:p-4"
 								style={{
 									boxShadow:
 										"inset 0 4px 4px rgba(0, 0, 0, 0.25)",
 								}}
 							>
-								<div className="bg-[#C74772] rounded-full px-4 py-2 mb-3 inline-block">
+								<div className="bg-[#C74772] rounded-full px-3 sm:px-4 py-1.5 sm:py-2 mb-2 sm:mb-3 inline-block">
 									<h4
-										className="text-sm font-bold text-white"
+										className="font-bold text-white"
 										style={{
 											fontFamily: "Noto Serif TC, serif",
+											fontSize:
+												"clamp(12px, 2.5vw, 14px)",
 										}}
 									>
 										基本屬性
 									</h4>
 								</div>
-								<div className="space-y-3">
+								<div className="space-y-2 sm:space-y-3">
 									<p
-										className="text-sm text-[#374A37]"
+										className="text-[#374A37]"
 										style={{
 											fontFamily:
 												"Noto Sans HK, sans-serif",
+											fontSize:
+												"clamp(12px, 2.5vw, 14px)",
+											lineHeight: 1.5,
 										}}
 									>
 										{
@@ -285,12 +304,15 @@ const RelationshipFortuneAnalysis = ({ userInfo, wuxingData }) => {
 												.profession.description
 										}
 									</p>
-									<div className="p-3 rounded-lg bg-red-50">
+									<div className="p-2 rounded-lg sm:p-3 bg-red-50">
 										<p
-											className="text-sm text-red-700"
+											className="text-red-700"
 											style={{
 												fontFamily:
 													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+												lineHeight: 1.4,
 											}}
 										>
 											{
@@ -305,28 +327,33 @@ const RelationshipFortuneAnalysis = ({ userInfo, wuxingData }) => {
 
 							{/* 年齡差距 */}
 							<div
-								className="p-4 bg-white rounded-lg"
+								className="p-3 bg-white rounded-lg sm:p-4"
 								style={{
 									boxShadow:
 										"inset 0 4px 4px rgba(0, 0, 0, 0.25)",
 								}}
 							>
-								<div className="bg-[#C74772] rounded-full px-4 py-2 mb-3 inline-block">
+								<div className="bg-[#C74772] rounded-full px-3 sm:px-4 py-1.5 sm:py-2 mb-2 sm:mb-3 inline-block">
 									<h4
-										className="text-sm font-bold text-white"
+										className="font-bold text-white"
 										style={{
 											fontFamily: "Noto Serif TC, serif",
+											fontSize:
+												"clamp(12px, 2.5vw, 14px)",
 										}}
 									>
 										年齡差距
 									</h4>
 								</div>
-								<div className="space-y-3">
+								<div className="space-y-2 sm:space-y-3">
 									<p
-										className="text-sm text-[#374A37]"
+										className="text-[#374A37]"
 										style={{
 											fontFamily:
 												"Noto Sans HK, sans-serif",
+											fontSize:
+												"clamp(12px, 2.5vw, 14px)",
+											lineHeight: 1.5,
 										}}
 									>
 										{
@@ -334,12 +361,15 @@ const RelationshipFortuneAnalysis = ({ userInfo, wuxingData }) => {
 												.ageGap.description
 										}
 									</p>
-									<div className="p-3 rounded-lg bg-red-50">
+									<div className="p-2 rounded-lg sm:p-3 bg-red-50">
 										<p
-											className="text-sm text-red-700"
+											className="text-red-700"
 											style={{
 												fontFamily:
 													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+												lineHeight: 1.4,
 											}}
 										>
 											{
@@ -353,28 +383,33 @@ const RelationshipFortuneAnalysis = ({ userInfo, wuxingData }) => {
 
 							{/* 相識契機 */}
 							<div
-								className="p-4 bg-white rounded-lg"
+								className="p-3 bg-white rounded-lg sm:p-4 md:col-span-2 lg:col-span-1"
 								style={{
 									boxShadow:
 										"inset 0 4px 4px rgba(0, 0, 0, 0.25)",
 								}}
 							>
-								<div className="bg-[#C74772] rounded-full px-4 py-2 mb-3 inline-block">
+								<div className="bg-[#C74772] rounded-full px-3 sm:px-4 py-1.5 sm:py-2 mb-2 sm:mb-3 inline-block">
 									<h4
-										className="text-sm font-bold text-white"
+										className="font-bold text-white"
 										style={{
 											fontFamily: "Noto Serif TC, serif",
+											fontSize:
+												"clamp(12px, 2.5vw, 14px)",
 										}}
 									>
 										相識契機
 									</h4>
 								</div>
-								<div className="space-y-3">
+								<div className="space-y-2 sm:space-y-3">
 									<p
-										className="text-sm text-[#374A37]"
+										className="text-[#374A37]"
 										style={{
 											fontFamily:
 												"Noto Sans HK, sans-serif",
+											fontSize:
+												"clamp(12px, 2.5vw, 14px)",
+											lineHeight: 1.5,
 										}}
 									>
 										{
@@ -382,12 +417,15 @@ const RelationshipFortuneAnalysis = ({ userInfo, wuxingData }) => {
 												.meetingChance.description
 										}
 									</p>
-									<div className="p-3 rounded-lg bg-red-50">
+									<div className="p-2 rounded-lg sm:p-3 bg-red-50">
 										<p
-											className="text-sm text-red-700"
+											className="text-red-700"
 											style={{
 												fontFamily:
 													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+												lineHeight: 1.4,
 											}}
 										>
 											{
@@ -403,250 +441,392 @@ const RelationshipFortuneAnalysis = ({ userInfo, wuxingData }) => {
 					)}
 
 					{activeTab === "三大情劫週期" && (
-						<div className="space-y-6">
-							{/* Table Header */}
-							<div className="grid grid-cols-4 gap-4 mb-4">
-								<div className="bg-[#C74772] text-white p-3 rounded-lg text-center">
-									<h5
-										className="text-sm font-bold"
-										style={{
-											fontFamily: "Noto Serif TC, serif",
-										}}
+						<div>
+							{/* Mobile Card Layout */}
+							<div className="block space-y-4 md:hidden">
+								{Object.entries(
+									relationshipAnalysis.romanticCycles
+								).map(([key, cycle], index) => (
+									<div
+										key={key}
+										className="p-3 bg-white rounded-lg shadow-sm"
 									>
-										時期
-									</h5>
-								</div>
-								<div className="bg-[#C74772] text-white p-3 rounded-lg text-center">
-									<h5
-										className="text-sm font-bold"
-										style={{
-											fontFamily: "Noto Serif TC, serif",
-										}}
-									>
-										大運
-									</h5>
-								</div>
-								<div className="bg-[#C74772] text-white p-3 rounded-lg text-center">
-									<h5
-										className="text-sm font-bold"
-										style={{
-											fontFamily: "Noto Serif TC, serif",
-										}}
-									>
-										關鍵流年
-									</h5>
-								</div>
-								<div className="bg-[#C74772] text-white p-3 rounded-lg text-center">
-									<h5
-										className="text-sm font-bold"
-										style={{
-											fontFamily: "Noto Serif TC, serif",
-										}}
-									>
-										風險預警
-									</h5>
-								</div>
+										<div className="mb-3">
+											<h5
+												className="font-bold text-[#C74772] mb-1"
+												style={{
+													fontFamily:
+														"Noto Serif TC, serif",
+													fontSize:
+														"clamp(14px, 3vw, 16px)",
+												}}
+											>
+												{cycle.period}
+											</h5>
+											<p
+												className="text-[#374A37]"
+												style={{
+													fontFamily:
+														"Noto Sans HK, sans-serif",
+													fontSize:
+														"clamp(12px, 2.5vw, 14px)",
+												}}
+											>
+												{cycle.fortune}
+											</p>
+										</div>
+										<div className="mb-2">
+											<p
+												className="font-medium text-[#374A37] mb-1"
+												style={{
+													fontFamily:
+														"Noto Serif TC, serif",
+													fontSize:
+														"clamp(12px, 2.5vw, 14px)",
+												}}
+											>
+												關鍵流年：
+											</p>
+											<p
+												className="text-[#374A37] mb-1"
+												style={{
+													fontFamily:
+														"Noto Sans HK, sans-serif",
+													fontSize:
+														"clamp(12px, 2.5vw, 14px)",
+													lineHeight: 1.4,
+												}}
+											>
+												{cycle.dangerousYear}
+											</p>
+											{cycle.crisis && (
+												<p
+													className="text-[#374A37]"
+													style={{
+														fontFamily:
+															"Noto Sans HK, sans-serif",
+														fontSize:
+															"clamp(12px, 2.5vw, 14px)",
+														lineHeight: 1.4,
+													}}
+												>
+													{cycle.crisis}
+												</p>
+											)}
+										</div>
+										<div className="p-2 rounded-lg bg-red-50">
+											<p
+												className="text-red-700"
+												style={{
+													fontFamily:
+														"Noto Sans HK, sans-serif",
+													fontSize:
+														"clamp(12px, 2.5vw, 14px)",
+													lineHeight: 1.4,
+												}}
+											>
+												<strong>解決方案：</strong>
+												{cycle.solution}
+											</p>
+										</div>
+									</div>
+								))}
 							</div>
 
-							{/* 25歲前 */}
-							<div className="grid items-start grid-cols-4 gap-4">
-								<div className="p-3 bg-white rounded-lg">
-									<h5
-										className="font-bold text-[#374A37] text-sm"
-										style={{
-											fontFamily: "Noto Serif TC, serif",
-										}}
-									>
-										{
-											relationshipAnalysis.romanticCycles[
-												"25歲前"
-											].period
-										}
-									</h5>
+							{/* Desktop Table Layout */}
+							<div className="hidden space-y-4 md:block sm:space-y-6">
+								{/* Table Header */}
+								<div className="grid grid-cols-4 gap-3 mb-3 sm:gap-4 sm:mb-4">
+									<div className="bg-[#C74772] text-white p-2 sm:p-3 rounded-lg text-center">
+										<h5
+											className="font-bold"
+											style={{
+												fontFamily:
+													"Noto Serif TC, serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+											}}
+										>
+											時期
+										</h5>
+									</div>
+									<div className="bg-[#C74772] text-white p-2 sm:p-3 rounded-lg text-center">
+										<h5
+											className="font-bold"
+											style={{
+												fontFamily:
+													"Noto Serif TC, serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+											}}
+										>
+											大運
+										</h5>
+									</div>
+									<div className="bg-[#C74772] text-white p-2 sm:p-3 rounded-lg text-center">
+										<h5
+											className="font-bold"
+											style={{
+												fontFamily:
+													"Noto Serif TC, serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+											}}
+										>
+											關鍵流年
+										</h5>
+									</div>
+									<div className="bg-[#C74772] text-white p-2 sm:p-3 rounded-lg text-center">
+										<h5
+											className="font-bold"
+											style={{
+												fontFamily:
+													"Noto Serif TC, serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+											}}
+										>
+											風險預警
+										</h5>
+									</div>
 								</div>
-								<div className="p-3 bg-white rounded-lg">
-									<p
-										className="text-sm text-[#374A37]"
-										style={{
-											fontFamily:
-												"Noto Sans HK, sans-serif",
-										}}
-									>
-										{
-											relationshipAnalysis.romanticCycles[
-												"25歲前"
-											].fortune
-										}
-									</p>
-								</div>
-								<div className="p-3 bg-white rounded-lg">
-									<p
-										className="text-sm text-[#374A37] mb-2"
-										style={{
-											fontFamily:
-												"Noto Sans HK, sans-serif",
-										}}
-									>
-										{
-											relationshipAnalysis.romanticCycles[
-												"25歲前"
-											].dangerousYear
-										}
-									</p>
-									<p
-										className="text-sm text-[#374A37]"
-										style={{
-											fontFamily:
-												"Noto Sans HK, sans-serif",
-										}}
-									>
-										{
-											relationshipAnalysis.romanticCycles[
-												"25歲前"
-											].crisis
-										}
-									</p>
-								</div>
-								<div className="p-3 bg-white rounded-lg">
-									<p
-										className="text-sm text-[#374A37]"
-										style={{
-											fontFamily:
-												"Noto Sans HK, sans-serif",
-										}}
-									>
-										{
-											relationshipAnalysis.romanticCycles[
-												"25歲前"
-											].solution
-										}
-									</p>
-								</div>
-							</div>
 
-							{/* 35歲危機 */}
-							<div className="grid items-start grid-cols-4 gap-4">
-								<div className="p-3 bg-white rounded-lg">
-									<h5
-										className="font-bold text-[#374A37] text-sm"
-										style={{
-											fontFamily: "Noto Serif TC, serif",
-										}}
-									>
-										{
-											relationshipAnalysis.romanticCycles[
-												"35歲危機"
-											].period
-										}
-									</h5>
+								{/* 25歲前 */}
+								<div className="grid items-start grid-cols-4 gap-3 sm:gap-4">
+									<div className="p-2 bg-white rounded-lg sm:p-3">
+										<h5
+											className="font-bold text-[#374A37]"
+											style={{
+												fontFamily:
+													"Noto Serif TC, serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+											}}
+										>
+											{
+												relationshipAnalysis
+													.romanticCycles["25歲前"]
+													.period
+											}
+										</h5>
+									</div>
+									<div className="p-2 bg-white rounded-lg sm:p-3">
+										<p
+											className="text-[#374A37]"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+											}}
+										>
+											{
+												relationshipAnalysis
+													.romanticCycles["25歲前"]
+													.fortune
+											}
+										</p>
+									</div>
+									<div className="p-2 bg-white rounded-lg sm:p-3">
+										<p
+											className="text-[#374A37] mb-1 sm:mb-2"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+												lineHeight: 1.4,
+											}}
+										>
+											{
+												relationshipAnalysis
+													.romanticCycles["25歲前"]
+													.dangerousYear
+											}
+										</p>
+										<p
+											className="text-[#374A37]"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+												lineHeight: 1.4,
+											}}
+										>
+											{
+												relationshipAnalysis
+													.romanticCycles["25歲前"]
+													.crisis
+											}
+										</p>
+									</div>
+									<div className="p-2 bg-white rounded-lg sm:p-3">
+										<p
+											className="text-[#374A37]"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+												lineHeight: 1.4,
+											}}
+										>
+											{
+												relationshipAnalysis
+													.romanticCycles["25歲前"]
+													.solution
+											}
+										</p>
+									</div>
 								</div>
-								<div className="p-3 bg-white rounded-lg">
-									<p
-										className="text-sm text-[#374A37]"
-										style={{
-											fontFamily:
-												"Noto Sans HK, sans-serif",
-										}}
-									>
-										{
-											relationshipAnalysis.romanticCycles[
-												"35歲危機"
-											].fortune
-										}
-									</p>
-								</div>
-								<div className="p-3 bg-white rounded-lg">
-									<p
-										className="text-sm text-[#374A37]"
-										style={{
-											fontFamily:
-												"Noto Sans HK, sans-serif",
-										}}
-									>
-										{
-											relationshipAnalysis.romanticCycles[
-												"35歲危機"
-											].dangerousYear
-										}
-									</p>
-								</div>
-								<div className="p-3 bg-white rounded-lg">
-									<p
-										className="text-sm text-[#374A37]"
-										style={{
-											fontFamily:
-												"Noto Sans HK, sans-serif",
-										}}
-									>
-										{
-											relationshipAnalysis.romanticCycles[
-												"35歲危機"
-											].solution
-										}
-									</p>
-								</div>
-							</div>
 
-							{/* 45歲波動 */}
-							<div className="grid items-start grid-cols-4 gap-4">
-								<div className="p-3 bg-white rounded-lg">
-									<h5
-										className="font-bold text-[#374A37] text-sm"
-										style={{
-											fontFamily: "Noto Serif TC, serif",
-										}}
-									>
-										{
-											relationshipAnalysis.romanticCycles[
-												"45歲波動"
-											].period
-										}
-									</h5>
+								{/* 35歲危機 */}
+								<div className="grid items-start grid-cols-4 gap-3 sm:gap-4">
+									<div className="p-2 bg-white rounded-lg sm:p-3">
+										<h5
+											className="font-bold text-[#374A37]"
+											style={{
+												fontFamily:
+													"Noto Serif TC, serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+											}}
+										>
+											{
+												relationshipAnalysis
+													.romanticCycles["35歲危機"]
+													.period
+											}
+										</h5>
+									</div>
+									<div className="p-2 bg-white rounded-lg sm:p-3">
+										<p
+											className="text-[#374A37]"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+											}}
+										>
+											{
+												relationshipAnalysis
+													.romanticCycles["35歲危機"]
+													.fortune
+											}
+										</p>
+									</div>
+									<div className="p-2 bg-white rounded-lg sm:p-3">
+										<p
+											className="text-[#374A37]"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+												lineHeight: 1.4,
+											}}
+										>
+											{
+												relationshipAnalysis
+													.romanticCycles["35歲危機"]
+													.dangerousYear
+											}
+										</p>
+									</div>
+									<div className="p-2 bg-white rounded-lg sm:p-3">
+										<p
+											className="text-[#374A37]"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+												lineHeight: 1.4,
+											}}
+										>
+											{
+												relationshipAnalysis
+													.romanticCycles["35歲危機"]
+													.solution
+											}
+										</p>
+									</div>
 								</div>
-								<div className="p-3 bg-white rounded-lg">
-									<p
-										className="text-sm text-[#374A37]"
-										style={{
-											fontFamily:
-												"Noto Sans HK, sans-serif",
-										}}
-									>
-										{
-											relationshipAnalysis.romanticCycles[
-												"45歲波動"
-											].fortune
-										}
-									</p>
-								</div>
-								<div className="p-3 bg-white rounded-lg">
-									<p
-										className="text-sm text-[#374A37]"
-										style={{
-											fontFamily:
-												"Noto Sans HK, sans-serif",
-										}}
-									>
-										{
-											relationshipAnalysis.romanticCycles[
-												"45歲波動"
-											].dangerousYear
-										}
-									</p>
-								</div>
-								<div className="p-3 bg-white rounded-lg">
-									<p
-										className="text-sm text-[#374A37]"
-										style={{
-											fontFamily:
-												"Noto Sans HK, sans-serif",
-										}}
-									>
-										{
-											relationshipAnalysis.romanticCycles[
-												"45歲波動"
-											].solution
-										}
-									</p>
+
+								{/* 45歲波動 */}
+								<div className="grid items-start grid-cols-4 gap-3 sm:gap-4">
+									<div className="p-2 bg-white rounded-lg sm:p-3">
+										<h5
+											className="font-bold text-[#374A37]"
+											style={{
+												fontFamily:
+													"Noto Serif TC, serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+											}}
+										>
+											{
+												relationshipAnalysis
+													.romanticCycles["45歲波動"]
+													.period
+											}
+										</h5>
+									</div>
+									<div className="p-2 bg-white rounded-lg sm:p-3">
+										<p
+											className="text-[#374A37]"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+											}}
+										>
+											{
+												relationshipAnalysis
+													.romanticCycles["45歲波動"]
+													.fortune
+											}
+										</p>
+									</div>
+									<div className="p-2 bg-white rounded-lg sm:p-3">
+										<p
+											className="text-[#374A37]"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+												lineHeight: 1.4,
+											}}
+										>
+											{
+												relationshipAnalysis
+													.romanticCycles["45歲波動"]
+													.dangerousYear
+											}
+										</p>
+									</div>
+									<div className="p-2 bg-white rounded-lg sm:p-3">
+										<p
+											className="text-[#374A37]"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+												lineHeight: 1.4,
+											}}
+										>
+											{
+												relationshipAnalysis
+													.romanticCycles["45歲波動"]
+													.solution
+											}
+										</p>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -655,157 +835,186 @@ const RelationshipFortuneAnalysis = ({ userInfo, wuxingData }) => {
 			</div>
 
 			{/* Marriage Rules Section */}
-			<div className="p-6">
+			<div className="p-3 sm:p-4 lg:p-6">
 				<h3
-					className="text-3xl font-bold text-[#C74772] mb-6"
-					style={{ fontFamily: "Noto Serif TC, serif" }}
+					className="font-bold text-[#C74772] mb-4 sm:mb-6"
+					style={{
+						fontFamily: "Noto Serif TC, serif",
+						fontSize: "clamp(20px, 4vw, 28px)",
+					}}
 				>
 					婚姻穩固法則
 				</h3>
 
-				<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-					{/* Best Marriage Year */}
-					<div
-						className="bg-[#EFEFEF] rounded-lg p-4"
-						style={{
-							boxShadow: "inset 0 4px 4px rgba(0, 0, 0, 0.25)",
-						}}
-					>
-						<div className="bg-[#C74772] rounded-full px-4 py-2 mb-3 inline-block">
-							<h4
-								className="text-sm font-bold text-white"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
-							>
-								最佳婚年
-							</h4>
-						</div>
-						<div className="space-y-3">
-							<p
-								className="text-sm font-medium text-[#374A37]"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
-							>
-								{
-									relationshipAnalysis.marriageRules.bestYear
-										.year
-								}
-							</p>
-							<p
-								className="text-sm text-[#374A37]"
-								style={{
-									fontFamily: "Noto Sans HK, sans-serif",
-								}}
-							>
-								{
-									relationshipAnalysis.marriageRules.bestYear
-										.description
-								}
-							</p>
-						</div>
-					</div>
-
-					{/* Relationship Taboos */}
-					<div
-						className="bg-[#EFEFEF] rounded-lg p-4"
-						style={{
-							boxShadow: "inset 0 4px 4px rgba(0, 0, 0, 0.25)",
-						}}
-					>
-						<div className="bg-[#C74772] rounded-full px-4 py-2 mb-3 inline-block">
-							<h4
-								className="text-sm font-bold text-white"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
-							>
-								相處禁忌
-							</h4>
-						</div>
-						<div className="space-y-3">
-							<div>
-								<p
-									className="text-sm font-medium text-[#374A37] mb-1"
+				<div className="w-full sm:w-[95%] mx-auto">
+					<div className="grid grid-cols-1 gap-3 sm:gap-4 lg:gap-6 md:grid-cols-2 lg:grid-cols-3">
+						{/* Best Marriage Year */}
+						<div
+							className="bg-[#EFEFEF] rounded-lg p-3 sm:p-4"
+							style={{
+								boxShadow:
+									"inset 0 4px 4px rgba(0, 0, 0, 0.25)",
+							}}
+						>
+							<div className="bg-[#C74772] rounded-full px-3 sm:px-4 py-2 mb-3 inline-block">
+								<h4
+									className="font-bold text-white"
 									style={{
 										fontFamily: "Noto Serif TC, serif",
+										fontSize: "clamp(12px, 2.5vw, 14px)",
 									}}
 								>
-									{
-										relationshipAnalysis.marriageRules
-											.taboos.financial.title
-									}
-								</p>
-								<p
-									className="text-xs text-[#757575]"
-									style={{
-										fontFamily: "Noto Sans HK, sans-serif",
-									}}
-								>
-									{
-										relationshipAnalysis.marriageRules
-											.taboos.financial.description
-									}
-								</p>
+									最佳婚年
+								</h4>
 							</div>
-							<div>
+							<div className="space-y-2 sm:space-y-3">
 								<p
-									className="text-sm font-medium text-[#374A37] mb-1"
+									className="font-medium text-[#374A37]"
 									style={{
 										fontFamily: "Noto Serif TC, serif",
+										fontSize: "clamp(13px, 2.8vw, 15px)",
 									}}
 								>
 									{
 										relationshipAnalysis.marriageRules
-											.taboos.frequency.title
+											.bestYear.year
 									}
 								</p>
 								<p
-									className="text-xs text-[#757575]"
+									className="text-[#374A37] leading-relaxed"
 									style={{
 										fontFamily: "Noto Sans HK, sans-serif",
+										fontSize: "clamp(12px, 2.5vw, 14px)",
+										lineHeight: 1.5,
 									}}
 								>
 									{
 										relationshipAnalysis.marriageRules
-											.taboos.frequency.description
+											.bestYear.description
 									}
 								</p>
 							</div>
 						</div>
-					</div>
 
-					{/* Children Fate */}
-					<div
-						className="bg-[#EFEFEF] rounded-lg p-4"
-						style={{
-							boxShadow: "inset 0 4px 4px rgba(0, 0, 0, 0.25)",
-						}}
-					>
-						<div className="bg-[#C74772] rounded-full px-4 py-2 mb-3 inline-block">
-							<h4
-								className="text-sm font-bold text-white"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
-							>
-								子女緣
-							</h4>
+						{/* Relationship Taboos */}
+						<div
+							className="bg-[#EFEFEF] rounded-lg p-3 sm:p-4"
+							style={{
+								boxShadow:
+									"inset 0 4px 4px rgba(0, 0, 0, 0.25)",
+							}}
+						>
+							<div className="bg-[#C74772] rounded-full px-3 sm:px-4 py-2 mb-3 inline-block">
+								<h4
+									className="font-bold text-white"
+									style={{
+										fontFamily: "Noto Serif TC, serif",
+										fontSize: "clamp(12px, 2.5vw, 14px)",
+									}}
+								>
+									相處禁忌
+								</h4>
+							</div>
+							<div className="space-y-3">
+								<div>
+									<p
+										className="text-sm font-medium text-[#374A37] mb-1"
+										style={{
+											fontFamily: "Noto Serif TC, serif",
+										}}
+									>
+										{
+											relationshipAnalysis.marriageRules
+												.taboos.financial.title
+										}
+									</p>
+									<p
+										className="text-xs text-[#757575]"
+										style={{
+											fontFamily:
+												"Noto Sans HK, sans-serif",
+										}}
+									>
+										{
+											relationshipAnalysis.marriageRules
+												.taboos.financial.description
+										}
+									</p>
+								</div>
+								<div>
+									<p
+										className="text-sm font-medium text-[#374A37] mb-1"
+										style={{
+											fontFamily: "Noto Serif TC, serif",
+										}}
+									>
+										{
+											relationshipAnalysis.marriageRules
+												.taboos.frequency.title
+										}
+									</p>
+									<p
+										className="text-xs text-[#757575]"
+										style={{
+											fontFamily:
+												"Noto Sans HK, sans-serif",
+										}}
+									>
+										{
+											relationshipAnalysis.marriageRules
+												.taboos.frequency.description
+										}
+									</p>
+								</div>
+							</div>
 						</div>
-						<div className="space-y-3">
-							<p
-								className="text-sm font-medium text-[#374A37]"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
-							>
-								{
-									relationshipAnalysis.marriageRules
-										.childrenFate.timing
-								}
-							</p>
-							<p
-								className="text-sm text-[#374A37]"
-								style={{
-									fontFamily: "Noto Sans HK, sans-serif",
-								}}
-							>
-								{
-									relationshipAnalysis.marriageRules
-										.childrenFate.description
-								}
-							</p>
+
+						{/* Children Fate */}
+						<div
+							className="bg-[#EFEFEF] rounded-lg p-3 sm:p-4 md:col-span-2 lg:col-span-1"
+							style={{
+								boxShadow:
+									"inset 0 4px 4px rgba(0, 0, 0, 0.25)",
+							}}
+						>
+							<div className="bg-[#C74772] rounded-full px-3 sm:px-4 py-2 mb-3 inline-block">
+								<h4
+									className="font-bold text-white"
+									style={{
+										fontFamily: "Noto Serif TC, serif",
+										fontSize: "clamp(12px, 2.5vw, 14px)",
+									}}
+								>
+									子女緣
+								</h4>
+							</div>
+							<div className="space-y-2 sm:space-y-3">
+								<p
+									className="font-medium text-[#374A37]"
+									style={{
+										fontFamily: "Noto Serif TC, serif",
+										fontSize: "clamp(13px, 2.8vw, 15px)",
+									}}
+								>
+									{
+										relationshipAnalysis.marriageRules
+											.childrenFate.timing
+									}
+								</p>
+								<p
+									className="text-[#374A37] leading-relaxed"
+									style={{
+										fontFamily: "Noto Sans HK, sans-serif",
+										fontSize: "clamp(12px, 2.5vw, 14px)",
+										lineHeight: 1.5,
+									}}
+								>
+									{
+										relationshipAnalysis.marriageRules
+											.childrenFate.description
+									}
+								</p>
+							</div>
 						</div>
 					</div>
 				</div>

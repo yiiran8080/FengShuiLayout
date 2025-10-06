@@ -1234,17 +1234,26 @@ export default function CoupleCoreSuggestion({
 	if (isLoading) {
 		return (
 			<section
-				className="relative mx-auto mb-6 bg-white sm:mb-10"
+				className="relative mx-auto mb-4 bg-white sm:mb-6 lg:mb-10"
 				style={{
-					width: "95%",
-					padding: "40px",
+					width: "100%",
+					padding: "clamp(16px, 4vw, 40px)",
 					boxShadow: "0 4px 4px rgba(0, 0, 0, 0.25)",
-					borderRadius: "45px",
+					borderRadius: "clamp(20px, 5vw, 45px)",
 				}}
 			>
-				<div className="flex items-center justify-center py-8">
-					<div className="w-8 h-8 border-b-2 border-pink-600 rounded-full animate-spin"></div>
-					<span className="ml-3 text-gray-600">
+				<div className="flex items-center justify-center py-6 sm:py-8">
+					<div
+						className="border-b-2 border-pink-600 rounded-full animate-spin"
+						style={{
+							width: "clamp(24px, 6vw, 32px)",
+							height: "clamp(24px, 6vw, 32px)",
+						}}
+					></div>
+					<span
+						className="ml-2 text-gray-600 sm:ml-3"
+						style={{ fontSize: "clamp(14px, 3.5vw, 16px)" }}
+					>
 						生成夫妻開運建議中...
 					</span>
 				</div>
@@ -1255,15 +1264,18 @@ export default function CoupleCoreSuggestion({
 	if (!analysisData) {
 		return (
 			<section
-				className="relative mx-auto mb-6 bg-white sm:mb-10"
+				className="relative mx-auto mb-4 bg-white sm:mb-6 lg:mb-10"
 				style={{
-					width: "95%",
-					padding: "40px",
+					width: "100%",
+					padding: "clamp(16px, 4vw, 40px)",
 					boxShadow: "0 4px 4px rgba(0, 0, 0, 0.25)",
-					borderRadius: "45px",
+					borderRadius: "clamp(20px, 5vw, 45px)",
 				}}
 			>
-				<div className="py-8 text-center text-gray-500">
+				<div
+					className="py-6 text-center text-gray-500 sm:py-8"
+					style={{ fontSize: "clamp(14px, 3.5vw, 16px)" }}
+				>
 					無法載入夫妻開運建議資料
 				</div>
 			</section>
@@ -1275,20 +1287,20 @@ export default function CoupleCoreSuggestion({
 	return (
 		<ComponentErrorBoundary componentName="CoupleCoreSuggestion">
 			<section
-				className="relative mx-auto mb-6 bg-white sm:mb-10"
+				className="relative mx-auto mb-4 bg-white sm:mb-6 lg:mb-10"
 				style={{
 					width: "100%",
-					padding: "40px",
+					padding: "clamp(16px, 4vw, 40px)",
 					boxShadow: "0 4px 4px rgba(0, 0, 0, 0.25)",
-					borderRadius: "45px",
+					borderRadius: "clamp(20px, 5vw, 45px)",
 				}}
 			>
 				{/* Header */}
-				<div className="flex items-center justify-between mb-8">
+				<div className="flex items-center justify-center mb-6 sm:mb-8">
 					<h2
 						style={{
 							fontFamily: "Noto Serif TC, serif",
-							fontSize: "40px",
+							fontSize: "clamp(28px, 7vw, 40px)",
 							fontWeight: 800,
 							color: "#B4003C", // Couple theme color
 						}}
@@ -1320,8 +1332,11 @@ export default function CoupleCoreSuggestion({
 				)}
 
 				{/* Core Icons Section */}
-				<div className="p-6 mb-8 bg-white">
-					<div className="flex items-center justify-between w-full mb-6">
+				<div
+					className="mb-6 bg-white sm:mb-8"
+					style={{ padding: "clamp(16px, 4vw, 24px)" }}
+				>
+					<div className="grid w-full grid-cols-2 gap-4 mb-4 sm:flex sm:items-center sm:justify-between sm:mb-6">
 						{analysisData.coreIconList.map((item, index) => {
 							const getButtonBgColor = (itemLabel, isActive) => {
 								const colorMap = {
@@ -1369,18 +1384,21 @@ export default function CoupleCoreSuggestion({
 									onClick={() =>
 										setActiveCategoryIndex(index)
 									}
-									className={`flex flex-col items-center space-y-2 transition-all duration-300 flex-1 ${
+									className={`flex flex-col items-center transition-all duration-300 sm:flex-1 ${
 										activeCategoryIndex === index
-											? "transform scale-110"
+											? "transform scale-105 sm:scale-110"
 											: "hover:scale-105"
 									}`}
+									style={{ gap: "clamp(4px, 1vw, 8px)" }}
 								>
 									<div
-										className={`w-16 h-16 rounded-full flex items-center justify-center text-white transition-all duration-300 ${getButtonBgColor(
+										className={`rounded-full flex items-center justify-center text-white transition-all duration-300 ${getButtonBgColor(
 											item.label,
 											activeCategoryIndex === index
 										)}`}
 										style={{
+											width: "clamp(48px, 12vw, 64px)",
+											height: "clamp(48px, 12vw, 64px)",
 											boxShadow:
 												"0 4px 4px rgba(0, 0, 0, 0.25)",
 										}}
@@ -1388,8 +1406,9 @@ export default function CoupleCoreSuggestion({
 										<img
 											src={getItemImage(item.label)}
 											alt={item.label}
-											className="w-8 h-8"
 											style={{
+												width: "clamp(24px, 6vw, 32px)",
+												height: "clamp(24px, 6vw, 32px)",
 												filter: getImageFilter(
 													activeCategoryIndex ===
 														index
@@ -1398,11 +1417,16 @@ export default function CoupleCoreSuggestion({
 										/>
 									</div>
 									<span
-										className={`text-sm font-medium ${
+										className={`font-medium text-center ${
 											activeCategoryIndex === index
 												? "text-gray-800"
 												: "text-gray-500"
 										}`}
+										style={{
+											fontSize:
+												"clamp(11px, 2.5vw, 14px)",
+											lineHeight: "1.2",
+										}}
 									>
 										{item.label}
 									</span>
@@ -1416,7 +1440,7 @@ export default function CoupleCoreSuggestion({
 						<h3
 							style={{
 								fontFamily: "Noto Serif TC, serif",
-								fontSize: "40px",
+								fontSize: "clamp(24px, 6vw, 40px)",
 								fontWeight: 700,
 								color: (() => {
 									const colorMap = {
@@ -1433,7 +1457,7 @@ export default function CoupleCoreSuggestion({
 										] || "#B4003C"
 									);
 								})(),
-								marginBottom: "8px",
+								marginBottom: "clamp(6px, 2vw, 8px)",
 							}}
 						>
 							{activeCategory.title}
@@ -1441,30 +1465,54 @@ export default function CoupleCoreSuggestion({
 					</div>
 
 					{/* Content Display */}
-					<div className="mt-8">
-						<div className="p-6 ">
-							<div className="space-y-4">
+					<div className="mt-6 sm:mt-8">
+						<div style={{ padding: "clamp(16px, 4vw, 24px)" }}>
+							<div className="space-y-3 sm:space-y-4">
 								{/* Check content type and render accordingly */}
 								{typeof activeCategory.content === "object" &&
 								activeCategory.content.type ===
 									"subsections" ? (
 									/* Relationship Development Subsections */
-									<div className="space-y-6">
+									<div className="space-y-4 sm:space-y-6">
 										{activeCategory.content.subsections.map(
 											(subsection, index) => (
 												<div
 													key={index}
-													className="overflow-hidden border border-[#EFEFEF] shadow-lg rounded-lg"
+													className="overflow-hidden border border-[#EFEFEF] shadow-lg"
+													style={{
+														borderRadius:
+															"clamp(8px, 2vw, 12px)",
+													}}
 												>
 													{/* Subsection Header */}
 													<div
-														className={`${subsection.color} text-white px-4 py-2 font-medium text-center rounded-t-lg`}
+														className={`${subsection.color} text-white font-medium text-center`}
+														style={{
+															padding:
+																"clamp(8px, 2vw, 16px) clamp(12px, 3vw, 16px)",
+															fontSize:
+																"clamp(14px, 3.5vw, 16px)",
+															borderRadius:
+																"clamp(8px, 2vw, 12px) clamp(8px, 2vw, 12px) 0 0",
+														}}
 													>
 														{subsection.title}
 													</div>
 													{/* Subsection Content */}
-													<div className="p-4 bg-[#EFEFEF]">
-														<p className="leading-relaxed text-gray-700">
+													<div
+														className="bg-[#EFEFEF]"
+														style={{
+															padding:
+																"clamp(12px, 3vw, 16px)",
+														}}
+													>
+														<p
+															className="leading-relaxed text-gray-700"
+															style={{
+																fontSize:
+																	"clamp(13px, 3.2vw, 15px)",
+															}}
+														>
 															{subsection.content}
 														</p>
 													</div>
@@ -1477,41 +1525,99 @@ export default function CoupleCoreSuggestion({
 								  activeCategory.content.type ===
 										"communication-structure" ? (
 									/* Communication Advice Structure */
-									<div className="space-y-6">
+									<div className="space-y-4 sm:space-y-6">
 										{activeCategory.content.sections.map(
 											(section, sectionIndex) => (
 												<div key={sectionIndex}>
 													{section.type ===
 													"partner-styles" ? (
 														/* Partner Communication Styles */
-														<div className="space-y-4">
-															<h4 className="mb-4 text-lg font-semibold text-purple-600">
+														<div className="space-y-3 sm:space-y-4">
+															<h4
+																className="mb-3 font-semibold text-purple-600 sm:mb-4"
+																style={{
+																	fontSize:
+																		"clamp(16px, 4vw, 18px)",
+																}}
+															>
 																{section.title}
 															</h4>
-															<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+															<div className="grid grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-2">
 																{/* Male Communication Style */}
-																<div className="p-4 border border-blue-200 rounded-lg">
+																<div
+																	className="border border-blue-200"
+																	style={{
+																		padding:
+																			"clamp(12px, 3vw, 16px)",
+																		borderRadius:
+																			"clamp(8px, 2vw, 12px)",
+																	}}
+																>
 																	<div className="flex items-center mb-2">
-																		<div className="w-3 h-3 mr-2 bg-blue-500 rounded-full"></div>
-																		<span className="font-medium text-blue-700">
+																		<div
+																			className="mr-2 bg-blue-500 rounded-full"
+																			style={{
+																				width: "clamp(10px, 2.5vw, 12px)",
+																				height: "clamp(10px, 2.5vw, 12px)",
+																			}}
+																		></div>
+																		<span
+																			className="font-medium text-blue-700"
+																			style={{
+																				fontSize:
+																					"clamp(13px, 3.2vw, 15px)",
+																			}}
+																		>
 																			男方溝通風格
 																		</span>
 																	</div>
-																	<p className="text-sm leading-relaxed text-gray-700">
+																	<p
+																		className="leading-relaxed text-gray-700"
+																		style={{
+																			fontSize:
+																				"clamp(12px, 3vw, 14px)",
+																		}}
+																	>
 																		{
 																			section.maleStyle
 																		}
 																	</p>
 																</div>
 																{/* Female Communication Style */}
-																<div className="p-4 border border-pink-200 rounded-lg">
+																<div
+																	className="border border-pink-200"
+																	style={{
+																		padding:
+																			"clamp(12px, 3vw, 16px)",
+																		borderRadius:
+																			"clamp(8px, 2vw, 12px)",
+																	}}
+																>
 																	<div className="flex items-center mb-2">
-																		<div className="w-3 h-3 mr-2 bg-pink-500 rounded-full"></div>
-																		<span className="font-medium text-pink-700">
+																		<div
+																			className="mr-2 bg-pink-500 rounded-full"
+																			style={{
+																				width: "clamp(10px, 2.5vw, 12px)",
+																				height: "clamp(10px, 2.5vw, 12px)",
+																			}}
+																		></div>
+																		<span
+																			className="font-medium text-pink-700"
+																			style={{
+																				fontSize:
+																					"clamp(13px, 3.2vw, 15px)",
+																			}}
+																		>
 																			女方溝通風格
 																		</span>
 																	</div>
-																	<p className="text-sm leading-relaxed text-gray-700">
+																	<p
+																		className="leading-relaxed text-gray-700"
+																		style={{
+																			fontSize:
+																				"clamp(12px, 3vw, 14px)",
+																		}}
+																	>
 																		{
 																			section.femaleStyle
 																		}
@@ -1522,8 +1628,14 @@ export default function CoupleCoreSuggestion({
 													) : section.type ===
 													  "practical-application" ? (
 														/* Practical Application Section with Male/Female Strategies */
-														<div className="space-y-4">
-															<h4 className="mb-4 text-lg font-semibold text-purple-600">
+														<div className="space-y-3 sm:space-y-4">
+															<h4
+																className="mb-3 font-semibold text-purple-600 sm:mb-4"
+																style={{
+																	fontSize:
+																		"clamp(16px, 4vw, 18px)",
+																}}
+															>
 																{section.title}
 															</h4>
 															{/* Each conflict type with side-by-side strategies */}
@@ -1536,39 +1648,113 @@ export default function CoupleCoreSuggestion({
 																		key={
 																			subIndex
 																		}
-																		className="space-y-3"
+																		className="space-y-2 sm:space-y-3"
 																	>
 																		{/* Conflict Type Title */}
-																		<div className="px-3 py-2 text-sm font-medium text-center text-white bg-green-500 rounded">
+																		<div
+																			className="font-medium text-center text-white bg-green-500"
+																			style={{
+																				padding:
+																					"clamp(6px, 1.5vw, 8px) clamp(8px, 2vw, 12px)",
+																				fontSize:
+																					"clamp(12px, 3vw, 14px)",
+																				borderRadius:
+																					"clamp(6px, 1.5vw, 8px)",
+																			}}
+																		>
 																			{
 																				subsection.title
 																			}
 																		</div>
 																		{/* Male and Female Strategies Side by Side */}
-																		<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+																		<div className="grid grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-2">
 																			{/* Male Strategy */}
-																			<div className="p-4 border border-blue-200 rounded-lg bg-blue-50">
+																			<div
+																				className="border border-blue-200 bg-blue-50"
+																				style={{
+																					padding:
+																						"clamp(12px, 3vw, 16px)",
+																					borderRadius:
+																						"clamp(8px, 2vw, 12px)",
+																				}}
+																			>
 																				<div className="flex items-center mb-2">
-																					<div className="w-3 h-3 mr-2 bg-blue-500 rounded-full"></div>
-																					<span className="text-sm font-medium text-blue-700">
+																					<div
+																						className="mr-2 bg-blue-500 rounded-full"
+																						style={{
+																							width: "clamp(10px, 2.5vw, 12px)",
+																							height: "clamp(10px, 2.5vw, 12px)",
+																						}}
+																					></div>
+																					<span
+																						className="font-medium text-blue-700"
+																						style={{
+																							fontSize:
+																								"clamp(12px, 3vw, 14px)",
+																						}}
+																					>
 																						男方溝通策略
 																					</span>
 																				</div>
-																				<div className="p-3 text-sm leading-relaxed text-gray-700 bg-gray-100 rounded">
+																				<div
+																					className="text-gray-700 bg-gray-100"
+																					style={{
+																						padding:
+																							"clamp(8px, 2vw, 12px)",
+																						fontSize:
+																							"clamp(11px, 2.8vw, 13px)",
+																						lineHeight:
+																							"1.5",
+																						borderRadius:
+																							"clamp(6px, 1.5vw, 8px)",
+																					}}
+																				>
 																					{
 																						subsection.maleStrategy
 																					}
 																				</div>
 																			</div>
 																			{/* Female Strategy */}
-																			<div className="p-4 border border-pink-200 rounded-lg bg-pink-50">
+																			<div
+																				className="border border-pink-200 bg-pink-50"
+																				style={{
+																					padding:
+																						"clamp(12px, 3vw, 16px)",
+																					borderRadius:
+																						"clamp(8px, 2vw, 12px)",
+																				}}
+																			>
 																				<div className="flex items-center mb-2">
-																					<div className="w-3 h-3 mr-2 bg-pink-500 rounded-full"></div>
-																					<span className="text-sm font-medium text-pink-700">
+																					<div
+																						className="mr-2 bg-pink-500 rounded-full"
+																						style={{
+																							width: "clamp(10px, 2.5vw, 12px)",
+																							height: "clamp(10px, 2.5vw, 12px)",
+																						}}
+																					></div>
+																					<span
+																						className="font-medium text-pink-700"
+																						style={{
+																							fontSize:
+																								"clamp(12px, 3vw, 14px)",
+																						}}
+																					>
 																						女方溝通策略
 																					</span>
 																				</div>
-																				<div className="p-3 text-sm leading-relaxed text-gray-700 bg-gray-100 rounded">
+																				<div
+																					className="text-gray-700 bg-gray-100"
+																					style={{
+																						padding:
+																							"clamp(8px, 2vw, 12px)",
+																						fontSize:
+																							"clamp(11px, 2.8vw, 13px)",
+																						lineHeight:
+																							"1.5",
+																						borderRadius:
+																							"clamp(6px, 1.5vw, 8px)",
+																					}}
+																				>
 																					{
 																						subsection.femaleStrategy
 																					}
@@ -1580,11 +1766,31 @@ export default function CoupleCoreSuggestion({
 															)}
 															{/* Additional Info */}
 															{section.timing && (
-																<div className="p-3 mt-4 rounded-lg bg-purple-50">
-																	<span className="text-sm font-medium text-purple-700">
+																<div
+																	className="mt-3 sm:mt-4 bg-purple-50"
+																	style={{
+																		padding:
+																			"clamp(8px, 2vw, 12px)",
+																		borderRadius:
+																			"clamp(6px, 1.5vw, 8px)",
+																	}}
+																>
+																	<span
+																		className="font-medium text-purple-700"
+																		style={{
+																			fontSize:
+																				"clamp(12px, 3vw, 14px)",
+																		}}
+																	>
 																		最佳時機：
 																	</span>
-																	<span className="text-sm text-gray-700">
+																	<span
+																		className="text-gray-700"
+																		style={{
+																			fontSize:
+																				"clamp(12px, 3vw, 14px)",
+																		}}
+																	>
 																		{
 																			section.timing
 																		}
@@ -1602,27 +1808,31 @@ export default function CoupleCoreSuggestion({
 								  activeCategory.content.type ===
 										"relationship-taboos" ? (
 									/* Relationship Taboos Structure */
-									<div className="space-y-6">
-										{/* <h3 className="mb-6 text-xl font-bold text-center text-red-600">
-											{activeCategory.content.title}
-										</h3> */}
-
+									<div className="space-y-4 sm:space-y-6">
 										{/* Main Taboo Sections */}
 										{activeCategory.content.sections.map(
 											(section, sectionIndex) => (
 												<div
 													key={sectionIndex}
-													className="space-y-4"
+													className="space-y-3 sm:space-y-4"
 												>
 													{/* Section Header */}
 													<div
-														className={`${section.color} text-white px-4 py-3 font-bold text-center rounded-lg`}
+														className={`${section.color} text-white font-bold text-center`}
+														style={{
+															padding:
+																"clamp(8px, 2vw, 12px) clamp(12px, 3vw, 16px)",
+															fontSize:
+																"clamp(14px, 3.5vw, 16px)",
+															borderRadius:
+																"clamp(8px, 2vw, 12px)",
+														}}
 													>
 														{section.title}
 													</div>
 
 													{/* Subsections Grid */}
-													<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+													<div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
 														{section.subsections.map(
 															(
 																subsection,
@@ -1632,7 +1842,11 @@ export default function CoupleCoreSuggestion({
 																	key={
 																		subIndex
 																	}
-																	className="overflow-hidden border-2 border-gray-200 rounded-lg"
+																	className="overflow-hidden border-2 border-gray-200"
+																	style={{
+																		borderRadius:
+																			"clamp(8px, 2vw, 12px)",
+																	}}
 																>
 																	{/* Subsection Header */}
 																	<div
@@ -1644,15 +1858,33 @@ export default function CoupleCoreSuggestion({
 																					  1
 																					? "bg-green-500"
 																					: "bg-red-700"
-																		} text-white px-3 py-2 font-medium text-center`}
+																		} text-white font-medium text-center`}
+																		style={{
+																			padding:
+																				"clamp(6px, 1.5vw, 8px) clamp(8px, 2vw, 12px)",
+																			fontSize:
+																				"clamp(12px, 3vw, 14px)",
+																		}}
 																	>
 																		{
 																			subsection.title
 																		}
 																	</div>
 																	{/* Subsection Content */}
-																	<div className="p-4 bg-gray-50">
-																		<p className="text-sm leading-relaxed text-gray-700">
+																	<div
+																		className="bg-gray-50"
+																		style={{
+																			padding:
+																				"clamp(12px, 3vw, 16px)",
+																		}}
+																	>
+																		<p
+																			className="leading-relaxed text-gray-700"
+																			style={{
+																				fontSize:
+																					"clamp(11px, 2.8vw, 13px)",
+																			}}
+																		>
 																			{
 																				subsection.content
 																			}
@@ -1689,19 +1921,34 @@ export default function CoupleCoreSuggestion({
 								  activeCategory.content.type ===
 										"energy-enhancement" ? (
 									/* Energy Enhancement Structure */
-									<div className="space-y-6">
-										{/* Title */}
-										{/* <h3 className="mb-6 text-xl font-bold text-center text-green-600">
-											{activeCategory.content.title}
-										</h3>
- */}
+									<div className="space-y-4 sm:space-y-6">
 										{/* Energy Analysis (if available) */}
 										{activeCategory.content.analysis && (
-											<div className="p-4 mb-6 bg-green-100 border border-green-300 rounded-lg">
-												<h4 className="mb-2 font-medium text-green-700">
+											<div
+												className="mb-4 bg-green-100 border border-green-300 sm:mb-6"
+												style={{
+													padding:
+														"clamp(12px, 3vw, 16px)",
+													borderRadius:
+														"clamp(8px, 2vw, 12px)",
+												}}
+											>
+												<h4
+													className="mb-2 font-medium text-green-700"
+													style={{
+														fontSize:
+															"clamp(14px, 3.5vw, 16px)",
+													}}
+												>
 													五行能量分析
 												</h4>
-												<p className="text-sm text-gray-700">
+												<p
+													className="text-gray-700"
+													style={{
+														fontSize:
+															"clamp(12px, 3vw, 14px)",
+													}}
+												>
 													{
 														activeCategory.content
 															.analysis
@@ -1711,11 +1958,25 @@ export default function CoupleCoreSuggestion({
 										)}
 
 										{/* Male and Female Enhancement Sections */}
-										<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+										<div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
 											{/* Male Enhancement Section */}
-											<div className="overflow-hidden border-2 border-blue-300 rounded-lg">
+											<div
+												className="overflow-hidden border-2 border-blue-300"
+												style={{
+													borderRadius:
+														"clamp(8px, 2vw, 12px)",
+												}}
+											>
 												{/* Male Header */}
-												<div className="px-4 py-2 font-medium text-center text-white bg-blue-500 rounded-t-lg">
+												<div
+													className="font-medium text-center text-white bg-blue-500"
+													style={{
+														padding:
+															"clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px)",
+														fontSize:
+															"clamp(14px, 3.5vw, 16px)",
+													}}
+												>
 													{
 														activeCategory.content
 															.maleSection.title
@@ -1723,16 +1984,40 @@ export default function CoupleCoreSuggestion({
 												</div>
 
 												{/* Male Action Advice */}
-												<div className="p-4 space-y-3">
-													<div className="p-3 bg-blue-100 rounded-lg">
-														<h5 className="mb-2 font-medium text-blue-700">
+												<div
+													className="space-y-2 sm:space-y-3"
+													style={{
+														padding:
+															"clamp(12px, 3vw, 16px)",
+													}}
+												>
+													<div
+														className="bg-blue-100"
+														style={{
+															padding:
+																"clamp(8px, 2vw, 12px)",
+															borderRadius:
+																"clamp(6px, 1.5vw, 8px)",
+														}}
+													>
+														<h5
+															className="mb-2 font-medium text-blue-700"
+															style={{
+																fontSize:
+																	"clamp(13px, 3.2vw, 15px)",
+															}}
+														>
 															行動建議
 														</h5>
 														{activeCategory.content.maleSection.actionAdvice.map(
 															(advice, index) => (
 																<p
 																	key={index}
-																	className="mb-2 text-sm text-gray-700"
+																	className="mb-2 text-gray-700"
+																	style={{
+																		fontSize:
+																			"clamp(11px, 2.8vw, 13px)",
+																	}}
 																>
 																	• {advice}
 																</p>
@@ -1741,11 +2026,31 @@ export default function CoupleCoreSuggestion({
 													</div>
 
 													{/* Male Accessories */}
-													<div className="p-3 rounded-lg bg-blue-50">
-														<h5 className="mb-2 font-medium text-blue-700">
+													<div
+														className="bg-blue-50"
+														style={{
+															padding:
+																"clamp(8px, 2vw, 12px)",
+															borderRadius:
+																"clamp(6px, 1.5vw, 8px)",
+														}}
+													>
+														<h5
+															className="mb-2 font-medium text-blue-700"
+															style={{
+																fontSize:
+																	"clamp(13px, 3.2vw, 15px)",
+															}}
+														>
 															開運物
 														</h5>
-														<p className="text-sm text-gray-700">
+														<p
+															className="text-gray-700"
+															style={{
+																fontSize:
+																	"clamp(11px, 2.8vw, 13px)",
+															}}
+														>
 															{
 																activeCategory
 																	.content
@@ -1758,9 +2063,23 @@ export default function CoupleCoreSuggestion({
 											</div>
 
 											{/* Female Enhancement Section */}
-											<div className="overflow-hidden border-2 border-pink-300 rounded-lg">
+											<div
+												className="overflow-hidden border-2 border-pink-300"
+												style={{
+													borderRadius:
+														"clamp(8px, 2vw, 12px)",
+												}}
+											>
 												{/* Female Header */}
-												<div className="px-4 py-2 font-medium text-center text-white bg-pink-500 rounded-t-lg">
+												<div
+													className="font-medium text-center text-white bg-pink-500"
+													style={{
+														padding:
+															"clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px)",
+														fontSize:
+															"clamp(14px, 3.5vw, 16px)",
+													}}
+												>
 													{
 														activeCategory.content
 															.femaleSection.title
@@ -1768,16 +2087,40 @@ export default function CoupleCoreSuggestion({
 												</div>
 
 												{/* Female Action Advice */}
-												<div className="p-4 space-y-3">
-													<div className="p-3 bg-pink-100 rounded-lg">
-														<h5 className="mb-2 font-medium text-pink-700">
+												<div
+													className="space-y-2 sm:space-y-3"
+													style={{
+														padding:
+															"clamp(12px, 3vw, 16px)",
+													}}
+												>
+													<div
+														className="bg-pink-100"
+														style={{
+															padding:
+																"clamp(8px, 2vw, 12px)",
+															borderRadius:
+																"clamp(6px, 1.5vw, 8px)",
+														}}
+													>
+														<h5
+															className="mb-2 font-medium text-pink-700"
+															style={{
+																fontSize:
+																	"clamp(13px, 3.2vw, 15px)",
+															}}
+														>
 															行動建議
 														</h5>
 														{activeCategory.content.femaleSection.actionAdvice.map(
 															(advice, index) => (
 																<p
 																	key={index}
-																	className="mb-2 text-sm text-gray-700"
+																	className="mb-2 text-gray-700"
+																	style={{
+																		fontSize:
+																			"clamp(11px, 2.8vw, 13px)",
+																	}}
 																>
 																	• {advice}
 																</p>
@@ -1786,11 +2129,31 @@ export default function CoupleCoreSuggestion({
 													</div>
 
 													{/* Female Accessories */}
-													<div className="p-3 rounded-lg bg-pink-50">
-														<h5 className="mb-2 font-medium text-pink-700">
+													<div
+														className="bg-pink-50"
+														style={{
+															padding:
+																"clamp(8px, 2vw, 12px)",
+															borderRadius:
+																"clamp(6px, 1.5vw, 8px)",
+														}}
+													>
+														<h5
+															className="mb-2 font-medium text-pink-700"
+															style={{
+																fontSize:
+																	"clamp(13px, 3.2vw, 15px)",
+															}}
+														>
 															開運物
 														</h5>
-														<p className="text-sm text-gray-700">
+														<p
+															className="text-gray-700"
+															style={{
+																fontSize:
+																	"clamp(11px, 2.8vw, 13px)",
+															}}
+														>
 															{
 																activeCategory
 																	.content
@@ -1806,15 +2169,33 @@ export default function CoupleCoreSuggestion({
 										{/* Feng Shui Suggestions (if available) */}
 										{activeCategory.content
 											.fengShuiSuggestions && (
-											<div className="p-4 border border-yellow-300 rounded-lg bg-yellow-50">
-												<h4 className="mb-2 font-medium text-yellow-700">
+											<div
+												className="border border-yellow-300 bg-yellow-50"
+												style={{
+													padding:
+														"clamp(12px, 3vw, 16px)",
+													borderRadius:
+														"clamp(8px, 2vw, 12px)",
+												}}
+											>
+												<h4
+													className="mb-2 font-medium text-yellow-700"
+													style={{
+														fontSize:
+															"clamp(14px, 3.5vw, 16px)",
+													}}
+												>
 													居家風水建議
 												</h4>
 												{activeCategory.content.fengShuiSuggestions.map(
 													(suggestion, index) => (
 														<p
 															key={index}
-															className="mb-2 text-sm text-gray-700"
+															className="mb-2 text-gray-700"
+															style={{
+																fontSize:
+																	"clamp(11px, 2.8vw, 13px)",
+															}}
 														>
 															• {suggestion}
 														</p>
@@ -1825,11 +2206,31 @@ export default function CoupleCoreSuggestion({
 
 										{/* Lucky Colors (if available) */}
 										{activeCategory.content.luckyColors && (
-											<div className="p-4 border border-purple-300 rounded-lg bg-purple-50">
-												<h4 className="mb-2 font-medium text-purple-700">
+											<div
+												className="border border-purple-300 bg-purple-50"
+												style={{
+													padding:
+														"clamp(12px, 3vw, 16px)",
+													borderRadius:
+														"clamp(8px, 2vw, 12px)",
+												}}
+											>
+												<h4
+													className="mb-2 font-medium text-purple-700"
+													style={{
+														fontSize:
+															"clamp(14px, 3.5vw, 16px)",
+													}}
+												>
 													年度幸運色系
 												</h4>
-												<p className="text-sm text-gray-700">
+												<p
+													className="text-gray-700"
+													style={{
+														fontSize:
+															"clamp(11px, 2.8vw, 13px)",
+													}}
+												>
 													{
 														activeCategory.content
 															.luckyColors
@@ -1839,19 +2240,53 @@ export default function CoupleCoreSuggestion({
 										)}
 
 										{/* Shared Enhancement Section */}
-										<div className="overflow-hidden border-2 border-green-300 rounded-lg bg-green-50">
+										<div
+											className="overflow-hidden border-2 border-green-300 bg-green-50"
+											style={{
+												borderRadius:
+													"clamp(8px, 2vw, 12px)",
+											}}
+										>
 											{/* Shared Enhancement Header */}
-											<div className="px-4 py-2 font-medium text-center text-white bg-green-500">
+											<div
+												className="font-medium text-center text-white bg-green-500"
+												style={{
+													padding:
+														"clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px)",
+													fontSize:
+														"clamp(14px, 3.5vw, 16px)",
+												}}
+											>
 												{
 													activeCategory.content
 														.sharedEnhancement.title
 												}
 											</div>
 
-											<div className="p-4 space-y-4">
+											<div
+												className="space-y-3 sm:space-y-4"
+												style={{
+													padding:
+														"clamp(12px, 3vw, 16px)",
+												}}
+											>
 												{/* Weekly Ritual */}
-												<div className="p-4 bg-white border border-green-200 rounded-lg">
-													<h5 className="mb-2 font-medium text-green-700">
+												<div
+													className="bg-white border border-green-200"
+													style={{
+														padding:
+															"clamp(12px, 3vw, 16px)",
+														borderRadius:
+															"clamp(6px, 1.5vw, 8px)",
+													}}
+												>
+													<h5
+														className="mb-2 font-medium text-green-700"
+														style={{
+															fontSize:
+																"clamp(13px, 3.2vw, 15px)",
+														}}
+													>
 														{
 															activeCategory
 																.content
@@ -1860,7 +2295,13 @@ export default function CoupleCoreSuggestion({
 																.title
 														}
 													</h5>
-													<p className="text-sm text-gray-700">
+													<p
+														className="text-gray-700"
+														style={{
+															fontSize:
+																"clamp(11px, 2.8vw, 13px)",
+														}}
+													>
 														{
 															activeCategory
 																.content
@@ -1878,19 +2319,57 @@ export default function CoupleCoreSuggestion({
 												activeCategory.content
 													.sharedEnhancement
 													.situations.length > 0 ? (
-													<div className="overflow-hidden bg-white border border-green-200 rounded-lg">
+													<div
+														className="overflow-hidden bg-white border border-green-200"
+														style={{
+															borderRadius:
+																"clamp(6px, 1.5vw, 8px)",
+														}}
+													>
 														{/* Table Header */}
-														<div className="grid grid-cols-4 text-sm font-medium text-gray-700 bg-green-100">
-															<div className="p-2 text-center border-r border-green-200">
+														<div className="grid grid-cols-2 gap-1 font-medium text-gray-700 bg-green-100 sm:grid-cols-4">
+															<div
+																className="text-center border-r border-green-200"
+																style={{
+																	padding:
+																		"clamp(6px, 1.5vw, 8px)",
+																	fontSize:
+																		"clamp(10px, 2.5vw, 12px)",
+																}}
+															>
 																場合
 															</div>
-															<div className="p-2 text-center border-r border-green-200">
+															<div
+																className="text-center border-r border-green-200"
+																style={{
+																	padding:
+																		"clamp(6px, 1.5vw, 8px)",
+																	fontSize:
+																		"clamp(10px, 2.5vw, 12px)",
+																}}
+															>
 																男方主色
 															</div>
-															<div className="p-2 text-center border-r border-green-200">
+															<div
+																className="text-center border-r border-green-200"
+																style={{
+																	padding:
+																		"clamp(6px, 1.5vw, 8px)",
+																	fontSize:
+																		"clamp(10px, 2.5vw, 12px)",
+																}}
+															>
 																女方主色
 															</div>
-															<div className="p-2 text-center">
+															<div
+																className="text-center"
+																style={{
+																	padding:
+																		"clamp(6px, 1.5vw, 8px)",
+																	fontSize:
+																		"clamp(10px, 2.5vw, 12px)",
+																}}
+															>
 																能量作用
 															</div>
 														</div>
@@ -2112,7 +2591,14 @@ export default function CoupleCoreSuggestion({
 									</div>
 								) : (
 									/* Regular text content */
-									<div className="text-base leading-relaxed text-gray-700 whitespace-pre-line">
+									<div
+										className="leading-relaxed text-gray-700 whitespace-pre-line"
+										style={{
+											fontSize:
+												"clamp(13px, 3.2vw, 16px)",
+											lineHeight: "1.6",
+										}}
+									>
 										{typeof activeCategory.content ===
 											"object" &&
 										activeCategory.content.type === "text"

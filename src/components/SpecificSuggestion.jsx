@@ -176,23 +176,17 @@ export default function SpecificSuggestion({ userInfo, currentYear = 2025 }) {
 
 	return (
 		<ComponentErrorBoundary componentName="SpecificSuggestion">
-			<section
-				className="relative mx-auto mb-6 bg-white sm:mb-10"
-				style={{
-					width: "95%",
-					padding: "40px",
-					boxShadow: "0 4px 4px rgba(0, 0, 0, 0.25)",
-					borderRadius: "45px",
-				}}
-			>
+			<section className="relative mx-auto mb-6 sm:mb-10 bg-white w-full sm:w-[95%] lg:w-[95%] rounded-[20px] sm:rounded-[26px] p-4 sm:p-8 md:p-12 lg:p-20 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
 				{/* Header */}
-				<div className="flex items-center justify-between mb-8">
+				<div className="flex items-center justify-between mb-6 sm:mb-8">
 					<h2
+						className="font-extrabold text-center sm:text-left"
 						style={{
 							fontFamily: "Noto Serif TC, serif",
-							fontSize: "40px",
+							fontSize: "clamp(1.5rem, 5vw, 2.5rem)",
 							fontWeight: 800,
 							color: getConcernColor(userInfo),
+							lineHeight: 1.2,
 						}}
 					>
 						{analysisData.title}
@@ -200,8 +194,8 @@ export default function SpecificSuggestion({ userInfo, currentYear = 2025 }) {
 				</div>
 
 				{/* Suggestions Section */}
-				<div className="mb-12">
-					<div className="flex items-center mb-6">
+				<div className="mb-10 sm:mb-12">
+					<div className="flex items-center mb-4 sm:mb-6">
 						<div className="p-2 mr-3 bg-green-500 rounded-full">
 							<svg
 								className="w-5 h-5 text-white"
@@ -215,23 +209,32 @@ export default function SpecificSuggestion({ userInfo, currentYear = 2025 }) {
 								/>
 							</svg>
 						</div>
-						<h3 className="text-2xl font-bold text-green-700">
+						<h3
+							className="font-bold text-green-700"
+							style={{ fontSize: "clamp(1.125rem, 3vw, 2rem)" }}
+						>
 							五大建議方案
 						</h3>
 					</div>
 
-					<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+					<div className="grid grid-cols-1 gap-4 sm:gap-6 xs:grid-cols-2 lg:grid-cols-3">
 						{analysisData.suggestions.map((suggestion, index) => (
 							<div
 								key={index}
-								className="p-6 transition-all duration-300 border border-green-200 bg-green-50 rounded-xl hover:shadow-lg"
+								className="p-4 transition-all duration-300 border border-green-200 sm:p-6 bg-green-50 rounded-xl hover:shadow-lg"
 							>
-								<div className="flex items-center mb-4">
-									<span className="mr-3 text-3xl">
+								<div className="flex items-center mb-3 sm:mb-4">
+									<span className="mr-3 text-2xl sm:text-3xl">
 										{suggestion.icon}
 									</span>
 									<div>
-										<h4 className="text-lg font-bold text-green-800">
+										<h4
+											className="font-bold text-green-800"
+											style={{
+												fontSize:
+													"clamp(1rem, 2.5vw, 1.25rem)",
+											}}
+										>
 											{suggestion.title}
 										</h4>
 										<span className="px-2 py-1 text-xs text-green-700 bg-green-200 rounded-full">
@@ -239,7 +242,7 @@ export default function SpecificSuggestion({ userInfo, currentYear = 2025 }) {
 										</span>
 									</div>
 								</div>
-								<p className="text-sm leading-relaxed text-gray-700">
+								<p className="mt-2 text-xs leading-relaxed text-gray-700 sm:text-sm">
 									{suggestion.description}
 								</p>
 							</div>
@@ -249,7 +252,7 @@ export default function SpecificSuggestion({ userInfo, currentYear = 2025 }) {
 
 				{/* Taboos Section */}
 				<div className="mb-8">
-					<div className="flex items-center mb-6">
+					<div className="flex items-center mb-4 sm:mb-6">
 						<div className="p-2 mr-3 bg-red-500 rounded-full">
 							<svg
 								className="w-5 h-5 text-white"
@@ -263,23 +266,32 @@ export default function SpecificSuggestion({ userInfo, currentYear = 2025 }) {
 								/>
 							</svg>
 						</div>
-						<h3 className="text-2xl font-bold text-red-700">
+						<h3
+							className="font-bold text-red-700"
+							style={{ fontSize: "clamp(1.125rem, 3vw, 2rem)" }}
+						>
 							五大禁忌行為
 						</h3>
 					</div>
 
-					<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+					<div className="grid grid-cols-1 gap-4 sm:gap-6 xs:grid-cols-2 lg:grid-cols-3">
 						{analysisData.taboos.map((taboo, index) => (
 							<div
 								key={index}
-								className="p-6 transition-all duration-300 border border-red-200 bg-red-50 rounded-xl hover:shadow-lg"
+								className="p-4 transition-all duration-300 border border-red-200 sm:p-6 bg-red-50 rounded-xl hover:shadow-lg"
 							>
-								<div className="flex items-center mb-4">
-									<span className="mr-3 text-3xl">
+								<div className="flex items-center mb-3 sm:mb-4">
+									<span className="mr-3 text-2xl sm:text-3xl">
 										{taboo.icon}
 									</span>
 									<div>
-										<h4 className="text-lg font-bold text-red-800">
+										<h4
+											className="font-bold text-red-800"
+											style={{
+												fontSize:
+													"clamp(1rem, 2.5vw, 1.25rem)",
+											}}
+										>
 											{taboo.title}
 										</h4>
 										<span className="px-2 py-1 text-xs text-red-700 bg-red-200 rounded-full">
@@ -287,10 +299,10 @@ export default function SpecificSuggestion({ userInfo, currentYear = 2025 }) {
 										</span>
 									</div>
 								</div>
-								<p className="mb-3 text-sm leading-relaxed text-gray-700">
+								<p className="mb-2 text-xs leading-relaxed text-gray-700 sm:text-sm">
 									{taboo.description}
 								</p>
-								<div className="p-3 bg-red-100 rounded-lg">
+								<div className="p-2 bg-red-100 rounded-lg sm:p-3">
 									<p className="text-xs font-medium text-red-600">
 										⚠️ 後果：{taboo.consequence}
 									</p>

@@ -298,7 +298,7 @@ export default function DemoSection() {
 					/* Mobile Layout - Original desktop layout moved to mobile only */
 					<div className="relative flex justify-center w-full">
 						{/* Center Image with overlapping elements */}
-						<div className="relative w-full max-w-4xl lg:max-w-5xl xl:max-w-6xl">
+						<div className="relative w-[80%]  lg:max-w-5xl xl:max-w-6xl">
 							<img
 								src="/images/demo/Demo.png"
 								alt={t("demoAltText")}
@@ -319,7 +319,7 @@ export default function DemoSection() {
 				) : (
 					/* Desktop Layout - New design with 風水妹 character - Responsive */
 					<Link href="/price" className="block">
-						<div className="relative flex flex-col sm:flex-row items-center justify-center p-3 sm:p-4 md:p-6 w-full sm:w-[85%] md:w-[75%] lg:w-[65%] xl:w-[60%] min-h-[180px] sm:min-h-[200px] md:min-h-[220px] lg:min-h-[240px] bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_4px_4px_rgba(0,0,0,0.3)] mx-auto cursor-pointer hover:shadow-[0_6px_6px_rgba(0,0,0,0.35)] transition-shadow duration-300">
+						<div className="relative flex flex-col sm:flex-row items-center justify-center p-3 sm:p-4 md:p-6 w-full sm:w-[85%] md:w-[75%] lg:w-[65%] xl:w-[60%] min-h-[180px] sm:min-h-[200px] md:min-h-[220px] lg:min-h-[240px] bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_4px_4px_rgba(0,0,0,0.3)] mx-auto cursor-pointer hover:shadow-[0_6px_6px_rgba(0,0,0,0.35)] hover:-translate-y-3 transition-all duration-300">
 							{/* Left side - Text content */}
 							<div className="relative z-10 flex justify-center flex-1 w-full px-4 sm:max-w-md sm:px-6 md:px-8 lg:px-12">
 								<div className="text-center sm:text-left">

@@ -29,7 +29,11 @@ export default function Navbar({ from, backgroundColor = "transparent" }) {
 
 	const isHome = pathname === "/home";
 	const isContact = pathname === "/customer/contact";
-	const navTextColor = isContact ? "#fff" : isNavbarMobile ? "#fff" : "#000";
+	const navTextColor = isContact
+		? "#fff"
+		: isNavbarMobile && isHome
+			? "#fff"
+			: "#000";
 
 	const scrollToSection = (sectionId) => {
 		const element = document.getElementById(sectionId);
@@ -185,8 +189,8 @@ export default function Navbar({ from, backgroundColor = "transparent" }) {
 								onClick={() =>
 									setIsMobileMenuOpen(!isMobileMenuOpen)
 								}
-								className="p-2 mr-2 text-white rounded-md hover:bg-gray-100"
-								style={{ color: "#fff" }}
+								className="p-2 mr-2 rounded-md hover:bg-[#A3B116]"
+								style={{ color: navTextColor }}
 							>
 								{isMobileMenuOpen ? (
 									<svg

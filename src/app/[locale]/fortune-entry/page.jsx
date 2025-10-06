@@ -21,6 +21,7 @@ export default function FortuneEntryPage({ params }) {
 	const [formData, setFormData] = useState({
 		gender: "",
 		birthday: "",
+		birthTime: "",
 		problem: "",
 	});
 	const [isVerifying, setIsVerifying] = useState(true);
@@ -120,6 +121,11 @@ export default function FortuneEntryPage({ params }) {
 				gender: formData.gender,
 			});
 
+			// Add birth time if provided
+			if (formData.birthTime) {
+				reportParams.set("birthTime", formData.birthTime);
+			}
+
 			window.location.href = `/feng-shui-report?${reportParams.toString()}`;
 		}, 100);
 	};
@@ -148,6 +154,11 @@ export default function FortuneEntryPage({ params }) {
 				problem: formData.problem,
 				gender: formData.gender,
 			});
+
+			// Add birth time if provided
+			if (formData.birthTime) {
+				reportParams.set("birthTime", formData.birthTime);
+			}
 
 			window.location.href = `/feng-shui-report?${reportParams.toString()}`;
 		} catch (err) {
@@ -197,7 +208,7 @@ export default function FortuneEntryPage({ params }) {
 		<div className="min-h-screen bg-[#EFEFEF]">
 			<Navbar />
 			<div className="container px-4 py-20 mx-auto">
-				<div className="max-w-md p-8 mx-auto bg-white rounded-lg shadow-lg">
+				<div className="max-w-md p-8 mx-auto bg-white shadow-lg rounded-xl">
 					<div className="mb-8 text-center">
 						<p className="text-gray-600">
 							{t("fillDataPrompt", {
@@ -259,7 +270,7 @@ export default function FortuneEntryPage({ params }) {
 											<img
 												src="/images/hero/male.png"
 												alt="Male"
-												className="mb-2 w-30 h-30"
+												className="w-24 h-24 mb-2 sm:w-30 sm:h-30 md:w-30 md:h-30 lg:w-30 lg:h-30 xl:w-30 xl:h-30"
 											/>
 											<span className="text-sm font-medium text-gray-700">
 												{t("male")}
@@ -281,7 +292,7 @@ export default function FortuneEntryPage({ params }) {
 											<img
 												src="/images/hero/female.png"
 												alt="Female"
-												className="mb-2 w-30 h-30"
+												className="w-24 h-24 mb-2 sm:w-30 sm:h-30 md:w-30 md:h-30 lg:w-30 lg:h-30 xl:w-30 xl:h-30"
 											/>
 											<span className="text-sm font-medium text-gray-700">
 												{t("female")}
@@ -311,6 +322,31 @@ export default function FortuneEntryPage({ params }) {
 										required
 										className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#A3B116]"
 									/>
+								</div>
+
+								{/* Birth Time Field */}
+								<div>
+									<label className="block mb-2 text-sm font-medium text-gray-700">
+										{t("birthTime")}{" "}
+										<span className="text-gray-400">
+											({t("optional")})
+										</span>
+									</label>
+									<input
+										type="time"
+										name="birthTime"
+										value={formData.birthTime || ""}
+										onChange={(e) =>
+											setFormData((prev) => ({
+												...prev,
+												birthTime: e.target.value,
+											}))
+										}
+										className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#A3B116]"
+									/>
+									<p className="mt-1 text-xs text-gray-500">
+										{t("birthTimeHelp")}
+									</p>
 								</div>
 							</>
 						)}
@@ -360,6 +396,12 @@ export default function FortuneEntryPage({ params }) {
 									<p className="text-sm text-gray-600">
 										{t("birthDate")}: {formData.birthday}
 									</p>
+									{formData.birthTime && (
+										<p className="text-sm text-gray-600">
+											{t("birthTime")}:{" "}
+											{formData.birthTime}
+										</p>
+									)}
 								</div>
 							</>
 						)}

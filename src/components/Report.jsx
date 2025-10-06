@@ -2105,19 +2105,20 @@ export default function ReportPage({
 
 			{/* Navigation Row */}
 			{!isPrinting && (
-				<div className="w-full mt-16 bg-gradient-to-r from-[#A3B116] to-[#3D5C2D] py-6">
-					<div className="max-w-6xl px-4 mx-auto">
-						<div className="flex flex-wrap justify-center gap-6">
+				<div className="w-full mt-16 bg-gradient-to-r from-[#A3B116] to-[#3D5C2D] py-4 sm:py-6">
+					<div className="max-w-6xl px-3 mx-auto sm:px-4">
+						<div className="flex items-center justify-center gap-3 sm:justify-between md:justify-center lg:justify-center xl:justify-center sm:gap-6">
 							{/* 命理分析報告 Tab */}
 							<button
 								onClick={() => setActiveTab("report")}
-								className={`px-8 py-4 rounded-full font-semibold text-lg transition-all duration-200 ${
+								className={`flex-1 max-w-[280px] px-4 sm:px-6 lg:px-8 py-3 sm:py-4 rounded-full font-semibold transition-all duration-200 ${
 									activeTab === "report"
 										? "bg-gradient-to-r from-[#A3B116] to-[#3D5C2D] text-white shadow-[0_4px_14px_rgba(0,0,0,0.25)]"
 										: "bg-white text-[#374A37] shadow-inner shadow-[inset_0_4px_4px_rgba(0,0,0,0.25)]"
 								}`}
 								style={{
 									fontFamily: "Noto Serif TC, serif",
+									fontSize: "clamp(14px, 3.5vw, 18px)",
 									boxShadow: "0 4px 4px rgba(0, 0, 0, 0.25)",
 								}}
 							>
@@ -2127,13 +2128,14 @@ export default function ReportPage({
 							{/* 四大運勢分析 Tab */}
 							<button
 								onClick={() => setActiveTab("fortune")}
-								className={`px-8 py-4 rounded-full font-semibold text-lg transition-all duration-200 ${
+								className={`flex-1 max-w-[280px] px-4 sm:px-6 lg:px-8 py-3 sm:py-4 rounded-full font-semibold transition-all duration-200 ${
 									activeTab === "fortune"
 										? "bg-gradient-to-r from-[#A3B116] to-[#3D5C2D] text-white shadow-[0_4px_14px_rgba(0,0,0,0.25)]"
 										: "bg-white text-[#374A37] shadow-inner shadow-[inset_0_4px_4px_rgba(0,0,0,0.25)]"
 								}`}
 								style={{
 									fontFamily: "Noto Serif TC, serif",
+									fontSize: "clamp(14px, 3.5vw, 18px)",
 									boxShadow: "0 4px 4px rgba(0, 0, 0, 0.25)",
 								}}
 							>
@@ -2152,21 +2154,20 @@ export default function ReportPage({
 				{/* 第一章 四柱*/}
 				<div
 					key="section-0"
-					className="w-full sm:w-[95%] lg:w-[90%] mx-auto px-4 sm:px-5 pt-2s sm:pt-10 lg:pt-10 pb-6 sm:pb-10 flex flex-col lg:flex-row bg-[#EFEFEF]"
+					className="w-full sm:w-[95%] lg:w-[90%] mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 lg:pt-10 pb-6 sm:pb-8 lg:pb-10 flex flex-col lg:flex-row bg-[#EFEFEF]"
 				>
 					{/* Left Section */}
-					<div className="flex items-start justify-center flex-1 mb-6 lg:justify-start lg:mb-0">
+					<div className="flex items-center justify-center flex-1 mt-4 mb-4 sm:mb-6 lg:justify-start lg:mb-0">
 						<h1
 							ref={(el) => (sectionRefs.current[0] = el)}
 							style={{
 								fontFamily: "Noto Serif TC, serif",
 								fontWeight: 800,
-								fontSize: "clamp(32px, 6vw, 56px)",
+								fontSize: "clamp(24px, 5vw, 56px)",
 								color: "#A3B116",
-								lineHeight: 1.1,
-								textAlign: "center",
+								lineHeight: 1.2,
 							}}
-							className="lg:text-left"
+							className="px-2 text-center lg:text-left sm:px-0"
 						>
 							{sections[0]?.title}
 						</h1>
@@ -2239,24 +2240,39 @@ export default function ReportPage({
 					</div> */}
 				</div>
 				{/* Paragraph below both columns */}
-				<div className="w-full sm:w-[95%] lg:w-[85%] mx-auto px-4 sm:px-5 pb-6 sm:pb-8 mb-6 sm:mb-10">
+				<div className="w-full sm:w-[95%] lg:w-[85%] mx-auto px-3 sm:px-4 lg:px-6 pb-4 sm:pb-6 lg:pb-8 mb-4 sm:mb-6 lg:mb-10">
 					<p
 						style={{
 							fontFamily: "Noto Sans HK, sans-serif",
 							fontWeight: 400,
-							fontSize: "clamp(16px, 4vw, 20px)",
+							fontSize: "clamp(14px, 3.5vw, 20px)",
 							color: "#000000",
-							lineHeight: 1.8,
+							lineHeight: 1.6,
 						}}
+						className="text-center sm:text-left"
 					>
 						{t("p1-4")}
 					</p>
 				</div>
 				{/* Five Elements Summary Section */}
-				<section className="w-full sm:w-[95%] lg:w-[80%] mx-auto bg-white rounded-[30px] sm:rounded-[60px] lg:rounded-[160px] p-4 sm:p-6 lg:p-8 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+				<section className="w-[95%] sm:w-[90%] lg:w-[80%] mx-auto bg-white rounded-[30px] sm:rounded-[60px] lg:rounded-[160px] p-4 sm:p-6 lg:p-3 mb-6 sm:mb-10 shadow-[0_2px_5.3px_rgba(0,0,0,0.25)]">
+					<style>{`
+						@media (min-width: 1024px) and (max-width: 1090px) {
+							.five-element-flex {
+								flex-direction: column !important;
+								align-items: center !important;
+							}
+							.five-element-analysis {
+								margin-left: 0 !important;
+								width: 100% !important;
+								justify-content: center !important;
+								text-align: center !important;
+							}
+						}
+					`}</style>
 					<div className="flex items-center justify-center">
-						{/* Five Elements with counts */}
-						<div className="flex flex-col items-center justify-center w-full space-y-6 lg:flex-row lg:space-y-0 lg:space-x-8">
+						{/* Five Elements with counts and analysis */}
+						<div className="flex flex-col items-center justify-center w-full space-y-1 lg:flex-row lg:space-y-0 lg:space-x-0 five-element-flex">
 							{(() => {
 								const analysis =
 									calculateWuxingAnalysis(userInfo);
@@ -2302,7 +2318,7 @@ export default function ReportPage({
 										</div>
 
 										{/* Analysis */}
-										<div className="w-full p-3 sm:p-4 lg:ml-15 lg:w-auto">
+										<div className="w-full p-1 sm:p-4 lg:ml-15 lg:w-auto five-element-analysis">
 											{/* <div
 												className="mb-2 text-lg font-semibold"
 												style={{
@@ -2421,7 +2437,7 @@ export default function ReportPage({
 				</section>
 
 				{/* Zodiac and Four Pillars Detail Section */}
-				<section className="w-full sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-8 lg:p-13 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+				<section className="w-[95%] sm:w-[85%] mx-auto bg-white rounded-[24px] sm:rounded-[48px] lg:rounded-[80px] p-3 sm:p-3 lg:p-12 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.18)]">
 					{(() => {
 						const analysis = calculateWuxingAnalysis(userInfo);
 						if (!analysis) return null;
@@ -2449,11 +2465,11 @@ export default function ReportPage({
 							zodiacAnimals[(birthYear - 1900) % 12];
 
 						return (
-							<div className="flex flex-col items-start gap-6 lg:flex-row lg:justify-between lg:gap-0">
+							<div className="flex flex-col items-center justify-center gap-0 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
 								{/* Left Side - Zodiac Animal */}
-								<div className="w-full lg:w-[20%] ml-10 flex items-center justify-center">
+								<div className="w-full lg:w-[22%] flex items-center justify-center mb-4 lg:mb-0">
 									<div className="text-center">
-										<div className="flex items-center justify-center w-20 h-20 mx-auto mb-4 sm:w-24 sm:h-24 lg:w-102 lg:h-102">
+										<div className="flex items-center justify-center w-40 h-40 mx-8 mx-auto mt-3 mb-0 sm:mb-4 sm:w-50 sm:h-50 lg:w-90 lg:h-90">
 											<Image
 												src={`/images/animals/${
 													userZodiac === "龍"
@@ -2501,25 +2517,9 @@ export default function ReportPage({
 									</div>
 								</div>
 
-								{/* Right Side - Enhanced Display Following Image Design */}
 								<div className="w-full lg:w-[70%] flex flex-col gap-4 sm:gap-6">
-									{/* Header with Title */}
-									<div className="text-center lg:text-start">
-										<h3
-											className="font-bold text-[#A3B116] mb-4 sm:mb-6"
-											style={{
-												fontFamily:
-													"Noto Serif TC, serif",
-												fontSize:
-													"clamp(36px, 8vw, 70px)",
-											}}
-										>
-											主要結論
-										</h3>
-									</div>
-
 									{/* Four Pillars in responsive layout */}
-									<div className="flex flex-wrap justify-center gap-3 mb-4 lg:justify-start sm:gap-4 sm:mb-6">
+									<div className="flex flex-wrap justify-center gap-5 mt-4 mb-4 lg:justify-start sm:gap-4 sm:mb-6 lg:mt-10">
 										{/* 年柱 */}
 										<div className="bg-white border-2 border-black rounded-full px-3 sm:px-6 lg:px-10 py-2 min-w-[100px] sm:min-w-[120px] lg:min-w-[140px] text-center flex-shrink-0">
 											<div
@@ -2593,12 +2593,18 @@ export default function ReportPage({
 										</div>
 									</div>
 
-									{/* Two main analysis sections side by side like the image */}
-									<div className="flex justify-start gap-8">
+									<div className="flex flex-row justify-center gap-4 sm:flex-row md:justify-start lg:justify-start xl:justify-start sm:justify-center sm:gap-8">
 										{/* Left section - Wuxing Analysis */}
-										<div className="bg-[#A3B116] text-white px-15 py-4 rounded-full">
+										<div
+											className="px-4 py-3 text-white rounded-full shadow-lg sm:py-4 sm:px-8"
+											style={{
+												backgroundColor: "#A3B116",
+												border: `3px solid #A3B116`,
+												boxShadow: `0 4px 15px #A3B11640`,
+											}}
+										>
 											<div
-												className="text-xl font-bold text-center"
+												className="text-lg font-bold text-center sm:text-xl"
 												style={{
 													fontFamily:
 														"Noto Serif TC, serif",
@@ -2613,9 +2619,14 @@ export default function ReportPage({
 										</div>
 
 										{/* Right section - Missing Elements Analysis (Logic-based) */}
-										<div className="bg-[#A3B116] text-white px-15 py-4 rounded-full">
+										<div
+											className="px-4 py-3 text-white rounded-full shadow-lg sm:py-4 sm:px-8"
+											style={{
+												backgroundColor: "#A3B116",
+											}}
+										>
 											<div
-												className="text-xl font-bold text-center"
+												className="text-lg font-bold text-center sm:text-xl"
 												style={{
 													fontFamily:
 														"Noto Serif TC, serif",
@@ -2650,9 +2661,9 @@ export default function ReportPage({
 									</div>
 
 									{/* Advice section like the image */}
-									<div className="mt-6">
+									<div className="mt-4 sm:mt-6">
 										<p
-											className="text-lg text-[#5A5A5A] text-start leading-relaxed"
+											className="text-sm sm:text-lg text-[#5A5A5A] text-start leading-relaxed"
 											style={{
 												fontFamily:
 													"Noto Sans HK, sans-serif",
@@ -2691,26 +2702,26 @@ export default function ReportPage({
 					})()}
 				</section>
 				{/* 四柱排盤&納音解析 - Tabbed Interface */}
-				<section className="relative w-full sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-12 lg:p-20 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+				<section className="relative w-[95%] sm:w-[95%] lg:w-[90%] mx-auto bg-white rounded-[20px] sm:rounded-[30px] lg:rounded-[40px] p-3 sm:p-6 lg:p-12 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
 					{/* Background Image at Bottom Right */}
-					<div className="absolute bottom-0 right-0 overflow-hidden rounded-br-[20px] sm:rounded-br-[26px]">
+					<div className="absolute bottom-0 right-0 overflow-hidden rounded-br-[20px] sm:rounded-br-[30px] lg:rounded-br-[40px]">
 						<Image
 							src="/images/report/pillarbg.png"
 							alt="Pillar Background"
 							width={500}
 							height={500}
-							className="hidden object-contain opacity-40 sm:block"
+							className="hidden object-contain opacity-40 lg:block"
 							style={{ pointerEvents: "none" }}
 						/>
 					</div>
 
-					<div className="relative z-10 mb-6 sm:mb-8">
+					<div className="relative z-10 mb-4 sm:mb-6 lg:mb-8">
 						<h2
 							className="font-bold text-[#A3B116] text-center lg:text-left"
 							style={{
 								fontFamily: "Noto Serif TC, serif",
-								fontSize: "clamp(32px, 8vw, 70px)",
-								marginBottom: "clamp(24px, 4vw, 60px)",
+								fontSize: "clamp(24px, 6vw, 56px)",
+								marginBottom: "clamp(16px, 3vw, 40px)",
 							}}
 						>
 							四柱排盤&納音解析
@@ -2718,26 +2729,26 @@ export default function ReportPage({
 					</div>
 
 					{/* Navigation Tabs */}
-					<div className="relative z-10 mb-6 sm:mb-8">
-						<div className="flex flex-wrap justify-center gap-3 sm:gap-6 lg:gap-10">
+					<div className="relative z-10 mb-4 sm:mb-6 lg:mb-8">
+						<div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-center sm:gap-3 lg:gap-6">
 							{["年柱", "月柱", "日柱", "時柱"].map((pillar) => (
 								<button
 									key={pillar}
 									onClick={() => setActivePillar(pillar)}
-									className="flex-shrink-0 transition-all duration-200"
+									className="flex-shrink-0 w-full text-center transition-all duration-200 sm:w-auto"
 									style={{
-										width: "clamp(120px, 25vw, 220px)",
-										height: "clamp(40px, 8vw, 60px)",
-										borderRadius: 26,
+										minWidth: "clamp(100px, 20vw, 180px)",
+										height: "clamp(35px, 8vw, 50px)",
+										borderRadius: "clamp(16px, 4vw, 26px)",
 										backgroundColor: "#FFFFFF",
 										color: "#000000",
 										border:
 											activePillar === pillar
-												? "7px solid #A3B116"
-												: "7px solid transparent",
+												? "4px solid #A3B116"
+												: "4px solid transparent",
 										fontFamily: "Noto Sans HK, sans-serif",
 										fontWeight: 600,
-										fontSize: "clamp(14px, 3vw, 18px)",
+										fontSize: "clamp(12px, 3vw, 16px)",
 										cursor: "pointer",
 										boxShadow:
 											"0 2px 6.2px rgba(0, 0, 0, 0.4)",
@@ -2754,8 +2765,8 @@ export default function ReportPage({
 						{/* 年柱 Content */}
 						{activePillar === "年柱" && (
 							<>
-								<div className="flex flex-col items-start gap-4 mb-6 lg:flex-row lg:justify-start sm:mb-8 lg:mb-10 lg:gap-0">
-									{/* Left side - H2 title with speaker button */}
+								<div className="flex flex-col items-center gap-3 mb-4 sm:mb-6 lg:flex-row lg:justify-start lg:items-start lg:gap-6">
+									{/* Left side - H2 title */}
 									<div className="flex items-center justify-center w-full lg:justify-start lg:w-auto">
 										<h2
 											id={`section-0-1`}
@@ -2767,7 +2778,7 @@ export default function ReportPage({
 													"Noto Serif TC, serif",
 												fontWeight: 800,
 												fontSize:
-													"clamp(32px, 6vw, 56px)",
+													"clamp(24px, 5vw, 42px)",
 												color: "#A3B115",
 											}}
 										>
@@ -2775,10 +2786,10 @@ export default function ReportPage({
 										</h2>
 									</div>
 
-									{/* Right side - Two buttons */}
-									<div className="flex flex-col w-full gap-3 ml-0 sm:flex-row sm:gap-4 sm:ml-4 lg:ml-8 sm:w-auto">
+									{/* Right side - Tag buttons */}
+									<div className="flex flex-col w-full gap-2 sm:gap-3 lg:ml-4 lg:w-auto">
 										{/* Tag buttons */}
-										<div className="flex flex-wrap items-center justify-center gap-2 mb-4 sm:gap-3 sm:mb-6 sm:justify-start interactive-tabs">
+										<div className="flex flex-wrap items-center justify-center gap-2 mb-3 sm:gap-3 sm:mb-4 lg:justify-start interactive-tabs">
 											{Object.entries(
 												reportDocData.nianzhuData
 											).map(([key, value], index) => {
@@ -2820,11 +2831,13 @@ export default function ReportPage({
 												return (
 													<button
 														key={index}
-														className="transition-all duration-200 hover:border-6"
+														className="flex-shrink-0 transition-all duration-200 hover:border-6"
 														style={{
-															width: 243,
-															height: 61,
-															borderRadius: 10000,
+															minWidth:
+																"clamp(140px, 30vw, 200px)",
+															height: "clamp(35px, 8vw, 50px)",
+															borderRadius:
+																"clamp(20px, 5vw, 30px)",
 															backgroundColor:
 																isLastButton
 																	? "#FFFFFF"
@@ -2837,12 +2850,13 @@ export default function ReportPage({
 															border:
 																openedNianzhuIndex ===
 																index
-																	? `6px solid #C9D923`
-																	: "6px solid transparent",
+																	? `3px solid #C9D923`
+																	: "3px solid transparent",
 															fontFamily:
 																"Noto Sans HK, sans-serif",
 															fontWeight: 400,
-															fontSize: 16,
+															fontSize:
+																"clamp(12px, 3vw, 14px)",
 															cursor: "pointer",
 															boxShadow:
 																"0 2px 6.2px rgba(0, 0, 0, 0.4)",
@@ -2881,16 +2895,14 @@ export default function ReportPage({
 										</div>
 									</div>
 								</div>
-								<div className="w-[95%]">
+								<div className="w-full sm:w-[95%]">
 									<p
+										className="mb-3 text-sm leading-relaxed text-black sm:text-lg lg:text-xl sm:mb-4"
 										style={{
 											fontFamily:
 												"Noto Sans HK, sans-serif",
 											fontWeight: 400,
-											fontSize: 20,
-											color: "#000000",
 											lineHeight: 1.8,
-											marginBottom: 6,
 										}}
 									>
 										{t("p1-5")}
@@ -2903,7 +2915,7 @@ export default function ReportPage({
 										<div
 											key={index}
 											ref={setNianzhuRef(index)}
-											className={`flex mt-4 ${isPrinting ? "tab-content-print" : ""}`}
+											className={`flex flex-col lg:flex-row mt-3 sm:mt-4 gap-3 sm:gap-4 ${isPrinting ? "tab-content-print" : ""}`}
 											style={
 												isPrinting
 													? {}
@@ -2911,7 +2923,7 @@ export default function ReportPage({
 															maxHeight:
 																openedNianzhuIndex ===
 																index
-																	? 500
+																	? "auto"
 																	: 0,
 															overflow: "hidden",
 															transition:
@@ -2924,15 +2936,14 @@ export default function ReportPage({
 														}
 											}
 										>
-											{/* Left side - Content (50% width) */}
-											<div className="w-1/2 pr-4">
+											{/* Left side - Content */}
+											<div className="w-full lg:w-1/2 lg:pr-4">
 												<p
+													className="mb-3 text-sm leading-relaxed text-black sm:text-lg lg:text-xl sm:mb-4"
 													style={{
 														fontFamily:
 															"Noto Sans HK, sans-serif",
 														fontWeight: 400,
-														fontSize: 20,
-														color: "#000000",
 														lineHeight: 1.8,
 													}}
 												>
@@ -2940,10 +2951,10 @@ export default function ReportPage({
 												</p>
 											</div>
 
-											{/* Right side - Image (50% width) */}
-											<div className="flex items-center justify-center w-1/2">
+											{/* Right side - Image */}
+											<div className="flex items-center justify-center w-full lg:w-1/2">
 												<Image
-													className="object-contain max-w-full max-h-full"
+													className="object-contain w-full h-auto max-w-xs sm:max-w-sm lg:max-w-md"
 													priority
 													src={(() => {
 														// Extract element from key - handle new format like 天干金, 地支木, 综合金木
@@ -3004,22 +3015,24 @@ export default function ReportPage({
 								)}
 
 								{/* AI Life Stage Analysis Section for 年柱 */}
-								<div className="p-8">
+								<div className="p-3 sm:p-6 lg:p-8">
 									{isLoadingLifeStage["年柱"] ? (
-										<div className="py-8 text-center">
-											<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
-											<p className="text-lg text-[#5A5A5A]">
+										<div className="py-6 text-center sm:py-8">
+											<div className="animate-spin rounded-full w-8 h-8 sm:w-12 sm:h-12 border-b-2 border-[#A3B116] mx-auto mb-3 sm:mb-4"></div>
+											<p className="text-sm sm:text-lg text-[#5A5A5A]">
 												正在分析您的童年生活特征...
 											</p>
 										</div>
 									) : lifeStageAnalysis["年柱"] ? (
 										<div>
-											<div className="mb-6">
+											<div className="mb-4 sm:mb-6">
 												<h4
-													className="text-4xl font-bold text-[#A3B116] mb-4"
+													className="font-bold text-[#A3B116] mb-3 sm:mb-4 text-center sm:text-left"
 													style={{
 														fontFamily:
 															"Noto Serif TC, serif",
+														fontSize:
+															"clamp(20px, 5vw, 36px)",
 													}}
 												>
 													{
@@ -3028,13 +3041,15 @@ export default function ReportPage({
 														].title
 													}
 												</h4>
-												<div className="p-4 mb-4">
+												<div className="p-2 mb-3 sm:p-4 sm:mb-4">
 													<p
-														className="text-lg leading-relaxed text-black"
+														className="leading-relaxed text-black"
 														style={{
 															fontFamily:
 																"Noto Sans HK, sans-serif",
 															fontWeight: 400,
+															fontSize:
+																"clamp(14px, 3.5vw, 18px)",
 															lineHeight: 1.8,
 														}}
 													>
@@ -3045,13 +3060,15 @@ export default function ReportPage({
 														}
 													</p>
 												</div>
-												<div className="p-4 mb-4 ">
+												<div className="p-2 mb-3 sm:p-4 sm:mb-4">
 													<p
-														className="text-lg leading-relaxed text-black"
+														className="leading-relaxed text-black"
 														style={{
 															fontFamily:
 																"Noto Sans HK, sans-serif",
 															fontWeight: 400,
+															fontSize:
+																"clamp(14px, 3.5vw, 18px)",
 															lineHeight: 1.8,
 														}}
 													>
@@ -3064,13 +3081,15 @@ export default function ReportPage({
 												</div>
 												{lifeStageAnalysis["年柱"]
 													.wisdom && (
-													<div className="p-4 ">
+													<div className="p-2 sm:p-4">
 														<p
-															className="text-lg leading-relaxed text-black"
+															className="leading-relaxed text-black"
 															style={{
 																fontFamily:
 																	"Noto Sans HK, sans-serif",
 																fontWeight: 400,
+																fontSize:
+																	"clamp(14px, 3.5vw, 18px)",
 																lineHeight: 1.8,
 															}}
 														>
@@ -3085,12 +3104,12 @@ export default function ReportPage({
 											</div>
 										</div>
 									) : (
-										<div className="py-8">
-											<div className="space-y-4">
-												<Skeleton className="w-3/4 h-6" />
-												<Skeleton className="w-full h-6" />
-												<Skeleton className="w-5/6 h-6" />
-												<Skeleton className="w-2/3 h-6" />
+										<div className="py-6 sm:py-8">
+											<div className="space-y-3 sm:space-y-4">
+												<Skeleton className="w-3/4 h-4 sm:h-6" />
+												<Skeleton className="w-full h-4 sm:h-6" />
+												<Skeleton className="w-5/6 h-4 sm:h-6" />
+												<Skeleton className="w-2/3 h-4 sm:h-6" />
 											</div>
 										</div>
 									)}
@@ -3101,9 +3120,9 @@ export default function ReportPage({
 						{/* 月柱 Content */}
 						{activePillar === "月柱" && (
 							<>
-								<div className="flex items-start justify-start mb-10">
+								<div className="flex flex-col items-center gap-3 mb-4 sm:mb-6 lg:flex-row lg:justify-start lg:items-start lg:gap-6">
 									{/* Left side - H2 title */}
-									<div className="flex items-center">
+									<div className="flex items-center justify-center w-full lg:justify-start lg:w-auto">
 										<h2
 											id={`section-0-2`}
 											ref={(el) =>
@@ -3113,7 +3132,8 @@ export default function ReportPage({
 												fontFamily:
 													"Noto Serif TC, serif",
 												fontWeight: 800,
-												fontSize: 56,
+												fontSize:
+													"clamp(24px, 5vw, 42px)",
 												color: "#A3B115",
 											}}
 										>
@@ -3122,9 +3142,9 @@ export default function ReportPage({
 									</div>
 
 									{/* Right side - Tag buttons */}
-									<div className="flex flex-row gap-4 ml-8">
+									<div className="flex flex-col w-full gap-2 sm:gap-3 lg:ml-4 lg:w-auto">
 										{/* Tag buttons */}
-										<div className="flex flex-wrap gap-3 mb-6 interactive-tabs">
+										<div className="flex flex-wrap items-center justify-center gap-2 mb-3 sm:gap-3 sm:mb-4 lg:justify-start interactive-tabs">
 											{Object.entries(
 												reportDocData.yuezhuData
 											).map(([key, value], index) => {
@@ -3166,11 +3186,13 @@ export default function ReportPage({
 												return (
 													<button
 														key={index}
-														className="transition-all duration-200 hover:border-6"
+														className="flex-shrink-0 transition-all duration-200 hover:border-6"
 														style={{
-															width: 243,
-															height: 61,
-															borderRadius: 10000,
+															minWidth:
+																"clamp(140px, 30vw, 200px)",
+															height: "clamp(35px, 8vw, 50px)",
+															borderRadius:
+																"clamp(20px, 5vw, 30px)",
 															backgroundColor:
 																isLastButton
 																	? "#FFFFFF"
@@ -3183,12 +3205,13 @@ export default function ReportPage({
 															border:
 																openedYuezhuIndex ===
 																index
-																	? `6px solid #C9D923`
-																	: "6px solid transparent",
+																	? `3px solid #C9D923`
+																	: "3px solid transparent",
 															fontFamily:
 																"Noto Sans HK, sans-serif",
 															fontWeight: 400,
-															fontSize: 16,
+															fontSize:
+																"clamp(12px, 3vw, 14px)",
 															cursor: "pointer",
 															boxShadow:
 																"0 2px 6.2px rgba(0, 0, 0, 0.4)",
@@ -3227,16 +3250,14 @@ export default function ReportPage({
 										</div>
 									</div>
 								</div>
-								<div className="w-[95%]">
+								<div className="w-full sm:w-[95%]">
 									<p
+										className="mb-3 text-sm leading-relaxed text-black sm:text-lg lg:text-xl sm:mb-4"
 										style={{
 											fontFamily:
 												"Noto Sans HK, sans-serif",
 											fontWeight: 400,
-											fontSize: 20,
-											color: "#000000",
 											lineHeight: 1.8,
-											marginBottom: 6,
 										}}
 									>
 										{t("p1-6")}
@@ -3248,7 +3269,7 @@ export default function ReportPage({
 										<div
 											key={index}
 											ref={setYuezhuRef(index)}
-											className={`flex mt-4 ${isPrinting ? "tab-content-print" : ""}`}
+											className={`flex flex-col lg:flex-row mt-3 sm:mt-4 gap-3 sm:gap-4 ${isPrinting ? "tab-content-print" : ""}`}
 											style={
 												isPrinting
 													? {}
@@ -3256,7 +3277,7 @@ export default function ReportPage({
 															maxHeight:
 																openedYuezhuIndex ===
 																index
-																	? 500
+																	? "auto"
 																	: 0,
 															overflow: "hidden",
 															transition:
@@ -3269,15 +3290,14 @@ export default function ReportPage({
 														}
 											}
 										>
-											{/* Left side - Content (50% width) */}
-											<div className="w-1/2 pr-4">
+											{/* Left side - Content */}
+											<div className="w-full lg:w-1/2 lg:pr-4">
 												<p
+													className="mb-3 text-sm leading-relaxed text-black sm:text-lg lg:text-xl sm:mb-4"
 													style={{
 														fontFamily:
 															"Noto Sans HK, sans-serif",
 														fontWeight: 400,
-														fontSize: 20,
-														color: "#000000",
 														lineHeight: 1.8,
 													}}
 												>
@@ -3285,10 +3305,10 @@ export default function ReportPage({
 												</p>
 											</div>
 
-											{/* Right side - Image (50% width) */}
-											<div className="flex items-center justify-center w-1/2">
+											{/* Right side - Image */}
+											<div className="flex items-center justify-center w-full lg:w-1/2">
 												<Image
-													className="object-contain max-w-full max-h-full"
+													className="object-contain w-full h-auto max-w-xs sm:max-w-sm lg:max-w-md"
 													priority
 													src={(() => {
 														// Extract element from key - handle new format like 天干金, 地支木, 综合金木
@@ -3349,22 +3369,24 @@ export default function ReportPage({
 								)}
 
 								{/* AI Life Stage Analysis Section for 月柱 */}
-								<div className="p-8">
+								<div className="p-3 sm:p-6 lg:p-8">
 									{isLoadingLifeStage["月柱"] ? (
-										<div className="py-8 text-center">
-											<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
-											<p className="text-lg text-[#5A5A5A]">
+										<div className="py-6 text-center sm:py-8">
+											<div className="animate-spin rounded-full w-8 h-8 sm:w-12 sm:h-12 border-b-2 border-[#A3B116] mx-auto mb-3 sm:mb-4"></div>
+											<p className="text-sm sm:text-lg text-[#5A5A5A]">
 												正在分析您的青年时期特征...
 											</p>
 										</div>
 									) : lifeStageAnalysis["月柱"] ? (
 										<div>
-											<div className="mb-6">
+											<div className="mb-4 sm:mb-6">
 												<h4
-													className="text-4xl font-bold text-[#A3B116] mb-4"
+													className="font-bold text-[#A3B116] mb-3 sm:mb-4 text-center sm:text-left"
 													style={{
 														fontFamily:
 															"Noto Serif TC, serif",
+														fontSize:
+															"clamp(20px, 5vw, 36px)",
 													}}
 												>
 													{
@@ -3373,13 +3395,15 @@ export default function ReportPage({
 														].title
 													}
 												</h4>
-												<div className="p-4 mb-4">
+												<div className="p-2 mb-3 sm:p-4 sm:mb-4">
 													<p
-														className="text-lg leading-relaxed text-black"
+														className="leading-relaxed text-black"
 														style={{
 															fontFamily:
 																"Noto Sans HK, sans-serif",
 															fontWeight: 400,
+															fontSize:
+																"clamp(14px, 3.5vw, 18px)",
 															lineHeight: 1.8,
 														}}
 													>
@@ -3390,13 +3414,15 @@ export default function ReportPage({
 														}
 													</p>
 												</div>
-												<div className="p-4 mb-4">
+												<div className="p-2 mb-3 sm:p-4 sm:mb-4">
 													<p
-														className="text-lg leading-relaxed text-black"
+														className="leading-relaxed text-black"
 														style={{
 															fontFamily:
 																"Noto Sans HK, sans-serif",
 															fontWeight: 400,
+															fontSize:
+																"clamp(14px, 3.5vw, 18px)",
 															lineHeight: 1.8,
 														}}
 													>
@@ -3410,13 +3436,15 @@ export default function ReportPage({
 												</div>
 												{lifeStageAnalysis["月柱"]
 													.wisdom && (
-													<div className="p-4">
+													<div className="p-2 sm:p-4">
 														<p
-															className="text-lg leading-relaxed text-black"
+															className="leading-relaxed text-black"
 															style={{
 																fontFamily:
 																	"Noto Sans HK, sans-serif",
 																fontWeight: 400,
+																fontSize:
+																	"clamp(14px, 3.5vw, 18px)",
 																lineHeight: 1.8,
 															}}
 														>
@@ -3434,12 +3462,12 @@ export default function ReportPage({
 											</div>
 										</div>
 									) : (
-										<div className="py-8">
-											<div className="space-y-4">
-												<Skeleton className="w-3/4 h-6" />
-												<Skeleton className="w-full h-6" />
-												<Skeleton className="w-5/6 h-6" />
-												<Skeleton className="w-2/3 h-6" />
+										<div className="py-6 sm:py-8">
+											<div className="space-y-3 sm:space-y-4">
+												<Skeleton className="w-3/4 h-4 sm:h-6" />
+												<Skeleton className="w-full h-4 sm:h-6" />
+												<Skeleton className="w-5/6 h-4 sm:h-6" />
+												<Skeleton className="w-2/3 h-4 sm:h-6" />
 											</div>
 										</div>
 									)}
@@ -3450,9 +3478,9 @@ export default function ReportPage({
 						{/* 日柱 Content */}
 						{activePillar === "日柱" && (
 							<>
-								<div className="flex items-start justify-start mb-10">
+								<div className="flex flex-col items-center gap-3 mb-4 sm:mb-6 lg:flex-row lg:justify-start lg:items-start lg:gap-6">
 									{/* Left side - H2 title */}
-									<div className="flex items-center">
+									<div className="flex items-center justify-center w-full lg:justify-start lg:w-auto">
 										<h2
 											id={`section-0-3`}
 											ref={(el) =>
@@ -3462,7 +3490,8 @@ export default function ReportPage({
 												fontFamily:
 													"Noto Serif TC, serif",
 												fontWeight: 800,
-												fontSize: 56,
+												fontSize:
+													"clamp(24px, 5vw, 42px)",
 												color: "#A3B115",
 											}}
 										>
@@ -3471,9 +3500,9 @@ export default function ReportPage({
 									</div>
 
 									{/* Right side - Tag buttons */}
-									<div className="flex flex-row gap-4 ml-8">
+									<div className="flex flex-col w-full gap-2 sm:gap-3 lg:ml-4 lg:w-auto">
 										{/* Tag buttons */}
-										<div className="flex flex-wrap gap-3 mb-6 interactive-tabs">
+										<div className="flex flex-wrap items-center justify-center gap-2 mb-3 sm:gap-3 sm:mb-4 lg:justify-start interactive-tabs">
 											{Object.entries(
 												reportDocData.rizhuData
 											).map(([key, value], index) => {
@@ -3515,11 +3544,13 @@ export default function ReportPage({
 												return (
 													<button
 														key={index}
-														className="transition-all duration-200 hover:border-6"
+														className="flex-shrink-0 transition-all duration-200 hover:border-6"
 														style={{
-															width: 243,
-															height: 61,
-															borderRadius: 10000,
+															minWidth:
+																"clamp(140px, 30vw, 200px)",
+															height: "clamp(35px, 8vw, 50px)",
+															borderRadius:
+																"clamp(20px, 5vw, 30px)",
 															backgroundColor:
 																isLastButton
 																	? "#FFFFFF"
@@ -3532,12 +3563,13 @@ export default function ReportPage({
 															border:
 																openedRizhuIndex ===
 																index
-																	? `6px solid #C9D923`
-																	: "6px solid transparent",
+																	? `3px solid #C9D923`
+																	: "3px solid transparent",
 															fontFamily:
 																"Noto Sans HK, sans-serif",
 															fontWeight: 400,
-															fontSize: 16,
+															fontSize:
+																"clamp(12px, 3vw, 14px)",
 															cursor: "pointer",
 															boxShadow:
 																"0 2px 6.2px rgba(0, 0, 0, 0.4)",
@@ -3576,16 +3608,14 @@ export default function ReportPage({
 										</div>
 									</div>
 								</div>
-								<div className="w-[95%]">
+								<div className="w-full sm:w-[95%]">
 									<p
+										className="mb-3 text-sm leading-relaxed text-black sm:text-lg lg:text-xl sm:mb-4"
 										style={{
 											fontFamily:
 												"Noto Sans HK, sans-serif",
 											fontWeight: 400,
-											fontSize: 20,
-											color: "#000000",
 											lineHeight: 1.8,
-											marginBottom: 6,
 										}}
 									>
 										{t("p1-7")}
@@ -3598,7 +3628,7 @@ export default function ReportPage({
 										<div
 											key={index}
 											ref={setRizhuRef(index)}
-											className={`flex mt-4 ${isPrinting ? "tab-content-print" : ""}`}
+											className={`flex flex-col lg:flex-row mt-3 sm:mt-4 gap-3 sm:gap-4 ${isPrinting ? "tab-content-print" : ""}`}
 											style={
 												isPrinting
 													? {}
@@ -3606,7 +3636,7 @@ export default function ReportPage({
 															maxHeight:
 																openedRizhuIndex ===
 																index
-																	? 500
+																	? "auto"
 																	: 0,
 															overflow: "hidden",
 															transition:
@@ -3619,15 +3649,14 @@ export default function ReportPage({
 														}
 											}
 										>
-											{/* Left side - Content (50% width) */}
-											<div className="w-1/2 pr-4">
+											{/* Left side - Content */}
+											<div className="w-full lg:w-1/2 lg:pr-4">
 												<p
+													className="mb-3 text-sm leading-relaxed text-black sm:text-lg lg:text-xl sm:mb-4"
 													style={{
 														fontFamily:
 															"Noto Sans HK, sans-serif",
 														fontWeight: 400,
-														fontSize: 20,
-														color: "#000000",
 														lineHeight: 1.8,
 													}}
 												>
@@ -3635,10 +3664,10 @@ export default function ReportPage({
 												</p>
 											</div>
 
-											{/* Right side - Image (50% width) */}
-											<div className="flex items-center justify-center w-1/2">
+											{/* Right side - Image */}
+											<div className="flex items-center justify-center w-full lg:w-1/2">
 												<Image
-													className="object-contain max-w-full max-h-full"
+													className="object-contain w-full h-auto max-w-xs sm:max-w-sm lg:max-w-md"
 													priority
 													src={(() => {
 														// Extract element from key - handle new format like 天干金, 地支木, 综合金木
@@ -3698,22 +3727,24 @@ export default function ReportPage({
 									)
 								)}
 								{/* AI Life Stage Analysis Section for 日柱 */}
-								<div className="p-8">
+								<div className="p-3 sm:p-6 lg:p-8">
 									{isLoadingLifeStage["日柱"] ? (
-										<div className="py-8 text-center">
-											<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
-											<p className="text-lg text-[#5A5A5A]">
+										<div className="py-6 text-center sm:py-8">
+											<div className="animate-spin rounded-full w-8 h-8 sm:w-12 sm:h-12 border-b-2 border-[#A3B116] mx-auto mb-3 sm:mb-4"></div>
+											<p className="text-sm sm:text-lg text-[#5A5A5A]">
 												正在分析您的成年时期特征...
 											</p>
 										</div>
 									) : lifeStageAnalysis["日柱"] ? (
 										<div>
-											<div className="mb-6">
+											<div className="mb-4 sm:mb-6">
 												<h4
-													className="text-4xl font-bold text-[#A3B116] mb-4"
+													className="font-bold text-[#A3B116] mb-3 sm:mb-4 text-center sm:text-left"
 													style={{
 														fontFamily:
 															"Noto Serif TC, serif",
+														fontSize:
+															"clamp(20px, 5vw, 36px)",
 													}}
 												>
 													{
@@ -3722,13 +3753,15 @@ export default function ReportPage({
 														].title
 													}
 												</h4>
-												<div className="p-4 mb-4">
+												<div className="p-2 mb-3 sm:p-4 sm:mb-4">
 													<p
-														className="text-lg leading-relaxed text-black"
+														className="leading-relaxed text-black"
 														style={{
 															fontFamily:
 																"Noto Sans HK, sans-serif",
 															fontWeight: 400,
+															fontSize:
+																"clamp(14px, 3.5vw, 18px)",
 															lineHeight: 1.8,
 														}}
 													>
@@ -3739,13 +3772,15 @@ export default function ReportPage({
 														}
 													</p>
 												</div>
-												<div className="p-4 mb-4">
+												<div className="p-2 mb-3 sm:p-4 sm:mb-4">
 													<p
-														className="text-lg leading-relaxed text-black"
+														className="leading-relaxed text-black"
 														style={{
 															fontFamily:
 																"Noto Sans HK, sans-serif",
 															fontWeight: 400,
+															fontSize:
+																"clamp(14px, 3.5vw, 18px)",
 															lineHeight: 1.8,
 														}}
 													>
@@ -3758,13 +3793,15 @@ export default function ReportPage({
 												</div>
 												{lifeStageAnalysis["日柱"]
 													.wisdom && (
-													<div className="p-4">
+													<div className="p-2 sm:p-4">
 														<p
-															className="text-lg leading-relaxed text-black"
+															className="leading-relaxed text-black"
 															style={{
 																fontFamily:
 																	"Noto Sans HK, sans-serif",
 																fontWeight: 400,
+																fontSize:
+																	"clamp(14px, 3.5vw, 18px)",
 																lineHeight: 1.8,
 															}}
 														>
@@ -3779,12 +3816,12 @@ export default function ReportPage({
 											</div>
 										</div>
 									) : (
-										<div className="py-8">
-											<div className="space-y-4">
-												<Skeleton className="w-3/4 h-6" />
-												<Skeleton className="w-full h-6" />
-												<Skeleton className="w-5/6 h-6" />
-												<Skeleton className="w-2/3 h-6" />
+										<div className="py-6 sm:py-8">
+											<div className="space-y-3 sm:space-y-4">
+												<Skeleton className="w-3/4 h-4 sm:h-6" />
+												<Skeleton className="w-full h-4 sm:h-6" />
+												<Skeleton className="w-5/6 h-4 sm:h-6" />
+												<Skeleton className="w-2/3 h-4 sm:h-6" />
 											</div>
 										</div>
 									)}
@@ -3795,9 +3832,9 @@ export default function ReportPage({
 						{/* 時柱 Content */}
 						{activePillar === "時柱" && (
 							<>
-								<div className="flex items-start justify-start mb-10">
+								<div className="flex flex-col items-center gap-3 mb-4 sm:mb-6 lg:flex-row lg:justify-start lg:items-start lg:gap-6">
 									{/* Left side - H2 title */}
-									<div className="flex items-center">
+									<div className="flex items-center justify-center w-full lg:justify-start lg:w-auto">
 										<h2
 											id={`section-0-4`}
 											ref={(el) =>
@@ -3807,7 +3844,8 @@ export default function ReportPage({
 												fontFamily:
 													"Noto Serif TC, serif",
 												fontWeight: 800,
-												fontSize: 56,
+												fontSize:
+													"clamp(24px, 5vw, 42px)",
 												color: "#A3B115",
 											}}
 										>
@@ -3816,9 +3854,9 @@ export default function ReportPage({
 									</div>
 
 									{/* Right side - Tag buttons */}
-									<div className="flex flex-row gap-4 ml-8">
+									<div className="flex flex-col w-full gap-2 sm:gap-3 lg:ml-4 lg:w-auto">
 										{/* Tag buttons */}
-										<div className="flex flex-wrap gap-3 mb-6 interactive-tabs">
+										<div className="flex flex-wrap items-center justify-center gap-2 mb-3 sm:gap-3 sm:mb-4 lg:justify-start interactive-tabs">
 											{Object.entries(
 												reportDocData.shizhuData
 											).map(([key, value], index) => {
@@ -3860,11 +3898,13 @@ export default function ReportPage({
 												return (
 													<button
 														key={index}
-														className="transition-all duration-200 hover:border-6"
+														className="flex-shrink-0 transition-all duration-200 hover:border-6"
 														style={{
-															width: 243,
-															height: 61,
-															borderRadius: 10000,
+															minWidth:
+																"clamp(140px, 30vw, 200px)",
+															height: "clamp(35px, 8vw, 50px)",
+															borderRadius:
+																"clamp(20px, 5vw, 30px)",
 															backgroundColor:
 																isLastButton
 																	? "#FFFFFF"
@@ -3877,12 +3917,13 @@ export default function ReportPage({
 															border:
 																openedShizhuIndex ===
 																index
-																	? `6px solid #C9D923`
-																	: "6px solid transparent",
+																	? `3px solid #C9D923`
+																	: "3px solid transparent",
 															fontFamily:
 																"Noto Sans HK, sans-serif",
 															fontWeight: 400,
-															fontSize: 16,
+															fontSize:
+																"clamp(12px, 3vw, 14px)",
 															cursor: "pointer",
 															boxShadow:
 																"0 2px 6.2px rgba(0, 0, 0, 0.4)",
@@ -3921,16 +3962,14 @@ export default function ReportPage({
 										</div>
 									</div>
 								</div>
-								<div className="w-[95%]">
+								<div className="w-full sm:w-[95%]">
 									<p
+										className="mb-3 text-sm leading-relaxed text-black sm:text-lg lg:text-xl sm:mb-4"
 										style={{
 											fontFamily:
 												"Noto Sans HK, sans-serif",
 											fontWeight: 400,
-											fontSize: 20,
-											color: "#000000",
 											lineHeight: 1.8,
-											marginBottom: 6,
 										}}
 									>
 										{t("p1-8")}
@@ -3943,7 +3982,7 @@ export default function ReportPage({
 										<div
 											key={index}
 											ref={setShizhuRef(index)}
-											className={`flex mt-4 ${isPrinting ? "tab-content-print" : ""}`}
+											className={`flex flex-col lg:flex-row mt-3 sm:mt-4 gap-3 sm:gap-4 ${isPrinting ? "tab-content-print" : ""}`}
 											style={
 												isPrinting
 													? {}
@@ -3951,7 +3990,7 @@ export default function ReportPage({
 															maxHeight:
 																openedShizhuIndex ===
 																index
-																	? 500
+																	? "auto"
 																	: 0,
 															overflow: "hidden",
 															transition:
@@ -3964,25 +4003,24 @@ export default function ReportPage({
 														}
 											}
 										>
-											{/* Left side - Content (50% width) */}
-											<div className="w-1/2 pr-4">
+											{/* Left side - Content */}
+											<div className="w-full lg:w-1/2 lg:pr-4">
 												<p
+													className="mb-3 text-sm leading-relaxed text-black sm:text-lg lg:text-xl sm:mb-4"
 													style={{
 														fontFamily:
 															"Noto Sans HK, sans-serif",
 														fontWeight: 400,
-														fontSize: 20,
-														color: "#000000",
 														lineHeight: 1.8,
 													}}
 												>
 													{value}
 												</p>
 											</div>
-											{/* Right side - Image (50% width) */}
-											<div className="flex items-center justify-center w-1/2">
+											{/* Right side - Image */}
+											<div className="flex items-center justify-center w-full lg:w-1/2">
 												<Image
-													className="object-contain max-w-full max-h-full"
+													className="object-contain w-full h-auto max-w-xs sm:max-w-sm lg:max-w-md"
 													priority
 													src={(() => {
 														// Extract element from key - handle new format like 天干金, 地支木, 综合金木
@@ -4043,22 +4081,24 @@ export default function ReportPage({
 								)}
 
 								{/* AI Life Stage Analysis Section for 時柱 */}
-								<div className="p-8">
+								<div className="p-3 sm:p-6 lg:p-8">
 									{isLoadingLifeStage["時柱"] ? (
-										<div className="py-8 text-center">
-											<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
-											<p className="text-lg text-[#5A5A5A]">
+										<div className="py-6 text-center sm:py-8">
+											<div className="animate-spin rounded-full w-8 h-8 sm:w-12 sm:h-12 border-b-2 border-[#A3B116] mx-auto mb-3 sm:mb-4"></div>
+											<p className="text-sm sm:text-lg text-[#5A5A5A]">
 												正在分析您的老年时期特征...
 											</p>
 										</div>
 									) : lifeStageAnalysis["時柱"] ? (
 										<div>
-											<div className="mb-6">
+											<div className="mb-4 sm:mb-6">
 												<h4
-													className="text-4xl font-bold text-[#A3B116] mb-4"
+													className="font-bold text-[#A3B116] mb-3 sm:mb-4 text-center sm:text-left"
 													style={{
 														fontFamily:
 															"Noto Serif TC, serif",
+														fontSize:
+															"clamp(20px, 5vw, 36px)",
 													}}
 												>
 													{
@@ -4067,13 +4107,15 @@ export default function ReportPage({
 														].title
 													}
 												</h4>
-												<div className="p-4 mb-4">
+												<div className="p-2 mb-3 sm:p-4 sm:mb-4">
 													<p
-														className="text-lg leading-relaxed text-black"
+														className="leading-relaxed text-black"
 														style={{
 															fontFamily:
 																"Noto Sans HK, sans-serif",
 															fontWeight: 400,
+															fontSize:
+																"clamp(14px, 3.5vw, 18px)",
 															lineHeight: 1.8,
 														}}
 													>
@@ -4084,13 +4126,15 @@ export default function ReportPage({
 														}
 													</p>
 												</div>
-												<div className="p-4 mb-4">
+												<div className="p-2 mb-3 sm:p-4 sm:mb-4">
 													<p
-														className="text-lg leading-relaxed text-black"
+														className="leading-relaxed text-black"
 														style={{
 															fontFamily:
 																"Noto Sans HK, sans-serif",
 															fontWeight: 400,
+															fontSize:
+																"clamp(14px, 3.5vw, 18px)",
 															lineHeight: 1.8,
 														}}
 													>
@@ -4103,13 +4147,15 @@ export default function ReportPage({
 												</div>
 												{lifeStageAnalysis["時柱"]
 													.wisdom && (
-													<div className="p-4">
+													<div className="p-2 sm:p-4">
 														<p
-															className="text-lg leading-relaxed text-black"
+															className="leading-relaxed text-black"
 															style={{
 																fontFamily:
 																	"Noto Sans HK, sans-serif",
 																fontWeight: 400,
+																fontSize:
+																	"clamp(14px, 3.5vw, 18px)",
 																lineHeight: 1.8,
 															}}
 														>
@@ -4124,12 +4170,12 @@ export default function ReportPage({
 											</div>
 										</div>
 									) : (
-										<div className="py-8">
-											<div className="space-y-4">
-												<Skeleton className="w-3/4 h-6" />
-												<Skeleton className="w-full h-6" />
-												<Skeleton className="w-5/6 h-6" />
-												<Skeleton className="w-2/3 h-6" />
+										<div className="py-6 sm:py-8">
+											<div className="space-y-3 sm:space-y-4">
+												<Skeleton className="w-3/4 h-4 sm:h-6" />
+												<Skeleton className="w-full h-4 sm:h-6" />
+												<Skeleton className="w-5/6 h-4 sm:h-6" />
+												<Skeleton className="w-2/3 h-4 sm:h-6" />
 											</div>
 										</div>
 									)}
@@ -4234,7 +4280,7 @@ export default function ReportPage({
 					return (
 						<>
 							{/* Debug: Check analysis data */}
-							{console.log(
+							{/* {console.log(
 								"🧪 Analysis object in 化解提示:",
 								analysis
 							)}
@@ -4252,9 +4298,9 @@ export default function ReportPage({
 								"vs Fallback content:",
 								!analysis?.lifeAdvice?.tips
 							)}
-
+ */}
 							{/* 五行分佈深度解析 Section - Third Image */}
-							<section className="w-full sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-8 lg:p-12 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+							<section className="w-[95%] sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-8 lg:p-12 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
 								<div className="mb-6 sm:mb-8">
 									<h2
 										className="font-bold text-[#A3B116] text-center lg:text-left"
@@ -4270,7 +4316,7 @@ export default function ReportPage({
 								</div>
 
 								{/* Five elements analysis table */}
-								<div className="p-4 mb-6 sm:p-6 lg:p-8 sm:mb-8 rounded-2xl">
+								<div className="p-2 mb-4 sm:p-6 lg:p-8 sm:mb-8 rounded-2xl">
 									{(() => {
 										const distribution =
 											calculateComprehensiveElementDistribution(
@@ -4279,7 +4325,7 @@ export default function ReportPage({
 
 										if (!distribution) {
 											return (
-												<div className="py-8 text-center text-gray-500">
+												<div className="py-6 text-center text-gray-500 sm:py-8">
 													無法載入五行分析數據
 												</div>
 											);
@@ -4299,192 +4345,389 @@ export default function ReportPage({
 
 										return (
 											<>
-												<div
-													className="grid gap-2 mb-4 text-center"
-													style={{
-														gridTemplateColumns:
-															"10% 10% 15% 20% 45%",
-													}}
-												>
-													<div
-														className="py-2 font-bold text-white rounded-lg "
-														style={{
-															fontFamily:
-																"Noto Serif TC, serif",
-														}}
-													>
-														五行
-													</div>
-													<div
-														className="bg-[#A3B116] text-white py-2 rounded-lg font-bold"
-														style={{
-															fontFamily:
-																"Noto Serif TC, serif",
-														}}
-													>
-														數量
-													</div>
-													<div
-														className="bg-[#A3B116] text-white py-2 rounded-lg font-bold"
-														style={{
-															fontFamily:
-																"Noto Serif TC, serif",
-														}}
-													>
-														強度
-													</div>
-													<div
-														className="bg-[#A3B116] text-white py-2 rounded-lg font-bold"
-														style={{
-															fontFamily:
-																"Noto Serif TC, serif",
-														}}
-													>
-														特性
-													</div>
-													<div
-														className="bg-[#A3B116] text-white py-2 rounded-lg font-bold"
-														style={{
-															fontFamily:
-																"Noto Serif TC, serif",
-														}}
-													>
-														對命主的影響
-													</div>
-												</div>
+												{/* Mobile Card Layout */}
+												<div className="block lg:hidden">
+													{elements.map((element) => {
+														const count =
+															elementCounts[
+																element
+															] || 0;
+														const strength =
+															elementStrengthMap[
+																element
+															] || "";
+														const star =
+															getStar(strength);
 
-												{elements.map((element) => {
-													const count =
-														elementCounts[
-															element
-														] || 0;
-													const strength =
-														elementStrengthMap[
-															element
-														] || "";
-													const star =
-														getStar(strength);
-
-													return (
-														<div
-															key={element}
-															className="grid items-center gap-2 mb-2 text-center"
-															style={{
-																gridTemplateColumns:
-																	"10% 10% 15% 20% 45%",
-															}}
-														>
-															{/* Element with image and color */}
+														return (
 															<div
-																className={`text-white py-3 rounded-lg flex items-center justify-center gap-3 font-bold`}
-																style={{
-																	backgroundColor:
-																		wuxingColorMap[
-																			element
-																		],
-																}}
+																key={element}
+																className="mb-4 bg-white border border-gray-200 rounded-lg shadow-sm"
 															>
-																<img
-																	src={`/images/elements/${element}.png`}
-																	alt={
-																		element
-																	}
-																	className="w-8 h-8"
+																{/* Element Header */}
+																<div
+																	className="flex items-center gap-3 p-3 text-white rounded-t-lg"
 																	style={{
-																		filter: "brightness(0) saturate(100%) invert(1)",
-																	}}
-																/>
-																<span
-																	style={{
-																		fontFamily:
-																			"Noto Serif TC, serif",
+																		backgroundColor:
+																			wuxingColorMap[
+																				element
+																			],
 																	}}
 																>
-																	{element}
-																</span>
+																	<img
+																		src={`/images/elements/${element}.png`}
+																		alt={
+																			element
+																		}
+																		className="w-6 h-6 sm:w-8 sm:h-8"
+																		style={{
+																			filter: "brightness(0) saturate(100%) invert(1)",
+																		}}
+																	/>
+																	<span
+																		className="font-bold"
+																		style={{
+																			fontFamily:
+																				"Noto Serif TC, serif",
+																			fontSize:
+																				"clamp(16px, 4vw, 20px)",
+																		}}
+																	>
+																		{
+																			element
+																		}
+																	</span>
+																</div>
+
+																{/* Element Details */}
+																<div className="p-3 space-y-3">
+																	<div className="flex justify-between">
+																		<span
+																			className="font-medium text-gray-600"
+																			style={{
+																				fontSize:
+																					"clamp(12px, 3vw, 14px)",
+																			}}
+																		>
+																			數量:
+																		</span>
+																		<span
+																			className="font-bold text-[#374A37]"
+																			style={{
+																				fontSize:
+																					"clamp(12px, 3vw, 14px)",
+																			}}
+																		>
+																			{count.toFixed(
+																				1
+																			)}
+																		</span>
+																	</div>
+																	<div className="flex justify-between">
+																		<span
+																			className="font-medium text-gray-600"
+																			style={{
+																				fontSize:
+																					"clamp(12px, 3vw, 14px)",
+																			}}
+																		>
+																			強度:
+																		</span>
+																		<span
+																			className="font-bold text-yellow-600"
+																			style={{
+																				fontSize:
+																					"clamp(12px, 3vw, 14px)",
+																			}}
+																		>
+																			{
+																				strength
+																			}
+																		</span>
+																	</div>
+																	<div>
+																		<span
+																			className="font-medium text-gray-600"
+																			style={{
+																				fontSize:
+																					"clamp(12px, 3vw, 14px)",
+																			}}
+																		>
+																			特性:
+																		</span>
+																		<p
+																			className="mt-1 text-[#374A37]"
+																			style={{
+																				fontSize:
+																					"clamp(12px, 3vw, 14px)",
+																				lineHeight: 1.5,
+																			}}
+																		>
+																			{getElementTrait(
+																				element,
+																				star
+																			)}
+																		</p>
+																	</div>
+																	<div>
+																		<span
+																			className="font-medium text-gray-600"
+																			style={{
+																				fontSize:
+																					"clamp(12px, 3vw, 14px)",
+																			}}
+																		>
+																			對命主的影響:
+																		</span>
+																		<p
+																			className="mt-1"
+																			style={{
+																				fontSize:
+																					"clamp(12px, 3vw, 14px)",
+																				color: "#3E5513",
+																				lineHeight: 1.5,
+																			}}
+																		>
+																			{getElementInfluence(
+																				element,
+																				star
+																			)}
+																		</p>
+																	</div>
+																</div>
+															</div>
+														);
+													})}
+												</div>
+
+												{/* Desktop Table Layout */}
+												<div className="hidden lg:block">
+													<div className="overflow-x-auto">
+														<div className="min-w-full">
+															{/* Table Header */}
+															<div className="grid items-center gap-2 mb-4 text-center bg-[#A3B116] rounded-lg p-2">
+																<div
+																	className="grid gap-2"
+																	style={{
+																		gridTemplateColumns:
+																			"1fr 1fr 1.2fr 2fr 2.5fr",
+																	}}
+																>
+																	<div
+																		className="py-2 font-bold text-white"
+																		style={{
+																			fontFamily:
+																				"Noto Serif TC, serif",
+																			fontSize:
+																				"clamp(14px, 1.5vw, 16px)",
+																		}}
+																	>
+																		五行
+																	</div>
+																	<div
+																		className="py-2 font-bold text-white"
+																		style={{
+																			fontFamily:
+																				"Noto Serif TC, serif",
+																			fontSize:
+																				"clamp(14px, 1.5vw, 16px)",
+																		}}
+																	>
+																		數量
+																	</div>
+																	<div
+																		className="py-2 font-bold text-white"
+																		style={{
+																			fontFamily:
+																				"Noto Serif TC, serif",
+																			fontSize:
+																				"clamp(14px, 1.5vw, 16px)",
+																		}}
+																	>
+																		強度
+																	</div>
+																	<div
+																		className="py-2 font-bold text-white"
+																		style={{
+																			fontFamily:
+																				"Noto Serif TC, serif",
+																			fontSize:
+																				"clamp(14px, 1.5vw, 16px)",
+																		}}
+																	>
+																		特性
+																	</div>
+																	<div
+																		className="py-2 font-bold text-white"
+																		style={{
+																			fontFamily:
+																				"Noto Serif TC, serif",
+																			fontSize:
+																				"clamp(14px, 1.5vw, 16px)",
+																		}}
+																	>
+																		對命主的影響
+																	</div>
+																</div>
 															</div>
 
-															{/* Count */}
-															<div
-																className="bg-[#EFEFEF] py-3 rounded-lg font-bold text-[#374A37]"
-																style={{
-																	fontSize:
-																		"18px",
-																}}
-															>
-																{count.toFixed(
-																	1
-																)}
-															</div>
+															{/* Table Rows */}
+															{elements.map(
+																(element) => {
+																	const count =
+																		elementCounts[
+																			element
+																		] || 0;
+																	const strength =
+																		elementStrengthMap[
+																			element
+																		] || "";
+																	const star =
+																		getStar(
+																			strength
+																		);
 
-															{/* Strength */}
-															<div
-																className="py-3 font-bold text-yellow-600 bg-[#EFEFEF] rounded-lg"
-																style={{
-																	fontSize:
-																		"18px",
-																}}
-															>
-																{strength}
-															</div>
+																	return (
+																		<div
+																			key={
+																				element
+																			}
+																			className="mb-2"
+																		>
+																			<div
+																				className="grid items-center gap-2"
+																				style={{
+																					gridTemplateColumns:
+																						"1fr 1fr 1.2fr 2fr 2.5fr",
+																				}}
+																			>
+																				{/* Element with image and color */}
+																				<div
+																					className="flex items-center justify-center gap-2 py-3 font-bold text-white rounded-lg lg:gap-3"
+																					style={{
+																						backgroundColor:
+																							wuxingColorMap[
+																								element
+																							],
+																					}}
+																				>
+																					<img
+																						src={`/images/elements/${element}.png`}
+																						alt={
+																							element
+																						}
+																						className="w-6 h-6 lg:w-8 lg:h-8"
+																						style={{
+																							filter: "brightness(0) saturate(100%) invert(1)",
+																						}}
+																					/>
+																					<span
+																						style={{
+																							fontFamily:
+																								"Noto Serif TC, serif",
+																							fontSize:
+																								"clamp(14px, 1.5vw, 18px)",
+																						}}
+																					>
+																						{
+																							element
+																						}
+																					</span>
+																				</div>
 
-															{/* 特性 */}
-															<div
-																className="bg-[#EFEFEF] py-3 rounded-lg text-[#374A37] text-left px-3"
-																style={{
-																	fontSize:
-																		"18px",
-																}}
-															>
-																{getElementTrait(
-																	element,
-																	star
-																)}
-															</div>
+																				{/* Count */}
+																				<div
+																					className="bg-[#EFEFEF] py-3 rounded-lg font-bold text-[#374A37] text-center"
+																					style={{
+																						fontSize:
+																							"clamp(14px, 1.5vw, 18px)",
+																					}}
+																				>
+																					{count.toFixed(
+																						1
+																					)}
+																				</div>
 
-															{/* 對命主的影響 */}
-															<div
-																className="bg-[#EFEFEF] py-3 rounded-lg text-left px-3"
-																style={{
-																	fontSize:
-																		"18px",
-																	color: "#3E5513",
-																}}
-															>
-																{getElementInfluence(
-																	element,
-																	star
-																)}
-															</div>
+																				{/* Strength */}
+																				<div
+																					className="py-3 font-bold text-yellow-600 bg-[#EFEFEF] rounded-lg text-center"
+																					style={{
+																						fontSize:
+																							"clamp(14px, 1.5vw, 18px)",
+																					}}
+																				>
+																					{
+																						strength
+																					}
+																				</div>
+
+																				{/* 特性 */}
+																				<div
+																					className="bg-[#EFEFEF] py-3 rounded-lg text-[#374A37] text-left px-3"
+																					style={{
+																						fontSize:
+																							"clamp(12px, 1.3vw, 16px)",
+																						lineHeight: 1.4,
+																					}}
+																				>
+																					{getElementTrait(
+																						element,
+																						star
+																					)}
+																				</div>
+
+																				{/* 對命主的影響 */}
+																				<div
+																					className="bg-[#EFEFEF] py-3 rounded-lg text-left px-3"
+																					style={{
+																						fontSize:
+																							"clamp(12px, 1.3vw, 16px)",
+																						color: "#3E5513",
+																						lineHeight: 1.4,
+																					}}
+																				>
+																					{getElementInfluence(
+																						element,
+																						star
+																					)}
+																				</div>
+																			</div>
+																		</div>
+																	);
+																}
+															)}
 														</div>
-													);
-												})}
+													</div>
+												</div>
 											</>
 										);
 									})()}
 								</div>
 
 								{/* Five elements flow conflicts */}
-								<div className="mb-8">
+								<div className="mb-6 sm:mb-8">
 									<h3
-										className="text-4xl font-bold text-[#A3B116] mb-6"
+										className="font-bold text-[#A3B116] mb-4 sm:mb-6 text-center lg:text-left"
 										style={{
 											fontFamily: "Noto Serif TC, serif",
+											fontSize: "clamp(24px, 6vw, 42px)",
 										}}
 									>
 										五行流通阻礙點
 									</h3>
 
-									<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+									<div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2 xl:grid-cols-3">
 										{/* Loading state */}
 										{isLoadingFlowAnalysis && (
-											<div className="col-span-3 py-12 text-center">
-												<div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#A3B116] mb-4"></div>
+											<div className="py-8 text-center col-span-full sm:py-12">
+												<div className="inline-block animate-spin rounded-full w-6 h-6 sm:w-8 sm:h-8 border-b-2 border-[#A3B116] mb-3 sm:mb-4"></div>
 												<p
 													className="text-[#5A5A5A]"
 													style={{
 														fontFamily:
 															"Noto Sans HK, sans-serif",
+														fontSize:
+															"clamp(14px, 3vw, 16px)",
 													}}
 												>
 													正在進行五行流通深度分析...
@@ -4498,25 +4741,30 @@ export default function ReportPage({
 												(obstacle, index) => (
 													<div
 														key={index}
-														className="p-6 bg-[#EFEFEF] border border-gray-200 shadow-lg rounded-xl"
+														className="p-4 sm:p-6 bg-[#EFEFEF] border border-gray-200 shadow-lg rounded-xl"
 													>
 														<div
-															className="inline-block px-4 py-2 mb-4 font-bold text-white rounded-full"
+															className="inline-block px-3 py-2 mb-3 font-bold text-white rounded-full sm:mb-4"
 															style={{
 																fontFamily:
 																	"Noto Serif TC, serif",
 																backgroundColor:
 																	"#B4003C",
+																fontSize:
+																	"clamp(12px, 3vw, 16px)",
 															}}
 														>
 															{obstacle.title}
 														</div>
 														<p
-															className="mb-4 leading-relaxed text-black"
+															className="mb-3 leading-relaxed text-black sm:mb-4"
 															style={{
 																fontFamily:
 																	"Noto Sans HK, sans-serif",
 																fontWeight: 400,
+																fontSize:
+																	"clamp(14px, 3.5vw, 16px)",
+																lineHeight: 1.6,
 															}}
 														>
 															{
@@ -4529,17 +4777,22 @@ export default function ReportPage({
 																style={{
 																	fontFamily:
 																		"Noto Sans HK, sans-serif",
+																	fontSize:
+																		"clamp(13px, 3vw, 15px)",
 																}}
 															>
 																生活影響...
 															</span>
 														</div>
 														<p
-															className="text-sm leading-relaxed text-black"
+															className="leading-relaxed text-black"
 															style={{
 																fontFamily:
 																	"Noto Sans HK, sans-serif",
 																fontWeight: 400,
+																fontSize:
+																	"clamp(12px, 3vw, 14px)",
+																lineHeight: 1.5,
 															}}
 														>
 															{
@@ -4553,12 +4806,14 @@ export default function ReportPage({
 										{/* Fallback when no AI data */}
 										{!isLoadingFlowAnalysis &&
 											!elementFlowAnalysis?.flowObstacles && (
-												<div className="col-span-3 py-8 text-center">
+												<div className="py-6 text-center col-span-full sm:py-8">
 													<p
 														className="text-[#5A5A5A] mb-4"
 														style={{
 															fontFamily:
 																"Noto Sans HK, sans-serif",
+															fontSize:
+																"clamp(14px, 3vw, 16px)",
 														}}
 													>
 														正在為您準備個人化的五行流通分析...
@@ -4570,7 +4825,7 @@ export default function ReportPage({
 							</section>
 
 							{/* 十神格局與內在關聯 Section - Comprehensive Design */}
-							<section className="w-full sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-8 lg:p-12 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+							<section className="w-[95%] sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-8 lg:p-12 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
 								<div className="mb-6 sm:mb-8">
 									<h2
 										className="font-bold text-[#A3B116] text-center lg:text-left"
@@ -4831,7 +5086,7 @@ export default function ReportPage({
 									return (
 										<>
 											{/* Tab Navigation */}
-											<div className="flex flex-wrap gap-9 mb-15">
+											<div className="flex flex-wrap justify-center gap-3 mb-8 sm:gap-6 lg:gap-9 sm:mb-12 lg:mb-15 lg:justify-start">
 												{Object.keys(tenGodsData).map(
 													(godName) => (
 														<button
@@ -4841,18 +5096,20 @@ export default function ReportPage({
 																	godName
 																)
 															}
-															className="text-lg font-extrabold transition-colors"
+															className="flex-shrink-0 font-extrabold transition-colors"
 															style={{
 																fontFamily:
 																	"Noto Serif TC, serif",
-																width: "180px",
-																height: "61px",
+																fontSize:
+																	"clamp(14px, 3vw, 18px)",
+																width: "clamp(120px, 25vw, 180px)",
+																height: "clamp(40px, 8vw, 61px)",
 																borderRadius:
 																	"1000px",
 																border:
 																	activeTenGodsTab ===
 																	godName
-																		? "7px solid #A3B116"
+																		? "clamp(3px, 1vw, 7px) solid #A3B116"
 																		: "none",
 																backgroundColor:
 																	"#FFFFFF",
@@ -4876,13 +5133,118 @@ export default function ReportPage({
 													activeTab === godName && (
 														<div key={godName}>
 															{/* Header Section */}
-															<div className="mb-6">
-																<div className="flex items-center justify-start gap-4 mb-4">
+															<div className="mb-4 sm:mb-6">
+																{/* Mobile Layout */}
+																<div className="block lg:hidden">
+																	<div className="mb-4 text-center">
+																		<div
+																			className="text-[#A3B116] font-extrabold mb-3"
+																			style={{
+																				fontFamily:
+																					"Noto Serif TC, serif",
+																				fontSize:
+																					"clamp(32px, 8vw, 48px)",
+																			}}
+																		>
+																			{
+																				godName
+																			}
+																		</div>
+																		<div
+																			className="flex items-center justify-center gap-2 py-2 mx-auto mb-3 font-extrabold text-white rounded-full"
+																			style={{
+																				fontFamily:
+																					"Noto Sans HK, sans-serif",
+																				fontSize:
+																					"clamp(16px, 4vw, 24px)",
+																				padding:
+																					"clamp(8px, 2vw, 12px) clamp(16px, 4vw, 24px)",
+																				backgroundColor:
+																					(() => {
+																						const element =
+																							data.element ||
+																							tenGodsElements[
+																								godName
+																							];
+																						switch (
+																							element
+																						) {
+																							case "金":
+																								return "#DAA520";
+																							case "木":
+																								return "#228B22";
+																							case "水":
+																								return "#4169E1";
+																							case "火":
+																								return "#DC143C";
+																							case "土":
+																								return "#8B4513";
+																							default:
+																								return "#6B8E23";
+																						}
+																					})(),
+																			}}
+																		>
+																			<img
+																				src={`/images/elements/${data.element || tenGodsElements[godName]}.png`}
+																				alt={
+																					data.element ||
+																					tenGodsElements[
+																						godName
+																					]
+																				}
+																				className="w-5 h-5 sm:w-6 sm:h-6"
+																				style={{
+																					filter: "brightness(0) saturate(100%) invert(1)",
+																				}}
+																			/>
+																			{data.element ||
+																				tenGodsElements[
+																					godName
+																				]}
+																		</div>
+																		<div
+																			className="bg-[#EFEFEF] text-[#515151] py-2 px-4 rounded-full flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4"
+																			style={{
+																				fontFamily:
+																					"Noto Sans HK, sans-serif",
+																			}}
+																		>
+																			<span
+																				className="font-extrabold"
+																				style={{
+																					fontSize:
+																						"clamp(18px, 4vw, 24px)",
+																				}}
+																			>
+																				{
+																					godName
+																				}
+																			</span>
+																			<span
+																				style={{
+																					fontSize:
+																						"clamp(14px, 3.5vw, 18px)",
+																				}}
+																			>
+																				-{" "}
+																				{
+																					data.meaning
+																				}
+																			</span>
+																		</div>
+																	</div>
+																</div>
+
+																{/* Desktop Layout */}
+																<div className="items-center justify-start hidden gap-4 mb-4 lg:flex">
 																	<div
-																		className="text-[#A3B116] pl-0 pr-4 py-2 rounded-full text-5xl font-extrabold"
+																		className="text-[#A3B116] pl-0 pr-4 py-2 rounded-full font-extrabold"
 																		style={{
 																			fontFamily:
 																				"Noto Serif TC, serif",
+																			fontSize:
+																				"clamp(40px, 5vw, 60px)",
 																		}}
 																	>
 																		{
@@ -4890,10 +5252,14 @@ export default function ReportPage({
 																		}
 																	</div>
 																	<div
-																		className="flex items-center justify-center gap-3 py-2 text-3xl font-extrabold text-white rounded-full px-15"
+																		className="flex items-center justify-center gap-3 py-2 font-extrabold text-white rounded-full"
 																		style={{
 																			fontFamily:
 																				"Noto Sans HK, sans-serif",
+																			fontSize:
+																				"clamp(20px, 2.5vw, 32px)",
+																			padding:
+																				"clamp(8px, 1vw, 12px) clamp(24px, 3vw, 40px)",
 																			backgroundColor:
 																				(() => {
 																					const element =
@@ -4928,7 +5294,7 @@ export default function ReportPage({
 																					godName
 																				]
 																			}
-																			className="w-8 h-8"
+																			className="w-6 h-6 lg:w-8 lg:h-8"
 																			style={{
 																				filter: "brightness(0) saturate(100%) invert(1)",
 																			}}
@@ -4939,19 +5305,32 @@ export default function ReportPage({
 																			]}
 																	</div>
 																	<div
-																		className="bg-[#EFEFEF] text-[#515151] px-10 py-2 rounded-full flex items-center justify-center gap-4"
+																		className="bg-[#EFEFEF] text-[#515151] rounded-full flex items-center justify-center gap-4"
 																		style={{
 																			fontFamily:
 																				"Noto Sans HK, sans-serif",
+																			padding:
+																				"clamp(8px, 1vw, 12px) clamp(24px, 3vw, 40px)",
 																		}}
 																	>
-																		<span className="text-3xl font-extrabold">
+																		<span
+																			className="font-extrabold"
+																			style={{
+																				fontSize:
+																					"clamp(20px, 2.5vw, 32px)",
+																			}}
+																		>
 																			{
 																				godName
 																			}
 																		</span>
-																		<span className="text-2xl">
-																			-
+																		<span
+																			style={{
+																				fontSize:
+																					"clamp(16px, 2vw, 24px)",
+																			}}
+																		>
+																			-{" "}
 																			{
 																				data.meaning
 																			}
@@ -4960,10 +5339,12 @@ export default function ReportPage({
 																</div>
 
 																<h3
-																	className="text-xl font-bold text-[#374A37] mb-4"
+																	className="font-bold text-[#374A37] mb-3 sm:mb-4 text-center lg:text-left"
 																	style={{
 																		fontFamily:
 																			"Noto Serif TC, serif",
+																		fontSize:
+																			"clamp(16px, 4vw, 24px)",
 																	}}
 																>
 																	{
@@ -4973,12 +5354,14 @@ export default function ReportPage({
 															</div>
 
 															{/* 實際表現 Section */}
-															<div className="mb-6">
+															<div className="mb-4 sm:mb-6">
 																<h4
-																	className="text-4xl font-extrabold text-[#A3B116] mb-3"
+																	className="font-extrabold text-[#A3B116] mb-3 text-center lg:text-left"
 																	style={{
 																		fontFamily:
 																			"Noto Serif TC, serif",
+																		fontSize:
+																			"clamp(24px, 6vw, 42px)",
 																	}}
 																>
 																	實際表現
@@ -4992,11 +5375,14 @@ export default function ReportPage({
 																			key={
 																				index
 																			}
-																			className="mb-2 text-xl leading-relaxed text-black text-bold"
+																			className="mb-2 leading-relaxed text-black"
 																			style={{
 																				fontFamily:
 																					"Noto Sans HK, sans-serif",
 																				fontWeight: 400,
+																				fontSize:
+																					"clamp(14px, 3.5vw, 20px)",
+																				lineHeight: 1.6,
 																			}}
 																		>
 																			{
@@ -5008,12 +5394,15 @@ export default function ReportPage({
 															</div>
 
 															{/* Warning Section */}
-															<div className="mb-8">
+															<div className="mb-6 sm:mb-8">
 																<p
-																	className="mb-3 text-2xl leading-relaxed text-black"
+																	className="mb-3 leading-relaxed text-black"
 																	style={{
 																		fontFamily:
 																			"Noto Sans HK, sans-serif",
+																		fontSize:
+																			"clamp(16px, 4vw, 24px)",
+																		lineHeight: 1.6,
 																	}}
 																>
 																	{
@@ -5031,11 +5420,14 @@ export default function ReportPage({
 																			key={
 																				index
 																			}
-																			className="ml-4 text-xl leading-relaxed text-black"
+																			className="ml-3 leading-relaxed text-black sm:ml-4"
 																			style={{
 																				fontFamily:
 																					"Noto Sans HK, sans-serif",
 																				fontWeight: 400,
+																				fontSize:
+																					"clamp(14px, 3.5vw, 20px)",
+																				lineHeight: 1.6,
 																			}}
 																		>
 																			▶{" "}
@@ -5048,12 +5440,14 @@ export default function ReportPage({
 															</div>
 
 															{/* Core Conflicts Section */}
-															<div className="p-8 bg-white ">
+															<div className="p-4 bg-white sm:p-6 lg:p-8">
 																<h3
-																	className="mb-6 text-4xl font-extrabold text-start text-[#B4003C]"
+																	className="mb-4 sm:mb-6 font-extrabold text-[#B4003C] text-center lg:text-left"
 																	style={{
 																		fontFamily:
 																			"Noto Serif TC, serif",
+																		fontSize:
+																			"clamp(24px, 6vw, 42px)",
 																	}}
 																>
 																	{
@@ -5063,7 +5457,7 @@ export default function ReportPage({
 																	}
 																</h3>
 
-																<div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+																<div className="grid grid-cols-1 gap-4 sm:gap-6 lg:gap-8 lg:grid-cols-2 xl:grid-cols-3">
 																	{data.coreConflicts.conflicts.map(
 																		(
 																			conflict,
@@ -5073,21 +5467,17 @@ export default function ReportPage({
 																				key={
 																					index
 																				}
-																				className="bg-[#EFEFEF] p-6 shadow-md"
-																				style={{
-																					borderRadius:
-																						"20px",
-																				}}
+																				className="bg-[#EFEFEF] p-4 sm:p-6 shadow-md rounded-2xl"
 																			>
 																				<div
-																					className="inline-block px-6 py-3 mb-4 font-bold text-white "
+																					className="inline-block px-4 py-2 mb-3 font-bold text-white rounded-full sm:px-6 sm:py-3 sm:mb-4"
 																					style={{
 																						fontFamily:
 																							"Noto Serif TC, serif",
 																						backgroundColor:
 																							"#B4003C",
-																						borderRadius:
-																							"100px",
+																						fontSize:
+																							"clamp(12px, 3vw, 16px)",
 																					}}
 																				>
 																					{
@@ -5096,12 +5486,15 @@ export default function ReportPage({
 																				</div>
 
 																				{/* Main description */}
-																				<div className="mb-1">
+																				<div className="mb-3">
 																					<p
 																						className="leading-relaxed text-black"
 																						style={{
 																							fontFamily:
 																								"Noto Sans HK, sans-serif",
+																							fontSize:
+																								"clamp(14px, 3.5vw, 16px)",
+																							lineHeight: 1.6,
 																						}}
 																					>
 																						{
@@ -5112,12 +5505,14 @@ export default function ReportPage({
 
 																				{/* Psychological Roots */}
 																				{conflict.psychologicalRoots && (
-																					<div className="p-3 mb-1">
+																					<div className="p-2 mb-3 sm:p-3">
 																						<h5
-																							className="mb-2 font-medium  text-[#A3B116]"
+																							className="mb-2 font-medium text-[#A3B116]"
 																							style={{
 																								fontFamily:
-																									"Noto Sans HK, sans-seri",
+																									"Noto Sans HK, sans-serif",
+																								fontSize:
+																									"clamp(13px, 3vw, 15px)",
 																							}}
 																						>
 																							💭
@@ -5128,6 +5523,9 @@ export default function ReportPage({
 																							style={{
 																								fontFamily:
 																									"Noto Sans HK, sans-serif",
+																								fontSize:
+																									"clamp(12px, 3vw, 14px)",
+																								lineHeight: 1.5,
 																							}}
 																						>
 																							{
@@ -5139,22 +5537,27 @@ export default function ReportPage({
 
 																				{/* Developmental Stages */}
 																				{conflict.developmentalStages && (
-																					<div className="p-3 mb-1">
+																					<div className="p-2 mb-3 sm:p-3">
 																						<h5
-																							className="mb-2 font-medium  text-[#A3B116]"
+																							className="mb-2 font-medium text-[#A3B116]"
 																							style={{
 																								fontFamily:
-																									"Noto Sans HK, sans-seri",
+																									"Noto Sans HK, sans-serif",
+																								fontSize:
+																									"clamp(13px, 3vw, 15px)",
 																							}}
 																						>
 																							📈
 																							發展演變
 																						</h5>
 																						<p
-																							className="leading-relaxed text-black "
+																							className="leading-relaxed text-black"
 																							style={{
 																								fontFamily:
 																									"Noto Sans HK, sans-serif",
+																								fontSize:
+																									"clamp(12px, 3vw, 14px)",
+																								lineHeight: 1.5,
 																							}}
 																						>
 																							{
@@ -5171,17 +5574,22 @@ export default function ReportPage({
 																						style={{
 																							fontFamily:
 																								"Noto Sans HK, sans-serif",
+																							fontSize:
+																								"clamp(13px, 3vw, 15px)",
 																						}}
 																					>
 																						💡
 																						具體例子
 																					</p>
 																					<p
-																						className="leading-relaxed text-black "
+																						className="leading-relaxed text-black"
 																						style={{
 																							fontFamily:
 																								"Noto Sans HK, sans-serif",
 																							fontWeight: 400,
+																							fontSize:
+																								"clamp(12px, 3vw, 14px)",
+																							lineHeight: 1.5,
 																						}}
 																					>
 																						{
@@ -5203,12 +5611,13 @@ export default function ReportPage({
 							</section>
 
 							{/* 化解提示 Section - First Image */}
-							<section className="w-[80%] mx-auto  p-12 mb-10 ">
-								<div className="mb-8">
+							<section className="w-full sm:w-[95%] lg:w-[85%] mx-auto p-4 sm:p-8 lg:p-12 mb-6 sm:mb-10">
+								<div className="mb-6 sm:mb-8">
 									<h2
-										className="text-7xl font-extrabold text-[#A3B116] mb-10"
+										className="font-extrabold text-[#A3B116] mb-6 sm:mb-10 text-center lg:text-left"
 										style={{
 											fontFamily: "Noto Serif TC, serif",
+											fontSize: "clamp(32px, 8vw, 70px)",
 										}}
 									>
 										化解提示
@@ -5216,23 +5625,37 @@ export default function ReportPage({
 
 									{/* Show loading state if no AI content */}
 									{!analysis?.lifeAdvice?.tips ? (
-										<div className="py-12 text-center">
-											<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
-											<p className="text-lg text-[#5A5A5A] mb-4">
+										<div className="py-8 text-center sm:py-12">
+											<div className="animate-spin rounded-full w-8 h-8 sm:w-12 sm:h-12 border-b-2 border-[#A3B116] mx-auto mb-3 sm:mb-4"></div>
+											<p
+												className="text-[#5A5A5A] mb-3 sm:mb-4"
+												style={{
+													fontSize:
+														"clamp(14px, 3.5vw, 18px)",
+												}}
+											>
 												正在生成個人化建議...
 											</p>
-											<p className="text-sm text-gray-500">
+											<p
+												className="text-gray-500"
+												style={{
+													fontSize:
+														"clamp(12px, 3vw, 14px)",
+												}}
+											>
 												AI正在根據您的八字命理分析，為您量身定制專屬的化解提示
 											</p>
 										</div>
 									) : (
 										<>
 											<p
-												className="mb-8 text-2xl leading-relaxed text-black"
+												className="mb-6 leading-relaxed text-center text-black sm:mb-8 lg:text-left"
 												style={{
 													fontFamily:
 														"Noto Sans HK, sans-serif",
 													fontWeight: 400,
+													fontSize:
+														"clamp(16px, 4vw, 24px)",
 													lineHeight: 1.6,
 												}}
 											>
@@ -5244,48 +5667,56 @@ export default function ReportPage({
 
 								{/* Only show content grid if AI data is available */}
 								{analysis?.lifeAdvice?.tips && (
-									<div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+									<div className="grid grid-cols-1 gap-4 sm:gap-6 lg:gap-8 lg:grid-cols-2 xl:grid-cols-3">
 										{analysis.lifeAdvice.tips.map(
 											(tip, index) => (
 												<div
 													key={index}
-													className="p-8 bg-white border border-gray-100 shadow-lg rounded-2xl"
+													className="p-4 bg-white border border-gray-100 shadow-lg sm:p-6 lg:p-8 rounded-2xl"
 												>
 													<h3
-														className="text-4xl font-bold text-[#A3B116] mb-4"
+														className="font-bold text-[#A3B116] mb-3 sm:mb-4"
 														style={{
 															fontFamily:
 																"Noto Serif TC, serif",
+															fontSize:
+																"clamp(18px, 4.5vw, 36px)",
 														}}
 													>
 														{tip.title}
 													</h3>
 													<p
-														className="text-xl leading-relaxed text-black"
+														className="leading-relaxed text-black"
 														style={{
 															fontFamily:
 																"Noto Sans HK, sans-serif",
 															fontWeight: 400,
+															fontSize:
+																"clamp(14px, 3.5vw, 20px)",
 														}}
 													>
 														{tip.content}
 													</p>
 													{tip.example && (
-														<div className="mt-4">
+														<div className="mt-3 sm:mt-4">
 															<p
-																className="text-[#A3B116] text-xl font-medium"
+																className="text-[#A3B116] font-medium"
 																style={{
 																	fontFamily:
 																		"Noto Sans HK, sans-serif",
+																	fontSize:
+																		"clamp(14px, 3.5vw, 20px)",
 																}}
 															>
 																例如：
 															</p>
 															<p
-																className="text-xl text-[#5A5A5A] leading-relaxed mt-1"
+																className="text-[#5A5A5A] leading-relaxed mt-1"
 																style={{
 																	fontFamily:
 																		"Noto Sans HK, sans-serif",
+																	fontSize:
+																		"clamp(13px, 3.2vw, 20px)",
 																}}
 															>
 																{tip.example}
@@ -5299,7 +5730,7 @@ export default function ReportPage({
 								)}
 							</section>
 							{/* 綜合調理与人生建議 - Comprehensive Section */}
-							<section className="w-full sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-12 lg:p-20 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+							<section className="w-[95%] sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-12 lg:p-20 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
 								<h3
 									className="font-bold text-[#A3B116] flex items-center justify-center lg:justify-start text-center lg:text-left"
 									style={{
@@ -5323,7 +5754,7 @@ export default function ReportPage({
 								) : comprehensiveLifeAdvice ? (
 									<div className="space-y-6 sm:space-y-8">
 										{/* Main Tab Navigation */}
-										<div className="flex flex-col justify-center gap-4 px-0 sm:flex-row lg:justify-between sm:gap-6 lg:gap-8 sm:px-4 lg:px-25">
+										<div className="flex flex-row justify-center gap-2 px-0 sm:gap-4 lg:justify-between sm:gap-6 lg:gap-8 sm:px-4 lg:px-25">
 											{[
 												{
 													key: "五行調和",
@@ -5343,7 +5774,7 @@ export default function ReportPage({
 											].map((tab) => (
 												<div
 													key={tab.key}
-													className="flex flex-col items-center flex-1 gap-2 sm:gap-3 sm:flex-none"
+													className="flex flex-col items-center flex-1 min-w-0 gap-1 sm:gap-2 lg:gap-3"
 												>
 													<button
 														onClick={() =>
@@ -5351,7 +5782,7 @@ export default function ReportPage({
 																tab.key
 															)
 														}
-														className={`w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 rounded-full transition-all duration-300 flex items-center justify-center ${
+														className={`w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 rounded-full transition-all duration-300 flex items-center justify-center ${
 															activeComprehensiveTab ===
 															tab.key
 																? "bg-[#EFEFEF] shadow-lg border-2 border-black"
@@ -5367,7 +5798,7 @@ export default function ReportPage({
 																	alt={
 																		tab.key
 																	}
-																	className="object-contain w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20"
+																	className="object-contain w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 xl:w-20 xl:h-20"
 																	onError={(
 																		e
 																	) => {
@@ -5378,12 +5809,12 @@ export default function ReportPage({
 																	}}
 																/>
 																<div
-																	className="flex items-center justify-center w-12 h-12 bg-gray-300 rounded-full sm:w-16 sm:h-16 lg:w-20 lg:h-20"
+																	className="flex items-center justify-center w-8 h-8 bg-gray-300 rounded-full sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 xl:w-20 xl:h-20"
 																	style={{
 																		display:
 																			"none",
 																		fontSize:
-																			"clamp(20px, 4vw, 32px)",
+																			"clamp(16px, 3vw, 28px)",
 																	}}
 																>
 																	{tab.icon}
@@ -5392,7 +5823,7 @@ export default function ReportPage({
 														)}
 													</button>
 													<span
-														className={`font-semibold text-center ${
+														className={`font-semibold text-center leading-tight ${
 															activeComprehensiveTab ===
 															tab.key
 																? "text-[#A3B116]"
@@ -5400,7 +5831,7 @@ export default function ReportPage({
 														}`}
 														style={{
 															fontSize:
-																"clamp(14px, 3vw, 20px)",
+																"clamp(11px, 2.5vw, 18px)",
 														}}
 													>
 														{tab.key}
@@ -5428,9 +5859,9 @@ export default function ReportPage({
 										{/* Tab Content */}
 										{activeComprehensiveTab ===
 											"五行調和" && (
-											<div className="px-4 sm:px-8 lg:px-30">
+											<div className="px-2 sm:px-4 md:px-8 lg:px-30">
 												{/* Sub-tab Navigation */}
-												<div className="flex justify-between gap-3 p-6 mb-3">
+												<div className="flex justify-center gap-2 p-3 mb-3 sm:justify-between sm:gap-3 sm:p-6">
 													{[
 														"補益",
 														"强化",
@@ -5443,12 +5874,20 @@ export default function ReportPage({
 																	subTab
 																)
 															}
-															className={`px-22 py-3 rounded-full text-lg font-bold transition-all duration-300 ${
+															className={`flex-1 max-w-[120px] py-2 rounded-full font-bold transition-all duration-300 sm:flex-none sm:max-w-none sm:py-3 ${
 																activeWuxingTab ===
 																subTab
 																	? "bg-[#89960A] text-white shadow-lg border-2 border-black"
 																	: "bg-[#89960A] text-white "
 															}`}
+															style={{
+																fontSize:
+																	"clamp(12px, 3vw, 18px)",
+																paddingLeft:
+																	"clamp(8px, 4vw, 22px)",
+																paddingRight:
+																	"clamp(8px, 4vw, 22px)",
+															}}
 														>
 															{subTab}
 														</button>
@@ -5460,10 +5899,22 @@ export default function ReportPage({
 													{activeWuxingTab ===
 														"補益" && (
 														<div className="space-y-4">
-															<h4 className="mb-4 text-4xl font-bold text-[#89960A]">
+															<h4
+																className="mb-3 sm:mb-4 font-bold text-[#89960A]"
+																style={{
+																	fontSize:
+																		"clamp(20px, 5vw, 36px)",
+																}}
+															>
 																補益建議
 															</h4>
-															<div className="text-xl leading-relaxed text-black">
+															<div
+																className="leading-relaxed text-black"
+																style={{
+																	fontSize:
+																		"clamp(14px, 3.5vw, 20px)",
+																}}
+															>
 																{comprehensiveLifeAdvice
 																	.wuxingHarmony
 																	?.summary
@@ -5520,10 +5971,22 @@ export default function ReportPage({
 													{activeWuxingTab ===
 														"强化" && (
 														<div className="space-y-4">
-															<h4 className="mb-4 text-4xl font-bold text-green-700">
+															<h4
+																className="mb-3 font-bold text-green-700 sm:mb-4"
+																style={{
+																	fontSize:
+																		"clamp(20px, 5vw, 36px)",
+																}}
+															>
 																强化方法
 															</h4>
-															<div className="text-xl leading-relaxed text-black">
+															<div
+																className="leading-relaxed text-black"
+																style={{
+																	fontSize:
+																		"clamp(14px, 3.5vw, 20px)",
+																}}
+															>
 																{comprehensiveLifeAdvice
 																	.wuxingHarmony
 																	?.summary
@@ -5580,10 +6043,22 @@ export default function ReportPage({
 													{activeWuxingTab ===
 														"避免" && (
 														<div className="space-y-4">
-															<h4 className="mb-4 text-4xl font-bold text-green-700">
+															<h4
+																className="mb-3 font-bold text-green-700 sm:mb-4"
+																style={{
+																	fontSize:
+																		"clamp(20px, 5vw, 36px)",
+																}}
+															>
 																避免事項
 															</h4>
-															<div className="text-xl leading-relaxed text-black">
+															<div
+																className="leading-relaxed text-black"
+																style={{
+																	fontSize:
+																		"clamp(14px, 3.5vw, 20px)",
+																}}
+															>
 																{comprehensiveLifeAdvice
 																	.wuxingHarmony
 																	?.summary
@@ -5643,10 +6118,22 @@ export default function ReportPage({
 													.wuxingHarmony
 													?.detailed && (
 													<div className="p-4 mt-6 bg-[#EFEFEF]  rounded-xl">
-														<h5 className="mb-2 text-2xl font-semibold text-black">
+														<h5
+															className="mb-2 font-semibold text-black"
+															style={{
+																fontSize:
+																	"clamp(16px, 4vw, 24px)",
+															}}
+														>
 															詳細說明
 														</h5>
-														<p className="text-xl leading-relaxed text-black">
+														<p
+															className="leading-relaxed text-black"
+															style={{
+																fontSize:
+																	"clamp(14px, 3.5vw, 20px)",
+															}}
+														>
 															{
 																comprehensiveLifeAdvice
 																	.wuxingHarmony
@@ -5660,9 +6147,9 @@ export default function ReportPage({
 
 										{activeComprehensiveTab ===
 											"身心養護" && (
-											<div className="px-30">
+											<div className="px-2 sm:px-4 md:px-8 lg:px-30">
 												{/* Sub-tab Navigation */}
-												<div className="flex justify-between gap-3 p-6 mb-3">
+												<div className="flex justify-center gap-2 p-3 mb-3 sm:justify-between sm:gap-3 sm:p-6">
 													{[
 														"運動建議",
 														"情緒調節",
@@ -5674,12 +6161,20 @@ export default function ReportPage({
 																	subTab
 																)
 															}
-															className={`px-22 py-3 rounded-full text-lg font-bold transition-all duration-300 ${
+															className={`flex-1 max-w-[140px] py-2 rounded-full font-bold transition-all duration-300 sm:flex-none sm:max-w-none sm:py-3 ${
 																activeHealthTab ===
 																subTab
 																	? "bg-[#B4003C] text-white shadow-lg border-2 border-black"
 																	: "bg-[#B4003C] text-white "
 															}`}
+															style={{
+																fontSize:
+																	"clamp(12px, 3vw, 18px)",
+																paddingLeft:
+																	"clamp(8px, 4vw, 22px)",
+																paddingRight:
+																	"clamp(8px, 4vw, 22px)",
+															}}
 														>
 															{subTab}
 														</button>
@@ -5691,10 +6186,22 @@ export default function ReportPage({
 													{activeHealthTab ===
 														"運動建議" && (
 														<div className="space-y-4">
-															<h4 className="mb-4 text-4xl font-bold text-[#B4003C]">
+															<h4
+																className="mb-3 sm:mb-4 font-bold text-[#B4003C]"
+																style={{
+																	fontSize:
+																		"clamp(20px, 5vw, 36px)",
+																}}
+															>
 																運動建議
 															</h4>
-															<div className="text-xl leading-relaxed text-black">
+															<div
+																className="leading-relaxed text-black"
+																style={{
+																	fontSize:
+																		"clamp(14px, 3.5vw, 20px)",
+																}}
+															>
 																{comprehensiveLifeAdvice
 																	.healthWellness
 																	?.exercise ? (
@@ -5748,10 +6255,22 @@ export default function ReportPage({
 													{activeHealthTab ===
 														"情緒調節" && (
 														<div className="space-y-4">
-															<h4 className="mb-4 text-4xl font-bold text-[#B4003C]">
+															<h4
+																className="mb-3 sm:mb-4 font-bold text-[#B4003C]"
+																style={{
+																	fontSize:
+																		"clamp(20px, 5vw, 36px)",
+																}}
+															>
 																情緒調節
 															</h4>
-															<div className="text-xl leading-relaxed text-black">
+															<div
+																className="leading-relaxed text-black"
+																style={{
+																	fontSize:
+																		"clamp(14px, 3.5vw, 20px)",
+																}}
+															>
 																{comprehensiveLifeAdvice
 																	.healthWellness
 																	?.emotion ? (
@@ -5777,10 +6296,22 @@ export default function ReportPage({
 													.healthWellness
 													?.detailed && (
 													<div className="p-4 mt-6 bg-[#EFEFEF] rounded-xl">
-														<h5 className="mb-2 text-2xl font-semibold text-black">
+														<h5
+															className="mb-2 font-semibold text-black"
+															style={{
+																fontSize:
+																	"clamp(16px, 4vw, 24px)",
+															}}
+														>
 															詳細說明
 														</h5>
-														<p className="text-xl leading-relaxed text-black">
+														<p
+															className="leading-relaxed text-black"
+															style={{
+																fontSize:
+																	"clamp(14px, 3.5vw, 20px)",
+															}}
+														>
 															{
 																comprehensiveLifeAdvice
 																	.healthWellness
@@ -5794,9 +6325,9 @@ export default function ReportPage({
 
 										{activeComprehensiveTab ===
 											"事業方向" && (
-											<div className="px-30">
+											<div className="px-2 sm:px-4 md:px-8 lg:px-30">
 												{/* Sub-tab Navigation */}
-												<div className="flex justify-between gap-3 p-6 mb-3">
+												<div className="flex justify-center gap-2 p-3 mb-3 sm:justify-between sm:gap-3 sm:p-6">
 													{[
 														"近期",
 														"中期",
@@ -5809,12 +6340,20 @@ export default function ReportPage({
 																	subTab
 																)
 															}
-															className={`px-22 py-3 rounded-full text-lg font-bold transition-all duration-300 ${
+															className={`flex-1 max-w-[100px] py-2 rounded-full font-bold transition-all duration-300 sm:flex-none sm:max-w-none sm:py-3 ${
 																activeCareerTab ===
 																subTab
 																	? "bg-[#007BFF] text-white shadow-lg border-2 border-black"
 																	: "bg-[#007BFF] text-white "
 															}`}
+															style={{
+																fontSize:
+																	"clamp(12px, 3vw, 18px)",
+																paddingLeft:
+																	"clamp(8px, 4vw, 22px)",
+																paddingRight:
+																	"clamp(8px, 4vw, 22px)",
+															}}
 														>
 															{subTab}
 														</button>
@@ -5829,10 +6368,22 @@ export default function ReportPage({
 															.careerDirection
 															?.nearTerm && (
 															<div className="space-y-4">
-																<h4 className="mb-4 text-4xl font-bold text-[#007BFF]">
+																<h4
+																	className="mb-3 sm:mb-4 font-bold text-[#007BFF]"
+																	style={{
+																		fontSize:
+																			"clamp(20px, 5vw, 36px)",
+																	}}
+																>
 																	近期事業方向
 																</h4>
-																<div className="text-xl leading-relaxed text-black">
+																<div
+																	className="leading-relaxed text-black"
+																	style={{
+																		fontSize:
+																			"clamp(14px, 3.5vw, 20px)",
+																	}}
+																>
 																	{typeof comprehensiveLifeAdvice
 																		.careerDirection
 																		.nearTerm ===
@@ -5929,10 +6480,22 @@ export default function ReportPage({
 															.careerDirection
 															?.midTerm && (
 															<div className="space-y-4">
-																<h4 className="mb-4 text-4xl font-bold text-[#007BFF]">
+																<h4
+																	className="mb-3 sm:mb-4 font-bold text-[#007BFF]"
+																	style={{
+																		fontSize:
+																			"clamp(20px, 5vw, 36px)",
+																	}}
+																>
 																	中期事業方向
 																</h4>
-																<div className="text-xl leading-relaxed text-black">
+																<div
+																	className="leading-relaxed text-black"
+																	style={{
+																		fontSize:
+																			"clamp(14px, 3.5vw, 20px)",
+																	}}
+																>
 																	{typeof comprehensiveLifeAdvice
 																		.careerDirection
 																		.midTerm ===
@@ -6022,10 +6585,22 @@ export default function ReportPage({
 															.careerDirection
 															?.longTerm && (
 															<div className="space-y-4">
-																<h4 className="mb-4 text-4xl font-bold text-[#007BFF]">
+																<h4
+																	className="mb-3 sm:mb-4 font-bold text-[#007BFF]"
+																	style={{
+																		fontSize:
+																			"clamp(20px, 5vw, 36px)",
+																	}}
+																>
 																	遠期事業方向
 																</h4>
-																<div className="text-xl leading-relaxed text-black">
+																<div
+																	className="leading-relaxed text-black"
+																	style={{
+																		fontSize:
+																			"clamp(14px, 3.5vw, 20px)",
+																	}}
+																>
 																	{typeof comprehensiveLifeAdvice
 																		.careerDirection
 																		.longTerm ===
@@ -6115,10 +6690,22 @@ export default function ReportPage({
 													.careerDirection
 													?.detailed && (
 													<div className="p-4 mt-6 bg-[#EFEFEF] rounded-xl">
-														<h5 className="mb-2 text-2xl font-semibold text-black">
+														<h5
+															className="mb-2 font-semibold text-black"
+															style={{
+																fontSize:
+																	"clamp(16px, 4vw, 24px)",
+															}}
+														>
 															詳細說明
 														</h5>
-														<p className="text-xl leading-relaxed text-black">
+														<p
+															className="leading-relaxed text-black"
+															style={{
+																fontSize:
+																	"clamp(14px, 3.5vw, 20px)",
+															}}
+														>
 															{
 																comprehensiveLifeAdvice
 																	.careerDirection
@@ -6188,7 +6775,7 @@ export default function ReportPage({
 									) : comprehensiveInterpersonalAdvice ? (
 										<div className="space-y-8">
 											{/* Main Tab Navigation */}
-											<div className="flex justify-between gap-8 mb-6 px-25 ">
+											<div className="flex justify-center gap-2 px-2 mb-6 sm:justify-between sm:gap-4 lg:gap-8 sm:px-4 lg:px-25">
 												{[
 													{
 														key: "個人關係",
@@ -6205,7 +6792,7 @@ export default function ReportPage({
 												].map((tab) => (
 													<div
 														key={tab.key}
-														className="flex flex-col items-center gap-3"
+														className="flex flex-col items-center flex-1 min-w-0 gap-1 sm:gap-2 lg:gap-3"
 													>
 														<button
 															onClick={() =>
@@ -6213,7 +6800,7 @@ export default function ReportPage({
 																	tab.key
 																)
 															}
-															className={`w-32 h-32 rounded-full transition-all duration-300 flex items-center justify-center text-4xl font-bold text-white ${
+															className={`w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 rounded-full transition-all duration-300 flex items-center justify-center font-bold text-white ${
 																activeInterpersonalTab ===
 																tab.key
 																	? "shadow-lg border-2 border-black"
@@ -6222,6 +6809,8 @@ export default function ReportPage({
 															style={{
 																backgroundColor:
 																	"#EFEFEF",
+																fontSize:
+																	"clamp(16px, 4vw, 32px)",
 															}}
 														>
 															{tab.key ===
@@ -6235,12 +6824,16 @@ export default function ReportPage({
 																"🌐"}
 														</button>
 														<span
-															className={`text-xl font-semibold text-center ${
+															className={`font-semibold text-center leading-tight ${
 																activeInterpersonalTab ===
 																tab.key
 																	? "text-[#A3B116]"
 																	: "text-gray-600"
 															}`}
+															style={{
+																fontSize:
+																	"clamp(11px, 2.5vw, 18px)",
+															}}
 														>
 															{tab.key}
 														</span>
@@ -6265,9 +6858,9 @@ export default function ReportPage({
 											{/* Tab Content */}
 											{activeInterpersonalTab ===
 												"個人關係" && (
-												<div className="px-30">
+												<div className="px-2 sm:px-4 md:px-8 lg:px-30">
 													{/* Sub-tab Navigation */}
-													<div className="flex justify-between gap-3 p-6 mb-3">
+													<div className="flex justify-center gap-2 p-3 mb-3 sm:justify-between sm:gap-3 sm:p-6">
 														{[
 															"婚戀配對",
 															"家庭關係",
@@ -6280,12 +6873,20 @@ export default function ReportPage({
 																		subTab
 																	)
 																}
-																className={`px-22 py-3 rounded-full text-lg font-bold transition-all duration-300 ${
+																className={`flex-1 max-w-[120px] py-2 rounded-full font-bold transition-all duration-300 sm:flex-none sm:max-w-none sm:py-3 ${
 																	activePersonalTab ===
 																	subTab
 																		? "bg-[#8E44AD] text-white shadow-lg border-2 border-black"
 																		: "bg-[#8E44AD] text-white "
 																}`}
+																style={{
+																	fontSize:
+																		"clamp(12px, 3vw, 18px)",
+																	paddingLeft:
+																		"clamp(8px, 4vw, 22px)",
+																	paddingRight:
+																		"clamp(8px, 4vw, 22px)",
+																}}
 															>
 																{subTab}
 															</button>
@@ -6297,10 +6898,22 @@ export default function ReportPage({
 														{activePersonalTab ===
 															"婚戀配對" && (
 															<div className="space-y-4">
-																<h4 className="mb-4 text-4xl font-bold text-[#8E44AD]">
+																<h4
+																	className="mb-3 sm:mb-4 font-bold text-[#8E44AD]"
+																	style={{
+																		fontSize:
+																			"clamp(20px, 5vw, 36px)",
+																	}}
+																>
 																	婚戀配對建議
 																</h4>
-																<div className="text-xl leading-relaxed text-black">
+																<div
+																	className="leading-relaxed text-black"
+																	style={{
+																		fontSize:
+																			"clamp(14px, 3.5vw, 20px)",
+																	}}
+																>
 																	{comprehensiveInterpersonalAdvice
 																		.personalRelationships
 																		?.romanticCompatibility ? (
@@ -6323,10 +6936,22 @@ export default function ReportPage({
 														{activePersonalTab ===
 															"家庭關係" && (
 															<div className="space-y-4">
-																<h4 className="mb-4 text-4xl font-bold text-[#8E44AD]">
+																<h4
+																	className="mb-3 sm:mb-4 font-bold text-[#8E44AD]"
+																	style={{
+																		fontSize:
+																			"clamp(20px, 5vw, 36px)",
+																	}}
+																>
 																	家庭關係建議
 																</h4>
-																<div className="text-xl leading-relaxed text-black">
+																<div
+																	className="leading-relaxed text-black"
+																	style={{
+																		fontSize:
+																			"clamp(14px, 3.5vw, 20px)",
+																	}}
+																>
 																	{comprehensiveInterpersonalAdvice
 																		.personalRelationships
 																		?.familyDynamics ? (
@@ -6349,10 +6974,22 @@ export default function ReportPage({
 														{activePersonalTab ===
 															"交友圈層" && (
 															<div className="space-y-4">
-																<h4 className="mb-4 text-4xl font-bold text-[#8E44AD]">
+																<h4
+																	className="mb-3 sm:mb-4 font-bold text-[#8E44AD]"
+																	style={{
+																		fontSize:
+																			"clamp(20px, 5vw, 36px)",
+																	}}
+																>
 																	交友圈層建議
 																</h4>
-																<div className="text-xl leading-relaxed text-black">
+																<div
+																	className="leading-relaxed text-black"
+																	style={{
+																		fontSize:
+																			"clamp(14px, 3.5vw, 20px)",
+																	}}
+																>
 																	{comprehensiveInterpersonalAdvice
 																		.personalRelationships
 																		?.friendshipCircle ? (
@@ -6378,10 +7015,22 @@ export default function ReportPage({
 														.personalRelationships
 														?.detailed && (
 														<div className="p-4 mt-6 bg-[#EFEFEF] rounded-xl">
-															<h5 className="mb-2 text-2xl font-semibold text-black">
+															<h5
+																className="mb-2 font-semibold text-black"
+																style={{
+																	fontSize:
+																		"clamp(16px, 4vw, 24px)",
+																}}
+															>
 																詳細說明
 															</h5>
-															<p className="text-xl leading-relaxed text-black">
+															<p
+																className="leading-relaxed text-black"
+																style={{
+																	fontSize:
+																		"clamp(14px, 3.5vw, 20px)",
+																}}
+															>
 																{
 																	comprehensiveInterpersonalAdvice
 																		.personalRelationships
@@ -6395,9 +7044,9 @@ export default function ReportPage({
 
 											{activeInterpersonalTab ===
 												"職場協作" && (
-												<div className="px-30">
+												<div className="px-2 sm:px-4 md:px-8 lg:px-30">
 													{/* Sub-tab Navigation */}
-													<div className="flex justify-between gap-3 p-6 mb-3">
+													<div className="flex justify-center gap-2 p-3 mb-3 sm:justify-between sm:gap-3 sm:p-6">
 														{[
 															"領導風格",
 															"團隊配合",
@@ -6410,12 +7059,20 @@ export default function ReportPage({
 																		subTab
 																	)
 																}
-																className={`px-22 py-3 rounded-full text-lg font-bold transition-all duration-300 ${
+																className={`flex-1 max-w-[120px] py-2 rounded-full font-bold transition-all duration-300 sm:flex-none sm:max-w-none sm:py-3 ${
 																	activeWorkplaceTab ===
 																	subTab
 																		? "bg-[#3498DB] text-white shadow-lg border-2 border-black"
 																		: "bg-[#3498DB] text-white "
 																}`}
+																style={{
+																	fontSize:
+																		"clamp(12px, 3vw, 18px)",
+																	paddingLeft:
+																		"clamp(8px, 4vw, 22px)",
+																	paddingRight:
+																		"clamp(8px, 4vw, 22px)",
+																}}
 															>
 																{subTab}
 															</button>
@@ -6427,10 +7084,22 @@ export default function ReportPage({
 														{activeWorkplaceTab ===
 															"領導風格" && (
 															<div className="space-y-4">
-																<h4 className="mb-4 text-4xl font-bold text-[#3498DB]">
+																<h4
+																	className="mb-3 sm:mb-4 font-bold text-[#3498DB]"
+																	style={{
+																		fontSize:
+																			"clamp(20px, 5vw, 36px)",
+																	}}
+																>
 																	領導風格建議
 																</h4>
-																<div className="text-xl leading-relaxed text-black">
+																<div
+																	className="leading-relaxed text-black"
+																	style={{
+																		fontSize:
+																			"clamp(14px, 3.5vw, 20px)",
+																	}}
+																>
 																	{comprehensiveInterpersonalAdvice
 																		.workplaceCollaboration
 																		?.leadershipStyle ? (
@@ -6453,10 +7122,22 @@ export default function ReportPage({
 														{activeWorkplaceTab ===
 															"團隊配合" && (
 															<div className="space-y-4">
-																<h4 className="mb-4 text-4xl font-bold text-[#3498DB]">
+																<h4
+																	className="mb-3 sm:mb-4 font-bold text-[#3498DB]"
+																	style={{
+																		fontSize:
+																			"clamp(20px, 5vw, 36px)",
+																	}}
+																>
 																	團隊配合建議
 																</h4>
-																<div className="text-xl leading-relaxed text-black">
+																<div
+																	className="leading-relaxed text-black"
+																	style={{
+																		fontSize:
+																			"clamp(14px, 3.5vw, 20px)",
+																	}}
+																>
 																	{comprehensiveInterpersonalAdvice
 																		.workplaceCollaboration
 																		?.teamDynamics ? (
@@ -6479,10 +7160,22 @@ export default function ReportPage({
 														{activeWorkplaceTab ===
 															"衝突化解" && (
 															<div className="space-y-4">
-																<h4 className="mb-4 text-4xl font-bold text-[#3498DB]">
+																<h4
+																	className="mb-3 sm:mb-4 font-bold text-[#3498DB]"
+																	style={{
+																		fontSize:
+																			"clamp(20px, 5vw, 36px)",
+																	}}
+																>
 																	衝突化解建議
 																</h4>
-																<div className="text-xl leading-relaxed text-black">
+																<div
+																	className="leading-relaxed text-black"
+																	style={{
+																		fontSize:
+																			"clamp(14px, 3.5vw, 20px)",
+																	}}
+																>
 																	{comprehensiveInterpersonalAdvice
 																		.workplaceCollaboration
 																		?.conflictResolution ? (
@@ -6508,10 +7201,22 @@ export default function ReportPage({
 														.workplaceCollaboration
 														?.detailed && (
 														<div className="p-4 mt-6 bg-[#EFEFEF] rounded-xl">
-															<h5 className="mb-2 text-2xl font-semibold text-black">
+															<h5
+																className="mb-2 font-semibold text-black"
+																style={{
+																	fontSize:
+																		"clamp(16px, 4vw, 24px)",
+																}}
+															>
 																詳細說明
 															</h5>
-															<p className="text-xl leading-relaxed text-black">
+															<p
+																className="leading-relaxed text-black"
+																style={{
+																	fontSize:
+																		"clamp(14px, 3.5vw, 20px)",
+																}}
+															>
 																{
 																	comprehensiveInterpersonalAdvice
 																		.workplaceCollaboration
@@ -6525,9 +7230,9 @@ export default function ReportPage({
 
 											{activeInterpersonalTab ===
 												"社交網絡" && (
-												<div className="px-30">
+												<div className="px-2 sm:px-4 md:px-8 lg:px-30">
 													{/* Sub-tab Navigation */}
-													<div className="flex justify-between gap-3 p-6 mb-3">
+													<div className="flex justify-center gap-2 p-3 mb-3 sm:justify-between sm:gap-3 sm:p-6">
 														{[
 															"人脈建構",
 															"溝通技巧",
@@ -6540,12 +7245,20 @@ export default function ReportPage({
 																		subTab
 																	)
 																}
-																className={`px-22 py-3 rounded-full text-lg font-bold transition-all duration-300 ${
+																className={`flex-1 max-w-[120px] py-2 rounded-full font-bold transition-all duration-300 sm:flex-none sm:max-w-none sm:py-3 ${
 																	activeSocialTab ===
 																	subTab
 																		? "bg-[#27AE60] text-white shadow-lg border-2 border-black"
 																		: "bg-[#27AE60] text-white "
 																}`}
+																style={{
+																	fontSize:
+																		"clamp(12px, 3vw, 18px)",
+																	paddingLeft:
+																		"clamp(8px, 4vw, 22px)",
+																	paddingRight:
+																		"clamp(8px, 4vw, 22px)",
+																}}
 															>
 																{subTab}
 															</button>
@@ -6557,10 +7270,22 @@ export default function ReportPage({
 														{activeSocialTab ===
 															"人脈建構" && (
 															<div className="space-y-4">
-																<h4 className="mb-4 text-4xl font-bold text-[#27AE60]">
+																<h4
+																	className="mb-3 sm:mb-4 font-bold text-[#27AE60]"
+																	style={{
+																		fontSize:
+																			"clamp(20px, 5vw, 36px)",
+																	}}
+																>
 																	人脈建構建議
 																</h4>
-																<div className="text-xl leading-relaxed text-black">
+																<div
+																	className="leading-relaxed text-black"
+																	style={{
+																		fontSize:
+																			"clamp(14px, 3.5vw, 20px)",
+																	}}
+																>
 																	{comprehensiveInterpersonalAdvice
 																		.socialNetworking
 																		?.networkBuilding ? (
@@ -6583,10 +7308,22 @@ export default function ReportPage({
 														{activeSocialTab ===
 															"溝通技巧" && (
 															<div className="space-y-4">
-																<h4 className="mb-4 text-4xl font-bold text-[#27AE60]">
+																<h4
+																	className="mb-3 sm:mb-4 font-bold text-[#27AE60]"
+																	style={{
+																		fontSize:
+																			"clamp(20px, 5vw, 36px)",
+																	}}
+																>
 																	溝通技巧建議
 																</h4>
-																<div className="text-xl leading-relaxed text-black">
+																<div
+																	className="leading-relaxed text-black"
+																	style={{
+																		fontSize:
+																			"clamp(14px, 3.5vw, 20px)",
+																	}}
+																>
 																	{comprehensiveInterpersonalAdvice
 																		.socialNetworking
 																		?.communicationSkills ? (
@@ -6609,10 +7346,22 @@ export default function ReportPage({
 														{activeSocialTab ===
 															"聚會參與" && (
 															<div className="space-y-4">
-																<h4 className="mb-4 text-4xl font-bold text-[#27AE60]">
+																<h4
+																	className="mb-3 sm:mb-4 font-bold text-[#27AE60]"
+																	style={{
+																		fontSize:
+																			"clamp(20px, 5vw, 36px)",
+																	}}
+																>
 																	聚會參與建議
 																</h4>
-																<div className="text-xl leading-relaxed text-black">
+																<div
+																	className="leading-relaxed text-black"
+																	style={{
+																		fontSize:
+																			"clamp(14px, 3.5vw, 20px)",
+																	}}
+																>
 																	{comprehensiveInterpersonalAdvice
 																		.socialNetworking
 																		?.socialGatherings ? (
@@ -6638,10 +7387,22 @@ export default function ReportPage({
 														.socialNetworking
 														?.detailed && (
 														<div className="p-4 mt-6 bg-[#EFEFEF] rounded-xl">
-															<h5 className="mb-2 text-2xl font-semibold text-black">
+															<h5
+																className="mb-2 font-semibold text-black"
+																style={{
+																	fontSize:
+																		"clamp(16px, 4vw, 24px)",
+																}}
+															>
 																詳細說明
 															</h5>
-															<p className="text-xl leading-relaxed text-black">
+															<p
+																className="leading-relaxed text-black"
+																style={{
+																	fontSize:
+																		"clamp(14px, 3.5vw, 20px)",
+																}}
+															>
 																{
 																	comprehensiveInterpersonalAdvice
 																		.socialNetworking

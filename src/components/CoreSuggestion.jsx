@@ -345,23 +345,17 @@ export default function CoreSuggestion({ userInfo, currentYear = 2025 }) {
 
 	return (
 		<ComponentErrorBoundary componentName="CoreSuggestion">
-			<section
-				className="relative mx-auto mb-6 bg-white sm:mb-10"
-				style={{
-					width: "95%",
-					padding: "40px",
-					boxShadow: "0 4px 4px rgba(0, 0, 0, 0.25)",
-					borderRadius: "45px",
-				}}
-			>
+			<section className="relative mx-auto mb-6 sm:mb-10 bg-white w-full sm:w-[95%] lg:w-[95%] rounded-[20px] sm:rounded-[26px] p-4 sm:p-8 md:p-12 lg:p-20 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
 				{/* Header */}
-				<div className="flex items-center justify-between mb-8">
+				<div className="flex items-center justify-between mb-6 sm:mb-8">
 					<h2
+						className="font-extrabold text-center sm:text-left"
 						style={{
 							fontFamily: "Noto Serif TC, serif",
-							fontSize: "40px",
+							fontSize: "clamp(1.5rem, 5vw, 2.5rem)",
 							fontWeight: 800,
 							color: getConcernColor(userInfo),
+							lineHeight: 1.2,
 						}}
 					>
 						核心原則
@@ -370,12 +364,10 @@ export default function CoreSuggestion({ userInfo, currentYear = 2025 }) {
 
 				{/* Core Icons Section */}
 				<div
-					className="p-6 mb-8 bg-gray-100 rounded-xl"
-					style={{
-						boxShadow: "0 4px 4px rgba(0, 0, 0, 0.25)",
-					}}
+					className="p-3 mb-6 bg-gray-100 sm:p-6 sm:mb-8 rounded-xl"
+					style={{ boxShadow: "0 4px 4px rgba(0, 0, 0, 0.25)" }}
 				>
-					<div className="flex items-center justify-between w-full mb-6">
+					<div className="flex flex-wrap items-center justify-between w-full gap-0 mb-4 sm:gap-0 sm:mb-6">
 						{analysisData.coreIconList.map((item, index) => {
 							const getButtonBgColor = (itemLabel, isActive) => {
 								const colorMap = {
@@ -423,14 +415,14 @@ export default function CoreSuggestion({ userInfo, currentYear = 2025 }) {
 									onClick={() =>
 										setActiveCategoryIndex(index)
 									}
-									className={`flex flex-col items-center space-y-2 transition-all duration-300 flex-1 ${
+									className={`flex flex-col items-center space-y-1 sm:space-y-2 transition-all duration-300 flex-1 min-w-[70px] max-w-[120px] sm:max-w-none ${
 										activeCategoryIndex === index
 											? "transform scale-110"
 											: "hover:scale-105"
 									}`}
 								>
 									<div
-										className={`w-16 h-16 rounded-full flex items-center justify-center text-white transition-all duration-300 ${getButtonBgColor(
+										className={`w-10 h-10 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-white transition-all duration-300 ${getButtonBgColor(
 											item.label,
 											activeCategoryIndex === index
 										)}`}
@@ -442,7 +434,7 @@ export default function CoreSuggestion({ userInfo, currentYear = 2025 }) {
 										<img
 											src={getItemImage(item.label)}
 											alt={item.label}
-											className="w-8 h-8"
+											className="w-6 h-6 sm:w-8 sm:h-8"
 											style={{
 												filter: getImageFilter(
 													activeCategoryIndex ===
@@ -452,7 +444,7 @@ export default function CoreSuggestion({ userInfo, currentYear = 2025 }) {
 										/>
 									</div>
 									<span
-										className={`text-sm font-medium ${
+										className={`text-xs sm:text-sm font-medium ${
 											activeCategoryIndex === index
 												? "text-gray-800"
 												: "text-gray-500"
@@ -468,9 +460,10 @@ export default function CoreSuggestion({ userInfo, currentYear = 2025 }) {
 					{/* Active Category Title */}
 					<div className="text-center">
 						<h3
+							className="font-bold"
 							style={{
 								fontFamily: "Noto Serif TC, serif",
-								fontSize: "40px",
+								fontSize: "clamp(1.25rem, 4vw, 2rem)",
 								fontWeight: 700,
 								color: (() => {
 									const colorMap = {
@@ -495,7 +488,7 @@ export default function CoreSuggestion({ userInfo, currentYear = 2025 }) {
 					</div>
 
 					{/* Subsection Cards */}
-					<div className="grid gap-6 mt-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+					<div className="grid grid-cols-1 gap-4 mt-6 sm:gap-6 sm:mt-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 						{activeCategory.content.subsections &&
 							Object.entries(
 								activeCategory.content.subsections
@@ -543,20 +536,20 @@ export default function CoreSuggestion({ userInfo, currentYear = 2025 }) {
 									return (
 										<div
 											key={subsectionName}
-											className="p-4 transition-shadow bg-white border-2 border-gray-200 rounded-xl hover:shadow-lg"
+											className={`p-3 sm:p-4 transition-shadow bg-white border-2 border-gray-200 rounded-xl hover:shadow-lg`}
 										>
 											<div
-												className={`text-center p-4 rounded-lg mb-4 ${colorScheme.bg}`}
+												className={`text-center p-2 sm:p-4 rounded-lg mb-3 sm:mb-4 ${colorScheme.bg}`}
 											>
 												<h4
-													className={`font-bold text-lg ${colorScheme.text}`}
+													className={`font-bold text-base sm:text-lg ${colorScheme.text}`}
 												>
 													{subsectionName}
 												</h4>
 											</div>
-											<div className="space-y-3">
+											<div className="space-y-2 sm:space-y-3">
 												<div>
-													<div className="text-sm leading-relaxed text-gray-700 text-start">
+													<div className="text-xs leading-relaxed text-gray-700 sm:text-sm text-start">
 														{subsectionContent}
 													</div>
 												</div>

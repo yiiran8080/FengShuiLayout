@@ -186,9 +186,12 @@ const HealthFortuneAnalysis = ({
 
 	if (isLoading) {
 		return (
-			<div className="py-20 text-center">
-				<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
-				<p className="text-lg text-[#5A5A5A]">
+			<div className="py-12 text-center sm:py-20">
+				<div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-[#A3B116] mx-auto mb-3 sm:mb-4"></div>
+				<p
+					className="text-[#5A5A5A]"
+					style={{ fontSize: "clamp(14px, 3vw, 18px)" }}
+				>
 					正在生成健康運勢分析...
 				</p>
 			</div>
@@ -197,8 +200,11 @@ const HealthFortuneAnalysis = ({
 
 	if (!healthAnalysis) {
 		return (
-			<div className="py-20 text-center">
-				<p className="text-lg text-[#5A5A5A]">
+			<div className="py-12 text-center sm:py-20">
+				<p
+					className="text-[#5A5A5A]"
+					style={{ fontSize: "clamp(14px, 3vw, 18px)" }}
+				>
 					健康分析生成失敗，請重新整理頁面
 				</p>
 			</div>
@@ -276,29 +282,37 @@ const HealthFortuneAnalysis = ({
 		return (
 			<>
 				<h4
-					className="mb-4 text-2xl font-bold"
-					style={{ fontFamily: "Noto Serif TC, serif" }}
+					className="mb-3 font-bold sm:mb-4"
+					style={{
+						fontFamily: "Noto Serif TC, serif",
+						fontSize: "clamp(18px, 4vw, 24px)",
+					}}
 				>
 					{getTabTitle(tabName)}
 				</h4>
 				<p
-					className="mb-6 text-lg"
-					style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+					className="mb-4 sm:mb-6"
+					style={{
+						fontFamily: "Noto Sans HK, sans-serif",
+						fontSize: "clamp(14px, 3vw, 16px)",
+						lineHeight: 1.5,
+					}}
 				>
 					{getTabDescription(tabName, systemData.content)}
 				</p>
 
-				<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+				<div className="grid grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-3">
 					{getTabCards(tabName, systemData.content).map(
 						(card, index) => (
 							<div
 								key={index}
-								className="p-4 rounded-lg bg-white/20"
+								className="p-3 rounded-lg sm:p-4 bg-white/20"
 							>
 								<h5
 									className="mb-2 font-bold"
 									style={{
 										fontFamily: "Noto Serif TC, serif",
+										fontSize: "clamp(14px, 3vw, 16px)",
 									}}
 								>
 									{card.title}
@@ -306,6 +320,8 @@ const HealthFortuneAnalysis = ({
 								<p
 									style={{
 										fontFamily: "Noto Sans HK, sans-serif",
+										fontSize: "clamp(12px, 2.5vw, 14px)",
+										lineHeight: 1.4,
 									}}
 								>
 									{card.text}
@@ -321,29 +337,39 @@ const HealthFortuneAnalysis = ({
 	return (
 		<div className="w-full">
 			{/* Header */}
-			<div className="mb-8">
-				<div className="flex items-center gap-3 mb-4">
+			<div className="mb-6 sm:mb-8">
+				<div className="flex items-center gap-2 mb-3 sm:gap-3 sm:mb-4">
 					<h2
-						className="text-4xl font-bold text-[#374A37]"
-						style={{ fontFamily: "Noto Serif TC, serif" }}
+						className="font-bold text-[#374A37]"
+						style={{
+							fontFamily: "Noto Serif TC, serif",
+							fontSize: "clamp(24px, 5vw, 36px)",
+						}}
 					>
 						健康運勢分析
 					</h2>
 				</div>
 
 				{/* Summary Section */}
-				<div className="bg-gradient-to-r from-[#389D7D] to-[#567156] rounded-full px-6 py-3 mb-6 inline-block">
+				<div className="bg-gradient-to-r from-[#389D7D] to-[#567156] rounded-full px-4 sm:px-6 py-2 sm:py-3 mb-4 sm:mb-6 inline-block max-w-full">
 					<h3
-						className="text-xl font-bold text-white"
-						style={{ fontFamily: "Noto Serif TC, serif" }}
+						className="font-bold text-center text-white"
+						style={{
+							fontFamily: "Noto Serif TC, serif",
+							fontSize: "clamp(16px, 3.5vw, 20px)",
+						}}
 					>
 						總結：{healthAnalysis.summary.title}
 					</h3>
 				</div>
 
 				<p
-					className="text-lg text-[#374A37] leading-relaxed mb-8"
-					style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+					className="text-[#374A37] leading-relaxed mb-6 sm:mb-8"
+					style={{
+						fontFamily: "Noto Sans HK, sans-serif",
+						fontSize: "clamp(14px, 3vw, 18px)",
+						lineHeight: 1.6,
+					}}
 				>
 					{healthAnalysis.summary.description}
 				</p>
@@ -351,29 +377,33 @@ const HealthFortuneAnalysis = ({
 
 			{/* Three Systems Analysis Header */}
 			<div
-				className="bg-[#EFEFEF] rounded-xl p-6 mb-6"
+				className="bg-[#EFEFEF] rounded-xl p-3 sm:p-6 mb-4 sm:mb-6"
 				style={{ boxShadow: "inset 0 4px 4px rgba(0, 0, 0, 0.25)" }}
 			>
 				<h3
-					className="text-3xl font-bold text-[#567156] mb-6"
-					style={{ fontFamily: "Noto Serif TC, serif" }}
+					className="font-bold text-[#567156] mb-4 sm:mb-6 text-center"
+					style={{
+						fontFamily: "Noto Serif TC, serif",
+						fontSize: "clamp(20px, 4vw, 28px)",
+					}}
 				>
 					三大系統深度解析
 				</h3>
 
 				{/* Tab Navigation */}
-				<div className="flex flex-wrap justify-center gap-6 mb-8">
+				<div className="flex flex-col justify-center gap-3 mb-6 sm:flex-row sm:flex-wrap sm:gap-4 lg:gap-6 sm:mb-8">
 					{tabs.map((tab) => (
 						<button
 							key={tab}
 							onClick={() => setActiveTab(tab)}
-							className={`px-8 py-4 rounded-full font-semibold text-lg transition-all duration-200 ${
+							className={`px-4 sm:px-6 lg:px-8 py-3 sm:py-4 rounded-full font-semibold transition-all duration-200 flex-shrink-0 ${
 								activeTab === tab
 									? "bg-[#389D7D] text-white"
 									: "bg-white text-[#757575] hover:bg-gray-50"
 							}`}
 							style={{
 								fontFamily: "Noto Serif TC, serif",
+								fontSize: "clamp(14px, 3vw, 18px)",
 								boxShadow: "0 4px 4px rgba(0, 0, 0, 0.25)",
 							}}
 						>
@@ -383,9 +413,9 @@ const HealthFortuneAnalysis = ({
 				</div>
 
 				{/* Tab Content */}
-				<div className="mb-8">
+				<div className="mb-6 sm:mb-8">
 					{healthAnalysis.systems[activeTab] && (
-						<div className="bg-[#389D7D] rounded-xl p-6 text-white mb-6">
+						<div className="bg-[#389D7D] rounded-xl p-4 sm:p-6 text-white mb-4 sm:mb-6">
 							{renderTabContent(
 								activeTab,
 								healthAnalysis.systems[activeTab]
@@ -395,98 +425,129 @@ const HealthFortuneAnalysis = ({
 				</div>
 			</div>
 			{/* Care Regimen Section */}
-			<div className="p-6">
+			<div className="p-3 sm:p-6">
 				<h3
-					className="text-3xl font-bold text-[#567156] mb-6"
-					style={{ fontFamily: "Noto Serif TC, serif" }}
+					className="font-bold text-[#567156] mb-4 sm:mb-6 text-center"
+					style={{
+						fontFamily: "Noto Serif TC, serif",
+						fontSize: "clamp(20px, 4vw, 28px)",
+					}}
 				>
 					全週期調養方案
 				</h3>
 
-				<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+				<div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
 					<div
-						className="bg-[#EFEFEF] rounded-lg p-4"
+						className="bg-[#EFEFEF] rounded-lg p-3 sm:p-4"
 						style={{
 							boxShadow: "inset 0 4px 4px rgba(0, 0, 0, 0.25)",
 						}}
 					>
-						<div className="bg-[#389D7D] rounded-full px-4 py-2 mb-3 inline-block">
+						<div className="bg-[#389D7D] rounded-full px-3 sm:px-4 py-1 sm:py-2 mb-2 sm:mb-3 inline-block">
 							<h4
-								className="text-sm font-bold text-white"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
+								className="font-bold text-white"
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									fontSize: "clamp(12px, 2.5vw, 14px)",
+								}}
 							>
 								作息
 							</h4>
 						</div>
 						<p
-							className="text-sm text-[#374A37]"
-							style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+							className="text-[#374A37]"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(12px, 2.5vw, 14px)",
+								lineHeight: 1.4,
+							}}
 						>
 							{healthAnalysis.careRegimen.diet}
 						</p>
 					</div>
 
 					<div
-						className="bg-[#EFEFEF] rounded-lg p-4"
+						className="bg-[#EFEFEF] rounded-lg p-3 sm:p-4"
 						style={{
 							boxShadow: "inset 0 4px 4px rgba(0, 0, 0, 0.25)",
 						}}
 					>
-						<div className="bg-[#389D7D] rounded-full px-4 py-2 mb-3 inline-block">
+						<div className="bg-[#389D7D] rounded-full px-3 sm:px-4 py-1 sm:py-2 mb-2 sm:mb-3 inline-block">
 							<h4
-								className="text-sm font-bold text-white"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
+								className="font-bold text-white"
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									fontSize: "clamp(12px, 2.5vw, 14px)",
+								}}
 							>
 								經絡
 							</h4>
 						</div>
 						<p
-							className="text-sm text-[#374A37]"
-							style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+							className="text-[#374A37]"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(12px, 2.5vw, 14px)",
+								lineHeight: 1.4,
+							}}
 						>
 							{healthAnalysis.careRegimen.acupoints}
 						</p>
 					</div>
 
 					<div
-						className="bg-[#EFEFEF] rounded-lg p-4"
+						className="bg-[#EFEFEF] rounded-lg p-3 sm:p-4"
 						style={{
 							boxShadow: "inset 0 4px 4px rgba(0, 0, 0, 0.25)",
 						}}
 					>
-						<div className="bg-[#389D7D] rounded-full px-4 py-2 mb-3 inline-block">
+						<div className="bg-[#389D7D] rounded-full px-3 sm:px-4 py-1 sm:py-2 mb-2 sm:mb-3 inline-block">
 							<h4
-								className="text-sm font-bold text-white"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
+								className="font-bold text-white"
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									fontSize: "clamp(12px, 2.5vw, 14px)",
+								}}
 							>
 								運動
 							</h4>
 						</div>
 						<p
-							className="text-sm text-[#374A37]"
-							style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+							className="text-[#374A37]"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(12px, 2.5vw, 14px)",
+								lineHeight: 1.4,
+							}}
 						>
 							{healthAnalysis.careRegimen.exercise}
 						</p>
 					</div>
 
 					<div
-						className="bg-[#EFEFEF] rounded-lg p-4"
+						className="bg-[#EFEFEF] rounded-lg p-3 sm:p-4"
 						style={{
 							boxShadow: "inset 0 4px 4px rgba(0, 0, 0, 0.25)",
 						}}
 					>
-						<div className="bg-[#389D7D] rounded-full px-4 py-2 mb-3 inline-block">
+						<div className="bg-[#389D7D] rounded-full px-3 sm:px-4 py-1 sm:py-2 mb-2 sm:mb-3 inline-block">
 							<h4
-								className="text-sm font-bold text-white"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
+								className="font-bold text-white"
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									fontSize: "clamp(12px, 2.5vw, 14px)",
+								}}
 							>
 								大運提醒
 							</h4>
 						</div>
 						<p
-							className="text-sm text-[#374A37]"
-							style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+							className="text-[#374A37]"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(12px, 2.5vw, 14px)",
+								lineHeight: 1.4,
+							}}
 						>
 							{healthAnalysis.careRegimen.lifeStageReminder}
 						</p>

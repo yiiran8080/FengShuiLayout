@@ -113,10 +113,25 @@ const EmergencyFengShuiSection = ({ femaleUser, maleUser, analysisData }) => {
 
 	if (loading) {
 		return (
-			<div className="w-full p-8 bg-white rounded-[30px] shadow-lg">
+			<div
+				className="w-full bg-white shadow-lg"
+				style={{
+					padding: "clamp(20px, 5vw, 32px)",
+					borderRadius: "clamp(20px, 5vw, 30px)",
+				}}
+			>
 				<div className="flex items-center justify-center">
-					<div className="w-6 h-6 border-b-2 border-pink-500 rounded-full animate-spin"></div>
-					<span className="ml-2 text-gray-600">
+					<div
+						className="border-b-2 border-pink-500 rounded-full animate-spin"
+						style={{
+							width: "clamp(20px, 5vw, 24px)",
+							height: "clamp(20px, 5vw, 24px)",
+						}}
+					></div>
+					<span
+						className="ml-2 text-gray-600"
+						style={{ fontSize: "clamp(13px, 3.2vw, 15px)" }}
+					>
 						生成風水急救方案中...
 					</span>
 				</div>
@@ -129,13 +144,19 @@ const EmergencyFengShuiSection = ({ femaleUser, maleUser, analysisData }) => {
 	}
 
 	return (
-		<div className="w-full bg-white rounded-[30px] shadow-lg p-8">
+		<div
+			className="w-full bg-white shadow-lg"
+			style={{
+				padding: "clamp(20px, 5vw, 32px)",
+				borderRadius: "clamp(20px, 5vw, 30px)",
+			}}
+		>
 			{/* Subtitle */}
-			<div className="mb-8">
+			<div style={{ marginBottom: "clamp(24px, 6vw, 32px)" }}>
 				<h3
 					className="font-bold text-[#C74772]"
 					style={{
-						fontSize: "42px",
+						fontSize: "clamp(24px, 6vw, 42px)",
 						fontFamily: "Noto Serif TC, serif",
 					}}
 				>
@@ -144,17 +165,30 @@ const EmergencyFengShuiSection = ({ femaleUser, maleUser, analysisData }) => {
 			</div>
 
 			{/* Recommendations Grid */}
-			<div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+			<div
+				className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+				style={{ gap: "clamp(16px, 4vw, 24px)" }}
+			>
 				{fengShuiData.recommendations?.map((item, index) => (
 					<div
 						key={index}
-						className="space-y-3 bg-[#EFEFEF] p-4 rounded-lg"
+						className="bg-[#EFEFEF]"
+						style={{
+							padding: "clamp(12px, 3vw, 16px)",
+							borderRadius: "clamp(8px, 2vw, 12px)",
+							gap: "clamp(10px, 2.5vw, 12px)",
+							display: "flex",
+							flexDirection: "column",
+						}}
 					>
 						{/* Title Badge */}
 						<div className="flex justify-center">
 							<div
-								className="inline-block px-4 py-2 text-lg font-medium text-white rounded-full"
+								className="inline-block font-medium text-white rounded-full"
 								style={{
+									padding:
+										"clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px)",
+									fontSize: "clamp(13px, 3.2vw, 18px)",
 									background:
 										"linear-gradient(135deg, #C74772 0%, #D09900 100%)",
 									fontFamily: "Noto Sans TC, sans-serif",
@@ -165,10 +199,12 @@ const EmergencyFengShuiSection = ({ femaleUser, maleUser, analysisData }) => {
 						</div>
 
 						{/* Content Box */}
-						<div className="p-4 ">
+						<div style={{ padding: "clamp(12px, 3vw, 16px)" }}>
 							<p
-								className="leading-relaxed text-gray-800 text-md"
+								className="text-gray-800"
 								style={{
+									fontSize: "clamp(12px, 3vw, 16px)",
+									lineHeight: "1.6",
 									fontFamily: "Noto Sans TC, sans-serif",
 								}}
 							>

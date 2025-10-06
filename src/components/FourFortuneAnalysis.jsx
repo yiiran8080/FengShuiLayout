@@ -247,7 +247,7 @@ export default function FourFortuneAnalysis({
 			{/* Main Content */}
 			<div className="pt-4">
 				{/* Header Section */}
-				<div className="w-full sm:w-[95%] lg:w-[90%] mx-auto px-4 sm:px-5 pt-2s sm:pt-10 lg:pt-10 pb-6 sm:pb-10 flex flex-col lg:flex-row bg-[#EFEFEF]">
+				<div className="w-[95%] sm:w-[95%] lg:w-[90%] mx-auto px-3 sm:px-5 pt-4 sm:pt-10 lg:pt-10 pb-6 sm:pb-10 flex flex-col lg:flex-row bg-[#EFEFEF]">
 					<div className="flex items-start justify-center flex-1 mb-6 lg:justify-start lg:mb-0">
 						<h1
 							ref={(el) => (sectionRefs.current[0] = el)}
@@ -267,7 +267,7 @@ export default function FourFortuneAnalysis({
 				</div>
 
 				{/* Zodiac and Four Pillars Detail Section */}
-				<section className="w-full sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-8 lg:p-13 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+				<section className="w-[95%] sm:w-[85%] mx-auto bg-white rounded-[24px] sm:rounded-[48px] lg:rounded-[80px] p-3 sm:p-3 lg:p-12 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.18)]">
 					{(() => {
 						const analysis = wuxingAnalysis;
 						if (!analysis)
@@ -275,7 +275,13 @@ export default function FourFortuneAnalysis({
 								<div className="flex items-center justify-center py-20">
 									<div className="text-center">
 										<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
-										<p className="text-lg text-[#5A5A5A]">
+										<p
+											style={{
+												fontSize:
+													"clamp(14px, 3vw, 18px)",
+											}}
+											className="text-[#5A5A5A]"
+										>
 											正在分析您的命理資料...
 										</p>
 									</div>
@@ -305,11 +311,11 @@ export default function FourFortuneAnalysis({
 							zodiacAnimals[(birthYear - 1900) % 12];
 
 						return (
-							<div className="flex flex-col items-start gap-6 lg:flex-row lg:justify-between lg:gap-0">
+							<div className="flex flex-col items-center justify-center gap-0 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
 								{/* Left Side - Zodiac Animal */}
-								<div className="w-full lg:w-[20%] ml-10 flex items-center justify-center">
+								<div className="w-full lg:w-[22%] flex items-center justify-center mb-4 lg:mb-0">
 									<div className="text-center">
-										<div className="flex items-center justify-center h-16 mx-auto mb-4 w-18 sm:w-20 sm:h-20 lg:w-100 lg:h-100">
+										<div className="flex items-center justify-center w-40 h-40 mx-8 mx-auto mt-3 mb-0 sm:mb-4 sm:w-50 sm:h-50 lg:w-90 lg:h-90">
 											<Image
 												src={`/images/animals/${
 													userZodiac === "龍"
@@ -357,25 +363,9 @@ export default function FourFortuneAnalysis({
 									</div>
 								</div>
 
-								{/* Right Side - Enhanced Display Following Image Design */}
 								<div className="w-full lg:w-[70%] flex flex-col gap-4 sm:gap-6">
-									{/* Header with Title */}
-									<div className="text-center lg:text-start">
-										<h3
-											className="font-bold text-[#A3B116] mb-4 sm:mb-6"
-											style={{
-												fontFamily:
-													"Noto Serif TC, serif",
-												fontSize:
-													"clamp(36px, 8vw, 70px)",
-											}}
-										>
-											主要結論
-										</h3>
-									</div>
-
 									{/* Four Pillars in responsive layout */}
-									<div className="flex flex-wrap justify-center gap-3 mb-4 lg:justify-start sm:gap-4 sm:mb-6">
+									<div className="flex flex-wrap justify-center gap-5 mt-4 mb-4 lg:justify-start sm:gap-4 sm:mb-6 lg:mt-10">
 										{/* 年柱 */}
 										<div className="bg-white border-2 border-black rounded-full px-3 sm:px-6 lg:px-10 py-2 min-w-[100px] sm:min-w-[120px] lg:min-w-[140px] text-center flex-shrink-0">
 											<div
@@ -449,12 +439,18 @@ export default function FourFortuneAnalysis({
 										</div>
 									</div>
 
-									{/* Two main analysis sections side by side like the image */}
-									<div className="flex justify-start gap-8">
+									<div className="flex flex-row justify-center gap-4 sm:flex-row md:justify-start lg:justify-start xl:justify-start sm:justify-center sm:gap-8">
 										{/* Left section - Wuxing Analysis */}
-										<div className="bg-[#A3B116] text-white px-15 py-4 rounded-full">
+										<div
+											className="px-4 py-3 text-white rounded-full shadow-lg sm:py-4 sm:px-8"
+											style={{
+												backgroundColor: "#A3B116",
+												border: `3px solid #A3B116`,
+												boxShadow: `0 4px 15px #A3B11640`,
+											}}
+										>
 											<div
-												className="text-xl font-bold text-center"
+												className="text-lg font-bold text-center sm:text-xl"
 												style={{
 													fontFamily:
 														"Noto Serif TC, serif",
@@ -469,9 +465,14 @@ export default function FourFortuneAnalysis({
 										</div>
 
 										{/* Right section - Missing Elements Analysis (Logic-based) */}
-										<div className="bg-[#A3B116] text-white px-15 py-4 rounded-full">
+										<div
+											className="px-4 py-3 text-white rounded-full shadow-lg sm:py-4 sm:px-8"
+											style={{
+												backgroundColor: "#A3B116",
+											}}
+										>
 											<div
-												className="text-xl font-bold text-center"
+												className="text-lg font-bold text-center sm:text-xl"
 												style={{
 													fontFamily:
 														"Noto Serif TC, serif",
@@ -504,6 +505,43 @@ export default function FourFortuneAnalysis({
 											</div>
 										</div>
 									</div>
+
+									{/* Advice section like the image */}
+									<div className="mt-4 sm:mt-6">
+										<p
+											className="text-sm sm:text-lg text-[#5A5A5A] text-start leading-relaxed"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontWeight: 400,
+												lineHeight: 1.8,
+											}}
+										>
+											{(() => {
+												const {
+													primaryGod,
+													auxiliaryGod,
+													strategy,
+												} = analysis.usefulGods || {};
+
+												if (
+													!primaryGod ||
+													!auxiliaryGod
+												) {
+													return "根據五行分析，需要進一步確認用神配置以達到最佳平衡效果。";
+												}
+
+												const strategyDesc = {
+													補缺: "補足所缺",
+													扶弱: "扶助偏弱",
+													抑強: "抑制過強",
+													瀉強: "化解過旺",
+												};
+
+												return `根據您的五行配置分析，建議以「${primaryGod}」為首選用神，「${auxiliaryGod}」為輔助用神。透過${strategyDesc[strategy] || "平衡調和"}的策略，兩者協同作用可有效調節五行能量，達到陰陽平衡，提升整體運勢發展。在日常生活中，可通過相應的顏色、方位、職業選擇等方式來強化這些有利元素的影響力。`;
+											})()}
+										</p>
+									</div>
 								</div>
 							</div>
 						);
@@ -511,14 +549,19 @@ export default function FourFortuneAnalysis({
 				</section>
 
 				{/* Health Fortune Analysis - Detailed Implementation */}
-				<section className="w-full sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-8 lg:p-13 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+				<section className="w-[95%] sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-3 sm:p-8 lg:p-13 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
 					{(() => {
 						const analysis = wuxingAnalysis;
 						if (!analysis) {
 							return (
 								<div className="py-20 text-center">
 									<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
-									<p className="text-lg text-[#5A5A5A]">
+									<p
+										style={{
+											fontSize: "clamp(14px, 3vw, 18px)",
+										}}
+										className="text-[#5A5A5A]"
+									>
 										正在生成健康運勢分析...
 									</p>
 								</div>
@@ -539,14 +582,19 @@ export default function FourFortuneAnalysis({
 				</section>
 
 				{/* Career Fortune Analysis - Detailed Implementation */}
-				<section className="w-full sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-8 lg:p-13 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+				<section className="w-[95%] sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-3 sm:p-8 lg:p-13 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
 					{(() => {
 						const analysis = wuxingAnalysis;
 						if (!analysis) {
 							return (
 								<div className="py-20 text-center">
 									<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
-									<p className="text-lg text-[#5A5A5A]">
+									<p
+										style={{
+											fontSize: "clamp(14px, 3vw, 18px)",
+										}}
+										className="text-[#5A5A5A]"
+									>
 										正在生成事業運勢分析...
 									</p>
 								</div>
@@ -567,14 +615,19 @@ export default function FourFortuneAnalysis({
 				</section>
 
 				{/* Wealth Fortune Analysis - Detailed Implementation */}
-				<section className="w-full sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-8 lg:p-13 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+				<section className="w-[95%] sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-3 sm:p-8 lg:p-13 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
 					{(() => {
 						const analysis = wuxingAnalysis;
 						if (!analysis) {
 							return (
 								<div className="py-20 text-center">
 									<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
-									<p className="text-lg text-[#5A5A5A]">
+									<p
+										style={{
+											fontSize: "clamp(14px, 3vw, 18px)",
+										}}
+										className="text-[#5A5A5A]"
+									>
 										正在生成財運運勢分析...
 									</p>
 								</div>
@@ -595,14 +648,19 @@ export default function FourFortuneAnalysis({
 				</section>
 
 				{/* Relationship Fortune Analysis - Detailed Implementation */}
-				<section className="w-full sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-8 lg:p-13 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+				<section className="w-[95%] sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-3 sm:p-8 lg:p-13 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
 					{(() => {
 						const analysis = wuxingAnalysis;
 						if (!analysis) {
 							return (
 								<div className="py-20 text-center">
 									<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
-									<p className="text-lg text-[#5A5A5A]">
+									<p
+										style={{
+											fontSize: "clamp(14px, 3vw, 18px)",
+										}}
+										className="text-[#5A5A5A]"
+									>
 										正在生成感情運勢分析...
 									</p>
 								</div>

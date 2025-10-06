@@ -313,10 +313,13 @@ const JiXiong = memo(function JiXiong({
 	if (isLoading) {
 		return (
 			<ComponentErrorBoundary componentName="JiXiong">
-				<div className="flex items-center justify-center p-8">
+				<div className="flex items-center justify-center p-6 sm:p-8">
 					<div className="text-center">
-						<div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#8B4513] mb-4"></div>
-						<p className="text-[#8B4513] font-medium">
+						<div className="inline-block animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-[#8B4513] mb-3 sm:mb-4"></div>
+						<p
+							className="text-[#8B4513] font-medium"
+							style={{ fontSize: "clamp(0.875rem, 2.5vw, 1rem)" }}
+						>
 							正在分析吉凶...
 						</p>
 					</div>
@@ -328,12 +331,22 @@ const JiXiong = memo(function JiXiong({
 	if (error) {
 		return (
 			<ComponentErrorBoundary componentName="JiXiong">
-				<div className="flex items-center justify-center p-8">
+				<div className="flex items-center justify-center p-6 sm:p-8">
 					<div className="text-center">
-						<p className="mb-4 text-red-600">
+						<p
+							className="mb-3 text-red-600 sm:mb-4"
+							style={{ fontSize: "clamp(0.875rem, 2.5vw, 1rem)" }}
+						>
 							分析出現問題：{error}
 						</p>
-						<p className="text-gray-600">顯示基礎分析結果</p>
+						<p
+							className="text-gray-600"
+							style={{
+								fontSize: "clamp(0.875rem, 2.5vw, 0.875rem)",
+							}}
+						>
+							顯示基礎分析結果
+						</p>
 					</div>
 				</div>
 			</ComponentErrorBoundary>
@@ -348,61 +361,65 @@ const JiXiong = memo(function JiXiong({
 					width: "95%",
 				}}
 			>
-				<div className="w-full px-4 sm:px-8 lg:px-13">
+				<div className="w-full px-4 sm:px-6 md:px-8 lg:px-13">
 					{/* Header */}
 
 					{/* Analysis Content */}
 					{analysisData && (
 						<>
-							<div className="flex flex-col mb-8 lg:flex-row lg:gap-8">
+							<div className="flex flex-col mb-6 sm:mb-8 lg:flex-row lg:gap-6 xl:gap-8">
 								{/* Left Side - 吉象 */}
-								<div className="w-full mb-8 lg:w-1/2 lg:mb-0">
-									<div className="h-full p-6 bg-white rounded-[20px] shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+								<div className="w-full mb-6 sm:mb-8 lg:w-1/2 lg:mb-0">
+									<div className="h-full p-4 sm:p-6 bg-white rounded-[15px] sm:rounded-[20px] shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
 										<h2
-											className="mb-6 text-3xl font-bold text-start sm:text-3xl"
+											className="mb-4 font-bold text-center sm:mb-6 sm:text-left"
 											style={{
 												color: "#AD7F00",
 												fontFamily:
 													"Noto Sans HK, sans-serif",
 												fontWeight: 700,
+												fontSize:
+													"clamp(1.5rem, 4vw, 1.875rem)",
+												lineHeight: 1.2,
 											}}
 										>
 											吉象
 										</h2>
 
-										<div className="space-y-6">
+										<div className="space-y-4 sm:space-y-6">
 											{analysisData.jixiang.map(
 												(item, index) => (
 													<div
 														key={index}
-														className="p-4 h-[250px] flex flex-col"
+														className="p-3 sm:p-4 min-h-[200px] sm:h-[250px] flex flex-col"
 													>
 														<div
-															className="flex items-center justify-center mb-3 font-bold text-white rounded-lg"
+															className="flex items-center justify-center mb-2 sm:mb-3 font-bold text-white rounded-lg w-full max-w-[200px] mx-auto h-[35px] sm:h-[40px]"
 															style={{
 																backgroundColor:
 																	"#AD7F00",
-																width: "200px",
-																height: "40px",
 																boxShadow:
 																	"0 4px 4px rgba(0,0,0,0.25)",
 																fontFamily:
 																	"Noto Sans HK, sans-serif",
+																fontSize:
+																	"clamp(0.875rem, 2.5vw, 1rem)",
 															}}
 														>
 															{item.title}
 														</div>
 														<div
-															className="overflow-y-auto"
+															className="flex-1 overflow-y-auto"
 															style={{
-																height: "350px",
+																maxHeight:
+																	"300px",
 															}}
 														>
 															<p
 																className="leading-relaxed text-black"
 																style={{
 																	fontSize:
-																		"15px",
+																		"clamp(0.875rem, 2.5vw, 0.9375rem)",
 																	fontFamily:
 																		"Noto Sans HK, sans-serif",
 																}}
@@ -419,51 +436,55 @@ const JiXiong = memo(function JiXiong({
 
 								{/* Right Side - 凶象 */}
 								<div className="w-full lg:w-1/2">
-									<div className="bg-gray-800 rounded-[20px] p-6 h-full shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+									<div className="bg-gray-800 rounded-[15px] sm:rounded-[20px] p-4 sm:p-6 h-full shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
 										<h2
-											className="mb-6 text-3xl font-bold text-white text-start sm:text-3xl"
+											className="mb-4 font-bold text-center text-white sm:mb-6 sm:text-left"
 											style={{
 												fontFamily:
 													"Noto Sans HK, sans-serif",
 												fontWeight: 700,
+												fontSize:
+													"clamp(1.5rem, 4vw, 1.875rem)",
+												lineHeight: 1.2,
 											}}
 										>
 											凶象
 										</h2>
 
-										<div className="space-y-6">
+										<div className="space-y-4 sm:space-y-6">
 											{analysisData.xiongxiang.map(
 												(item, index) => (
 													<div
 														key={index}
-														className="p-4 h-[250px] flex flex-col"
+														className="p-3 sm:p-4 min-h-[200px] sm:h-[250px] flex flex-col"
 													>
 														<div
-															className="flex items-center justify-center mb-3 font-bold text-white rounded-lg"
+															className="flex items-center justify-center mb-2 sm:mb-3 font-bold text-white rounded-lg w-full max-w-[200px] mx-auto h-[35px] sm:h-[40px]"
 															style={{
 																backgroundColor:
 																	"black",
-																width: "200px",
-																height: "40px",
 																boxShadow:
 																	"0 4px 4px rgba(0,0,0,0.25)",
 																fontFamily:
 																	"Noto Sans HK, sans-serif",
+																fontSize:
+																	"clamp(0.875rem, 2.5vw, 1rem)",
 															}}
 														>
 															{item.title}
 														</div>
 														<div
-															className="overflow-y-auto"
+															className="flex-1 overflow-y-auto"
 															style={{
-																height: "350px",
+																maxHeight:
+																	"300px",
 															}}
 														>
 															<p
 																className="leading-relaxed text-white"
 																style={{
 																	fontSize:
-																		"15px",
+																		"clamp(0.875rem, 2.5vw, 0.9375rem)",
 																	fontFamily:
 																		"Noto Sans HK, sans-serif",
 																}}
@@ -485,8 +506,15 @@ const JiXiong = memo(function JiXiong({
 
 					{/* Fallback if no analysis data */}
 					{!analysisData && (
-						<div className="py-8 text-center">
-							<p className="text-gray-500">暫無吉凶分析數據</p>
+						<div className="py-6 text-center sm:py-8">
+							<p
+								className="text-gray-500"
+								style={{
+									fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
+								}}
+							>
+								暫無吉凶分析數據
+							</p>
 						</div>
 					)}
 				</div>

@@ -219,29 +219,39 @@ const CareerFortuneAnalysis = ({
 	return (
 		<div className="w-full">
 			{/* Header */}
-			<div className="mb-8">
-				<div className="flex items-center gap-3 mb-4">
+			<div className="mb-6 sm:mb-8">
+				<div className="flex items-center gap-2 mb-3 sm:gap-3 sm:mb-4">
 					<h2
-						className="text-4xl font-bold text-[#374A37]"
-						style={{ fontFamily: "Noto Serif TC, serif" }}
+						className="font-bold text-[#374A37]"
+						style={{
+							fontFamily: "Noto Serif TC, serif",
+							fontSize: "clamp(24px, 5vw, 36px)",
+						}}
 					>
 						事業運勢分析
 					</h2>
 				</div>
 
 				{/* Summary Section */}
-				<div className="bg-gradient-to-r from-[#3263C4] to-[#567156] rounded-full px-6 py-3 mb-6 inline-block">
+				<div className="bg-gradient-to-r from-[#3263C4] to-[#567156] rounded-full px-4 sm:px-6 py-2 sm:py-3 mb-4 sm:mb-6 inline-block max-w-full">
 					<h3
-						className="text-xl font-bold text-white"
-						style={{ fontFamily: "Noto Serif TC, serif" }}
+						className="font-bold text-center text-white"
+						style={{
+							fontFamily: "Noto Serif TC, serif",
+							fontSize: "clamp(16px, 3.5vw, 20px)",
+						}}
 					>
 						總結：{careerAnalysis.summary.title}
 					</h3>
 				</div>
 
 				<p
-					className="text-lg text-[#374A37] leading-relaxed mb-8"
-					style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+					className="text-[#374A37] leading-relaxed mb-6 sm:mb-8"
+					style={{
+						fontFamily: "Noto Sans HK, sans-serif",
+						fontSize: "clamp(14px, 3vw, 18px)",
+						lineHeight: 1.6,
+					}}
 				>
 					{careerAnalysis.summary.description}
 				</p>
@@ -249,29 +259,33 @@ const CareerFortuneAnalysis = ({
 
 			{/* Career Development Overview */}
 			<div
-				className="bg-[#EFEFEF] rounded-xl p-6 mb-6"
+				className="bg-[#EFEFEF] rounded-xl p-3 sm:p-6 mb-4 sm:mb-6"
 				style={{ boxShadow: "inset 0 4px 4px rgba(0, 0, 0, 0.25)" }}
 			>
 				<h3
-					className="text-3xl font-bold text-[#567156] mb-6"
-					style={{ fontFamily: "Noto Serif TC, serif" }}
+					className="font-bold text-[#567156] mb-4 sm:mb-6 text-center"
+					style={{
+						fontFamily: "Noto Serif TC, serif",
+						fontSize: "clamp(20px, 4vw, 28px)",
+					}}
 				>
 					事業發展全景圖
 				</h3>
 
 				{/* Tab Navigation */}
-				<div className="flex flex-wrap justify-center gap-6 mb-8">
+				<div className="flex flex-col justify-center gap-3 mb-6 sm:flex-row sm:flex-wrap sm:gap-4 lg:gap-6 sm:mb-8">
 					{tabs.map((tab) => (
 						<button
 							key={tab}
 							onClick={() => setActiveTab(tab)}
-							className={`px-8 py-4 rounded-full font-semibold text-lg transition-all duration-200 ${
+							className={`px-4 sm:px-6 lg:px-8 py-3 sm:py-4 rounded-full font-semibold transition-all duration-200 flex-shrink-0 ${
 								activeTab === tab
 									? "bg-[#3263C4] text-white"
 									: "bg-white text-[#757575] hover:bg-gray-50"
 							}`}
 							style={{
 								fontFamily: "Noto Serif TC, serif",
+								fontSize: "clamp(14px, 3vw, 18px)",
 								boxShadow: "0 4px 4px rgba(0, 0, 0, 0.25)",
 							}}
 						>
@@ -281,48 +295,58 @@ const CareerFortuneAnalysis = ({
 				</div>
 
 				{/* Tab Content */}
-				<div className="mb-8">
+				<div className="mb-6 sm:mb-8">
 					{activeTab === "天賦特質解碼" && (
-						<div className="bg-gradient-to-r from-[#3263C4] to-[#567156] rounded-xl p-6 text-white mb-6">
+						<div className="bg-gradient-to-r from-[#3263C4] to-[#567156] rounded-xl p-4 sm:p-6 text-white mb-4 sm:mb-6">
 							<h4
-								className="mb-6 text-2xl font-bold"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
+								className="mb-4 font-bold sm:mb-6"
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									fontSize: "clamp(18px, 4vw, 24px)",
+								}}
 							>
 								天賦解碼
 							</h4>
 
-							<div className="space-y-6">
+							<div className="space-y-4 sm:space-y-6">
 								{careerAnalysis.talents[
 									"天賦特質解碼"
 								].content.map((talent, index) => (
 									<div
 										key={index}
-										className="p-4 rounded-lg bg-white/20"
+										className="p-3 rounded-lg sm:p-4 bg-white/20"
 									>
 										<h5
-											className="mb-3 text-xl font-bold"
+											className="mb-2 font-bold sm:mb-3"
 											style={{
 												fontFamily:
 													"Noto Serif TC, serif",
+												fontSize:
+													"clamp(16px, 3.5vw, 20px)",
 											}}
 										>
 											{talent.name}
 										</h5>
 										<p
-											className="mb-4 leading-relaxed"
+											className="mb-3 leading-relaxed sm:mb-4"
 											style={{
 												fontFamily:
 													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(14px, 3vw, 16px)",
+												lineHeight: 1.5,
 											}}
 										>
 											{talent.description}
 										</p>
-										<div className="p-3 rounded-lg bg-white/10">
+										<div className="p-2 rounded-lg sm:p-3 bg-white/10">
 											<p
-												className="text-sm"
 												style={{
 													fontFamily:
 														"Noto Sans HK, sans-serif",
+													fontSize:
+														"clamp(12px, 2.5vw, 14px)",
+													lineHeight: 1.4,
 												}}
 											>
 												{talent.attention}
@@ -335,50 +359,125 @@ const CareerFortuneAnalysis = ({
 					)}
 
 					{activeTab === "二十年黃金賽道" && (
-						<div className="bg-gradient-to-r from-[#3263C4] to-[#567156] rounded-xl p-6 text-white mb-6">
+						<div className="bg-gradient-to-r from-[#3263C4] to-[#567156] rounded-xl p-4 sm:p-6 text-white mb-4 sm:mb-6">
 							<h4
-								className="mb-6 text-2xl font-bold"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
+								className="mb-4 font-bold sm:mb-6"
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									fontSize: "clamp(18px, 4vw, 24px)",
+								}}
 							>
 								黃金賽道
 							</h4>
 
-							<div className="overflow-x-auto">
+							{/* Mobile Card Layout */}
+							<div className="block space-y-3 sm:hidden">
+								{careerAnalysis.talents[
+									"二十年黃金賽道"
+								].content.periods.map((period, index) => (
+									<div
+										key={index}
+										className="p-3 rounded-lg bg-white/20"
+									>
+										<div className="mb-2">
+											<span
+												className="font-bold"
+												style={{
+													fontFamily:
+														"Noto Serif TC, serif",
+													fontSize:
+														"clamp(14px, 3vw, 16px)",
+												}}
+											>
+												{period.years}
+											</span>
+											<span
+												className="ml-2 text-white/80"
+												style={{
+													fontFamily:
+														"Noto Sans HK, sans-serif",
+													fontSize:
+														"clamp(12px, 2.5vw, 14px)",
+												}}
+											>
+												{period.luck}
+											</span>
+										</div>
+										<div
+											className="mb-1"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+												lineHeight: 1.4,
+											}}
+										>
+											<strong>動作：</strong>
+											{period.action}（{period.bestYear}）
+										</div>
+										<div
+											className="text-white/80"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+												lineHeight: 1.4,
+											}}
+										>
+											<strong>注意：</strong>
+											{period.warning}
+										</div>
+									</div>
+								))}
+							</div>
+
+							{/* Desktop Table Layout */}
+							<div className="hidden overflow-x-auto sm:block">
 								<table className="w-full rounded-lg bg-white/10">
 									<thead>
 										<tr className="border-b border-white/20">
 											<th
-												className="p-4 text-left"
+												className="p-3 text-left lg:p-4"
 												style={{
 													fontFamily:
 														"Noto Serif TC, serif",
+													fontSize:
+														"clamp(14px, 2.5vw, 16px)",
 												}}
 											>
 												時期
 											</th>
 											<th
-												className="p-4 text-left"
+												className="p-3 text-left lg:p-4"
 												style={{
 													fontFamily:
 														"Noto Serif TC, serif",
+													fontSize:
+														"clamp(14px, 2.5vw, 16px)",
 												}}
 											>
 												大運
 											</th>
 											<th
-												className="p-4 text-left"
+												className="p-3 text-left lg:p-4"
 												style={{
 													fontFamily:
 														"Noto Serif TC, serif",
+													fontSize:
+														"clamp(14px, 2.5vw, 16px)",
 												}}
 											>
 												關鍵動作
 											</th>
 											<th
-												className="p-4 text-left"
+												className="p-3 text-left lg:p-4"
 												style={{
 													fontFamily:
 														"Noto Serif TC, serif",
+													fontSize:
+														"clamp(14px, 2.5vw, 16px)",
 												}}
 											>
 												風險預警
@@ -395,38 +494,46 @@ const CareerFortuneAnalysis = ({
 													className="border-b border-white/10"
 												>
 													<td
-														className="p-4"
+														className="p-3 lg:p-4"
 														style={{
 															fontFamily:
 																"Noto Sans HK, sans-serif",
+															fontSize:
+																"clamp(12px, 2.5vw, 14px)",
 														}}
 													>
 														{period.years}
 													</td>
 													<td
-														className="p-4"
+														className="p-3 lg:p-4"
 														style={{
 															fontFamily:
 																"Noto Sans HK, sans-serif",
+															fontSize:
+																"clamp(12px, 2.5vw, 14px)",
 														}}
 													>
 														{period.luck}
 													</td>
 													<td
-														className="p-4"
+														className="p-3 lg:p-4"
 														style={{
 															fontFamily:
 																"Noto Sans HK, sans-serif",
+															fontSize:
+																"clamp(12px, 2.5vw, 14px)",
 														}}
 													>
 														{period.action}（
 														{period.bestYear}）
 													</td>
 													<td
-														className="p-4"
+														className="p-3 lg:p-4"
 														style={{
 															fontFamily:
 																"Noto Sans HK, sans-serif",
+															fontSize:
+																"clamp(12px, 2.5vw, 14px)",
 														}}
 													>
 														{period.warning}
@@ -441,20 +548,25 @@ const CareerFortuneAnalysis = ({
 					)}
 
 					{activeTab === "權力巔峰標誌" && (
-						<div className="bg-gradient-to-r from-[#3263C4] to-[#567156] rounded-xl p-6 text-white mb-6">
+						<div className="bg-gradient-to-r from-[#3263C4] to-[#567156] rounded-xl p-4 sm:p-6 text-white mb-4 sm:mb-6">
 							<h4
-								className="mb-6 text-2xl font-bold"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
+								className="mb-4 font-bold sm:mb-6"
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									fontSize: "clamp(18px, 4vw, 24px)",
+								}}
 							>
 								巔峰時機
 							</h4>
 
-							<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-								<div className="p-4 rounded-lg bg-white/20">
+							<div className="grid grid-cols-1 gap-3 sm:gap-6 md:grid-cols-2">
+								<div className="p-3 rounded-lg sm:p-4 bg-white/20">
 									<h5
 										className="mb-2 font-bold"
 										style={{
 											fontFamily: "Noto Serif TC, serif",
+											fontSize:
+												"clamp(14px, 3.5vw, 18px)",
 										}}
 									>
 										權力巔峰
@@ -463,6 +575,9 @@ const CareerFortuneAnalysis = ({
 										style={{
 											fontFamily:
 												"Noto Sans HK, sans-serif",
+											fontSize:
+												"clamp(12px, 2.5vw, 14px)",
+											lineHeight: 1.5,
 										}}
 									>
 										{
@@ -478,11 +593,13 @@ const CareerFortuneAnalysis = ({
 										}
 									</p>
 								</div>
-								<div className="p-4 rounded-lg bg-white/20">
+								<div className="p-3 rounded-lg sm:p-4 bg-white/20">
 									<h5
 										className="mb-2 font-bold"
 										style={{
 											fontFamily: "Noto Serif TC, serif",
+											fontSize:
+												"clamp(14px, 3.5vw, 18px)",
 										}}
 									>
 										最佳合作
@@ -491,6 +608,9 @@ const CareerFortuneAnalysis = ({
 										style={{
 											fontFamily:
 												"Noto Sans HK, sans-serif",
+											fontSize:
+												"clamp(12px, 2.5vw, 14px)",
+											lineHeight: 1.5,
 										}}
 									>
 										{
@@ -500,11 +620,13 @@ const CareerFortuneAnalysis = ({
 										}
 									</p>
 								</div>
-								<div className="p-4 rounded-lg bg-white/20 md:col-span-2">
+								<div className="p-3 rounded-lg sm:p-4 bg-white/20 md:col-span-2">
 									<h5
 										className="mb-2 font-bold"
 										style={{
 											fontFamily: "Noto Serif TC, serif",
+											fontSize:
+												"clamp(14px, 3.5vw, 18px)",
 										}}
 									>
 										行業紅線
@@ -513,6 +635,9 @@ const CareerFortuneAnalysis = ({
 										style={{
 											fontFamily:
 												"Noto Sans HK, sans-serif",
+											fontSize:
+												"clamp(12px, 2.5vw, 14px)",
+											lineHeight: 1.5,
 										}}
 									>
 										{
@@ -529,60 +654,81 @@ const CareerFortuneAnalysis = ({
 			</div>
 
 			{/* Career Strategies Section */}
-			<div className="p-6">
+			<div className="p-4 sm:p-6">
 				<h3
-					className="text-3xl font-bold text-[#567156] mb-6"
-					style={{ fontFamily: "Noto Serif TC, serif" }}
+					className="font-bold text-[#567156] mb-4 sm:mb-6"
+					style={{
+						fontFamily: "Noto Serif TC, serif",
+						fontSize: "clamp(20px, 5vw, 30px)",
+					}}
 				>
 					晉升秘訣
 				</h3>
 
-				<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+				<div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
 					<div
-						className="bg-[#EFEFEF] rounded-lg p-4"
+						className="bg-[#EFEFEF] rounded-lg p-3 sm:p-4"
 						style={{
 							boxShadow: "inset 0 4px 4px rgba(0, 0, 0, 0.25)",
 						}}
 					>
-						<div className="bg-[#3263C4] rounded-full px-4 py-2 mb-3 inline-block">
+						<div className="bg-[#3263C4] rounded-full px-3 sm:px-4 py-1.5 sm:py-2 mb-2 sm:mb-3 inline-block">
 							<h4
-								className="text-sm font-bold text-white"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
+								className="font-bold text-white"
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									fontSize: "clamp(12px, 2.5vw, 14px)",
+								}}
 							>
 								{careerAnalysis.strategies.officeLayout.title}
 							</h4>
 						</div>
 						<p
-							className="text-sm text-[#374A37] mb-3"
-							style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+							className="text-[#374A37] mb-2 sm:mb-3"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(12px, 2.5vw, 14px)",
+								lineHeight: 1.5,
+							}}
 						>
 							{careerAnalysis.strategies.officeLayout.description}
 						</p>
 						<p
-							className="text-xs text-[#757575]"
-							style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+							className="text-[#757575]"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(11px, 2vw, 12px)",
+								lineHeight: 1.4,
+							}}
 						>
 							{careerAnalysis.strategies.officeLayout.details}
 						</p>
 					</div>
 
 					<div
-						className="bg-[#EFEFEF] rounded-lg p-4"
+						className="bg-[#EFEFEF] rounded-lg p-3 sm:p-4"
 						style={{
 							boxShadow: "inset 0 4px 4px rgba(0, 0, 0, 0.25)",
 						}}
 					>
-						<div className="bg-[#3263C4] rounded-full px-4 py-2 mb-3 inline-block">
+						<div className="bg-[#3263C4] rounded-full px-3 sm:px-4 py-1.5 sm:py-2 mb-2 sm:mb-3 inline-block">
 							<h4
-								className="text-sm font-bold text-white"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
+								className="font-bold text-white"
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									fontSize: "clamp(12px, 2.5vw, 14px)",
+								}}
 							>
 								{careerAnalysis.strategies.annualStrategy.title}
 							</h4>
 						</div>
 						<p
-							className="text-sm text-[#374A37] mb-3"
-							style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+							className="text-[#374A37] mb-2 sm:mb-3"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(12px, 2.5vw, 14px)",
+								lineHeight: 1.5,
+							}}
 						>
 							{careerAnalysis.strategies.annualStrategy.year}：
 							{
@@ -591,36 +737,51 @@ const CareerFortuneAnalysis = ({
 							}
 						</p>
 						<p
-							className="text-xs text-[#757575]"
-							style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+							className="text-[#757575]"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(11px, 2vw, 12px)",
+								lineHeight: 1.4,
+							}}
 						>
 							{careerAnalysis.strategies.annualStrategy.benefit}
 						</p>
 					</div>
 
 					<div
-						className="bg-[#EFEFEF] rounded-lg p-4"
+						className="bg-[#EFEFEF] rounded-lg p-3 sm:p-4 md:col-span-2 lg:col-span-1"
 						style={{
 							boxShadow: "inset 0 4px 4px rgba(0, 0, 0, 0.25)",
 						}}
 					>
-						<div className="bg-[#3263C4] rounded-full px-4 py-2 mb-3 inline-block">
+						<div className="bg-[#3263C4] rounded-full px-3 sm:px-4 py-1.5 sm:py-2 mb-2 sm:mb-3 inline-block">
 							<h4
-								className="text-sm font-bold text-white"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
+								className="font-bold text-white"
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									fontSize: "clamp(12px, 2.5vw, 14px)",
+								}}
 							>
 								{careerAnalysis.strategies.lifelongTaboo.title}
 							</h4>
 						</div>
 						<p
-							className="text-sm text-[#374A37] mb-3"
-							style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+							className="text-[#374A37] mb-2 sm:mb-3"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(12px, 2.5vw, 14px)",
+								lineHeight: 1.5,
+							}}
 						>
 							{careerAnalysis.strategies.lifelongTaboo.warning}
 						</p>
 						<p
-							className="text-xs text-[#757575]"
-							style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+							className="text-[#757575]"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(11px, 2vw, 12px)",
+								lineHeight: 1.4,
+							}}
 						>
 							{careerAnalysis.strategies.lifelongTaboo.reason}
 						</p>

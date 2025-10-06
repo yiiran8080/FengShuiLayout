@@ -617,23 +617,28 @@ export default function LiuNianKeyWord({ userInfo, currentYear = 2025 }) {
 
 	return (
 		<ComponentErrorBoundary>
-			<div className="w-[95%] mx-auto bg-white rounded-[45px] shadow-[0_4px_4px_rgba(0,0,0,0.25)] p-10 space-y-6">
+			<div className="w-full max-w-full sm:w-[97%] mx-auto bg-white rounded-[20px] sm:rounded-[36px] lg:rounded-[48px] shadow-[0_4px_4px_rgba(0,0,0,0.18)] p-4 sm:p-8 lg:p-12 space-y-6">
 				{/* Analysis Header */}
 				<div className="text-center">
 					<h3
-						className="text-start text-[40px] font-extrabold mb-3"
+						className="mb-2 font-extrabold text-center sm:mb-3"
 						style={{
 							fontFamily: "Noto Serif TC, serif",
 							fontWeight: 800,
 							color: getConcernColor(userInfo),
+							fontSize: "clamp(1.5rem, 5vw, 2.5rem)",
+							lineHeight: 1.1,
 						}}
 					>
 						流年關鍵詞
 					</h3>
-					<div className="p-4">
+					<div className="p-2 sm:p-4">
 						<p
-							className="text-center text-[20px] text-black leading-relaxed"
-							style={{ fontFamily: "Noto Serif TC, serif" }}
+							className="leading-relaxed text-center text-black"
+							style={{
+								fontFamily: "Noto Serif TC, serif",
+								fontSize: "clamp(1rem, 3vw, 1.25rem)",
+							}}
 						>
 							{analysisData.analysis}
 						</p>
@@ -641,49 +646,57 @@ export default function LiuNianKeyWord({ userInfo, currentYear = 2025 }) {
 				</div>
 
 				{/* Keywords Grid */}
-				<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+				<div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-3">
 					{analysisData.keywords.map((keyword, index) => (
 						<div
 							key={keyword.id}
 							className={`
-								relative overflow-hidden rounded-xl p-6 
-								bg-gradient-to-br shadow-lg hover:shadow-xl 
-								transform hover:-translate-y-1 transition-all duration-300
-								border-2 border-opacity-20
-								${
-									index === 0
-										? "from-red-100 to-pink-100 border-red-300"
-										: index === 1
-											? "from-blue-100 to-indigo-100 border-blue-300"
-											: "from-green-100 to-emerald-100 border-green-300"
-								}
-							`}
+										relative overflow-hidden rounded-xl p-4 sm:p-6 
+										bg-gradient-to-br shadow-lg hover:shadow-xl 
+										transform hover:-translate-y-1 transition-all duration-300
+										border-2 border-opacity-20
+										${
+											index === 0
+												? "from-red-100 to-pink-100 border-red-300"
+												: index === 1
+													? "from-blue-100 to-indigo-100 border-blue-300"
+													: "from-green-100 to-emerald-100 border-green-300"
+										}
+									`}
 						>
 							<h4
 								className={`
-								text-xl font-bold mb-3 
-								${
-									index === 0
-										? "text-red-800"
-										: index === 1
-											? "text-blue-800"
-											: "text-green-800"
-								}
-							`}
+											font-bold mb-2 sm:mb-3 
+											${
+												index === 0
+													? "text-red-800"
+													: index === 1
+														? "text-blue-800"
+														: "text-green-800"
+											}
+										`}
+								style={{
+									fontSize: "clamp(1.1rem, 3vw, 1.4rem)",
+									fontFamily: "Noto Serif TC, serif",
+								}}
 							>
 								{keyword.text}
 							</h4>
 							<p
 								className={`
-								text-sm leading-relaxed
-								${
-									index === 0
-										? "text-red-700"
-										: index === 1
-											? "text-blue-700"
-											: "text-green-700"
-								}
-							`}
+											leading-relaxed
+											${
+												index === 0
+													? "text-red-700"
+													: index === 1
+														? "text-blue-700"
+														: "text-green-700"
+											}
+										`}
+								style={{
+									fontSize: "clamp(0.95rem, 2.5vw, 1.1rem)",
+									fontFamily: "Noto Sans HK, sans-serif",
+								}}
 							>
 								{keyword.description}
 							</p>

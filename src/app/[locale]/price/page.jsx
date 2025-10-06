@@ -1025,7 +1025,7 @@ export default function YourPage() {
 													/>
 												</svg>
 											</div>
-											<span className="text-[#073e31] text-[13px] sm:text-[13px] md:text-[20px] font-noto-sans-hk font-medium">
+											<span className="text-[#073e31] text-[11px] sm:text-[13px] md:text-[20px] font-noto-sans-hk font-medium">
 												{t(featureKey)}
 											</span>
 										</div>
@@ -1357,7 +1357,7 @@ export default function YourPage() {
 													/>
 												</svg>
 											</div>
-											<span className="text-[#073e31] text-[13px] sm:text-[13px] md:text-[20px] font-noto-sans-hk font-medium">
+											<span className="text-[#073e31] text-[11px] sm:text-[13px] md:text-[20px] font-noto-sans-hk font-medium">
 												{t(featureKey)}
 											</span>
 										</div>
@@ -3858,7 +3858,7 @@ export default function YourPage() {
 															currentCardType ===
 																"couple"
 														}
-														className="w-full py-2 mt-4 font-black text-[#AEB116] bg-white border-2 border-[#A3B116] rounded-[40px] hover:bg-[#A3B116] hover:text-white transition-all duration-300 hover:shadow-lg hover:scale-105 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+														className="w-full py-2 mt-4 font-black text-[#AEB116] bg-white border-2 border-[#A3B116] rounded-[40px] hover:bg-white hover:text-[#A3B116] transition-all duration-300 hover:shadow-lg hover:scale-105 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
 														style={{
 															fontSize:
 																"clamp(1rem, 6vw, 2rem)",

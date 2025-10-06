@@ -61,12 +61,12 @@ const Zodiac = memo(function Zodiac({
 	});
 
 	return (
-		<section className="w-full sm:w-[95%] lg:w-[95%] mx-auto bg-white rounded-[45px] p-4 sm:p-8 lg:p-8 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
-			<div className="flex flex-col items-start gap-6 lg:flex-row lg:justify-between lg:gap-0">
+		<section className="w-full max-w-full sm:w-[95%] mx-auto bg-white rounded-[24px] sm:rounded-[48px] lg:rounded-[80px] p-3 sm:p-3 lg:p-12 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.18)]">
+			<div className="flex flex-col items-center gap-0 lg:flex-row lg:items-start lg:gap-10">
 				{/* Left Side - Zodiac Animal */}
-				<div className="w-full lg:w-[20%] ml-10 flex items-center justify-center">
+				<div className="w-full lg:w-[22%] flex items-center justify-center mb-4 lg:mb-0">
 					<div className="text-center">
-						<div className="flex items-center justify-center w-20 h-20 mx-auto mb-4 sm:w-24 sm:h-24 lg:w-102 lg:h-102">
+						<div className="flex items-center justify-center w-40 h-40 mx-8 mx-auto mt-3 mb-0 sm:mb-4 sm:w-50 sm:h-50 lg:w-90 lg:h-90">
 							<Image
 								src={`/images/animals/${
 									userZodiac === "龍"
@@ -102,24 +102,24 @@ const Zodiac = memo(function Zodiac({
 																					: "mouse"
 								}.png`}
 								alt={userZodiac}
-								width={328}
-								height={328}
+								width={280}
+								height={280}
 								className="object-contain"
 							/>
 						</div>
 					</div>
 				</div>
 
-				<div className="w-full lg:w-[70%] flex flex-col gap-4 sm:gap-6">
+				<div className="w-full lg:w-[78%] flex flex-col gap-4 sm:gap-6">
 					{/* Four Pillars in responsive layout */}
-					<div className="flex flex-wrap justify-center gap-3 mt-20 mb-4 ml-5 lg:justify-start sm:gap-4 sm:mb-6">
+					<div className="flex flex-wrap justify-center gap-5 mt-4 mb-4 lg:justify-start sm:gap-4 sm:mb-6 lg:mt-10">
 						{/* 年柱 */}
 						<div className="bg-white border-2 border-black rounded-full px-3 sm:px-6 lg:px-10 py-2 min-w-[100px] sm:min-w-[120px] lg:min-w-[140px] text-center flex-shrink-0">
 							<div
 								className="font-bold text-[#374A37]"
 								style={{
 									fontFamily: "Noto Serif TC, serif",
-									fontSize: "clamp(14px, 3vw, 18px)",
+									fontSize: "clamp(14px, 3vw, 20px)",
 								}}
 							>
 								年柱-
@@ -135,7 +135,7 @@ const Zodiac = memo(function Zodiac({
 								className="font-bold text-[#374A37]"
 								style={{
 									fontFamily: "Noto Serif TC, serif",
-									fontSize: "clamp(14px, 3vw, 18px)",
+									fontSize: "clamp(14px, 3vw, 20px)",
 								}}
 							>
 								月柱-
@@ -151,7 +151,7 @@ const Zodiac = memo(function Zodiac({
 								className="font-bold text-[#374A37]"
 								style={{
 									fontFamily: "Noto Serif TC, serif",
-									fontSize: "clamp(14px, 3vw, 18px)",
+									fontSize: "clamp(14px, 3vw, 20px)",
 								}}
 							>
 								日柱-
@@ -167,7 +167,7 @@ const Zodiac = memo(function Zodiac({
 								className="font-bold text-[#374A37]"
 								style={{
 									fontFamily: "Noto Serif TC, serif",
-									fontSize: "clamp(14px, 3vw, 18px)",
+									fontSize: "clamp(14px, 3vw, 20px)",
 								}}
 							>
 								時柱-
@@ -177,10 +177,10 @@ const Zodiac = memo(function Zodiac({
 							</div>
 						</div>
 					</div>
-					<div className="flex justify-start gap-8 ml-5">
+					<div className="flex flex-row justify-center gap-4 sm:flex-row md:justify-start lg:justify-start xl:justify-start sm:justify-center sm:gap-8">
 						{/* Left section - Wuxing Analysis */}
 						<div
-							className="py-4 text-white rounded-full shadow-lg px-15"
+							className="px-4 py-3 text-white rounded-full shadow-lg sm:py-4 sm:px-8"
 							style={{
 								backgroundColor: getConcernColor(userInfo),
 								border: `3px solid ${getConcernColor(userInfo)}`,
@@ -188,7 +188,7 @@ const Zodiac = memo(function Zodiac({
 							}}
 						>
 							<div
-								className="text-xl font-bold text-center"
+								className="text-lg font-bold text-center sm:text-xl"
 								style={{
 									fontFamily: "Noto Serif TC, serif",
 								}}
@@ -200,13 +200,13 @@ const Zodiac = memo(function Zodiac({
 
 						{/* Right section - Missing Elements Analysis (Logic-based) */}
 						<div
-							className="py-4 text-white rounded-full shadow-lg px-15"
+							className="px-4 py-3 text-white rounded-full shadow-lg sm:py-4 sm:px-8"
 							style={{
 								backgroundColor: getConcernColor(userInfo),
 							}}
 						>
 							<div
-								className="text-xl font-bold text-center"
+								className="text-lg font-bold text-center sm:text-xl"
 								style={{
 									fontFamily: "Noto Serif TC, serif",
 								}}
@@ -230,9 +230,9 @@ const Zodiac = memo(function Zodiac({
 					</div>
 
 					{/* Advice section like the image */}
-					<div className="mt-6 ml-5">
+					<div className="mt-4 sm:mt-6">
 						<p
-							className="text-lg text-[#5A5A5A] text-start leading-relaxed"
+							className="text-base sm:text-lg text-[#5A5A5A] text-start leading-relaxed"
 							style={{
 								fontFamily: "Noto Sans HK, sans-serif",
 								fontWeight: 400,

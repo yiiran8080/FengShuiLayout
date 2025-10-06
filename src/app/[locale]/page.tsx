@@ -1758,7 +1758,165 @@ export default function Home() {
 												{/* 消息內容 */}
 												<div className="px-3 pb-2 md:px-4">
 													<div className="text-sm leading-relaxed text-black whitespace-pre-wrap">
-														{message.content || ""}
+														{(() => {
+															const content =
+																message.content ||
+																"";
+															// 檢查是否包含結構化內容的各種模式
+															const hasStructuredOptions =
+																/\*\*[0-9]️⃣.*\*\*/.test(
+																	content
+																) ||
+																/[0-9]️⃣.*/.test(
+																	content
+																) ||
+																/為了提供最適合的分析/.test(
+																	content
+																) ||
+																/📅.*\*\*生日格式範例/.test(
+																	content
+																) ||
+																/告訴風鈴你的生日/.test(
+																	content
+																) ||
+																/風鈴會先給你一個簡單的分析/.test(
+																	content
+																) ||
+																/───────────────────/.test(
+																	content
+																) ||
+																/💎.*\*\*想要更深入的分析嗎/.test(
+																	content
+																);
+
+															if (
+																hasStructuredOptions
+															) {
+																// 使用分隔線來分割內容
+																if (
+																	content.includes(
+																		"───────────────────"
+																	)
+																) {
+																	const parts =
+																		content.split(
+																			"───────────────────"
+																		);
+																	return parts.map(
+																		(
+																			part,
+																			index
+																		) => {
+																			// 第一部分是AI分析內容，應該加粗
+																			if (
+																				index ===
+																				0
+																			) {
+																				return (
+																					<span
+																						key={
+																							index
+																						}
+																						className="font-bold"
+																					>
+																						{
+																							part
+																						}
+																					</span>
+																				);
+																			}
+																			// 分隔線後的內容是報告選項，保持正常字重
+																			return (
+																				<span
+																					key={
+																						index
+																					}
+																					className="font-normal"
+																				>
+																					{"───────────────────" +
+																						part}
+																				</span>
+																			);
+																		}
+																	);
+																}
+
+																// 其他結構化內容的處理（生日格式等）
+																const splitPatterns =
+																	/(?=為了提供最適合的分析|你想要哪種分析|告訴風鈴你的生日|📅.*\*\*生日格式範例)/;
+																const parts =
+																	content.split(
+																		splitPatterns
+																	);
+
+																return parts.map(
+																	(
+																		part,
+																		index
+																	) => {
+																		// 檢查這部分是否為純粹的AI自然回應
+																		const isNaturalResponse =
+																			index ===
+																				0 &&
+																			part.trim() &&
+																			!part.includes(
+																				"️⃣"
+																			) &&
+																			!part.includes(
+																				"📅"
+																			) &&
+																			!part.includes(
+																				"**生日格式範例"
+																			) &&
+																			!part.includes(
+																				"告訴風鈴你的生日"
+																			) &&
+																			!part.includes(
+																				"風鈴會先給你一個簡單的分析"
+																			);
+
+																		if (
+																			isNaturalResponse
+																		) {
+																			return (
+																				<span
+																					key={
+																						index
+																					}
+																					className="font-bold"
+																				>
+																					{
+																						part
+																					}
+																				</span>
+																			);
+																		}
+																		// 其他部分是結構化內容，保持正常字重
+																		return (
+																			<span
+																				key={
+																					index
+																				}
+																				className="font-normal"
+																			>
+																				{
+																					part
+																				}
+																			</span>
+																		);
+																	}
+																);
+															} else {
+																// 如果沒有結構化選項，整個內容都加粗（純AI回應）
+																return (
+																	<span className="font-bold">
+																		{
+																			content
+																		}
+																	</span>
+																);
+															}
+														})()}
 													</div>
 												</div>
 

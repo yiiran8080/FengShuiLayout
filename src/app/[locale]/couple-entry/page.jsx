@@ -22,6 +22,8 @@ export default function CoupleEntryPage({ params }) {
 		gender2: "female",
 		birthday1: "",
 		birthday2: "",
+		birthTime1: "",
+		birthTime2: "",
 		problem: "",
 	});
 	const [isVerifying, setIsVerifying] = useState(true);
@@ -117,6 +119,14 @@ export default function CoupleEntryPage({ params }) {
 				problem: generalProblem,
 			});
 
+			// Add birth times if provided
+			if (formData.birthTime1) {
+				reportParams.set("birthTime1", formData.birthTime1);
+			}
+			if (formData.birthTime2) {
+				reportParams.set("birthTime2", formData.birthTime2);
+			}
+
 			window.location.href = `/couple-report?${reportParams.toString()}`;
 		}, 100);
 	};
@@ -145,6 +155,14 @@ export default function CoupleEntryPage({ params }) {
 				gender2: formData.gender2,
 				problem: formData.problem,
 			});
+
+			// Add birth times if provided
+			if (formData.birthTime1) {
+				reportParams.set("birthTime1", formData.birthTime1);
+			}
+			if (formData.birthTime2) {
+				reportParams.set("birthTime2", formData.birthTime2);
+			}
 
 			window.location.href = `/couple-report?${reportParams.toString()}`;
 		} catch (err) {
@@ -194,7 +212,7 @@ export default function CoupleEntryPage({ params }) {
 		<div className="min-h-screen bg-[#EFEFEF]">
 			<Navbar />
 			<div className="container px-4 py-20 mx-auto">
-				<div className="max-w-md p-8 mx-auto bg-white rounded-lg shadow-lg">
+				<div className="max-w-md p-8 mx-auto bg-white shadow-lg rounded-xl">
 					<div className="mb-8 text-center">
 						<p className="text-gray-600">{t("fillDataPrompt")}</p>
 					</div>
@@ -256,7 +274,7 @@ export default function CoupleEntryPage({ params }) {
 												<img
 													src="/images/hero/male.png"
 													alt="Male"
-													className="mb-2 w-30 h-30"
+													className="w-24 h-24 mb-2 sm:w-30 sm:h-30 md:w-30 md:h-30 lg:w-30 lg:h-30 xl:w-30 xl:h-30"
 												/>
 												<span className="text-sm font-medium text-gray-700">
 													{t("male")}
@@ -279,7 +297,7 @@ export default function CoupleEntryPage({ params }) {
 												<img
 													src="/images/hero/female.png"
 													alt="Female"
-													className="mb-2 w-30 h-30"
+													className="w-24 h-24 mb-2 sm:w-30 sm:h-30 md:w-30 md:h-30 lg:w-30 lg:h-30 xl:w-30 xl:h-30"
 												/>
 												<span className="text-sm font-medium text-gray-700">
 													{t("female")}
@@ -289,7 +307,7 @@ export default function CoupleEntryPage({ params }) {
 									</div>
 
 									{/* Person 1 Birthday */}
-									<div>
+									<div className="mb-4">
 										<label className="block mb-2 text-sm font-medium text-gray-700">
 											{t("birthDate")}{" "}
 											<span className="text-red-500">
@@ -308,6 +326,30 @@ export default function CoupleEntryPage({ params }) {
 											required
 											className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#A3B116]"
 										/>
+									</div>
+
+									{/* Person 1 Birth Time */}
+									<div>
+										<label className="block mb-2 text-sm font-medium text-gray-700">
+											{t("birthTime")}{" "}
+											<span className="text-gray-400">
+												({t("optional")})
+											</span>
+										</label>
+										<input
+											type="time"
+											value={formData.birthTime1 || ""}
+											onChange={(e) =>
+												setFormData((prev) => ({
+													...prev,
+													birthTime1: e.target.value,
+												}))
+											}
+											className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#A3B116]"
+										/>
+										<p className="mt-1 text-xs text-gray-500">
+											{t("birthTimeHelp")}
+										</p>
 									</div>
 								</div>
 
@@ -342,7 +384,7 @@ export default function CoupleEntryPage({ params }) {
 												<img
 													src="/images/hero/male.png"
 													alt="Male"
-													className="mb-2 w-30 h-30"
+													className="w-24 h-24 mb-2 sm:w-30 sm:h-30 md:w-30 md:h-30 lg:w-30 lg:h-30 xl:w-30 xl:h-30"
 												/>
 												<span className="text-sm font-medium text-gray-700">
 													{t("male")}
@@ -365,7 +407,7 @@ export default function CoupleEntryPage({ params }) {
 												<img
 													src="/images/hero/female.png"
 													alt="Female"
-													className="mb-2 w-30 h-30"
+													className="w-24 h-24 mb-2 sm:w-30 sm:h-30 md:w-30 md:h-30 lg:w-30 lg:h-30 xl:w-30 xl:h-30"
 												/>
 												<span className="text-sm font-medium text-gray-700">
 													{t("female")}
@@ -375,7 +417,7 @@ export default function CoupleEntryPage({ params }) {
 									</div>
 
 									{/* Person 2 Birthday */}
-									<div>
+									<div className="mb-4">
 										<label className="block mb-2 text-sm font-medium text-gray-700">
 											{t("birthDate")}{" "}
 											<span className="text-red-500">
@@ -394,6 +436,30 @@ export default function CoupleEntryPage({ params }) {
 											required
 											className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#A3B116]"
 										/>
+									</div>
+
+									{/* Person 2 Birth Time */}
+									<div>
+										<label className="block mb-2 text-sm font-medium text-gray-700">
+											{t("birthTime")}{" "}
+											<span className="text-gray-400">
+												({t("optional")})
+											</span>
+										</label>
+										<input
+											type="time"
+											value={formData.birthTime2 || ""}
+											onChange={(e) =>
+												setFormData((prev) => ({
+													...prev,
+													birthTime2: e.target.value,
+												}))
+											}
+											className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#A3B116]"
+										/>
+										<p className="mt-1 text-xs text-gray-500">
+											{t("birthTimeHelp")}
+										</p>
 									</div>
 								</div>
 							</>
@@ -437,6 +503,9 @@ export default function CoupleEntryPage({ params }) {
 											? t("male")
 											: t("female")}{" "}
 										- {formData.birthday1}
+										{formData.birthTime1 && (
+											<span> {formData.birthTime1}</span>
+										)}
 									</p>
 									<p className="text-sm text-gray-600">
 										{t("secondPerson")}:{" "}
@@ -444,6 +513,9 @@ export default function CoupleEntryPage({ params }) {
 											? t("male")
 											: t("female")}{" "}
 										- {formData.birthday2}
+										{formData.birthTime2 && (
+											<span> {formData.birthTime2}</span>
+										)}
 									</p>
 								</div>
 							</>

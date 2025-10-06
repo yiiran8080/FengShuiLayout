@@ -1,5 +1,5 @@
-// Set API timeout to 60 seconds for this route
-export const maxDuration = 60;
+// Set API timeout to 50 seconds for this route to match client timeout
+export const maxDuration = 50;
 
 export async function POST(req) {
 	try {
@@ -93,6 +93,10 @@ export async function POST(req) {
 
 請確保每個季節的分析都足夠詳細深入，為用戶提供真正有價值的個人化指導。`;
 
+		// Add timeout to DeepSeek API call
+		const controller = new AbortController();
+		const timeoutId = setTimeout(() => controller.abort(), 40000); // 40 second timeout for external API
+
 		const response = await fetch(
 			"https://api.deepseek.com/chat/completions",
 			{
@@ -110,11 +114,14 @@ export async function POST(req) {
 						},
 					],
 					stream: false,
-					max_tokens: 6000,
+					max_tokens: 5000, // Reduced token limit for faster response
 					temperature: 0.6,
 				}),
+				signal: controller.signal,
 			}
 		);
+
+		clearTimeout(timeoutId);
 
 		if (!response.ok) {
 			console.error(
@@ -152,6 +159,16 @@ export async function POST(req) {
 		});
 	} catch (error) {
 		console.error("Season Analysis Error:", error);
+
+		// Handle specific timeout errors
+		if (error.name === "AbortError") {
+			console.error("DeepSeek API timeout after 40 seconds");
+			return Response.json(
+				{ error: "分析請求超時，請稍後再試" },
+				{ status: 408 }
+			);
+		}
+
 		return Response.json(
 			{ error: "Analysis generation failed" },
 			{ status: 500 }

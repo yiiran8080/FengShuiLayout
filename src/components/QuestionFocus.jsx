@@ -128,27 +128,30 @@ export default function QuestionFocus({ userInfo }) {
 	}
 
 	return (
-		<section className="w-full sm:w-[95%] lg:w-[95%] mx-auto p-6 sm:p-8 lg:p-10 mb-6 sm:mb-10 ">
+		<section className="w-full max-w-full sm:w-[97%] mx-auto p-3 sm:p-6 lg:p-10 mb-6 sm:mb-10">
 			{/* Question Focus Section */}
-			<div className="mb-8">
+			<div className="mb-6 sm:mb-8">
 				<div
-					className="border-4 rounded-[30px] bg-white p-6 mb-6"
+					className="border-4 rounded-[18px] sm:rounded-[30px] bg-white p-4 sm:p-6 mb-4 sm:mb-6"
 					style={{ borderColor: themeColor }}
 				>
 					<h2
-						className="text-center text-[32px] font-bold mb-4"
+						className="mb-3 font-bold text-center sm:mb-4"
 						style={{
 							fontFamily: "Noto Serif TC, serif",
 							color: themeColor,
+							fontSize: "clamp(1.5rem, 4vw, 2rem)",
+							lineHeight: 1.1,
 						}}
 					>
 						疑問重點
 					</h2>
 					<div
-						className="text-center text-[18px] leading-relaxed px-4"
+						className="px-2 leading-relaxed text-center sm:px-4"
 						style={{
 							fontFamily: "Noto Sans HK, sans-serif",
 							color: "#333",
+							fontSize: "clamp(1rem, 3vw, 1.25rem)",
 						}}
 					>
 						{userInfo.problem}
@@ -158,24 +161,27 @@ export default function QuestionFocus({ userInfo }) {
 
 			{/* Solution Section */}
 			<div
-				className="border-4 rounded-[30px] bg-white p-8"
+				className="border-4 rounded-[18px] sm:rounded-[30px] bg-white p-4 sm:p-8"
 				style={{ borderColor: themeColor }}
 			>
 				<h3
-					className="text-center text-[32px] font-bold mb-6"
+					className="mb-4 font-bold text-center sm:mb-6"
 					style={{
 						fontFamily: "Noto Serif TC, serif",
 						color: themeColor,
+						fontSize: "clamp(1.5rem, 4vw, 2rem)",
+						lineHeight: 1.1,
 					}}
 				>
 					{solution.title}
 				</h3>
 				<div
-					className="text-[16px] leading-relaxed text-center px-4"
+					className="px-2 leading-relaxed text-center sm:px-4"
 					style={{
 						fontFamily: "Noto Sans HK, sans-serif",
 						color: "#333",
-						lineHeight: "1.8",
+						fontSize: "clamp(1rem, 3vw, 1.125rem)",
+						lineHeight: 1.8,
 					}}
 				>
 					{solution.content}

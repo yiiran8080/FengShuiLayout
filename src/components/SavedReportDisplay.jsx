@@ -11,8 +11,8 @@ const SavedReportDisplay = ({ savedContent, userInputs }) => {
 		if (!content) return null;
 
 		return (
-			<div className="mb-6 p-6 bg-white rounded-lg shadow-md">
-				<h3 className="text-xl font-semibold mb-4 text-gray-800">
+			<div className="p-6 mb-6 bg-white rounded-lg shadow-md">
+				<h3 className="mb-4 text-xl font-semibold text-gray-800">
 					{title}
 				</h3>
 				<div className="text-gray-700 whitespace-pre-wrap">
@@ -28,17 +28,17 @@ const SavedReportDisplay = ({ savedContent, userInputs }) => {
 		if (!analysisObj) return null;
 
 		return (
-			<div className="mb-6 p-6 bg-white rounded-lg shadow-md">
-				<h3 className="text-xl font-semibold mb-4 text-gray-800">
+			<div className="p-6 mb-6 bg-white rounded-lg shadow-md">
+				<h3 className="mb-4 text-xl font-semibold text-gray-800">
 					{title}
 				</h3>
 				<div className="space-y-4">
 					{Object.entries(analysisObj).map(([key, value]) => (
 						<div key={key}>
-							<h4 className="font-medium text-gray-800 mb-2">
+							<h4 className="mb-2 font-medium text-gray-800">
 								{key}:
 							</h4>
-							<div className="text-gray-700 whitespace-pre-wrap ml-4">
+							<div className="ml-4 text-gray-700 whitespace-pre-wrap">
 								{typeof value === "string"
 									? value
 									: JSON.stringify(value, null, 2)}
@@ -51,13 +51,13 @@ const SavedReportDisplay = ({ savedContent, userInputs }) => {
 	};
 
 	return (
-		<div className="max-w-4xl mx-auto p-6">
+		<div className="max-w-4xl p-6 mx-auto">
 			<div className="mb-8">
-				<h1 className="text-3xl font-bold text-gray-800 mb-4">
+				<h1 className="mb-4 text-3xl font-bold text-gray-800">
 					已保存的風水報告
 				</h1>
-				<div className="bg-blue-50 p-4 rounded-lg">
-					<h2 className="font-semibold text-blue-800 mb-2">
+				<div className="p-4 rounded-lg bg-blue-50">
+					<h2 className="mb-2 font-semibold text-blue-800">
 						報告基本信息：
 					</h2>
 					<div className="text-blue-700">

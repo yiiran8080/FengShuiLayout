@@ -9,14 +9,26 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 	const [isLoading, setIsLoading] = useState(true);
 	const [activeSeasonIndex, setActiveSeasonIndex] = useState(0);
 	const [error, setError] = useState(null);
+	const [loadingMessage, setLoadingMessage] = useState("正在分析關鍵季節...");
+	const [requestInProgress, setRequestInProgress] = useState(false);
 
 	// Generate AI analysis based on user's birth info and current year
 	const generateSeasonAnalysis = async (userInfo, year) => {
-		try {
-			// Add timeout to prevent hanging
-			const controller = new AbortController();
-			const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+		// Prevent duplicate requests in development mode
+		if (requestInProgress) {
+			console.log("Request already in progress, skipping duplicate");
+			return;
+		}
 
+		setRequestInProgress(true);
+
+		try {
+			console.log("🔮 Season analysis starting... (v2)");
+
+			// Update loading message
+			setLoadingMessage("正在分析八字與季節運勢...");
+
+			// Simple fetch - let server handle all timeouts and retries
 			const response = await fetch("/api/season-analysis", {
 				method: "POST",
 				headers: {
@@ -31,10 +43,7 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 						concern: userInfo?.concern || "財運",
 					},
 				}),
-				signal: controller.signal,
 			});
-
-			clearTimeout(timeoutId);
 
 			if (!response.ok) {
 				throw new Error(`API request failed: ${response.status}`);
@@ -46,6 +55,8 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 				throw new Error(result.error || "Analysis failed");
 			}
 
+			console.log("✅ Season analysis successful");
+			setRequestInProgress(false);
 			return {
 				title: result.analysis.parsed.title,
 				seasons: result.analysis.parsed.seasons,
@@ -58,12 +69,12 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 				timestamp: result.analysis.timestamp,
 			};
 		} catch (error) {
-			console.error("Season AI analysis error:", error);
-			// Handle timeout and other errors gracefully
-			if (error.name === "AbortError") {
-				console.error("Season API request timed out after 30 seconds");
-			}
-			// Return minimal fallback structure only when AI completely fails
+			console.error("❌ Season analysis failed:", error);
+
+			// Always use fallback data on any error
+			setLoadingMessage("載入分析資料時發生問題，正在使用備用資料...");
+			setRequestInProgress(false);
+
 			return getMinimalFallbackData(
 				userInfo?.concern || "財運",
 				year,
@@ -148,6 +159,8 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 	};
 
 	useEffect(() => {
+		let isMounted = true;
+
 		// Validate required parameters before making API call
 		if (userInfo && (userInfo.birthDateTime || userInfo.birthday)) {
 			setIsLoading(true);
@@ -156,22 +169,32 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 			// Use AI to generate analysis
 			generateSeasonAnalysis(userInfo, currentYear)
 				.then((analysis) => {
-					setAnalysisData(analysis);
+					if (isMounted && analysis) {
+						setAnalysisData(analysis);
+					}
 				})
 				.catch((error) => {
-					console.error("Season analysis failed:", error);
-					setError(error.message);
-					// Set minimal fallback only when AI completely fails
-					setAnalysisData(
-						getMinimalFallbackData(
-							userInfo.concern || "財運",
-							currentYear,
-							userInfo
-						)
-					);
+					if (isMounted) {
+						console.error(
+							"Season analysis error in useEffect:",
+							error
+						);
+						setError(error.message);
+						// Set minimal fallback if generateSeasonAnalysis doesn't return fallback
+						setAnalysisData(
+							getMinimalFallbackData(
+								userInfo.concern || "財運",
+								currentYear,
+								userInfo
+							)
+						);
+					}
 				})
 				.finally(() => {
-					setIsLoading(false);
+					if (isMounted) {
+						setIsLoading(false);
+						setRequestInProgress(false);
+					}
 				});
 		} else {
 			// If no valid userInfo, show fallback immediately
@@ -183,19 +206,34 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 			);
 			setIsLoading(false);
 		}
+
+		// Cleanup function
+		return () => {
+			isMounted = false;
+			setRequestInProgress(false);
+		};
 	}, [userInfo, currentYear]);
 
 	if (isLoading) {
 		return (
 			<section
-				className="relative mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-12 lg:p-20 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]"
+				className="relative mx-auto bg-white rounded-[15px] sm:rounded-[20px] md:rounded-[26px] p-4 sm:p-8 md:p-12 lg:p-20 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]"
 				style={{ width: "95%" }}
 			>
-				<div className="flex items-center justify-center py-8">
-					<div className="w-8 h-8 border-b-2 rounded-full animate-spin border-amber-600"></div>
-					<span className="ml-3 text-gray-600">
-						分析關鍵季節中...
+				<div className="flex flex-col items-center justify-center py-6 sm:py-8">
+					<div className="w-6 h-6 mb-3 border-b-2 rounded-full sm:w-8 sm:h-8 animate-spin border-amber-600"></div>
+					<span
+						className="text-center text-gray-600"
+						style={{ fontSize: "clamp(0.875rem, 2.5vw, 1rem)" }}
+					>
+						{loadingMessage}
 					</span>
+					<p
+						className="mt-2 text-center text-gray-400"
+						style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}
+					>
+						分析可能需要較長時間，請稍候...
+					</p>
 				</div>
 			</section>
 		);
@@ -204,11 +242,16 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 	if (!analysisData) {
 		return (
 			<section
-				className="relative mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-12 lg:p-20 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]"
+				className="relative mx-auto bg-white rounded-[15px] sm:rounded-[20px] md:rounded-[26px] p-4 sm:p-8 md:p-12 lg:p-20 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]"
 				style={{ width: "95%" }}
 			>
-				<div className="py-8 text-center text-gray-500">
-					無法載入季節分析資料
+				<div className="py-6 text-center sm:py-8">
+					<p
+						className="text-gray-500"
+						style={{ fontSize: "clamp(0.875rem, 2.5vw, 1rem)" }}
+					>
+						無法載入季節分析資料
+					</p>
 				</div>
 			</section>
 		);
@@ -217,17 +260,19 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 	return (
 		<ComponentErrorBoundary componentName="Season">
 			<section
-				className="relative mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-12 lg:p-20 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]"
+				className="relative mx-auto bg-white rounded-[15px] sm:rounded-[20px] md:rounded-[26px] p-4 sm:p-8 md:p-12 lg:p-20 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]"
 				style={{ width: "95%" }}
 			>
 				{/* Header */}
-				<div className="flex items-center justify-between mb-8">
+				<div className="flex items-center justify-between mb-6 sm:mb-8">
 					<h2
+						className="text-center sm:text-left"
 						style={{
 							fontFamily: "Noto Serif TC, serif",
-							fontSize: "40px",
+							fontSize: "clamp(1.75rem, 5vw, 2.5rem)",
 							fontWeight: 800,
 							color: getConcernColor(userInfo),
+							lineHeight: 1.2,
 						}}
 					>
 						關鍵季節
@@ -236,16 +281,21 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 
 				{/* Error Message */}
 				{analysisData?.error && (
-					<div className="p-3 mb-6 bg-yellow-100 border border-yellow-400 rounded-lg">
-						<p className="text-sm text-yellow-700">
+					<div className="p-3 mb-4 bg-yellow-100 border border-yellow-400 rounded-lg sm:mb-6">
+						<p
+							className="text-yellow-700"
+							style={{
+								fontSize: "clamp(0.875rem, 2.5vw, 0.875rem)",
+							}}
+						>
 							⚠️ {analysisData.error}
 						</p>
 					</div>
 				)}
 
 				{/* Season Icons */}
-				<div className="flex justify-center mb-8">
-					<div className="flex justify-between w-full max-w-md">
+				<div className="flex justify-center mb-6 sm:mb-8">
+					<div className="flex justify-between w-full max-w-xs sm:max-w-md">
 						{analysisData.seasons.map((season, index) => {
 							const getSeasonBgColor = (seasonName, isActive) => {
 								const colorMap = {
@@ -301,7 +351,7 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 								<button
 									key={season.name}
 									onClick={() => setActiveSeasonIndex(index)}
-									className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 shadow-[0_4px_4px_rgba(0,0,0,0.25)] ${getSeasonBgColor(
+									className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center transition-all duration-300 shadow-[0_4px_4px_rgba(0,0,0,0.25)] ${getSeasonBgColor(
 										season.name,
 										activeSeasonIndex === index
 									)} ${
@@ -313,7 +363,7 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 									<img
 										src={getSeasonImage(season.name)}
 										alt={season.name}
-										className="w-8 h-8"
+										className="w-6 h-6 sm:w-8 sm:h-8"
 										style={{
 											filter: getImageFilter(
 												season.name,
@@ -328,12 +378,12 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 				</div>
 
 				{/* Active Season Content */}
-				<div className="p-6 mb-8">
-					<div className="flex items-center mb-4">
+				<div className="p-4 mb-6 sm:p-6 sm:mb-8">
+					<div className="flex items-center mb-3 sm:mb-4">
 						<div className="w-full">
 							{/* Season Name with Color */}
 							<h3
-								className={`text-2xl font-bold mb-2 ${(() => {
+								className={`font-bold mb-2 ${(() => {
 									const colorMap = {
 										春季: "text-[#7cb856]",
 										夏季: "text-[#B4003C]",
@@ -348,13 +398,16 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 										] || "text-gray-800"
 									);
 								})()}`}
+								style={{
+									fontSize: "clamp(1.25rem, 4vw, 1.5rem)",
+								}}
 							>
 								{analysisData.seasons[activeSeasonIndex].name}
 							</h3>
 
 							{/* Period with Season Background */}
 							<div
-								className={`inline-block px-4 py-2 rounded-lg text-white font-medium ${(() => {
+								className={`inline-block px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-white font-medium ${(() => {
 									const colorMap = {
 										春季: "bg-[#7cb856]",
 										夏季: "bg-[#B4003C]",
@@ -369,6 +422,9 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 										] || "bg-gray-600"
 									);
 								})()}`}
+								style={{
+									fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
+								}}
 							>
 								{analysisData.seasons[activeSeasonIndex].period}
 							</div>
@@ -376,8 +432,8 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 					</div>
 
 					{/* Season Description - Organized Content */}
-					<div className="p-6">
-						<div className="space-y-4 leading-relaxed text-gray-700">
+					<div className="p-4 sm:p-6">
+						<div className="space-y-3 leading-relaxed text-gray-700 sm:space-y-4">
 							{(() => {
 								const content =
 									analysisData.seasons[activeSeasonIndex]
@@ -386,9 +442,15 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 								// Simple check - if no meaningful content, show loading
 								if (!content || content.trim().length < 10) {
 									return (
-										<div className="flex items-center justify-center py-8">
-											<div className="w-6 h-6 border-b-2 rounded-full animate-spin border-amber-600"></div>
-											<span className="ml-3 text-gray-600">
+										<div className="flex items-center justify-center py-6 sm:py-8">
+											<div className="w-5 h-5 border-b-2 rounded-full sm:w-6 sm:h-6 animate-spin border-amber-600"></div>
+											<span
+												className="ml-3 text-gray-600"
+												style={{
+													fontSize:
+														"clamp(0.875rem, 2.5vw, 1rem)",
+												}}
+											>
 												正在分析中...
 											</span>
 										</div>
@@ -428,9 +490,15 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 								// If after cleaning we have no content, show loading
 								if (displayContent.length < 10) {
 									return (
-										<div className="flex items-center justify-center py-8">
-											<div className="w-6 h-6 border-b-2 rounded-full animate-spin border-amber-600"></div>
-											<span className="ml-3 text-gray-600">
+										<div className="flex items-center justify-center py-6 sm:py-8">
+											<div className="w-5 h-5 border-b-2 rounded-full sm:w-6 sm:h-6 animate-spin border-amber-600"></div>
+											<span
+												className="ml-3 text-gray-600"
+												style={{
+													fontSize:
+														"clamp(0.875rem, 2.5vw, 1rem)",
+												}}
+											>
 												正在分析中...
 											</span>
 										</div>
@@ -439,8 +507,14 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 
 								// Display the content as-is, without complex parsing
 								return (
-									<div className="space-y-4">
-										<p className="leading-relaxed text-gray-700 whitespace-pre-line">
+									<div className="space-y-3 sm:space-y-4">
+										<p
+											className="leading-relaxed text-gray-700 whitespace-pre-line"
+											style={{
+												fontSize:
+													"clamp(0.875rem, 2.5vw, 1rem)",
+											}}
+										>
 											{displayContent}
 										</p>
 									</div>

@@ -167,12 +167,25 @@ export default function CoupleSeason({ user1, user2, currentYear = 2025 }) {
 	if (isLoading) {
 		return (
 			<section
-				className="relative mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-12 lg:p-20 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]"
-				style={{ width: "95%" }}
+				className="relative mx-auto bg-white shadow-[0_4px_5.3px_rgba(0,0,0,0.25)] mb-4 sm:mb-6 lg:mb-10"
+				style={{
+					width: "100%",
+					borderRadius: "clamp(15px, 4vw, 26px)",
+					padding: "clamp(16px, 4vw, 80px)",
+				}}
 			>
-				<div className="flex items-center justify-center py-8">
-					<div className="w-8 h-8 border-b-2 rounded-full animate-spin border-amber-600"></div>
-					<span className="ml-3 text-gray-600">
+				<div className="flex items-center justify-center py-6 sm:py-8">
+					<div
+						className="border-b-2 rounded-full animate-spin border-amber-600"
+						style={{
+							width: "clamp(24px, 6vw, 32px)",
+							height: "clamp(24px, 6vw, 32px)",
+						}}
+					></div>
+					<span
+						className="ml-2 text-gray-600 sm:ml-3"
+						style={{ fontSize: "clamp(14px, 3.5vw, 16px)" }}
+					>
 						分析夫妻關鍵季節中...
 					</span>
 				</div>
@@ -183,10 +196,17 @@ export default function CoupleSeason({ user1, user2, currentYear = 2025 }) {
 	if (!analysisData) {
 		return (
 			<section
-				className="relative mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-12 lg:p-20 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]"
-				style={{ width: "95%" }}
+				className="relative mx-auto bg-white shadow-[0_4px_5.3px_rgba(0,0,0,0.25)] mb-4 sm:mb-6 lg:mb-10"
+				style={{
+					width: "100%",
+					borderRadius: "clamp(15px, 4vw, 26px)",
+					padding: "clamp(16px, 4vw, 80px)",
+				}}
 			>
-				<div className="py-8 text-center text-gray-500">
+				<div
+					className="py-6 text-center text-gray-500 sm:py-8"
+					style={{ fontSize: "clamp(14px, 3.5vw, 16px)" }}
+				>
 					無法載入夫妻季節分析資料
 				</div>
 			</section>
@@ -196,15 +216,19 @@ export default function CoupleSeason({ user1, user2, currentYear = 2025 }) {
 	return (
 		<ComponentErrorBoundary componentName="CoupleSeason">
 			<section
-				className="relative mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-12 lg:p-20 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]"
-				style={{ width: "100%" }}
+				className="relative mx-auto bg-white shadow-[0_4px_5.3px_rgba(0,0,0,0.25)] mb-4 sm:mb-6 lg:mb-10"
+				style={{
+					width: "100%",
+					borderRadius: "clamp(15px, 4vw, 26px)",
+					padding: "clamp(16px, 4vw, 80px)",
+				}}
 			>
-				{/* Header */}
-				<div className="flex items-center justify-between mb-8">
+				{/* Header - Responsive */}
+				<div className="flex flex-col mb-6 text-center sm:flex-row sm:items-center sm:justify-between sm:mb-8 sm:text-left">
 					<h2
 						style={{
 							fontFamily: "Noto Serif TC, serif",
-							fontSize: "40px",
+							fontSize: "clamp(24px, 6vw, 40px)",
 							fontWeight: 800,
 							color: "#B4003C", // Couple theme color
 						}}
@@ -226,18 +250,24 @@ export default function CoupleSeason({ user1, user2, currentYear = 2025 }) {
 					</div>
 				</div> */}
 
-				{/* Error Message */}
+				{/* Error Message - Responsive */}
 				{analysisData?.error && (
-					<div className="p-3 mb-6 bg-yellow-100 border border-yellow-400 rounded-lg">
-						<p className="text-sm text-yellow-700">
+					<div
+						className="mb-4 bg-yellow-100 border border-yellow-400 rounded-lg sm:mb-6"
+						style={{ padding: "clamp(12px, 3vw, 16px)" }}
+					>
+						<p
+							className="text-yellow-700"
+							style={{ fontSize: "clamp(12px, 3vw, 14px)" }}
+						>
 							⚠️ {analysisData.error}
 						</p>
 					</div>
 				)}
 
-				{/* Season Icons */}
-				<div className="flex justify-center mb-8">
-					<div className="flex justify-between w-full max-w-md">
+				{/* Season Icons - Responsive */}
+				<div className="flex justify-center mb-6 sm:mb-8">
+					<div className="flex justify-between w-full max-w-xs gap-2 sm:max-w-md sm:gap-4">
 						{analysisData.seasons.map((season, index) => {
 							const getSeasonBgColor = (seasonName, isActive) => {
 								const colorMap = {
@@ -293,7 +323,7 @@ export default function CoupleSeason({ user1, user2, currentYear = 2025 }) {
 								<button
 									key={season.name}
 									onClick={() => setActiveSeasonIndex(index)}
-									className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 shadow-[0_4px_4px_rgba(0,0,0,0.25)] ${getSeasonBgColor(
+									className={`rounded-full flex items-center justify-center transition-all duration-300 shadow-[0_4px_4px_rgba(0,0,0,0.25)] ${getSeasonBgColor(
 										season.name,
 										activeSeasonIndex === index
 									)} ${
@@ -301,12 +331,17 @@ export default function CoupleSeason({ user1, user2, currentYear = 2025 }) {
 											? "transform scale-110"
 											: "hover:scale-105"
 									}`}
+									style={{
+										width: "clamp(48px, 12vw, 64px)",
+										height: "clamp(48px, 12vw, 64px)",
+									}}
 								>
 									<img
 										src={getSeasonImage(season.name)}
 										alt={season.name}
-										className="w-8 h-8"
 										style={{
+											width: "clamp(24px, 6vw, 32px)",
+											height: "clamp(24px, 6vw, 32px)",
 											filter: getImageFilter(
 												season.name,
 												activeSeasonIndex === index
@@ -319,13 +354,16 @@ export default function CoupleSeason({ user1, user2, currentYear = 2025 }) {
 					</div>
 				</div>
 
-				{/* Active Season Content */}
-				<div className="p-6 mb-8">
-					<div className="flex items-center mb-4">
+				{/* Active Season Content - Responsive */}
+				<div
+					className="mb-6 sm:mb-8"
+					style={{ padding: "clamp(16px, 4vw, 24px)" }}
+				>
+					<div className="flex flex-col items-center mb-3 text-center sm:items-start sm:mb-4 sm:text-left">
 						<div className="w-full">
-							{/* Season Name with Color */}
+							{/* Season Name with Color - Responsive */}
 							<h3
-								className={`text-2xl font-bold mb-2 ${(() => {
+								className={`font-bold mb-2 sm:mb-2 ${(() => {
 									const colorMap = {
 										春季: "text-[#7cb856]",
 										夏季: "text-[#B4003C]",
@@ -340,13 +378,14 @@ export default function CoupleSeason({ user1, user2, currentYear = 2025 }) {
 										] || "text-gray-800"
 									);
 								})()}`}
+								style={{ fontSize: "clamp(20px, 5vw, 28px)" }}
 							>
 								{analysisData.seasons[activeSeasonIndex].name}
 							</h3>
 
-							{/* Period with Season Background */}
+							{/* Period with Season Background - Responsive */}
 							<div
-								className={`inline-block px-4 py-2 rounded-lg text-white font-medium ${(() => {
+								className={`inline-block rounded-lg text-white font-medium ${(() => {
 									const colorMap = {
 										春季: "bg-[#7cb856]",
 										夏季: "bg-[#B4003C]",
@@ -361,15 +400,20 @@ export default function CoupleSeason({ user1, user2, currentYear = 2025 }) {
 										] || "bg-gray-600"
 									);
 								})()}`}
+								style={{
+									padding:
+										"clamp(8px, 2vw, 12px) clamp(12px, 3vw, 16px)",
+									fontSize: "clamp(12px, 3vw, 16px)",
+								}}
 							>
 								{analysisData.seasons[activeSeasonIndex].period}
 							</div>
 						</div>
 					</div>
 
-					{/* Season Description - Organized Content */}
-					<div className="p-6">
-						<div className="space-y-4 leading-relaxed text-gray-700">
+					{/* Season Description - Responsive Content */}
+					<div style={{ padding: "clamp(16px, 4vw, 24px)" }}>
+						<div className="space-y-3 leading-relaxed text-gray-700 sm:space-y-4">
 							{(() => {
 								const content =
 									analysisData.seasons[activeSeasonIndex]
@@ -378,9 +422,21 @@ export default function CoupleSeason({ user1, user2, currentYear = 2025 }) {
 								// Simple check - if no meaningful content, show loading
 								if (!content || content.trim().length < 10) {
 									return (
-										<div className="flex items-center justify-center py-8">
-											<div className="w-6 h-6 border-b-2 rounded-full animate-spin border-amber-600"></div>
-											<span className="ml-3 text-gray-600">
+										<div className="flex items-center justify-center py-6 sm:py-8">
+											<div
+												className="border-b-2 rounded-full animate-spin border-amber-600"
+												style={{
+													width: "clamp(20px, 5vw, 24px)",
+													height: "clamp(20px, 5vw, 24px)",
+												}}
+											></div>
+											<span
+												className="ml-2 text-gray-600 sm:ml-3"
+												style={{
+													fontSize:
+														"clamp(14px, 3.5vw, 16px)",
+												}}
+											>
 												正在分析夫妻感情季節中...
 											</span>
 										</div>
@@ -420,19 +476,37 @@ export default function CoupleSeason({ user1, user2, currentYear = 2025 }) {
 								// If after cleaning we have no content, show loading
 								if (displayContent.length < 10) {
 									return (
-										<div className="flex items-center justify-center py-8">
-											<div className="w-6 h-6 border-b-2 rounded-full animate-spin border-amber-600"></div>
-											<span className="ml-3 text-gray-600">
+										<div className="flex items-center justify-center py-6 sm:py-8">
+											<div
+												className="border-b-2 rounded-full animate-spin border-amber-600"
+												style={{
+													width: "clamp(20px, 5vw, 24px)",
+													height: "clamp(20px, 5vw, 24px)",
+												}}
+											></div>
+											<span
+												className="ml-2 text-gray-600 sm:ml-3"
+												style={{
+													fontSize:
+														"clamp(14px, 3.5vw, 16px)",
+												}}
+											>
 												正在分析夫妻感情季節中...
 											</span>
 										</div>
 									);
 								}
 
-								// Display the content as-is, without complex parsing
+								// Display the content as-is, without complex parsing - Responsive
 								return (
-									<div className="space-y-4">
-										<p className="leading-relaxed text-gray-700 whitespace-pre-line">
+									<div className="space-y-3 sm:space-y-4">
+										<p
+											className="leading-relaxed text-gray-700 whitespace-pre-line"
+											style={{
+												fontSize:
+													"clamp(14px, 3.5vw, 16px)",
+											}}
+										>
 											{displayContent}
 										</p>
 									</div>

@@ -863,24 +863,30 @@ export default function GanZhi({ userInfo, currentYear = 2025 }) {
 	if (isLoading) {
 		return (
 			<div
-				className="py-10 mx-auto mb-6 bg-white sm:mb-10"
+				className="py-6 mx-auto mb-6 bg-white sm:py-8 lg:py-10 sm:mb-10"
 				style={{
 					width: "95%",
-					borderRadius: "45px",
+					borderRadius: "45px sm:45px md:45px lg:45px xl:45px",
 					boxShadow: "0 4px 4px rgba(0,0,0,0.25)",
 				}}
 			>
-				<div className="py-8 text-center">
-					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
+				<div className="py-6 text-center sm:py-8">
+					<div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-[#A3B116] mx-auto mb-3 sm:mb-4"></div>
 					<p
-						className="text-lg text-[#5A5A5A] mb-2"
-						style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+						className="text-[#5A5A5A] mb-2"
+						style={{
+							fontFamily: "Noto Sans HK, sans-serif",
+							fontSize: "clamp(1rem, 3vw, 1.125rem)",
+						}}
 					>
 						AI正在生成個性化流年干支分析...
 					</p>
 					<p
-						className="text-sm text-gray-500"
-						style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+						className="text-gray-500"
+						style={{
+							fontFamily: "Noto Sans HK, sans-serif",
+							fontSize: "clamp(0.875rem, 2.5vw, 0.875rem)",
+						}}
 					>
 						根據您的八字信息和關注領域進行深度分析
 					</p>
@@ -893,18 +899,20 @@ export default function GanZhi({ userInfo, currentYear = 2025 }) {
 	if (!analysisData || !analysisData.parsedContent) {
 		return (
 			<div
-				className="py-10 mx-auto mb-6 bg-white sm:mb-10"
+				className="py-6 mx-auto mb-6 bg-white rounded-[45px] sm:py-8 lg:py-10 sm:mb-10"
 				style={{
 					width: "95%",
-					borderRadius: "45px",
 					boxShadow: "0 4px 4px rgba(0,0,0,0.25)",
 				}}
 			>
-				<div className="py-8 text-center">
-					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
+				<div className="py-6 text-center sm:py-8">
+					<div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-[#A3B116] mx-auto mb-3 sm:mb-4"></div>
 					<p
-						className="text-lg text-[#5A5A5A] mb-2"
-						style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+						className="text-[#5A5A5A] mb-2"
+						style={{
+							fontFamily: "Noto Sans HK, sans-serif",
+							fontSize: "clamp(1rem, 3vw, 1.125rem)",
+						}}
 					>
 						載入流年分析數據中...
 					</p>
@@ -916,21 +924,21 @@ export default function GanZhi({ userInfo, currentYear = 2025 }) {
 	return (
 		<ComponentErrorBoundary componentName="GanZhi">
 			<div
-				className="py-10 mx-auto mb-6 bg-white sm:mb-10"
+				className="py-6 mx-auto rounded-[45px] mb-6 bg-white sm:py-8 lg:py-10 sm:mb-10"
 				style={{
 					width: "95%",
-					borderRadius: "45px",
 					boxShadow: "0 4px 4px rgba(0,0,0,0.25)",
 				}}
 			>
 				{/* Header */}
-				<div className="px-4 mb-6 sm:mb-8 sm:px-8 lg:px-13">
+				<div className="px-4 mb-6 sm:mb-8 sm:px-6 md:px-8 lg:px-13">
 					<h2
-						className="font-bold text-center lg:text-left mb-4"
+						className="mb-3 font-bold text-center lg:text-left sm:mb-4"
 						style={{
 							fontFamily: "Noto Serif TC, serif",
-							fontSize: "clamp(32px, 6vw, 56px)",
+							fontSize: "clamp(1.75rem, 6vw, 3.5rem)",
 							color: getConcernColor(userInfo),
+							lineHeight: 1.1,
 						}}
 					>
 						流年干支作用
@@ -938,28 +946,32 @@ export default function GanZhi({ userInfo, currentYear = 2025 }) {
 
 					{/* Description */}
 					<p
-						className="mb-6 text-sm leading-relaxed text-gray-700 sm:text-base"
-						style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+						className="mb-4 leading-relaxed text-gray-700 sm:mb-6"
+						style={{
+							fontFamily: "Noto Sans HK, sans-serif",
+							fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
+						}}
 					>
 						{analysisData?.description}
 					</p>
 
 					{/* Main Container with EFEFEF background */}
 					<div
-						className="bg-[#EFEFEF] rounded-lg p-6 mb-6"
+						className="bg-[#EFEFEF] rounded-lg p-4 sm:p-6 mb-4 sm:mb-6"
 						style={{ boxShadow: "0 4px 4px rgba(0,0,0,0.25)" }}
 					>
 						{/* Toggle Buttons */}
-						<div className="flex gap-4 mb-6">
+						<div className="flex flex-col gap-3 mb-4 sm:flex-row sm:gap-4 sm:mb-6">
 							<button
 								onClick={() => setActiveSection("tianGan")}
-								className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
+								className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-all duration-300 flex-1 sm:flex-none text-center ${
 									activeSection === "tianGan"
 										? "text-white"
 										: "bg-white text-black"
 								}`}
 								style={{
 									fontFamily: "Noto Sans HK, sans-serif",
+									fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
 									backgroundColor:
 										activeSection === "tianGan"
 											? getConcernColor(userInfo)
@@ -971,13 +983,14 @@ export default function GanZhi({ userInfo, currentYear = 2025 }) {
 							</button>
 							<button
 								onClick={() => setActiveSection("diZhi")}
-								className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
+								className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-all duration-300 flex-1 sm:flex-none text-center ${
 									activeSection === "diZhi"
 										? "text-white"
 										: "bg-white text-black"
 								}`}
 								style={{
 									fontFamily: "Noto Sans HK, sans-serif",
+									fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
 									backgroundColor:
 										activeSection === "diZhi"
 											? getConcernColor(userInfo)
@@ -994,10 +1007,12 @@ export default function GanZhi({ userInfo, currentYear = 2025 }) {
 							<div>
 								{/* Title */}
 								<h3
-									className="text-[40px] font-black mb-4"
+									className="mb-3 font-black sm:mb-4"
 									style={{
 										fontFamily: "Noto Serif TC, serif",
 										color: getConcernColor(userInfo),
+										fontSize: "clamp(1.5rem, 5vw, 2.5rem)",
+										lineHeight: 1.2,
 									}}
 								>
 									天干{analysisData?.yearGanZhi?.stem || "乙"}
@@ -1009,9 +1024,11 @@ export default function GanZhi({ userInfo, currentYear = 2025 }) {
 
 								{/* Content from AI analysis */}
 								<div
-									className="mb-6 leading-relaxed text-gray-700"
+									className="mb-4 leading-relaxed text-gray-700 sm:mb-6"
 									style={{
 										fontFamily: "Noto Sans HK, sans-serif",
+										fontSize:
+											"clamp(0.875rem, 2.5vw, 1rem)",
 									}}
 								>
 									{/* Extract content from sections 1 and 2 of AI analysis */}
@@ -1052,7 +1069,7 @@ export default function GanZhi({ userInfo, currentYear = 2025 }) {
 								)}
  */}
 								{/* Three Cards */}
-								<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+								<div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
 									{(
 										analysisData?.parsedContent?.tianGan
 											?.effects || [
@@ -1084,7 +1101,7 @@ export default function GanZhi({ userInfo, currentYear = 2025 }) {
 												}}
 											>
 												<div
-													className="text-white p-2 rounded-lg mb-3 text-center"
+													className="p-2 mb-3 text-center text-white rounded-lg"
 													style={{
 														backgroundColor:
 															getConcernColor(
@@ -1124,10 +1141,12 @@ export default function GanZhi({ userInfo, currentYear = 2025 }) {
 							<div>
 								{/* Title */}
 								<h3
-									className="text-[40px] font-black mb-4"
+									className="mb-3 font-black sm:mb-4"
 									style={{
 										fontFamily: "Noto Serif TC, serif",
 										color: getConcernColor(userInfo),
+										fontSize: "clamp(1.5rem, 5vw, 2.5rem)",
+										lineHeight: 1.2,
 									}}
 								>
 									地支
@@ -1140,14 +1159,16 @@ export default function GanZhi({ userInfo, currentYear = 2025 }) {
 
 								{/* Content from AI analysis */}
 								<div
-									className="mb-6 leading-relaxed text-gray-700"
+									className="mb-4 leading-relaxed text-gray-700 sm:mb-6"
 									style={{
 										fontFamily: "Noto Sans HK, sans-serif",
+										fontSize:
+											"clamp(0.875rem, 2.5vw, 1rem)",
 									}}
 								></div>
 
 								{/* Three Cards */}
-								<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+								<div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
 									{(
 										analysisData?.parsedContent?.diZhi
 											?.effects || [
@@ -1179,7 +1200,7 @@ export default function GanZhi({ userInfo, currentYear = 2025 }) {
 												}}
 											>
 												<div
-													className="text-white p-2 rounded-lg mb-3 text-center"
+													className="p-2 mb-3 text-center text-white rounded-lg"
 													style={{
 														backgroundColor:
 															getConcernColor(
@@ -1216,19 +1237,24 @@ export default function GanZhi({ userInfo, currentYear = 2025 }) {
 					</div>
 
 					{/* Practical Results Section */}
-					<div className="mb-6">
+					<div className="mb-4 sm:mb-6">
 						<h3
-							className="text-[30px] font-semibold mb-4"
+							className="mb-3 font-semibold sm:mb-4"
 							style={{
 								fontFamily: "Noto Serif TC, serif",
 								color: getConcernColor(userInfo),
+								fontSize: "clamp(1.25rem, 4vw, 1.875rem)",
+								lineHeight: 1.2,
 							}}
 						>
 							實際表現
 						</h3>
 						<div
-							className="text-black text-[15px] leading-relaxed"
-							style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+							className="leading-relaxed text-black"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(0.875rem, 2.5vw, 0.9375rem)",
+							}}
 							dangerouslySetInnerHTML={{
 								__html:
 									analysisData?.parsedContent?.practicalResults
@@ -1252,35 +1278,41 @@ export default function GanZhi({ userInfo, currentYear = 2025 }) {
 
 					{/* Notice Section */}
 					<div
-						className="border-2 bg-white rounded-lg p-6 mb-6"
+						className="p-4 mb-4 bg-white border-2 rounded-lg sm:p-6 sm:mb-6"
 						style={{ borderColor: getConcernColor(userInfo) }}
 					>
 						<h3
-							className="text-[25px] font-semibold mb-4"
+							className="mb-3 font-semibold sm:mb-4"
 							style={{
 								fontFamily: "Noto Serif TC, serif",
 								color: getConcernColor(userInfo),
+								fontSize: "clamp(1.125rem, 3.5vw, 1.5625rem)",
+								lineHeight: 1.2,
 							}}
 						>
 							【注意事項】
 						</h3>
 
 						{/* Risk Section */}
-						<div className="mb-4">
-							<div className="px-4 py-2 mb-2 text-white bg-red-500 rounded-lg">
+						<div className="mb-3 sm:mb-4">
+							<div className="px-3 py-2 mb-2 text-white bg-red-500 rounded-lg sm:px-4">
 								<h4
-									className="text-[25px] font-semibold"
+									className="font-semibold"
 									style={{
 										fontFamily: "Noto Sans HK, sans-serif",
+										fontSize:
+											"clamp(1.125rem, 3.5vw, 1.5625rem)",
 									}}
 								>
 									風險
 								</h4>
 							</div>
 							<div
-								className="text-black text-[15px] leading-relaxed"
+								className="leading-relaxed text-black"
 								style={{
 									fontFamily: "Noto Sans HK, sans-serif",
+									fontSize:
+										"clamp(0.875rem, 2.5vw, 0.9375rem)",
 								}}
 								dangerouslySetInnerHTML={{
 									__html:
@@ -1306,20 +1338,24 @@ export default function GanZhi({ userInfo, currentYear = 2025 }) {
 
 						{/* Suggestions Section */}
 						<div>
-							<div className="px-4 py-2 mb-2 text-white bg-black rounded-lg">
+							<div className="px-3 py-2 mb-2 text-white bg-black rounded-lg sm:px-4">
 								<h4
-									className="text-[25px] font-semibold"
+									className="font-semibold"
 									style={{
 										fontFamily: "Noto Sans HK, sans-serif",
+										fontSize:
+											"clamp(1.125rem, 3.5vw, 1.5625rem)",
 									}}
 								>
 									建議
 								</h4>
 							</div>
 							<div
-								className="text-black text-[15px] leading-relaxed"
+								className="leading-relaxed text-black"
 								style={{
 									fontFamily: "Noto Sans HK, sans-serif",
+									fontSize:
+										"clamp(0.875rem, 2.5vw, 0.9375rem)",
 								}}
 								dangerouslySetInnerHTML={{
 									__html:
@@ -1347,14 +1383,21 @@ export default function GanZhi({ userInfo, currentYear = 2025 }) {
 					{/* Conclusion */}
 					<div>
 						<h3
-							className="text-[25px] text-red-500 font-semibold mb-4"
-							style={{ fontFamily: "Noto Serif TC, serif" }}
+							className="mb-3 font-semibold text-red-500 sm:mb-4"
+							style={{
+								fontFamily: "Noto Serif TC, serif",
+								fontSize: "clamp(1.125rem, 3.5vw, 1.5625rem)",
+								lineHeight: 1.2,
+							}}
 						>
 							總結：
 						</h3>
 						<p
-							className="text-black text-[15px] leading-relaxed"
-							style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+							className="leading-relaxed text-black"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(0.875rem, 2.5vw, 0.9375rem)",
+							}}
 							dangerouslySetInnerHTML={{
 								__html:
 									analysisData?.parsedContent?.conclusion?.replace(

@@ -151,10 +151,25 @@ const TargetedSuggestionsSection = ({ femaleUser, maleUser, analysisData }) => {
 
 	if (loading) {
 		return (
-			<div className="w-full p-8 bg-white rounded-[30px] shadow-lg">
+			<div
+				className="w-full bg-white shadow-lg"
+				style={{
+					padding: "clamp(20px, 5vw, 32px)",
+					borderRadius: "clamp(20px, 5vw, 30px)",
+				}}
+			>
 				<div className="flex items-center justify-center">
-					<div className="w-6 h-6 border-b-2 border-pink-500 rounded-full animate-spin"></div>
-					<span className="ml-2 text-gray-600">
+					<div
+						className="border-b-2 border-pink-500 rounded-full animate-spin"
+						style={{
+							width: "clamp(20px, 5vw, 24px)",
+							height: "clamp(20px, 5vw, 24px)",
+						}}
+					></div>
+					<span
+						className="ml-2 text-gray-600"
+						style={{ fontSize: "clamp(13px, 3.2vw, 15px)" }}
+					>
 						生成針對性建議中...
 					</span>
 				</div>
@@ -167,14 +182,23 @@ const TargetedSuggestionsSection = ({ femaleUser, maleUser, analysisData }) => {
 	}
 
 	return (
-		<div className="w-full bg-[#F5F5F5] rounded-[30px] shadow-lg p-8">
+		<div
+			className="w-full bg-[#F5F5F5] shadow-lg"
+			style={{
+				padding: "clamp(20px, 5vw, 32px)",
+				borderRadius: "clamp(20px, 5vw, 30px)",
+			}}
+		>
 			{/* Header */}
-			<div className="mb-8">
-				<div className="flex items-center mb-4">
+			<div style={{ marginBottom: "clamp(24px, 6vw, 32px)" }}>
+				<div
+					className="flex items-center"
+					style={{ marginBottom: "clamp(12px, 3vw, 16px)" }}
+				>
 					<h3
 						className="font-bold text-[#C74772]"
 						style={{
-							fontSize: "42px",
+							fontSize: "clamp(24px, 6vw, 42px)",
 							fontFamily: "Noto Serif TC, serif",
 						}}
 					>
@@ -184,36 +208,90 @@ const TargetedSuggestionsSection = ({ femaleUser, maleUser, analysisData }) => {
 			</div>
 
 			{/* Three Action Categories */}
-			<div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-3">
+			<div
+				className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+				style={{
+					gap: "clamp(16px, 4vw, 24px)",
+					marginBottom: "clamp(24px, 6vw, 32px)",
+				}}
+			>
 				{/* Element Balance */}
-				<div className="bg-[#A5385C] rounded-[20px] p-6 text-white">
+				<div
+					className="bg-[#A5385C] text-white"
+					style={{
+						padding: "clamp(16px, 4vw, 24px)",
+						borderRadius: "clamp(16px, 4vw, 20px)",
+					}}
+				>
 					<h4
-						className="mb-3 text-lg font-bold"
-						style={{ fontFamily: "Noto Serif TC, serif" }}
+						className="font-bold"
+						style={{
+							fontSize: "clamp(14px, 3.5vw, 18px)",
+							marginBottom: "clamp(10px, 2.5vw, 12px)",
+							fontFamily: "Noto Serif TC, serif",
+						}}
 					>
 						{targetedSuggestionsData?.elementBalance?.title ||
 							"增強特定元素平衡"}
 					</h4>
-					<p className="mb-4 text-sm opacity-90">
+					<p
+						className="opacity-90"
+						style={{
+							fontSize: "clamp(12px, 3vw, 14px)",
+							marginBottom: "clamp(12px, 3vw, 16px)",
+						}}
+					>
 						{targetedSuggestionsData?.elementBalance?.description ||
 							"提供實用方法增強元素平衡"}
 					</p>
-					<div className="space-y-3">
+					<div
+						style={{
+							display: "flex",
+							flexDirection: "column",
+							gap: "clamp(10px, 2.5vw, 12px)",
+						}}
+					>
 						{targetedSuggestionsData?.elementBalance?.methods?.map(
 							(method, index) => (
 								<div
 									key={index}
-									className="p-3 text-black bg-white rounded-lg bg-opacity-20"
+									className="text-black bg-white bg-opacity-20"
+									style={{
+										padding: "clamp(10px, 2.5vw, 12px)",
+										borderRadius: "clamp(6px, 1.5vw, 8px)",
+									}}
 								>
 									<div className="flex items-start">
-										<span className="mr-2 text-lg">
+										<span
+											style={{
+												fontSize:
+													"clamp(16px, 4vw, 18px)",
+												marginRight:
+													"clamp(6px, 1.5vw, 8px)",
+											}}
+										>
 											{method?.icon || "💎"}
 										</span>
 										<div>
-											<h5 className="mb-1 text-sm font-medium">
+											<h5
+												className="font-medium"
+												style={{
+													fontSize:
+														"clamp(12px, 3vw, 14px)",
+													marginBottom:
+														"clamp(4px, 1vw, 6px)",
+												}}
+											>
 												{method?.title || "建議方法"}
 											</h5>
-											<p className="text-xs leading-relaxed opacity-90">
+											<p
+												className="opacity-90"
+												style={{
+													fontSize:
+														"clamp(10px, 2.5vw, 12px)",
+													lineHeight: "1.5",
+												}}
+											>
 												{method?.description ||
 													"具體實施建議"}
 											</p>
@@ -226,34 +304,82 @@ const TargetedSuggestionsSection = ({ femaleUser, maleUser, analysisData }) => {
 				</div>
 
 				{/* Communication Transformation */}
-				<div className="bg-[#A5385C] rounded-[20px] p-6 text-white">
+				<div
+					className="bg-[#A5385C] text-white"
+					style={{
+						padding: "clamp(16px, 4vw, 24px)",
+						borderRadius: "clamp(16px, 4vw, 20px)",
+					}}
+				>
 					<h4
-						className="mb-3 text-lg font-bold"
-						style={{ fontFamily: "Noto Serif TC, serif" }}
+						className="font-bold"
+						style={{
+							fontSize: "clamp(14px, 3.5vw, 18px)",
+							marginBottom: "clamp(10px, 2.5vw, 12px)",
+							fontFamily: "Noto Serif TC, serif",
+						}}
 					>
 						{targetedSuggestionsData?.communicationTransformation
 							?.title || "轉化溝通模式"}
 					</h4>
-					<p className="mb-4 text-sm opacity-90">
+					<p
+						className="opacity-90"
+						style={{
+							fontSize: "clamp(12px, 3vw, 14px)",
+							marginBottom: "clamp(12px, 3vw, 16px)",
+						}}
+					>
 						{targetedSuggestionsData?.communicationTransformation
 							?.description || "當能量過旺時，用互補方式疏導"}
 					</p>
-					<div className="space-y-3">
+					<div
+						style={{
+							display: "flex",
+							flexDirection: "column",
+							gap: "clamp(10px, 2.5vw, 12px)",
+						}}
+					>
 						{targetedSuggestionsData?.communicationTransformation?.methods?.map(
 							(method, index) => (
 								<div
 									key={index}
-									className="p-3 text-black bg-white rounded-lg bg-opacity-20"
+									className="text-black bg-white bg-opacity-20"
+									style={{
+										padding: "clamp(10px, 2.5vw, 12px)",
+										borderRadius: "clamp(6px, 1.5vw, 8px)",
+									}}
 								>
 									<div className="flex items-start">
-										<span className="mr-2 text-lg">
+										<span
+											style={{
+												fontSize:
+													"clamp(16px, 4vw, 18px)",
+												marginRight:
+													"clamp(6px, 1.5vw, 8px)",
+											}}
+										>
 											{method?.icon || "🍲"}
 										</span>
 										<div>
-											<h5 className="mb-1 text-sm font-medium">
+											<h5
+												className="font-medium"
+												style={{
+													fontSize:
+														"clamp(12px, 3vw, 14px)",
+													marginBottom:
+														"clamp(4px, 1vw, 6px)",
+												}}
+											>
 												{method?.title || "溝通方法"}
 											</h5>
-											<p className="text-xs leading-relaxed opacity-90">
+											<p
+												className="opacity-90"
+												style={{
+													fontSize:
+														"clamp(10px, 2.5vw, 12px)",
+													lineHeight: "1.5",
+												}}
+											>
 												{method?.description ||
 													"具體溝通建議"}
 											</p>
@@ -266,34 +392,82 @@ const TargetedSuggestionsSection = ({ femaleUser, maleUser, analysisData }) => {
 				</div>
 
 				{/* Anchor Ritual */}
-				<div className="bg-[#A5385C] rounded-[20px] p-6 text-white">
+				<div
+					className="bg-[#A5385C] text-white"
+					style={{
+						padding: "clamp(16px, 4vw, 24px)",
+						borderRadius: "clamp(16px, 4vw, 20px)",
+					}}
+				>
 					<h4
-						className="mb-3 text-lg font-bold"
-						style={{ fontFamily: "Noto Serif TC, serif" }}
+						className="font-bold"
+						style={{
+							fontFamily: "Noto Serif TC, serif",
+							fontSize: "clamp(16px, 4vw, 18px)",
+							marginBottom: "clamp(8px, 2vw, 12px)",
+						}}
 					>
 						{targetedSuggestionsData?.anchorRitual?.title ||
 							"心錨儀式"}
 					</h4>
-					<p className="mb-4 text-sm opacity-90">
+					<p
+						className="opacity-90"
+						style={{
+							fontSize: "clamp(12px, 3vw, 14px)",
+							marginBottom: "clamp(12px, 3vw, 16px)",
+						}}
+					>
 						{targetedSuggestionsData?.anchorRitual?.description ||
 							"每日雙手按小腹默念肯定語，強化包容力"}
 					</p>
-					<div className="space-y-3">
+					<div
+						style={{
+							display: "flex",
+							flexDirection: "column",
+							gap: "clamp(8px, 2vw, 12px)",
+						}}
+					>
 						{targetedSuggestionsData?.anchorRitual?.methods?.map(
 							(method, index) => (
 								<div
 									key={index}
-									className="p-3 text-black bg-white rounded-lg bg-opacity-20"
+									className="text-black bg-white bg-opacity-20"
+									style={{
+										padding: "clamp(10px, 2.5vw, 12px)",
+										borderRadius: "clamp(6px, 1.5vw, 8px)",
+									}}
 								>
 									<div className="flex items-start">
-										<span className="mr-2 text-lg">
+										<span
+											style={{
+												fontSize:
+													"clamp(16px, 4vw, 18px)",
+												marginRight:
+													"clamp(6px, 1.5vw, 8px)",
+											}}
+										>
 											{method?.icon || "🙏"}
 										</span>
 										<div>
-											<h5 className="mb-1 text-sm font-medium">
+											<h5
+												className="font-medium"
+												style={{
+													fontSize:
+														"clamp(12px, 3vw, 14px)",
+													marginBottom:
+														"clamp(4px, 1vw, 6px)",
+												}}
+											>
 												{method?.title || "心錨方法"}
 											</h5>
-											<p className="text-xs leading-relaxed opacity-90">
+											<p
+												className="opacity-90"
+												style={{
+													fontSize:
+														"clamp(10px, 2.5vw, 12px)",
+													lineHeight: "1.5",
+												}}
+											>
 												{method?.description ||
 													"具體儀式建議"}
 											</p>

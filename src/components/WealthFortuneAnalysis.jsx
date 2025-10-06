@@ -201,29 +201,39 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 	return (
 		<div className="w-full">
 			{/* Header */}
-			<div className="mb-8">
-				<div className="flex items-center gap-3 mb-4">
+			<div className="mb-4 sm:mb-8">
+				<div className="flex items-center gap-2 mb-3 sm:gap-3 sm:mb-4">
 					<h2
-						className="text-4xl font-bold text-[#374A37]"
-						style={{ fontFamily: "Noto Serif TC, serif" }}
+						className="font-bold text-[#374A37]"
+						style={{
+							fontFamily: "Noto Serif TC, serif",
+							fontSize: "clamp(24px, 5vw, 36px)",
+						}}
 					>
 						財運運勢分析
 					</h2>
 				</div>
 
 				{/* Summary Section */}
-				<div className="bg-gradient-to-r from-[#D09900] to-[#BD4800] rounded-full px-6 py-3 mb-6 inline-block">
+				<div className="bg-gradient-to-r from-[#D09900] to-[#BD4800] rounded-full px-4 sm:px-6 py-2 sm:py-3 mb-4 sm:mb-6 inline-block">
 					<h3
-						className="text-xl font-bold text-white"
-						style={{ fontFamily: "Noto Serif TC, serif" }}
+						className="font-bold text-white"
+						style={{
+							fontFamily: "Noto Serif TC, serif",
+							fontSize: "clamp(16px, 3.5vw, 20px)",
+						}}
 					>
 						總結：{wealthAnalysis.summary.title}
 					</h3>
 				</div>
 
 				<p
-					className="text-lg text-[#374A37] leading-relaxed mb-8"
-					style={{ fontFamily: "Noto Sans HK, sans-serif" }}
+					className="text-[#374A37] leading-relaxed mb-4 sm:mb-8"
+					style={{
+						fontFamily: "Noto Sans HK, sans-serif",
+						fontSize: "clamp(14px, 3vw, 18px)",
+						lineHeight: 1.6,
+					}}
 				>
 					{wealthAnalysis.summary.description}
 				</p>
@@ -231,29 +241,33 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 
 			{/* Three Stages Wealth Analysis */}
 			<div
-				className="bg-[#EFEFEF] rounded-xl p-6 mb-6"
+				className="bg-[#EFEFEF] rounded-xl p-3 sm:p-6 mb-4 sm:mb-6"
 				style={{ boxShadow: "inset 0 4px 4px rgba(0, 0, 0, 0.25)" }}
 			>
 				<h3
-					className="text-3xl font-bold text-[#D09900] mb-6"
-					style={{ fontFamily: "Noto Serif TC, serif" }}
+					className="font-bold text-[#D09900] mb-4 sm:mb-6"
+					style={{
+						fontFamily: "Noto Serif TC, serif",
+						fontSize: "clamp(20px, 4vw, 28px)",
+					}}
 				>
 					三階段財運密碼
 				</h3>
 
 				{/* Tab Navigation */}
-				<div className="flex flex-wrap justify-center gap-6 mb-8">
+				<div className="flex flex-col justify-center gap-3 mb-6 sm:flex-row sm:gap-6 sm:mb-8">
 					{tabs.map((tab) => (
 						<button
 							key={tab}
 							onClick={() => setActiveTab(tab)}
-							className={`px-8 py-4 rounded-full font-semibold text-lg transition-all duration-200 ${
+							className={`px-4 sm:px-8 py-2 sm:py-4 rounded-full font-semibold transition-all duration-200 ${
 								activeTab === tab
 									? "bg-[#D09900] text-white"
 									: "bg-white text-[#757575] hover:bg-gray-50"
 							}`}
 							style={{
 								fontFamily: "Noto Serif TC, serif",
+								fontSize: "clamp(14px, 3vw, 18px)",
 								boxShadow: "0 4px 4px rgba(0, 0, 0, 0.25)",
 							}}
 						>
@@ -263,10 +277,13 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 				</div>
 
 				{/* Age Range Banner */}
-				<div className="bg-gradient-to-r from-[#D09900] to-[#BD4800] rounded-full px-6 py-2 mb-6 text-center">
+				<div className="bg-gradient-to-r from-[#D09900] to-[#BD4800] rounded-full px-4 sm:px-6 py-1.5 sm:py-2 mb-4 sm:mb-6 text-center">
 					<h4
-						className="text-lg font-bold text-white"
-						style={{ fontFamily: "Noto Serif TC, serif" }}
+						className="font-bold text-white"
+						style={{
+							fontFamily: "Noto Serif TC, serif",
+							fontSize: "clamp(14px, 3vw, 18px)",
+						}}
 					>
 						{wealthAnalysis.threeStages[activeTab].ageRange}·
 						{wealthAnalysis.threeStages[activeTab].fortune}
@@ -274,15 +291,17 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 				</div>
 
 				{/* Tab Content */}
-				<div className="mb-8">
+				<div className="mb-4 sm:mb-8">
 					{activeTab === "奠基期" && (
-						<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-							<div className="p-6 bg-white rounded-lg shadow-md">
-								<div className="bg-gradient-to-r from-[#D09900] to-[#BD4800] rounded-full px-6 py-3 mb-4 inline-block">
+						<div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
+							<div className="p-4 bg-white rounded-lg shadow-md sm:p-6">
+								<div className="bg-gradient-to-r from-[#D09900] to-[#BD4800] rounded-full px-4 sm:px-6 py-2 sm:py-3 mb-3 sm:mb-4 inline-block">
 									<h5
-										className="text-base font-bold text-white"
+										className="font-bold text-white"
 										style={{
 											fontFamily: "Noto Serif TC, serif",
+											fontSize:
+												"clamp(12px, 2.5vw, 16px)",
 										}}
 									>
 										{
@@ -291,12 +310,15 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 										}
 									</h5>
 								</div>
-								<div className="space-y-4">
+								<div className="space-y-3 sm:space-y-4">
 									<p
-										className="text-sm text-[#374A37]"
+										className="text-[#374A37]"
 										style={{
 											fontFamily:
 												"Noto Sans HK, sans-serif",
+											fontSize:
+												"clamp(12px, 2.5vw, 14px)",
+											lineHeight: 1.5,
 										}}
 									>
 										{
@@ -304,12 +326,15 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 												.content.phase1.description
 										}
 									</p>
-									<div className="bg-[#F5F5F5] rounded-lg p-3">
+									<div className="bg-[#F5F5F5] rounded-lg p-2 sm:p-3">
 										<p
-											className="text-sm font-medium text-[#374A37]"
+											className="font-medium text-[#374A37]"
 											style={{
 												fontFamily:
 													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+												lineHeight: 1.4,
 											}}
 										>
 											{
@@ -319,12 +344,15 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 											}
 										</p>
 									</div>
-									<div className="p-3 rounded-lg bg-red-50">
+									<div className="p-2 rounded-lg sm:p-3 bg-red-50">
 										<p
-											className="text-sm text-red-700"
+											className="text-red-700"
 											style={{
 												fontFamily:
 													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+												lineHeight: 1.4,
 											}}
 										>
 											{
@@ -337,12 +365,14 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 								</div>
 							</div>
 
-							<div className="p-6 bg-white rounded-lg shadow-md">
-								<div className="bg-[#D09900] rounded-full px-6 py-3 mb-4 inline-block">
+							<div className="p-4 bg-white rounded-lg shadow-md sm:p-6">
+								<div className="bg-[#D09900] rounded-full px-4 sm:px-6 py-2 sm:py-3 mb-3 sm:mb-4 inline-block">
 									<h5
-										className="text-base font-bold text-white"
+										className="font-bold text-white"
 										style={{
 											fontFamily: "Noto Serif TC, serif",
+											fontSize:
+												"clamp(12px, 2.5vw, 16px)",
 										}}
 									>
 										{
@@ -352,12 +382,15 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 										}
 									</h5>
 								</div>
-								<div className="space-y-4">
+								<div className="space-y-3 sm:space-y-4">
 									<p
-										className="text-sm text-[#374A37]"
+										className="text-[#374A37]"
 										style={{
 											fontFamily:
 												"Noto Sans HK, sans-serif",
+											fontSize:
+												"clamp(12px, 2.5vw, 14px)",
+											lineHeight: 1.5,
 										}}
 									>
 										{
@@ -365,12 +398,15 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 												.content.phase2.description
 										}
 									</p>
-									<div className="p-3 rounded-lg bg-red-50">
+									<div className="p-2 rounded-lg sm:p-3 bg-red-50">
 										<p
-											className="text-sm text-red-700"
+											className="text-red-700"
 											style={{
 												fontFamily:
 													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+												lineHeight: 1.4,
 											}}
 										>
 											{
@@ -386,24 +422,29 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 					)}
 
 					{activeTab === "爆發期" && (
-						<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-							<div className="p-6 bg-white rounded-lg shadow-md">
-								<div className="bg-[#D09900] rounded-full px-6 py-3 mb-4 inline-block">
+						<div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
+							<div className="p-4 bg-white rounded-lg shadow-md sm:p-6">
+								<div className="bg-[#D09900] rounded-full px-4 sm:px-6 py-2 sm:py-3 mb-3 sm:mb-4 inline-block">
 									<h5
-										className="text-base font-bold text-white"
+										className="font-bold text-white"
 										style={{
 											fontFamily: "Noto Serif TC, serif",
+											fontSize:
+												"clamp(12px, 2.5vw, 16px)",
 										}}
 									>
 										甲木傷官
 									</h5>
 								</div>
-								<div className="space-y-4">
+								<div className="space-y-3 sm:space-y-4">
 									<p
-										className="text-sm text-[#374A37]"
+										className="text-[#374A37]"
 										style={{
 											fontFamily:
 												"Noto Sans HK, sans-serif",
+											fontSize:
+												"clamp(12px, 2.5vw, 14px)",
+											lineHeight: 1.5,
 										}}
 									>
 										{
@@ -411,12 +452,15 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 												.content.description
 										}
 									</p>
-									<div className="bg-[#F5F5F5] rounded-lg p-3">
+									<div className="bg-[#F5F5F5] rounded-lg p-2 sm:p-3">
 										<p
-											className="text-sm font-medium text-[#374A37]"
+											className="font-medium text-[#374A37]"
 											style={{
 												fontFamily:
 													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+												lineHeight: 1.4,
 											}}
 										>
 											{
@@ -429,23 +473,28 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 								</div>
 							</div>
 
-							<div className="p-6 bg-white rounded-lg shadow-md">
-								<div className="bg-[#D09900] rounded-full px-6 py-3 mb-4 inline-block">
+							<div className="p-4 bg-white rounded-lg shadow-md sm:p-6">
+								<div className="bg-[#D09900] rounded-full px-4 sm:px-6 py-2 sm:py-3 mb-3 sm:mb-4 inline-block">
 									<h5
-										className="text-base font-bold text-white"
+										className="font-bold text-white"
 										style={{
 											fontFamily: "Noto Serif TC, serif",
+											fontSize:
+												"clamp(12px, 2.5vw, 16px)",
 										}}
 									>
 										財富峰值
 									</h5>
 								</div>
-								<div className="space-y-4">
+								<div className="space-y-3 sm:space-y-4">
 									<p
-										className="text-sm text-[#374A37]"
+										className="text-[#374A37]"
 										style={{
 											fontFamily:
 												"Noto Sans HK, sans-serif",
+											fontSize:
+												"clamp(12px, 2.5vw, 14px)",
+											lineHeight: 1.5,
 										}}
 									>
 										{
@@ -453,12 +502,15 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 												.content.industries
 										}
 									</p>
-									<div className="bg-[#F5F5F5] rounded-lg p-3">
+									<div className="bg-[#F5F5F5] rounded-lg p-2 sm:p-3">
 										<p
-											className="text-sm font-medium text-[#374A37]"
+											className="font-medium text-[#374A37]"
 											style={{
 												fontFamily:
 													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(12px, 2.5vw, 14px)",
+												lineHeight: 1.4,
 											}}
 										>
 											{
@@ -474,12 +526,13 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 					)}
 
 					{activeTab === "守成期" && (
-						<div className="p-6 bg-white rounded-lg shadow-md">
-							<div className="bg-[#D09900] rounded-full px-6 py-3 mb-4 inline-block">
+						<div className="p-4 bg-white rounded-lg shadow-md sm:p-6">
+							<div className="bg-[#D09900] rounded-full px-4 sm:px-6 py-2 sm:py-3 mb-3 sm:mb-4 inline-block">
 								<h5
-									className="text-base font-bold text-white"
+									className="font-bold text-white"
 									style={{
 										fontFamily: "Noto Serif TC, serif",
+										fontSize: "clamp(12px, 2.5vw, 16px)",
 									}}
 								>
 									{
@@ -493,11 +546,13 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 									}
 								</h5>
 							</div>
-							<div className="space-y-4">
+							<div className="space-y-3 sm:space-y-4">
 								<p
-									className="text-sm text-[#374A37]"
+									className="text-[#374A37]"
 									style={{
 										fontFamily: "Noto Sans HK, sans-serif",
+										fontSize: "clamp(12px, 2.5vw, 14px)",
+										lineHeight: 1.5,
 									}}
 								>
 									{
@@ -505,12 +560,15 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 											.content.description
 									}
 								</p>
-								<div className="bg-[#F5F5F5] rounded-lg p-3">
+								<div className="bg-[#F5F5F5] rounded-lg p-2 sm:p-3">
 									<p
-										className="text-sm font-medium text-[#374A37]"
+										className="font-medium text-[#374A37]"
 										style={{
 											fontFamily:
 												"Noto Sans HK, sans-serif",
+											fontSize:
+												"clamp(12px, 2.5vw, 14px)",
+											lineHeight: 1.4,
 										}}
 									>
 										{
@@ -519,12 +577,15 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 										}
 									</p>
 								</div>
-								<div className="p-3 rounded-lg bg-red-50">
+								<div className="p-2 rounded-lg sm:p-3 bg-red-50">
 									<p
-										className="text-sm text-red-700"
+										className="text-red-700"
 										style={{
 											fontFamily:
 												"Noto Sans HK, sans-serif",
+											fontSize:
+												"clamp(12px, 2.5vw, 14px)",
+											lineHeight: 1.4,
 										}}
 									>
 										{
@@ -540,26 +601,32 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 			</div>
 
 			{/* Wealth Rules Section */}
-			<div className="p-6">
+			<div className="p-4 sm:p-6">
 				<h3
-					className="text-3xl font-bold text-[#D09900] mb-6"
-					style={{ fontFamily: "Noto Serif TC, serif" }}
+					className="font-bold text-[#D09900] mb-4 sm:mb-6"
+					style={{
+						fontFamily: "Noto Serif TC, serif",
+						fontSize: "clamp(20px, 5vw, 30px)",
+					}}
 				>
 					財富法則
 				</h3>
 
-				<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+				<div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
 					{/* Asset Allocation */}
 					<div
-						className="bg-[#EFEFEF] rounded-lg p-4"
+						className="bg-[#EFEFEF] rounded-lg p-3 sm:p-4"
 						style={{
 							boxShadow: "inset 0 4px 4px rgba(0, 0, 0, 0.25)",
 						}}
 					>
-						<div className="bg-[#D09900] rounded-full px-6 py-3 mb-3 inline-block">
+						<div className="bg-[#D09900] rounded-full px-3 sm:px-6 py-1.5 sm:py-3 mb-2 sm:mb-3 inline-block">
 							<h4
-								className="text-base font-bold text-white"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
+								className="font-bold text-white"
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									fontSize: "clamp(12px, 2.5vw, 16px)",
+								}}
 							>
 								{
 									wealthAnalysis.wealthRules.assetAllocation
@@ -567,11 +634,13 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 								}
 							</h4>
 						</div>
-						<div className="space-y-3">
+						<div className="space-y-2 sm:space-y-3">
 							<p
-								className="text-sm text-[#374A37]"
+								className="text-[#374A37]"
 								style={{
 									fontFamily: "Noto Sans HK, sans-serif",
+									fontSize: "clamp(12px, 2.5vw, 14px)",
+									lineHeight: 1.5,
 								}}
 							>
 								{
@@ -580,9 +649,11 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 								}
 							</p>
 							<p
-								className="text-sm text-[#374A37]"
+								className="text-[#374A37]"
 								style={{
 									fontFamily: "Noto Sans HK, sans-serif",
+									fontSize: "clamp(12px, 2.5vw, 14px)",
+									lineHeight: 1.5,
 								}}
 							>
 								{
@@ -591,9 +662,11 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 								}
 							</p>
 							<p
-								className="text-sm text-[#374A37]"
+								className="text-[#374A37]"
 								style={{
 									fontFamily: "Noto Sans HK, sans-serif",
+									fontSize: "clamp(12px, 2.5vw, 14px)",
+									lineHeight: 1.5,
 								}}
 							>
 								{
@@ -606,25 +679,29 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 
 					{/* Partnership Taboos */}
 					<div
-						className="bg-[#EFEFEF] rounded-lg p-4"
+						className="bg-[#EFEFEF] rounded-lg p-3 sm:p-4"
 						style={{
 							boxShadow: "inset 0 4px 4px rgba(0, 0, 0, 0.25)",
 						}}
 					>
-						<div className="bg-[#D09900] rounded-full px-6 py-3 mb-3 inline-block">
+						<div className="bg-[#D09900] rounded-full px-3 sm:px-6 py-1.5 sm:py-3 mb-2 sm:mb-3 inline-block">
 							<h4
-								className="text-base font-bold text-white"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
+								className="font-bold text-white"
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									fontSize: "clamp(12px, 2.5vw, 16px)",
+								}}
 							>
 								{wealthAnalysis.wealthRules.partnerships.title}
 							</h4>
 						</div>
-						<div className="space-y-3">
+						<div className="space-y-2 sm:space-y-3">
 							<div>
 								<p
-									className="text-sm font-medium text-[#374A37] mb-1"
+									className="font-medium text-[#374A37] mb-1"
 									style={{
 										fontFamily: "Noto Serif TC, serif",
+										fontSize: "clamp(12px, 2.5vw, 14px)",
 									}}
 								>
 									{
@@ -633,9 +710,11 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 									}
 								</p>
 								<p
-									className="text-xs text-[#757575]"
+									className="text-[#757575]"
 									style={{
 										fontFamily: "Noto Sans HK, sans-serif",
+										fontSize: "clamp(11px, 2vw, 12px)",
+										lineHeight: 1.4,
 									}}
 								>
 									{
@@ -646,9 +725,10 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 							</div>
 							<div>
 								<p
-									className="text-sm font-medium text-[#374A37] mb-1"
+									className="font-medium text-[#374A37] mb-1"
 									style={{
 										fontFamily: "Noto Serif TC, serif",
+										fontSize: "clamp(12px, 2.5vw, 14px)",
 									}}
 								>
 									{
@@ -657,9 +737,11 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 									}
 								</p>
 								<p
-									className="text-xs text-[#757575]"
+									className="text-[#757575]"
 									style={{
 										fontFamily: "Noto Sans HK, sans-serif",
+										fontSize: "clamp(11px, 2vw, 12px)",
+										lineHeight: 1.4,
 									}}
 								>
 									{
@@ -673,15 +755,18 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 
 					{/* Wealth Direction */}
 					<div
-						className="bg-[#EFEFEF] rounded-lg p-4"
+						className="bg-[#EFEFEF] rounded-lg p-3 sm:p-4 md:col-span-2 lg:col-span-1"
 						style={{
 							boxShadow: "inset 0 4px 4px rgba(0, 0, 0, 0.25)",
 						}}
 					>
-						<div className="bg-[#D09900] rounded-full px-6 py-3 mb-3 inline-block">
+						<div className="bg-[#D09900] rounded-full px-3 sm:px-6 py-1.5 sm:py-3 mb-2 sm:mb-3 inline-block">
 							<h4
-								className="text-base font-bold text-white"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
+								className="font-bold text-white"
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									fontSize: "clamp(12px, 2.5vw, 16px)",
+								}}
 							>
 								{
 									wealthAnalysis.wealthRules.wealthDirection
@@ -689,10 +774,13 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 								}
 							</h4>
 						</div>
-						<div className="space-y-3">
+						<div className="space-y-2 sm:space-y-3">
 							<p
-								className="text-sm font-medium text-[#374A37]"
-								style={{ fontFamily: "Noto Serif TC, serif" }}
+								className="font-medium text-[#374A37]"
+								style={{
+									fontFamily: "Noto Serif TC, serif",
+									fontSize: "clamp(12px, 2.5vw, 14px)",
+								}}
 							>
 								{
 									wealthAnalysis.wealthRules.wealthDirection
@@ -700,9 +788,11 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 								}
 							</p>
 							<p
-								className="text-sm text-[#374A37]"
+								className="text-[#374A37]"
 								style={{
 									fontFamily: "Noto Sans HK, sans-serif",
+									fontSize: "clamp(12px, 2.5vw, 14px)",
+									lineHeight: 1.5,
 								}}
 							>
 								{
@@ -711,9 +801,11 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 								}
 							</p>
 							<p
-								className="text-xs text-[#757575]"
+								className="text-[#757575]"
 								style={{
 									fontFamily: "Noto Sans HK, sans-serif",
+									fontSize: "clamp(11px, 2vw, 12px)",
+									lineHeight: 1.4,
 								}}
 							>
 								{

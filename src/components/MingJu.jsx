@@ -2527,17 +2527,16 @@ export function MingJu({ userInfo, currentYear }) {
 
 	return (
 		<div
-			className="mx-auto shadow-md p-15"
+			className="p-4 mx-auto shadow-md rounded-[24px] sm:rounded-[48px] lg:rounded-[80px] sm:p-6 md:p-8 lg:p-15"
 			style={{
 				width: "95%",
 				backgroundColor: "white",
-				borderRadius: "45px",
 				boxShadow: "0 4px 4px rgba(0, 0, 0, 0.25)",
 			}}
 		>
-			<div className="px-8">
+			<div className="px-2 sm:px-4 md:px-6 lg:px-8">
 				{/* Tabs */}
-				<div className="flex items-center justify-center px-4 mb-8 gap-70">
+				<div className="flex items-center justify-center gap-8 px-2 mt-3 mb-6 sm:px-4 sm:mb-8 sm:gap-8 md:gap-16 lg:gap-70">
 					{TABS.map((tab) => {
 						const isSelected = selectedTab === tab;
 						const label = getTabLabel(tab, concern);
@@ -2552,13 +2551,11 @@ export function MingJu({ userInfo, currentYear }) {
 						return (
 							<div
 								key={tab}
-								className="flex flex-col items-center mb-10"
+								className="flex flex-col items-center mb-6 sm:mb-8 lg:mb-10"
 							>
 								<button
-									className="flex flex-col items-center justify-center transition-all duration-200 hover:scale-105"
+									className="flex flex-col items-center justify-center transition-all duration-200 hover:scale-105 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-[90px] lg:h-[90px]"
 									style={{
-										width: 90,
-										height: 90,
 										borderRadius: "50%",
 										backgroundColor: bgColor,
 										boxShadow: "0 4px 4px rgba(0,0,0,0.25)",
@@ -2568,8 +2565,9 @@ export function MingJu({ userInfo, currentYear }) {
 									<Image
 										src={imgSrc}
 										alt={label}
-										width={32}
-										height={32}
+										width={24}
+										height={24}
+										className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 lg:w-8 lg:h-8"
 										style={{
 											filter: (() => {
 												if (isSelected) {
@@ -2623,10 +2621,9 @@ export function MingJu({ userInfo, currentYear }) {
 									/>
 								</button>
 								<span
-									className="mt-3 text-sm font-semibold leading-tight text-center"
+									className="mt-2 text-xs font-semibold leading-tight text-center sm:mt-3 sm:text-sm max-w-16 sm:max-w-20 lg:max-w-20"
 									style={{
 										color: isSelected ? bgColor : "#666",
-										maxWidth: 80,
 									}}
 								>
 									{label}
@@ -2636,26 +2633,27 @@ export function MingJu({ userInfo, currentYear }) {
 					})}
 				</div>
 				{/* Header Title */}
-				<div className="mb-8 text-start">
+				<div className="mb-6 sm:mb-8 text-start">
 					<h2
-						className="mb-2 text-3xl font-extrabold"
+						className="mb-2 font-extrabold"
 						style={{
 							color: getHeaderColor(selectedTab, concern),
 							fontFamily: "Noto Serif TC, serif",
+							fontSize: "clamp(1.5rem, 4vw, 2rem)",
 						}}
 					>
 						{getTabLabel(selectedTab, concern)}
 					</h2>
 				</div>
 				{/* Content Area */}
-				<div className="mt-6">
+				<div className="mt-4 sm:mt-6">
 					{selectedTab === "日主特性" ? (
 						<div
-							className=" min-h-[300px]"
+							className="min-h-[250px] sm:min-h-[300px]"
 							style={{
 								backgroundColor: "white",
 								color: "black",
-								fontSize: "15px",
+								fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
 							}}
 						>
 							{loading ? (
@@ -2672,18 +2670,24 @@ export function MingJu({ userInfo, currentYear }) {
 											"system-ui, -apple-system, sans-serif",
 									}}
 								>
-									<div className="text-base leading-relaxed text-black whitespace-pre-line">
+									<div
+										className="mb-4 leading-relaxed text-black whitespace-pre-line"
+										style={{
+											fontSize:
+												"clamp(0.875rem, 2.5vw, 1rem)",
+										}}
+									>
 										{tabContent}
 									</div>
 								</div>
 							)}
 						</div>
 					) : (
-						<div className=" min-h-[300px]">
+						<div className="min-h-[250px] sm:min-h-[300px]">
 							{loading ? (
-								<div className="flex items-center justify-center h-40">
-									<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#B4003C]"></div>
-									<span className="ml-3 text-gray-600">
+								<div className="flex items-center justify-center h-32 sm:h-40">
+									<div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-[#B4003C]"></div>
+									<span className="ml-2 text-sm text-gray-600 sm:ml-3 sm:text-base">
 										AI 分析中...
 									</span>
 								</div>
@@ -2702,7 +2706,13 @@ export function MingJu({ userInfo, currentYear }) {
 											aiContent
 										)
 									) : (
-										<div className="text-base leading-relaxed text-gray-800 whitespace-pre-line">
+										<div
+											className="leading-relaxed text-gray-800 whitespace-pre-line"
+											style={{
+												fontSize:
+													"clamp(0.875rem, 2.5vw, 1rem)",
+											}}
+										>
 											{tabContent}
 										</div>
 									)}

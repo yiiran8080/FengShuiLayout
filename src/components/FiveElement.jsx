@@ -36,9 +36,23 @@ const FiveElement = ({
 	return (
 		<ComponentErrorBoundary componentName="FiveElement">
 			<section className="w-full sm:w-[90%] lg:w-[95%] mx-auto bg-white rounded-[30px] sm:rounded-[60px] lg:rounded-[160px] p-4 sm:p-6 lg:p-3 mb-6 sm:mb-10 shadow-[0_2px_5.3px_rgba(0,0,0,0.25)]">
+				<style>{`
+					@media (min-width: 1024px) and (max-width: 1090px) {
+						.five-element-flex {
+							flex-direction: column !important;
+							align-items: center !important;
+						}
+						.five-element-analysis {
+							margin-left: 0 !important;
+							width: 100% !important;
+							justify-content: center !important;
+							text-align: center !important;
+						}
+					}
+				`}</style>
 				<div className="flex items-center justify-center">
-					{/* Five Elements with counts */}
-					<div className="flex flex-col items-center justify-center w-full space-y-6 lg:flex-row lg:space-y-0 lg:space-x-8">
+					{/* Five Elements with counts and analysis */}
+					<div className="flex flex-col items-center justify-center w-full space-y-1 lg:flex-row lg:space-y-0 lg:space-x-8 five-element-flex">
 						{/* Element displays */}
 						<div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 lg:gap-8">
 							{ELEMENTS.map((element) => (
@@ -70,7 +84,7 @@ const FiveElement = ({
 						</div>
 
 						{/* Analysis */}
-						<div className="w-full p-3 sm:p-4 lg:ml-15 lg:w-auto">
+						<div className="w-full p-1 sm:p-4 lg:ml-15 lg:w-auto five-element-analysis">
 							<div
 								className="text-sm text-center sm:text-base lg:text-left"
 								style={{

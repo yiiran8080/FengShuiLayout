@@ -286,10 +286,25 @@ const EnhancedCoupleSpecificProblemSolution = ({
 
 	if (loading) {
 		return (
-			<div className="w-full p-8 bg-white rounded-lg shadow-lg">
+			<div
+				className="w-full bg-white shadow-lg"
+				style={{
+					padding: "clamp(24px, 6vw, 32px)",
+					borderRadius: "clamp(12px, 3vw, 16px)",
+				}}
+			>
 				<div className="flex items-center justify-center">
-					<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
-					<span className="ml-2 text-gray-600">
+					<div
+						className="border-b-2 border-pink-500 rounded-full animate-spin"
+						style={{
+							width: "clamp(24px, 6vw, 32px)",
+							height: "clamp(24px, 6vw, 32px)",
+						}}
+					></div>
+					<span
+						className="ml-3 text-gray-600"
+						style={{ fontSize: "clamp(14px, 3.5vw, 16px)" }}
+					>
 						正在分析您的專屬問題...
 					</span>
 				</div>
@@ -300,21 +315,47 @@ const EnhancedCoupleSpecificProblemSolution = ({
 	// Show error state if analysis failed
 	if (analysisData?.error) {
 		return (
-			<div className="w-full p-8 bg-white rounded-lg shadow-lg">
+			<div
+				className="w-full bg-white shadow-lg"
+				style={{
+					padding: "clamp(24px, 6vw, 32px)",
+					borderRadius: "clamp(12px, 3vw, 16px)",
+				}}
+			>
 				<div className="text-center">
-					<div className="w-16 h-16 mx-auto mb-4 text-red-500">
+					<div
+						className="mx-auto mb-4 text-red-500"
+						style={{
+							width: "clamp(48px, 12vw, 64px)",
+							height: "clamp(48px, 12vw, 64px)",
+						}}
+					>
 						<Target className="w-full h-full" />
 					</div>
-					<h3 className="mb-2 text-lg font-semibold text-red-800">
+					<h3
+						className="mb-3 font-semibold text-red-800"
+						style={{ fontSize: "clamp(16px, 4vw, 18px)" }}
+					>
 						分析失敗
 					</h3>
-					<p className="mb-4 text-gray-600">{analysisData.message}</p>
+					<p
+						className="mb-4 text-gray-600"
+						style={{ fontSize: "clamp(13px, 3.2vw, 15px)" }}
+					>
+						{analysisData.message}
+					</p>
 					<button
 						onClick={() => {
 							setAnalysisData(null);
 							generateCoupleAnalysis();
 						}}
-						className="px-6 py-2 text-white bg-pink-500 rounded-lg hover:bg-pink-600"
+						className="text-white transition-colors bg-pink-500 hover:bg-pink-600"
+						style={{
+							padding:
+								"clamp(8px, 2vw, 12px) clamp(20px, 5vw, 24px)",
+							borderRadius: "clamp(6px, 1.5vw, 8px)",
+							fontSize: "clamp(13px, 3.2vw, 15px)",
+						}}
 					>
 						重新分析
 					</button>
@@ -331,12 +372,12 @@ const EnhancedCoupleSpecificProblemSolution = ({
 		if (category === "emotion_cooling") {
 			// 感情降溫類: ChartDiagnosisSection + EmergencyFengShuiSection + RestartChemistrySection
 			return (
-				<div className="space-y-8">
-					<div className="mb-6">
+				<div className="space-y-6 sm:space-y-8">
+					<div className="mb-4 sm:mb-6">
 						<h2
 							className="font-bold text-[#374A37]"
 							style={{
-								fontSize: "36px",
+								fontSize: "clamp(28px, 7vw, 36px)",
 								fontFamily: "Noto Serif TC, serif",
 							}}
 						>
@@ -349,18 +390,18 @@ const EnhancedCoupleSpecificProblemSolution = ({
 						analysisData={analysisData}
 					/>
 
-					<div className="mb-6">
+					<div className="mb-4 sm:mb-6">
 						<h2
 							className="font-bold text-[#374A37]"
 							style={{
-								fontSize: "36px",
+								fontSize: "clamp(28px, 7vw, 36px)",
 								fontFamily: "Noto Serif TC, serif",
 							}}
 						>
 							風水急救
 						</h2>
 					</div>
-					<div className="mb-8">
+					<div className="mb-6 sm:mb-8">
 						<EmergencyFengShuiSection
 							femaleUser={femaleUser}
 							maleUser={maleUser}
@@ -368,18 +409,18 @@ const EnhancedCoupleSpecificProblemSolution = ({
 						/>
 					</div>
 
-					<div className="mb-6">
+					<div className="mb-4 sm:mb-6">
 						<h2
 							className="font-bold text-[#374A37]"
 							style={{
-								fontSize: "36px",
+								fontSize: "clamp(28px, 7vw, 36px)",
 								fontFamily: "Noto Serif TC, serif",
 							}}
 						>
 							重啟默契
 						</h2>
 					</div>
-					<div className="mb-8">
+					<div className="mb-6 sm:mb-8">
 						<RestartChemistrySection
 							femaleUser={femaleUser}
 							maleUser={maleUser}
@@ -393,12 +434,12 @@ const EnhancedCoupleSpecificProblemSolution = ({
 		if (category === "special_situation") {
 			// 特殊情境類: StarChartGuidanceSection + FengShuiTransformationSection + RelationshipMethodSection
 			return (
-				<div className="space-y-8">
-					<div className="mb-6">
+				<div className="space-y-6 sm:space-y-8">
+					<div className="mb-4 sm:mb-6">
 						<h2
 							className="font-bold text-[#374A37]"
 							style={{
-								fontSize: "36px",
+								fontSize: "clamp(28px, 7vw, 36px)",
 								fontFamily: "Noto Serif TC, serif",
 							}}
 						>
@@ -411,18 +452,18 @@ const EnhancedCoupleSpecificProblemSolution = ({
 						analysisData={analysisData}
 					/>
 
-					<div className="mb-6">
+					<div className="mb-4 sm:mb-6">
 						<h2
 							className="font-bold text-[#374A37]"
 							style={{
-								fontSize: "36px",
+								fontSize: "clamp(28px, 7vw, 36px)",
 								fontFamily: "Noto Serif TC, serif",
 							}}
 						>
 							風水轉化
 						</h2>
 					</div>
-					<div className="mb-8">
+					<div className="mb-6 sm:mb-8">
 						<FengShuiTransformationSection
 							femaleUser={femaleUser}
 							maleUser={maleUser}
@@ -430,18 +471,18 @@ const EnhancedCoupleSpecificProblemSolution = ({
 						/>
 					</div>
 
-					<div className="mb-6">
+					<div className="mb-4 sm:mb-6">
 						<h2
 							className="font-bold text-[#374A37]"
 							style={{
-								fontSize: "36px",
+								fontSize: "clamp(28px, 7vw, 36px)",
 								fontFamily: "Noto Serif TC, serif",
 							}}
 						>
 							相處心法
 						</h2>
 					</div>
-					<div className="mb-8">
+					<div className="mb-6 sm:mb-8">
 						<RelationshipMethodSection
 							femaleUser={femaleUser}
 							maleUser={maleUser}
@@ -455,12 +496,12 @@ const EnhancedCoupleSpecificProblemSolution = ({
 		if (category === "taboo_breaking") {
 			// 禁忌破解話術: KeyAnalysisSection + TargetedSuggestionsSection + RestartChemistrySection
 			return (
-				<div className="space-y-8">
-					<div className="mb-6">
+				<div className="space-y-6 sm:space-y-8">
+					<div className="mb-4 sm:mb-6">
 						<h2
 							className="font-bold text-[#374A37]"
 							style={{
-								fontSize: "36px",
+								fontSize: "clamp(28px, 7vw, 36px)",
 								fontFamily: "Noto Serif TC, serif",
 							}}
 						>
@@ -473,18 +514,18 @@ const EnhancedCoupleSpecificProblemSolution = ({
 						analysisData={analysisData}
 					/>
 
-					<div className="mb-6">
+					<div className="mb-4 sm:mb-6">
 						<h2
 							className="font-bold text-[#374A37]"
 							style={{
-								fontSize: "36px",
+								fontSize: "clamp(28px, 7vw, 36px)",
 								fontFamily: "Noto Serif TC, serif",
 							}}
 						>
 							針對性建議
 						</h2>
 					</div>
-					<div className="mb-8">
+					<div className="mb-6 sm:mb-8">
 						<TargetedSuggestionsSection
 							femaleUser={femaleUser}
 							maleUser={maleUser}
@@ -492,18 +533,18 @@ const EnhancedCoupleSpecificProblemSolution = ({
 						/>
 					</div>
 
-					<div className="mb-6">
+					<div className="mb-4 sm:mb-6">
 						<h2
 							className="font-bold text-[#374A37]"
 							style={{
-								fontSize: "36px",
+								fontSize: "clamp(28px, 7vw, 36px)",
 								fontFamily: "Noto Serif TC, serif",
 							}}
 						>
 							重啟默契
 						</h2>
 					</div>
-					<div className="mb-8">
+					<div className="mb-6 sm:mb-8">
 						<RestartChemistrySection
 							femaleUser={femaleUser}
 							maleUser={maleUser}
@@ -518,16 +559,25 @@ const EnhancedCoupleSpecificProblemSolution = ({
 	};
 
 	return (
-		<div className="w-full space-y-8">
+		<div className="w-full space-y-6 sm:space-y-8">
 			{/* Main Analysis Section with New Layout */}
-			<div className="flex flex-col gap-6 p-6 lg:flex-row">
+			<div
+				className="flex flex-col gap-4 sm:gap-6 lg:flex-row"
+				style={{ padding: "clamp(4px, 4vw, 4px)" }}
+			>
 				{/* Left Side: Large Compatibility Circle (Full Height) */}
-				<div className="flex items-center justify-center py-8 lg:w-1/3">
+				<div className="flex items-center justify-center py-6 sm:py-8 lg:w-1/3">
 					<div className="relative">
 						{/* Larger Circular Progress */}
-						<div className="relative w-80 h-80">
+						<div
+							className="relative"
+							style={{
+								width: "clamp(240px, 60vw, 320px)",
+								height: "clamp(240px, 60vw, 320px)",
+							}}
+						>
 							<svg
-								className="transform -rotate-90 w-80 h-80"
+								className="w-full h-full transform -rotate-90"
 								viewBox="0 0 100 100"
 							>
 								{/* Background circle */}
@@ -574,10 +624,20 @@ const EnhancedCoupleSpecificProblemSolution = ({
 							</svg>
 							{/* Score display */}
 							<div className="absolute inset-0 flex flex-col items-center justify-center">
-								<span className="font-bold text-8xl text-amber-600">
+								<span
+									className="font-bold text-amber-600"
+									style={{
+										fontSize: "clamp(48px, 12vw, 80px)",
+									}}
+								>
 									{compatibilityScore}
 								</span>
-								<span className="mt-2 text-lg font-medium text-gray-600">
+								<span
+									className="mt-1 font-medium text-center text-gray-600 sm:mt-2"
+									style={{
+										fontSize: "clamp(14px, 3.5vw, 18px)",
+									}}
+								>
 									{getCompatibilityLevel(compatibilityScore)}
 								</span>
 							</div>
@@ -586,43 +646,81 @@ const EnhancedCoupleSpecificProblemSolution = ({
 				</div>
 
 				{/* Right Side: BaZi Cards */}
-				<div className="flex flex-col gap-6 lg:w-2/3">
+				<div className="flex flex-col gap-4 sm:gap-6 lg:w-2/3">
 					{/* BaZi Analysis Cards */}
 					{analysisData && (
-						<div className="flex flex-col gap-6">
+						<div className="flex flex-col gap-4 sm:gap-6">
 							{/* Female BaZi Card */}
-							<div className="bg-white rounded-[30px] shadow-lg overflow-hidden">
-								<div className="px-6 py-4 bg-gradient-to-r from-pink-100 to-purple-100">
-									<div className="flex items-center justify-between">
+							<div
+								className="overflow-hidden bg-white shadow-lg"
+								style={{
+									borderRadius: "clamp(20px, 5vw, 30px)",
+								}}
+							>
+								<div
+									className="bg-gradient-to-r from-pink-100 to-purple-100"
+									style={{
+										padding:
+											"clamp(16px, 4vw, 24px) clamp(20px, 5vw, 24px)",
+									}}
+								>
+									<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 										<h3
 											className="font-bold text-[#C74772]"
 											style={{
-												fontSize: "36px",
+												fontSize:
+													"clamp(24px, 6vw, 36px)",
 												fontFamily:
 													"Noto Serif TC, serif",
 											}}
 										>
 											您的八字
 										</h3>
-										<div className="px-3 py-1 bg-white border-2 border-[#C74772] rounded-full">
-											<span className="text-sm text-[#C74772]">
+										<div
+											className="bg-white border-2 border-[#C74772] rounded-full self-start sm:self-center"
+											style={{
+												padding:
+													"clamp(6px, 1.5vw, 8px) clamp(8px, 2vw, 12px)",
+											}}
+										>
+											<span
+												className="text-[#C74772]"
+												style={{
+													fontSize:
+														"clamp(11px, 2.8vw, 14px)",
+												}}
+											>
 												{analysisData.female.birthDate}
 											</span>
 										</div>
 									</div>
 								</div>
 
-								<div className="p-6">
+								<div
+									style={{
+										padding: "clamp(16px, 4vw, 24px)",
+									}}
+								>
 									{/* Four Pillars Display */}
-									<div className="mb-6">
+									<div className="mb-4 sm:mb-6">
 										<div className="flex flex-wrap gap-2">
 											{analysisData.female.pillars?.map(
 												(pillar, index) => (
 													<div
 														key={index}
-														className="px-3 py-1 bg-white border border-[#DeaB20] rounded-full"
+														className="bg-white border border-[#DeaB20] rounded-full"
+														style={{
+															padding:
+																"clamp(4px, 1vw, 6px) clamp(8px, 2vw, 12px)",
+														}}
 													>
-														<span className="text-sm font-medium text-[#6F5100]">
+														<span
+															className="font-medium text-[#6F5100]"
+															style={{
+																fontSize:
+																	"clamp(8px, 2.8vw, 14px)",
+															}}
+														>
 															{pillar}
 														</span>
 													</div>
@@ -632,45 +730,89 @@ const EnhancedCoupleSpecificProblemSolution = ({
 									</div>
 
 									{/* Description */}
-									<div className="text-sm leading-relaxed text-gray-700">
+									<div
+										className="leading-relaxed text-gray-700"
+										style={{
+											fontSize: "clamp(12px, 3vw, 14px)",
+											lineHeight: "1.6",
+										}}
+									>
 										{analysisData.female.description}
 									</div>
 								</div>
 							</div>
 
 							{/* Male BaZi Card */}
-							<div className="bg-white rounded-[30px] shadow-lg overflow-hidden">
-								<div className="px-6 py-4 bg-gradient-to-r from-blue-100 to-indigo-100">
-									<div className="flex items-center justify-between">
+							<div
+								className="overflow-hidden bg-white shadow-lg"
+								style={{
+									borderRadius: "clamp(20px, 5vw, 30px)",
+								}}
+							>
+								<div
+									className="bg-gradient-to-r from-blue-100 to-indigo-100"
+									style={{
+										padding:
+											"clamp(16px, 4vw, 24px) clamp(20px, 5vw, 24px)",
+									}}
+								>
+									<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 										<h3
 											className="font-bold text-[#C74772]"
 											style={{
-												fontSize: "36px",
+												fontSize:
+													"clamp(24px, 6vw, 36px)",
 												fontFamily:
 													"Noto Serif TC, serif",
 											}}
 										>
 											伴侶八字
 										</h3>
-										<div className="px-3 py-1 bg-white border-2 border-[#C74772] rounded-full">
-											<span className="text-sm text-[#C74772]">
+										<div
+											className="bg-white border-2 border-[#C74772] rounded-full self-start sm:self-center"
+											style={{
+												padding:
+													"clamp(6px, 1.5vw, 8px) clamp(8px, 2vw, 12px)",
+											}}
+										>
+											<span
+												className="text-[#C74772]"
+												style={{
+													fontSize:
+														"clamp(11px, 2.8vw, 14px)",
+												}}
+											>
 												{analysisData.male.birthDate}
 											</span>
 										</div>
 									</div>
 								</div>
 
-								<div className="p-6">
+								<div
+									style={{
+										padding: "clamp(16px, 4vw, 24px)",
+									}}
+								>
 									{/* Four Pillars Display */}
-									<div className="mb-6">
+									<div className="mb-4 sm:mb-6">
 										<div className="flex flex-wrap gap-2">
 											{analysisData.male.pillars?.map(
 												(pillar, index) => (
 													<div
 														key={index}
-														className="px-3 py-1 bg-white border border-[#DeaB20] rounded-full"
+														className="bg-white border border-[#DeaB20] rounded-full"
+														style={{
+															padding:
+																"clamp(4px, 1vw, 6px) clamp(8px, 2vw, 12px)",
+														}}
 													>
-														<span className="text-sm font-medium text-[#6F5100]">
+														<span
+															className="font-medium text-[#6F5100]"
+															style={{
+																fontSize:
+																	"clamp(8px, 2.8vw, 14px)",
+															}}
+														>
 															{pillar}
 														</span>
 													</div>
@@ -680,7 +822,13 @@ const EnhancedCoupleSpecificProblemSolution = ({
 									</div>
 
 									{/* Description */}
-									<div className="text-sm leading-relaxed text-gray-700">
+									<div
+										className="leading-relaxed text-gray-700"
+										style={{
+											fontSize: "clamp(12px, 3vw, 14px)",
+											lineHeight: "1.6",
+										}}
+									>
 										{analysisData.male.description}
 									</div>
 								</div>
@@ -693,21 +841,39 @@ const EnhancedCoupleSpecificProblemSolution = ({
 			{/* Problem Category Section */}
 			{specificProblem && problemCategory && (
 				<div
-					className="p-1 mb-8 rounded-full"
+					className="mb-6 rounded-full sm:mb-8"
 					style={{
 						background: "linear-gradient(45deg, #b4003c, #d09900)",
+						padding: "clamp(3px, 0.8vw, 4px)",
 					}}
 				>
-					<div className="p-2 bg-white rounded-full">
-						<div className="flex items-center justify-center gap-4 align-center">
+					<div
+						className="bg-white rounded-full"
+						style={{ padding: "clamp(6px, 1.5vw, 8px)" }}
+					>
+						<div className="flex items-center justify-center">
 							<div className="flex-1 text-center">
 								<div className="flex items-center justify-center gap-2 mb-2">
-									<h3 className="text-lg font-bold text-gray-800">
+									<h3
+										className="font-bold text-gray-800"
+										style={{
+											fontSize: "clamp(16px, 4vw, 18px)",
+										}}
+									>
 										問題類型：{problemCategory.categoryName}
 									</h3>
 								</div>
-								<div className="p-2">
-									<p className="leading-relaxed text-[#515151] text-3xl text-center">
+								<div
+									style={{
+										padding: "clamp(6px, 1.5vw, 8px)",
+									}}
+								>
+									<p
+										className="leading-relaxed text-[#515151] text-center"
+										style={{
+											fontSize: "clamp(20px, 5vw, 32px)",
+										}}
+									>
 										{specificProblem}
 									</p>
 								</div>

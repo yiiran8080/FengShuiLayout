@@ -652,8 +652,13 @@ function renderStructuredContent(concern, tab, content) {
 		) {
 			console.warn("📝 renderStructuredContent: 內容為空或無效");
 			return (
-				<div className="p-4 border border-yellow-200 rounded-lg bg-yellow-50">
-					<p className="text-yellow-800">正在載入分析內容...</p>
+				<div className="p-3 border border-yellow-200 rounded-lg sm:p-4 bg-yellow-50">
+					<p
+						className="text-yellow-800"
+						style={{ fontSize: "clamp(14px, 3.5vw, 16px)" }}
+					>
+						正在載入分析內容...
+					</p>
 				</div>
 			);
 		}
@@ -709,40 +714,65 @@ function renderStructuredContent(concern, tab, content) {
 				{Object.entries(data).map(([section, sectionData], index) => (
 					<div
 						key={index}
-						className="p-4 rounded-lg bg-[#EFEFEF] shadow-lg"
+						className="p-3 sm:p-4 lg:p-4 rounded-lg bg-[#EFEFEF] shadow-lg"
 					>
-						<h3 className="text-lg font-bold text-[#B4003C] mb-3">
+						<h3
+							className="font-bold text-[#B4003C] mb-2 sm:mb-3"
+							style={{ fontSize: "clamp(12px, 4vw, 18px)" }}
+						>
 							{section}
 						</h3>
 
 						{sectionData.主要内容 && (
-							<div className="mb-3">
-								<p className="leading-relaxed text-gray-800">
+							<div className="mb-2 sm:mb-3">
+								<p
+									className="leading-relaxed text-gray-800"
+									style={{
+										fontSize: "clamp(10px, 3.5vw, 16px)",
+									}}
+								>
 									{sectionData.主要内容}
 								</p>
 							</div>
 						)}
 
 						{sectionData.主要分析 && (
-							<div className="mb-3">
-								<p className="leading-relaxed text-gray-800">
+							<div className="mb-2 sm:mb-3">
+								<p
+									className="leading-relaxed text-gray-800"
+									style={{
+										fontSize: "clamp(10px, 3.5vw, 16px)",
+									}}
+								>
 									{sectionData.主要分析}
 								</p>
 							</div>
 						)}
 
 						{sectionData.状态列表 && (
-							<div className="mb-3">
-								<ul className="space-y-2">
+							<div className="mb-2 sm:mb-3">
+								<ul className="space-y-1 sm:space-y-2">
 									{sectionData.状态列表.map((item, idx) => (
 										<li
 											key={idx}
 											className="flex items-start"
 										>
-											<span className="text-[#C74772] mr-2">
+											<span
+												className="text-[#C74772] mr-1 sm:mr-2"
+												style={{
+													fontSize:
+														"clamp(14px, 3.5vw, 16px)",
+												}}
+											>
 												•
 											</span>
-											<span className="text-gray-700">
+											<span
+												className="text-gray-700"
+												style={{
+													fontSize:
+														"clamp(14px, 3.5vw, 16px)",
+												}}
+											>
 												{item}
 											</span>
 										</li>
@@ -752,17 +782,37 @@ function renderStructuredContent(concern, tab, content) {
 						)}
 
 						{sectionData.关键问题 && (
-							<div className="mb-3">
-								<h4 className="mb-2 font-semibold text-gray-800">
+							<div className="mb-2 sm:mb-3">
+								<h4
+									className="mb-1 font-semibold text-gray-800 sm:mb-2"
+									style={{
+										fontSize: "clamp(14px, 3.8vw, 16px)",
+									}}
+								>
 									關鍵問題：
 								</h4>
 								{Object.entries(sectionData.关键问题).map(
 									([key, problem], idx) => (
-										<div key={idx} className="mb-2 ml-4">
-											<p className="font-medium text-[#4B6EB2]">
+										<div
+											key={idx}
+											className="mb-1 ml-3 sm:mb-2 sm:ml-4"
+										>
+											<p
+												className="font-medium text-[#4B6EB2]"
+												style={{
+													fontSize:
+														"clamp(13px, 3.3vw, 15px)",
+												}}
+											>
 												{problem.名称}
 											</p>
-											<p className="text-sm text-gray-600">
+											<p
+												className="text-gray-600"
+												style={{
+													fontSize:
+														"clamp(12px, 3vw, 14px)",
+												}}
+											>
 												{problem.解释}
 											</p>
 										</div>
@@ -772,8 +822,13 @@ function renderStructuredContent(concern, tab, content) {
 						)}
 
 						{sectionData.互动列表 && (
-							<div className="mb-3">
-								<h4 className="mb-2 font-semibold text-gray-800">
+							<div className="mb-2 sm:mb-3">
+								<h4
+									className="mb-1 font-semibold text-gray-800 sm:mb-2"
+									style={{
+										fontSize: "clamp(14px, 3.8vw, 16px)",
+									}}
+								>
 									互動分析：
 								</h4>
 								{sectionData.互动列表.map((item, idx) => (
@@ -1041,7 +1096,14 @@ function formatLeftTabContent(content) {
 		line.includes("合盤分析】")
 	);
 	if (titleLineIndex === -1)
-		return <div className="whitespace-pre-line">{content}</div>;
+		return (
+			<div
+				className="whitespace-pre-line"
+				style={{ fontSize: "clamp(10px, 3.5vw, 16px)" }}
+			>
+				{content}
+			</div>
+		);
 
 	const titleLine = lines[titleLineIndex];
 
@@ -1105,18 +1167,18 @@ function formatLeftTabContent(content) {
 					className="text-[#C74772]"
 					style={{
 						fontFamily: "'Noto Serif TC', serif",
-						fontSize: "56px",
+						fontSize: "clamp(25px, 4vw, 56px)",
 						fontWeight: "400",
-						lineHeight: "1.2",
+						lineHeight: "1.0",
 					}}
 				>
 					{elementPairing}
 				</h1>
 				{patternDescription && (
 					<div
-						className="bg-[#C74772] text-white px-4 py-2 rounded-full"
+						className="bg-[#C74772] text-white px-3 py-2 sm:px-4 sm:py-2 rounded-full"
 						style={{
-							fontSize: "16px",
+							fontSize: "clamp(8px, 2.5vw, 16px)",
 							fontWeight: "500",
 						}}
 					>
@@ -1125,9 +1187,12 @@ function formatLeftTabContent(content) {
 				)}
 			</div>
 
-			{/* Main Description */}
+			{/* Main Description - Responsive */}
 			{mainDescription && (
-				<div className="text-base leading-relaxed text-black">
+				<div
+					className="leading-relaxed text-black"
+					style={{ fontSize: "clamp(14px, 3.5vw, 16px)" }}
+				>
 					{mainDescription}
 				</div>
 			)}
@@ -1168,7 +1233,10 @@ function formatLeftTabContent(content) {
 					!strategySection.includes(line) &&
 					line !== mainDescription
 			).length > 0 && (
-				<div className="text-base leading-relaxed text-black">
+				<div
+					className="leading-relaxed text-black"
+					style={{ fontSize: "clamp(14px, 3.5vw, 16px)" }}
+				>
 					{lines
 						.filter(
 							(line) =>
@@ -1485,17 +1553,18 @@ export function CoupleMingJu({ user1, user2, currentYear }) {
 
 	return (
 		<div
-			className="mx-auto shadow-md p-15"
+			className="mx-auto shadow-md"
 			style={{
 				width: "100%",
 				backgroundColor: "white",
-				borderRadius: "45px",
+				borderRadius: "clamp(20px, 5vw, 45px)",
 				boxShadow: "0 4px 4px rgba(0, 0, 0, 0.25)",
+				padding: "clamp(16px, 4vw, 60px)",
 			}}
 		>
-			<div className="px-8">
-				{/* Tabs */}
-				<div className="flex items-center justify-center px-4 mb-8 gap-70">
+			<div className="px-2 sm:px-4 lg:px-8">
+				{/* Tabs - Responsive Layout */}
+				<div className="flex items-center justify-center gap-4 px-2 mb-6 sm:px-4 sm:mb-8 lg:mb-8 sm:gap-8 lg:gap-16 xl:gap-20">
 					{TABS.map((tab) => {
 						const isSelected = selectedTab === tab;
 						const label = getTabLabel(tab, concern);
@@ -1510,13 +1579,13 @@ export function CoupleMingJu({ user1, user2, currentYear }) {
 						return (
 							<div
 								key={tab}
-								className="flex flex-col items-center mb-10"
+								className="flex flex-col items-center mb-4 sm:mb-6 lg:mb-10"
 							>
 								<button
 									className="flex flex-col items-center justify-center transition-all duration-200 hover:scale-105"
 									style={{
-										width: 90,
-										height: 90,
+										width: "clamp(60px, 15vw, 90px)",
+										height: "clamp(60px, 15vw, 90px)",
 										borderRadius: "50%",
 										backgroundColor: bgColor,
 										boxShadow: "0 4px 4px rgba(0,0,0,0.25)",
@@ -1526,9 +1595,12 @@ export function CoupleMingJu({ user1, user2, currentYear }) {
 									<Image
 										src={imgSrc}
 										alt={label}
-										width={32}
-										height={32}
+										width={0}
+										height={0}
+										sizes="100vw"
 										style={{
+											width: "clamp(20px, 5vw, 32px)",
+											height: "clamp(20px, 5vw, 32px)",
 											filter: (() => {
 												if (isSelected) {
 													return "brightness(0) invert(1)";
@@ -1575,10 +1647,10 @@ export function CoupleMingJu({ user1, user2, currentYear }) {
 									/>
 								</button>
 								<div
-									className="mt-4 text-center"
+									className="mt-2 text-center sm:mt-3 lg:mt-4"
 									style={{
-										width: 100,
-										fontSize: "14px",
+										width: "clamp(80px, 20vw, 100px)",
+										fontSize: "clamp(10px, 2.5vw, 14px)",
 										lineHeight: "1.2",
 										color: isSelected
 											? getSelectedTabBg(tab)
@@ -1595,36 +1667,58 @@ export function CoupleMingJu({ user1, user2, currentYear }) {
 					})}
 				</div>
 
-				{/* Content */}
-				<div className="px-4">
+				{/* Content - Responsive */}
+				<div className="px-2 sm:px-4 lg:px-4">
 					{selectedTab === "left" ? (
 						<div
-							className="min-h-[300px]"
+							className="min-h-[250px] sm:min-h-[300px] lg:min-h-[300px]"
 							style={{
 								backgroundColor: "white",
 								color: "black",
-								fontSize: "15px",
+								fontSize: "clamp(13px, 3.2vw, 15px)",
 							}}
 						>
 							{loading ? (
-								<div className="flex items-center justify-center h-40">
-									<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#B4003C]"></div>
-									<span className="ml-3 text-gray-600">
+								<div className="flex items-center justify-center h-32 sm:h-40">
+									<div
+										className="animate-spin rounded-full border-b-2 border-[#B4003C]"
+										style={{
+											width: "clamp(24px, 6vw, 32px)",
+											height: "clamp(24px, 6vw, 32px)",
+										}}
+									></div>
+									<span
+										className="ml-2 text-gray-600 sm:ml-3"
+										style={{
+											fontSize: "clamp(12px, 3vw, 14px)",
+										}}
+									>
 										夫妻合盤分析中...
 									</span>
 								</div>
 							) : (
-								<div className="py-4">
+								<div className="py-3 sm:py-4">
 									{formatLeftTabContent(tabContent)}
 								</div>
 							)}
 						</div>
 					) : (
-						<div className="min-h-[300px]">
+						<div className="min-h-[250px] sm:min-h-[300px] lg:min-h-[300px]">
 							{loading ? (
-								<div className="flex items-center justify-center h-40">
-									<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#B4003C]"></div>
-									<span className="ml-3 text-gray-600">
+								<div className="flex items-center justify-center h-32 sm:h-40">
+									<div
+										className="animate-spin rounded-full border-b-2 border-[#B4003C]"
+										style={{
+											width: "clamp(24px, 6vw, 32px)",
+											height: "clamp(24px, 6vw, 32px)",
+										}}
+									></div>
+									<span
+										className="ml-2 text-gray-600 sm:ml-3"
+										style={{
+											fontSize: "clamp(12px, 3vw, 14px)",
+										}}
+									>
 										夫妻合盤分析中...
 									</span>
 								</div>
@@ -1652,7 +1746,13 @@ export function CoupleMingJu({ user1, user2, currentYear }) {
 											</div>
 										)
 									) : (
-										<div className="text-base leading-relaxed text-black whitespace-pre-line">
+										<div
+											className="leading-relaxed text-black whitespace-pre-line"
+											style={{
+												fontSize:
+													"clamp(14px, 3.5vw, 16px)",
+											}}
+										>
 											{aiContent || "正在載入內容..."}
 										</div>
 									)}

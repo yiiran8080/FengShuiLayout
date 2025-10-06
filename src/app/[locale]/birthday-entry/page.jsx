@@ -132,7 +132,7 @@ export default function BirthdayEntryPage() {
 		<div className="min-h-screen bg-[#EFEFEF]">
 			<Navbar />
 			<div className="container px-4 py-20 mx-auto">
-				<div className="max-w-md p-8 mx-auto bg-white rounded-lg shadow-lg">
+				<div className="max-w-md p-8 mx-auto bg-white shadow-lg rounded-xl">
 					<div className="mb-8 text-center">
 						<p className="text-gray-600">
 							請填寫您的生辰資料以生成專屬報告

@@ -404,35 +404,37 @@ export default function CoupleReportPage() {
 				<Navbar from="report" backgroundColor="white" />
 
 				{/* Navigation Row */}
-				<div className="w-full mt-16 bg-gradient-to-r from-[#C74772] to-[#D09900] py-6">
-					<div className="max-w-6xl px-4 mx-auto">
-						<div className="flex flex-wrap justify-center gap-6">
+				<div className="w-full mt-16 bg-gradient-to-r from-[#C74772] to-[#D09900] py-4 sm:py-6">
+					<div className="max-w-6xl px-3 mx-auto sm:px-4">
+						<div className="flex items-center justify-center gap-3 sm:justify-between md:justify-center lg:justify-center xl:justify-center sm:gap-6">
 							{/* 姻緣合盤流年分析報告 Tab */}
 							<button
 								onClick={() => setActiveTab("analysis")}
-								className={`px-8 py-4 rounded-full font-semibold text-lg transition-all duration-200 ${
+								className={`flex-1 max-w-[320px] px-4 sm:px-6 lg:px-8 py-3 sm:py-4 rounded-full font-semibold transition-all duration-200 ${
 									activeTab === "analysis"
 										? "bg-gradient-to-r from-[#C74772] to-[#D09900] text-white shadow-[0_4px_14px_rgba(0,0,0,0.25)]"
 										: "bg-white text-[#374A37] shadow-inner shadow-[inset_0_4px_4px_rgba(0,0,0,0.25)]"
 								}`}
 								style={{
 									fontFamily: "Noto Serif TC, serif",
+									fontSize: "clamp(14px, 3.5vw, 18px)",
 									boxShadow: "0 4px 4px rgba(0, 0, 0, 0.25)",
 								}}
 							>
-								姻緣合盤流年分析報告
+								姻緣合盤分析報告
 							</button>
 
 							{/* 專屬問題解決方案 Tab */}
 							<button
 								onClick={() => setActiveTab("solution")}
-								className={`px-8 py-4 rounded-full font-semibold text-lg transition-all duration-200 ${
+								className={`flex-1 max-w-[320px] px-4 sm:px-6 lg:px-8 py-3 sm:py-4 rounded-full font-semibold transition-all duration-200 ${
 									activeTab === "solution"
 										? "bg-gradient-to-r from-[#C74772] to-[#D09900] text-white shadow-[0_4px_14px_rgba(0,0,0,0.25)]"
 										: "bg-white text-[#374A37] shadow-inner shadow-[inset_0_4px_4px_rgba(0,0,0,0.25)]"
 								}`}
 								style={{
 									fontFamily: "Noto Serif TC, serif",
+									fontSize: "clamp(14px, 3.5vw, 18px)",
 									boxShadow: "0 4px 4px rgba(0, 0, 0, 0.25)",
 								}}
 							>
@@ -443,15 +445,15 @@ export default function CoupleReportPage() {
 				</div>
 
 				<div className="flex items-center justify-center w-full min-h-screen bg-[#EFEFEF]">
-					<div className="w-[95%] max-w-7xl px-4 py-8 mx-auto">
+					<div className="w-[95%] max-w-7xl px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8 mx-auto">
 						{/* Report Title */}
-						<div className="mb-8 text-start">
+						<div className="mb-4 sm:mb-6 lg:mb-8 text-start">
 							<h1
-								className="mb-2 font-extrabold"
+								className="mb-2 font-extrabold leading-tight"
 								style={{
 									fontFamily: "Noto Serif TC, Serif",
 									fontWeight: 800,
-									fontSize: "60px",
+									fontSize: "clamp(32px, 8vw, 60px)",
 									color: "#D91A5A", // Pink color for couple theme
 								}}
 							>
@@ -558,7 +560,7 @@ export default function CoupleReportPage() {
 						{/* Enhanced Couple Specific Problem Solution - Always mounted but conditionally visible */}
 						{reportData && memoizedUser1 && memoizedUser2 && (
 							<div
-								className={`w-full mx-auto mb-6 ${activeTab === "solution" ? "block" : "hidden"}`}
+								className={`w-full mx-0 mb-6 ${activeTab === "solution" ? "block" : "hidden"}`}
 							>
 								<EnhancedCoupleSpecificProblemSolution
 									user1={memoizedUser1}
