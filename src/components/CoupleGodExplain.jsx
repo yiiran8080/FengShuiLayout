@@ -1,11 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { Download, Share2, Headphones, ArrowRight } from "lucide-react";
 import { useCoupleAnalysis } from "@/contexts/CoupleAnalysisContext";
+import { getCoupleComponentData } from "@/utils/coupleComponentDataStore";
 import { EnhancedInitialAnalysis } from "@/lib/enhancedInitialAnalysis";
+import { saveComponentContentWithUser } from "@/utils/simpleCoupleContentSave";
 
 const CoupleGodExplain = ({ user1, user2 }) => {
+	const { data: session } = useSession();
 	const { analysisData, godAnalysisCache, setGodAnalysisCache } =
 		useCoupleAnalysis();
 	const [godExplanations, setGodExplanations] = useState([]);
@@ -13,6 +17,20 @@ const CoupleGodExplain = ({ user1, user2 }) => {
 	const [error, setError] = useState(null);
 
 	useEffect(() => {
+		// Check for historical saved data first (highest priority)
+		const historicalData = getCoupleComponentData("coupleGodExplain");
+		if (historicalData) {
+			console.log(
+				"🏛️ Using historical couple god explanation data from data store"
+			);
+			// Extract godExplanations from the saved data structure
+			const explanations =
+				historicalData.godExplanations || historicalData || [];
+			setGodExplanations(Array.isArray(explanations) ? explanations : []);
+			setLoading(false);
+			return;
+		}
+
 		// Check cache first to avoid re-loading
 		if (godAnalysisCache) {
 			console.log("📋 Using cached god analysis");
@@ -39,6 +57,26 @@ const CoupleGodExplain = ({ user1, user2 }) => {
 				// Cache the result to prevent re-loading
 				setGodAnalysisCache(explanations);
 				console.log("💾 Cached god analysis for future use");
+
+				// Save to database immediately
+				const sessionId =
+					`couple_${user1.birthDateTime}_${user2.birthDateTime}`.replace(
+						/[^a-zA-Z0-9]/g,
+						"_"
+					);
+				saveComponentContentWithUser(
+					session,
+					sessionId,
+					"coupleGodExplain",
+					{ explanations },
+					{
+						birthday: user1.birthDateTime,
+						birthday2: user2.birthDateTime,
+						gender: user1.gender,
+						gender2: user2.gender,
+					}
+				);
+
 				setLoading(false);
 			} catch (err) {
 				console.error("Error generating god explanations:", err);

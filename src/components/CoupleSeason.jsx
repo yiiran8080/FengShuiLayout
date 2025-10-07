@@ -1,10 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { ComponentErrorBoundary } from "./ErrorHandling";
 import { useCoupleAnalysis } from "@/contexts/CoupleAnalysisContext";
+import { getCoupleComponentData } from "@/utils/coupleComponentDataStore";
+import { saveComponentContentWithUser } from "@/utils/simpleCoupleContentSave";
 
 export default function CoupleSeason({ user1, user2, currentYear = 2025 }) {
+	const { data: session } = useSession();
 	const { coupleSeasonCache, setCoupleSeasonCache } = useCoupleAnalysis();
 
 	const [analysisData, setAnalysisData] = useState(null);
@@ -123,6 +127,17 @@ export default function CoupleSeason({ user1, user2, currentYear = 2025 }) {
 	useEffect(() => {
 		if (!user1 || !user2) return;
 
+		// Check for historical saved data first (highest priority)
+		const historicalData = getCoupleComponentData("coupleSeason");
+		if (historicalData) {
+			console.log(
+				"🏛️ Using historical couple season data from data store"
+			);
+			setAnalysisData(historicalData);
+			setIsLoading(false);
+			return;
+		}
+
 		const cacheKey = getCacheKey(user1, user2, currentYear);
 
 		// Check cache first
@@ -146,6 +161,25 @@ export default function CoupleSeason({ user1, user2, currentYear = 2025 }) {
 					...prevCache,
 					[cacheKey]: analysis,
 				}));
+
+				// Save to database immediately with user information
+				const sessionId =
+					`couple_${user1.birthDateTime}_${user2.birthDateTime}`.replace(
+						/[^a-zA-Z0-9]/g,
+						"_"
+					);
+				saveComponentContentWithUser(
+					session,
+					sessionId,
+					"coupleSeason",
+					analysis,
+					{
+						birthday: user1.birthDateTime,
+						birthday2: user2.birthDateTime,
+						gender: user1.gender,
+						gender2: user2.gender,
+					}
+				);
 			})
 			.catch((error) => {
 				console.error("Couple season analysis failed:", error);

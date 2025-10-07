@@ -1,14 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { ComponentErrorBoundary } from "./ErrorHandling";
 import { useCoupleAnalysis } from "@/contexts/CoupleAnalysisContext";
+import { getCoupleComponentData } from "@/utils/coupleComponentDataStore";
+import { saveComponentContentWithUser } from "@/utils/simpleCoupleContentSave";
 
 export default function CoupleCoreSuggestion({
 	user1,
 	user2,
 	currentYear = 2025,
 }) {
+	const { data: session } = useSession();
 	const { coupleCoreSuggestionCache, setCoupleCoreSuggestionCache } =
 		useCoupleAnalysis();
 
@@ -1184,6 +1188,17 @@ export default function CoupleCoreSuggestion({
 	useEffect(() => {
 		if (!user1 || !user2) return;
 
+		// Check for historical saved data first (highest priority)
+		const historicalData = getCoupleComponentData("coupleCoreSuggestion");
+		if (historicalData) {
+			console.log(
+				"🏛️ Using historical couple core suggestion data from data store"
+			);
+			setAnalysisData(historicalData);
+			setIsLoading(false);
+			return;
+		}
+
 		const cacheKey = getCacheKey(user1, user2, currentYear);
 
 		// Check cache first
@@ -1207,6 +1222,25 @@ export default function CoupleCoreSuggestion({
 					...prevCache,
 					[cacheKey]: analysis,
 				}));
+
+				// Save to database immediately
+				const sessionId =
+					`couple_${user1.birthDateTime}_${user2.birthDateTime}`.replace(
+						/[^a-zA-Z0-9]/g,
+						"_"
+					);
+				saveComponentContentWithUser(
+					session,
+					sessionId,
+					"coupleCoreSuggestion",
+					analysis,
+					{
+						birthday: user1.birthDateTime,
+						birthday2: user2.birthDateTime,
+						gender: user1.gender,
+						gender2: user2.gender,
+					}
+				);
 			})
 			.catch((error) => {
 				console.error("Couple core suggestion analysis failed:", error);

@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 const ReportHistoryPage = () => {
 	const { data: session, status } = useSession();
 	const router = useRouter();
+	
+	// Fortune reports state
 	const [reports, setReports] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
@@ -112,9 +114,7 @@ const ReportHistoryPage = () => {
 			if (userEmail) params.append("userEmail", userEmail);
 			if (userId) params.append("userId", userId);
 
-			const response = await fetch(
-				`/api/reports/couple-history?${params}`
-			);
+			const response = await fetch(`/api/reports/couple-history?${params}`);
 			const data = await response.json();
 
 			if (data.status === 0) {
@@ -202,190 +202,11 @@ const ReportHistoryPage = () => {
 		<div className="min-h-screen py-8 bg-gray-50">
 			<div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
 				{/* Header */}
-				<div className="mb-8 text-center">
-					<h1 className="mb-2 text-3xl font-bold text-gray-900">
-						報告歷史
-					</h1>
-					<p className="text-gray-600">查看您的所有報告記錄</p>
-				</div>
-
-				{/* 合盤報告 Section */}
-				<div className="mb-12">
-					<h2 className="text-2xl font-bold text-gray-900 mb-6 border-b-2 border-blue-600 pb-2">
-						合盤報告
-					</h2>
-
-					{coupleLoading ? (
-						<div className="text-center py-8">
-							<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-							<p className="mt-2 text-gray-600">
-								載入合盤報告中...
-							</p>
-						</div>
-					) : coupleError ? (
-						<div className="text-center py-8">
-							<div className="bg-red-50 border border-red-200 rounded-md p-4">
-								<p className="text-red-600">{coupleError}</p>
-							</div>
-						</div>
-					) : coupleReports.length === 0 ? (
-						<div className="text-center py-8">
-							<div className="bg-gray-50 border border-gray-200 rounded-md p-8">
-								<p className="text-gray-500 text-lg">
-									尚無合盤報告記錄
-								</p>
-								<p className="text-gray-400 text-sm mt-2">
-									完成合盤分析後，報告將顯示在這裡
-								</p>
-							</div>
-						</div>
-					) : (
-						<>
-							<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-								{coupleReports.map((report) => (
-									<div
-										key={report.sessionId}
-										className="overflow-hidden transition-shadow duration-200 bg-white rounded-lg shadow-md hover:shadow-lg"
-									>
-										<div className="h-48 bg-gradient-to-br from-purple-400 to-pink-500 relative">
-											<div className="absolute inset-0 flex items-center justify-center">
-												<div className="text-center text-white">
-													<svg
-														className="w-12 h-12 mx-auto mb-2"
-														fill="none"
-														stroke="currentColor"
-														viewBox="0 0 24 24"
-													>
-														<path
-															strokeLinecap="round"
-															strokeLinejoin="round"
-															strokeWidth={2}
-															d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-														/>
-													</svg>
-													<p className="text-sm font-medium">
-														合盤分析
-													</p>
-												</div>
-											</div>
-										</div>
-										<div className="p-4">
-											<div className="flex items-start justify-between mb-2">
-												<h3 className="text-lg font-semibold text-gray-900">
-													合盤分析
-												</h3>
-												{report.reportGenerated && (
-													<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-														已生成
-													</span>
-												)}
-											</div>
-											<div className="mb-3 space-y-1 text-sm text-gray-600">
-												<p>
-													<span className="font-medium">
-														對象一:
-													</span>{" "}
-													{
-														report.userInputs
-															?.birthday
-													}{" "}
-													({report.userInputs?.gender}
-													)
-												</p>
-												<p>
-													<span className="font-medium">
-														對象二:
-													</span>{" "}
-													{
-														report.userInputs
-															?.birthday2
-													}{" "}
-													(
-													{report.userInputs?.gender2}
-													)
-												</p>
-												{report.userInputs?.problem && (
-													<p>
-														<span className="font-medium">
-															問題:
-														</span>{" "}
-														{
-															report.userInputs
-																.problem
-														}
-													</p>
-												)}
-												{report.componentCount && (
-													<p>
-														<span className="font-medium">
-															組件數量:
-														</span>{" "}
-														{report.componentCount}
-													</p>
-												)}
-											</div>
-											<div className="mb-3 space-y-1 text-xs text-gray-500">
-												<p>
-													生成時間:{" "}
-													{formatDate(
-														report.reportGeneratedAt
-													)}
-												</p>
-											</div>
-											<div className="flex items-center justify-between">
-												{report.reportGenerated && (
-													<Link
-														href={`/zh-TW/couple-report?sessionId=${report.sessionId}`}
-														className="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-white bg-purple-600 border border-transparent rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-													>
-														查看報告
-													</Link>
-												)}
-											</div>
-										</div>
-									</div>
-								))}
-							</div>
-
-							{couplePagination.totalPages > 1 && (
-								<div className="flex items-center justify-center mt-8 space-x-2">
-									<button
-										onClick={() =>
-											handleCouplePageChange(
-												couplePagination.currentPage - 1
-											)
-										}
-										disabled={!couplePagination.hasPrevPage}
-										className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-									>
-										上一頁
-									</button>
-									<span className="px-3 py-2 text-sm font-medium text-gray-700">
-										{couplePagination.currentPage} /{" "}
-										{couplePagination.totalPages}
-									</span>
-									<button
-										onClick={() =>
-											handleCouplePageChange(
-												couplePagination.currentPage + 1
-											)
-										}
-										disabled={!couplePagination.hasNextPage}
-										className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-									>
-										下一頁
-									</button>
-								</div>
-							)}
-						</>
-					)}
-				</div>
-
-				{/* 個人流年報告 Section */}
 				<div className="mb-8">
-					<h2 className="text-2xl font-bold text-gray-900 mb-6 border-b-2 border-blue-600 pb-2">
-						個人流年報告
-					</h2>
+					<h1 className="mb-2 text-3xl font-bold text-gray-900">
+						歷史紀錄
+					</h1>
+					<p className="text-gray-600">查看您的所有命理報告記錄</p>
 				</div>
 
 				{/* Error State */}

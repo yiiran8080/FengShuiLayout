@@ -2,15 +2,35 @@
 
 import React, { useState, useEffect } from "react";
 
-const ChartDiagnosisSection = ({ femaleUser, maleUser, analysisData }) => {
+const ChartDiagnosisSection = ({
+	femaleUser,
+	maleUser,
+	analysisData,
+	savedData,
+	onDataReady,
+}) => {
 	const [diagnosisData, setDiagnosisData] = useState(null);
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
+		// Check for saved data first
+		if (savedData) {
+			console.log("🏛️ Using saved ChartDiagnosis data:", savedData);
+			setDiagnosisData(savedData);
+			setLoading(false);
+
+			// Notify parent component that saved data is ready
+			if (onDataReady) {
+				onDataReady(savedData);
+			}
+			return;
+		}
+
+		// Generate new data if no saved data
 		if (femaleUser && maleUser && analysisData) {
 			generateChartDiagnosis();
 		}
-	}, [femaleUser, maleUser, analysisData]);
+	}, [femaleUser, maleUser, analysisData, savedData]);
 
 	const generateChartDiagnosis = async () => {
 		setLoading(true);
@@ -44,9 +64,14 @@ const ChartDiagnosisSection = ({ femaleUser, maleUser, analysisData }) => {
 			if (response.ok) {
 				const data = await response.json();
 				setDiagnosisData(data);
+
+				// Notify parent component that data is ready
+				if (onDataReady) {
+					onDataReady(data);
+				}
 			} else {
 				// Fallback data structure
-				setDiagnosisData({
+				const fallbackData = {
 					female: {
 						title: "命局：王水生寅月",
 						content: generateFallbackAnalysis(
@@ -63,7 +88,13 @@ const ChartDiagnosisSection = ({ femaleUser, maleUser, analysisData }) => {
 					},
 					keySymptoms:
 						"您日支「寅」（需情表達）與伴侶日支「申金」沖克，貴水代表您的內在情感需求，渴望溫暖、直接且充滿活力的表達方式；而申金則代表伴侶的理性與克制，偏向於以靜默的方式處理情感。形成「想溝通卻無法順暢」的核心循環，非單純爭吵，而是熱情漸受侵蝕，彼此間的默契與親密度受到挑戰。",
-				});
+				};
+				setDiagnosisData(fallbackData);
+
+				// Notify parent component that fallback data is ready
+				if (onDataReady) {
+					onDataReady(fallbackData);
+				}
 			}
 		} catch (error) {
 			console.error("Chart diagnosis generation failed:", error);

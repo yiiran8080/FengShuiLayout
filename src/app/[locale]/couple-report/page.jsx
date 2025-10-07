@@ -23,6 +23,7 @@ import SpecificSuggestion from "@/components/SpecificSuggestion";
 import getWuxingData from "@/lib/nayin";
 import { LoadingProvider } from "@/utils/LoadingStateManagement";
 import { CoupleAnalysisProvider } from "@/contexts/CoupleAnalysisContext";
+import { storeCoupleComponentData } from "@/utils/coupleComponentDataStore";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/home/Footer";
 
@@ -42,10 +43,12 @@ import CoupleSeason from "@/components/CoupleSeason";
 import CoupleCoreSuggestion from "@/components/CoupleCoreSuggestion";
 
 export default function CoupleReportPage() {
+	console.log("🚀 CoupleReportPage component mounting/re-rendering");
 	const [reportData, setReportData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 	const [activeTab, setActiveTab] = useState("analysis"); // "analysis" or "solution"
+	const [historicalDataReady, setHistoricalDataReady] = useState(false);
 	const searchParams = useSearchParams();
 	const router = useRouter();
 
@@ -183,9 +186,171 @@ export default function CoupleReportPage() {
 		return usefulGods.slice(0, 3); // Return top 3 useful gods
 	};
 
+	// Function to display saved couple report (historical view)
+	const displaySavedCoupleReport = async (sessionId) => {
+		try {
+			console.log("📚 Fetching saved couple report:", sessionId);
+
+			const response = await fetch(
+				`/api/couple-complete-report?sessionId=${sessionId}`
+			);
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const data = await response.json();
+			console.log("📊 Saved couple report data loaded successfully");
+
+			if (!data.success || !data.report) {
+				throw new Error(data.error || "No couple report data found");
+			}
+
+			// Create report data structure from saved content
+			const reportData = {
+				birthday: data.report.metadata.birthday,
+				birthday2: data.report.metadata.birthday2,
+				gender: data.report.metadata.gender,
+				gender2: data.report.metadata.gender2,
+				problem: data.report.metadata.problem || "感情配對分析", // Default problem for couple reports
+				concern: "感情", // Fixed concern for couple reports
+
+				// Mark as historical report
+				isHistoricalReport: true,
+				savedReportContent: {
+					annualAnalysis: data.report.annualAnalysis,
+					mingJuAnalysis: data.report.mingJuAnalysis,
+					godExplanation: data.report.godExplanation,
+					seasonAnalysis: data.report.seasonAnalysis,
+					coreSuggestions: data.report.coreSuggestions,
+					problemSolution: data.report.problemSolution,
+				},
+				reportGeneratedAt: data.report.metadata.reportGeneratedAt,
+			};
+
+			// Populate component data store for historical viewing (like feng-shui-report does)
+			if (typeof window !== "undefined") {
+				window.coupleComponentDataStore =
+					window.coupleComponentDataStore || {};
+
+				// Store each component's saved content with proper data structure transformation
+				if (data.report.annualAnalysis) {
+					window.coupleComponentDataStore.coupleAnnualAnalysis =
+						data.report.annualAnalysis;
+					console.log("📋 Stored coupleAnnualAnalysis data");
+				}
+				if (data.report.mingJuAnalysis) {
+					window.coupleComponentDataStore.coupleMingJu =
+						data.report.mingJuAnalysis;
+					console.log("📋 Stored coupleMingJu data");
+				}
+				if (data.report.godExplanation) {
+					// Transform godExplanation data structure for CoupleGodExplain component
+					// The component expects { godExplanations: [...] } but DB stores { explanations: [...] }
+					const godData = data.report.godExplanation;
+					if (godData.explanations) {
+						window.coupleComponentDataStore.coupleGodExplain = {
+							godExplanations: godData.explanations,
+						};
+						console.log(
+							"📋 Stored coupleGodExplain data (transformed structure)"
+						);
+					} else {
+						window.coupleComponentDataStore.coupleGodExplain =
+							godData;
+						console.log("📋 Stored coupleGodExplain data (direct)");
+					}
+				}
+				if (data.report.seasonAnalysis) {
+					window.coupleComponentDataStore.coupleSeason =
+						data.report.seasonAnalysis;
+					console.log("📋 Stored coupleSeason data");
+				}
+				if (data.report.coreSuggestions) {
+					window.coupleComponentDataStore.coupleCoreSuggestion =
+						data.report.coreSuggestions;
+					console.log("📋 Stored coupleCoreSuggestion data");
+				}
+				if (data.report.problemSolution) {
+					window.coupleComponentDataStore.enhancedCoupleSpecificProblemSolution =
+						data.report.problemSolution;
+					console.log(
+						"📋 Stored enhancedCoupleSpecificProblemSolution data"
+					);
+				}
+
+				console.log(
+					"✅ Couple component data store populated with historical content"
+				);
+				console.log(
+					"🔍 Final component data store state:",
+					window.coupleComponentDataStore
+				);
+			}
+
+			console.log("✅ Historical couple report data prepared");
+
+			// CRITICAL: Set historicalDataReady BEFORE setReportData to prevent race condition
+			setHistoricalDataReady(true);
+			setReportData(reportData);
+			setLoading(false);
+			console.log("🔒 Historical data ready flag set to true");
+		} catch (err) {
+			console.error("❌ Error displaying saved couple report:", err);
+			setError(`載入已儲存報告時出現錯誤: ${err.message}`);
+			setLoading(false);
+		}
+	};
+
+	// Helper function to determine if components should render
+	const shouldRenderComponents = () => {
+		const hasReportData = !!reportData;
+		const isHistorical = reportData?.isHistoricalReport;
+		const dataReady = historicalDataReady;
+
+		console.log("🎯 shouldRenderComponents check:", {
+			hasReportData,
+			isHistorical,
+			dataReady,
+			sessionId: searchParams.get("sessionId"),
+			componentDataStore:
+				typeof window !== "undefined"
+					? Object.keys(window.coupleComponentDataStore || {})
+					: "N/A",
+			result: hasReportData && (!isHistorical || dataReady),
+		});
+
+		if (!reportData) return false;
+		// For historical reports, wait until data is ready
+		if (reportData.isHistoricalReport) {
+			return historicalDataReady;
+		}
+		// For fresh reports, render immediately
+		return true;
+	};
+
 	useEffect(() => {
+		console.log("🔥 useEffect triggered - loadReportData starting");
+
 		const loadReportData = async () => {
 			try {
+				// Check if this is a historical report view (sessionId provided)
+				const sessionId = searchParams.get("sessionId");
+				console.log("🔍 Checking for sessionId in URL:", sessionId);
+
+				if (sessionId) {
+					console.log(
+						"✅ SessionId found - Loading historical couple report:",
+						sessionId
+					);
+					await displaySavedCoupleReport(sessionId);
+					return;
+				} else {
+					console.log(
+						"❌ No sessionId found - Will load fresh report"
+					);
+				}
+
 				// First check for URL parameters (fresh input from couple modal)
 				const birthday = searchParams.get("birthday");
 				const birthday2 = searchParams.get("birthday2");
@@ -339,7 +504,9 @@ export default function CoupleReportPage() {
 			}
 		};
 
+		console.log("🔥 About to call loadReportData()");
 		loadReportData();
+		console.log("🔥 loadReportData() called");
 	}, [searchParams]);
 
 	if (loading) {
@@ -387,6 +554,21 @@ export default function CoupleReportPage() {
 		);
 	}
 
+	// For historical reports, add a banner but use normal component rendering
+	const showHistoricalBanner = reportData?.isHistoricalReport;
+
+	// For historical reports, wait until data is ready before rendering components
+	if (reportData?.isHistoricalReport && !historicalDataReady) {
+		return (
+			<div className="flex items-center justify-center min-h-screen bg-[#EFEFEF]">
+				<div className="text-center">
+					<div className="w-12 h-12 mx-auto mb-4 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+					<p className="text-gray-600">正在載入歷史報告數據...</p>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<LoadingProvider>
 			<CoupleAnalysisProvider
@@ -399,9 +581,42 @@ export default function CoupleReportPage() {
 					gender: reportData.gender2,
 				}}
 				specificProblem={reportData.problem}
+				initialData={
+					reportData?.isHistoricalReport
+						? reportData.savedReportContent
+						: null
+				}
 			>
 				{/* Navbar */}
 				<Navbar from="report" backgroundColor="white" />
+
+				{/* Historical Report Banner */}
+				{showHistoricalBanner && (
+					<div
+						className="container px-4 mx-auto mb-6"
+						style={{ paddingTop: "80px" }}
+					>
+						<div className="p-4 border border-yellow-200 rounded-lg bg-yellow-50">
+							<p className="text-yellow-800">
+								<strong>注意：</strong>
+								您正在查看已保存的夫妻合婚歷史報告內容
+								(生成時間:{" "}
+								{reportData.reportGeneratedAt
+									? new Date(
+											reportData.reportGeneratedAt
+										).toLocaleString()
+									: "N/A"}
+								)。
+								<a
+									href="/zh-TW/couple-report"
+									className="ml-2 text-blue-600 underline hover:text-blue-800"
+								>
+									點擊生成新報告
+								</a>
+							</p>
+						</div>
+					</div>
+				)}
 
 				{/* Navigation Row */}
 				<div className="w-full mt-16 bg-gradient-to-r from-[#C74772] to-[#D09900] py-4 sm:py-6">
@@ -465,7 +680,7 @@ export default function CoupleReportPage() {
 						{activeTab === "analysis" && (
 							<div className="tab-content">
 								{/* 姻緣合盤流年分析報告 Content */}
-								{reportData && (
+								{shouldRenderComponents() ? (
 									<>
 										<CoupleAnnualAnalysis
 											user1={{
@@ -553,29 +768,43 @@ export default function CoupleReportPage() {
 											currentYear={new Date().getFullYear()}
 										/>
 									</>
+								) : (
+									<div className="flex items-center justify-center py-16">
+										<div className="text-center">
+											<div className="w-8 h-8 mx-auto mb-4 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+											<p className="text-gray-600">
+												正在載入歷史報告數據...
+											</p>
+										</div>
+									</div>
 								)}
 							</div>
 						)}
 
 						{/* Enhanced Couple Specific Problem Solution - Always mounted but conditionally visible */}
-						{reportData && memoizedUser1 && memoizedUser2 && (
-							<div
-								className={`w-full mx-0 mb-6 ${activeTab === "solution" ? "block" : "hidden"}`}
-							>
-								<EnhancedCoupleSpecificProblemSolution
-									user1={memoizedUser1}
-									user2={memoizedUser2}
-									specificProblem={reportData.problem}
-									calculateWuxingAnalysis={
-										calculateWuxingAnalysis
-									}
-									analyzeWuxingStrength={
-										analyzeWuxingStrength
-									}
-									determineUsefulGods={determineUsefulGods}
-								/>
-							</div>
-						)}
+						{shouldRenderComponents() &&
+							reportData &&
+							memoizedUser1 &&
+							memoizedUser2 && (
+								<div
+									className={`w-full mx-0 mb-6 ${activeTab === "solution" ? "block" : "hidden"}`}
+								>
+									<EnhancedCoupleSpecificProblemSolution
+										user1={memoizedUser1}
+										user2={memoizedUser2}
+										specificProblem={reportData.problem}
+										calculateWuxingAnalysis={
+											calculateWuxingAnalysis
+										}
+										analyzeWuxingStrength={
+											analyzeWuxingStrength
+										}
+										determineUsefulGods={
+											determineUsefulGods
+										}
+									/>
+								</div>
+							)}
 
 						{activeTab === "solution" && (
 							<div className="tab-content">

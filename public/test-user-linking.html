@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Test Couple Report User Linking</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				margin: 20px;
+			}
+			.result {
+				margin: 10px 0;
+				padding: 10px;
+				border: 1px solid #ccc;
+				border-radius: 5px;
+			}
+			.success {
+				background-color: #d4edda;
+				border-color: #c3e6cb;
+				color: #155724;
+			}
+			.error {
+				background-color: #f8d7da;
+				border-color: #f5c6cb;
+				color: #721c24;
+			}
+			button {
+				margin: 5px;
+				padding: 10px 15px;
+				cursor: pointer;
+			}
+			pre {
+				background: #f8f9fa;
+				padding: 10px;
+				border-radius: 3px;
+				overflow-x: auto;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>🧪 Test Couple Report User Linking</h1>
+		<p>
+			This page tests the new user ID linking functionality for couple
+			reports.
+		</p>
+
+		<div>
+			<button onclick="testSaveWithUser()">Test Save with User ID</button>
+			<button onclick="testSaveWithoutUser()">
+				Test Save without User ID
+			</button>
+			<button onclick="testHistoryWithUser()">
+				Test History with User Filter
+			</button>
+			<button onclick="clearResults()">Clear Results</button>
+		</div>
+
+		<div id="results"></div>
+
+		<script>
+			const API_BASE = window.location.origin;
+
+			async function addResult(message, isSuccess = true) {
+				const resultsDiv = document.getElementById("results");
+				const resultDiv = document.createElement("div");
+				resultDiv.className = `result ${isSuccess ? "success" : "error"}`;
+				resultDiv.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong>: ${message}`;
+				resultsDiv.appendChild(resultDiv);
+			}
+
+			async function addJsonResult(data) {
+				const resultsDiv = document.getElementById("results");
+				const resultDiv = document.createElement("div");
+				resultDiv.className = "result";
+				resultDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+				resultsDiv.appendChild(resultDiv);
+			}
+
+			async function testSaveWithUser() {
+				addResult("🧪 Testing couple content save WITH user ID...");
+
+				const testData = {
+					sessionId: "test_user_linking_" + Date.now(),
+					componentName: "testComponent",
+					content: {
+						message: "Test content with user linking",
+						timestamp: new Date().toISOString(),
+					},
+					birthday: "1990-01-01",
+					birthday2: "1992-02-02",
+					gender: "male",
+					gender2: "female",
+					userId: "test_user_123",
+					userEmail: "test@example.com",
+				};
+
+				try {
+					const response = await fetch(
+						`${API_BASE}/api/couple-content`,
+						{
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify(testData),
+						}
+					);
+
+					const result = await response.json();
+
+					if (result.success) {
+						addResult(
+							`✅ SUCCESS: Saved couple content WITH user ID (${testData.userId})`,
+							true
+						);
+						addJsonResult(result);
+
+						// Verify the save by retrieving it
+						await verifySavedContent(
+							testData.sessionId,
+							testData.userId
+						);
+					} else {
+						addResult(`❌ FAILED: ${result.error}`, false);
+					}
+				} catch (error) {
+					addResult(`❌ Network Error: ${error.message}`, false);
+				}
+			}
+
+			async function testSaveWithoutUser() {
+				addResult("🧪 Testing couple content save WITHOUT user ID...");
+
+				const testData = {
+					sessionId: "test_no_user_" + Date.now(),
+					componentName: "testComponent",
+					content: {
+						message: "Test content without user linking",
+						timestamp: new Date().toISOString(),
+					},
+					birthday: "1990-01-01",
+					birthday2: "1992-02-02",
+					gender: "male",
+					gender2: "female",
+					// No userId or userEmail
+				};
+
+				try {
+					const response = await fetch(
+						`${API_BASE}/api/couple-content`,
+						{
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify(testData),
+						}
+					);
+
+					const result = await response.json();
+
+					if (result.success) {
+						addResult(
+							`✅ SUCCESS: Saved couple content WITHOUT user ID`,
+							true
+						);
+						addJsonResult(result);
+					} else {
+						addResult(`❌ FAILED: ${result.error}`, false);
+					}
+				} catch (error) {
+					addResult(`❌ Network Error: ${error.message}`, false);
+				}
+			}
+
+			async function verifySavedContent(sessionId, expectedUserId) {
+				addResult(`🔍 Verifying saved content includes user ID...`);
+
+				try {
+					const response = await fetch(
+						`${API_BASE}/api/couple-content?sessionId=${sessionId}`
+					);
+					const result = await response.json();
+
+					if (
+						result.success &&
+						result.metadata.userId === expectedUserId
+					) {
+						addResult(
+							`✅ VERIFIED: User ID correctly stored (${result.metadata.userId})`,
+							true
+						);
+					} else if (result.success) {
+						addResult(
+							`⚠️ WARNING: Content saved but user ID mismatch. Expected: ${expectedUserId}, Got: ${result.metadata.userId || "undefined"}`,
+							false
+						);
+					} else {
+						addResult(
+							`❌ FAILED to verify: ${result.error}`,
+							false
+						);
+					}
+
+					addJsonResult(result);
+				} catch (error) {
+					addResult(`❌ Verification Error: ${error.message}`, false);
+				}
+			}
+
+			async function testHistoryWithUser() {
+				addResult("🧪 Testing couple history filtering by user ID...");
+
+				try {
+					const testUserId = "test_user_123";
+					const response = await fetch(
+						`${API_BASE}/api/reports/couple-history?userId=${testUserId}&limit=5`
+					);
+					const result = await response.json();
+
+					if (result.status === 0) {
+						addResult(
+							`✅ SUCCESS: Retrieved ${result.data.reports.length} couple reports for user ${testUserId}`,
+							true
+						);
+						addResult(
+							`📊 Total reports: ${result.data.pagination.totalCount}`,
+							true
+						);
+						addJsonResult(result);
+					} else {
+						addResult(`❌ FAILED: ${result.error}`, false);
+					}
+				} catch (error) {
+					addResult(`❌ Network Error: ${error.message}`, false);
+				}
+			}
+
+			function clearResults() {
+				document.getElementById("results").innerHTML = "";
+			}
+
+			// Auto-run initial test on page load
+			window.addEventListener("load", () => {
+				addResult(
+					"🚀 Ready to test couple report user linking functionality!"
+				);
+			});
+		</script>
+	</body>
+</html>

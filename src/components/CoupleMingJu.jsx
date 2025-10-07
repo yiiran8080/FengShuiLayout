@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 import { useCoupleAnalysis } from "@/contexts/CoupleAnalysisContext";
 import {
 	calculateUnifiedElements,
 	formatElementAnalysisForAI,
 } from "@/lib/unifiedElementCalculation";
+import {
+	saveComponentContentWithUser,
+	getSavedContent,
+} from "@/utils/simpleCoupleContentSave";
+import { getCoupleComponentData } from "@/utils/coupleComponentDataStore";
 
 const TAB_CONFIG = {
 	感情: {
@@ -1259,6 +1265,7 @@ function formatLeftTabContent(content) {
 }
 
 export function CoupleMingJu({ user1, user2, currentYear }) {
+	const { data: session } = useSession();
 	const { coupleMingJuCache, setCoupleMingJuCache } = useCoupleAnalysis();
 
 	const [selectedTab, setSelectedTab] = useState("left");
@@ -1269,6 +1276,7 @@ export function CoupleMingJu({ user1, user2, currentYear }) {
 	const [preloadingTabs, setPreloadingTabs] = useState(new Set());
 	const [allTabsLoaded, setAllTabsLoaded] = useState(false);
 	const [initialLoad, setInitialLoad] = useState(true);
+	const [databaseDataLoaded, setDatabaseDataLoaded] = useState(false);
 
 	const concern = "感情"; // Default concern for couple analysis
 
@@ -1277,8 +1285,211 @@ export function CoupleMingJu({ user1, user2, currentYear }) {
 		return `${tab}_${user1.birthDateTime}_${user2.birthDateTime}_${concern}_${currentYear}`;
 	};
 
+	// Load saved data from database first (highest priority) - only once per session
+	useEffect(() => {
+		console.log(
+			"🐛 DEBUG: CoupleMingJu useEffect triggered - user1:",
+			user1,
+			"user2:",
+			user2
+		);
+
+		const loadSavedData = async () => {
+			const sessionId =
+				`couple_${user1.birthDateTime}_${user2.birthDateTime}`.replace(
+					/[^a-zA-Z0-9]/g,
+					"_"
+				);
+
+			try {
+				console.log(
+					"🔍 Loading CoupleMingJu data from database for session:",
+					sessionId
+				);
+				const result = await getSavedContent(sessionId);
+
+				console.log("🐛 DEBUG: getSavedContent result:", result);
+				console.log("🐛 DEBUG: result.success:", result.success);
+				console.log(
+					"🐛 DEBUG: result.savedContent:",
+					result.savedContent
+				);
+				console.log(
+					"🐛 DEBUG: savedContent keys:",
+					result.savedContent
+						? Object.keys(result.savedContent)
+						: "no savedContent"
+				);
+
+				if (
+					result.success &&
+					result.savedContent &&
+					result.savedContent.coupleMingJu
+				) {
+					console.log(
+						"🏛️ Found saved CoupleMingJu data in database:",
+						result.savedContent.coupleMingJu
+					);
+					const savedMingJuData = result.savedContent.coupleMingJu;
+
+					// Convert organized data back to flat cache structure
+					const flatCache = {};
+					Object.keys(savedMingJuData).forEach((tab) => {
+						if (typeof savedMingJuData[tab] === "object") {
+							Object.assign(flatCache, savedMingJuData[tab]);
+						}
+					});
+
+					console.log(
+						"🔄 Converted saved data to flat cache:",
+						Object.keys(flatCache)
+					);
+
+					// Populate content cache with flattened saved data
+					setContentCache(flatCache);
+					setAllTabsLoaded(true);
+					setInitialLoad(false);
+					setDatabaseDataLoaded(true);
+
+					// Set initial tab content
+					const currentTabKey = getCacheKey(
+						selectedTab,
+						user1,
+						user2,
+						currentYear
+					);
+					const currentTabContent = flatCache[currentTabKey] || "";
+
+					if (selectedTab === "left") {
+						setTabContent(
+							typeof currentTabContent === "string"
+								? currentTabContent
+								: ""
+						);
+					} else {
+						setAiContent(
+							typeof currentTabContent === "string"
+								? currentTabContent
+								: ""
+						);
+					}
+
+					setLoading(false);
+					return;
+				} else {
+					console.log(
+						"🔍 No saved CoupleMingJu data found in database",
+						result
+					);
+				}
+			} catch (error) {
+				console.error(
+					"❌ Error loading saved CoupleMingJu data:",
+					error
+				);
+			}
+		};
+
+		loadSavedData();
+	}, [user1.birthDateTime, user2.birthDateTime, currentYear]);
+
+	// Update tab content when selectedTab changes and database data is loaded
+	useEffect(() => {
+		if (databaseDataLoaded && Object.keys(contentCache).length > 0) {
+			const currentTabKey = getCacheKey(
+				selectedTab,
+				user1,
+				user2,
+				currentYear
+			);
+			const currentTabContent = contentCache[currentTabKey] || "";
+
+			console.log(
+				`🔄 Updating tab content from database data for ${selectedTab}:`,
+				currentTabKey,
+				!!currentTabContent
+			);
+
+			if (selectedTab === "left") {
+				setTabContent(
+					typeof currentTabContent === "string"
+						? currentTabContent
+						: ""
+				);
+			} else {
+				setAiContent(
+					typeof currentTabContent === "string"
+						? currentTabContent
+						: ""
+				);
+			}
+			setLoading(false);
+		}
+	}, [
+		selectedTab,
+		databaseDataLoaded,
+		contentCache,
+		user1,
+		user2,
+		currentYear,
+	]);
+
+	// Check for historical saved data from browser storage (fallback)
+	useEffect(() => {
+		// Skip if database data was already loaded
+		if (databaseDataLoaded) return;
+
+		const historicalData = getCoupleComponentData("coupleMingJu");
+		if (historicalData) {
+			console.log(
+				"🏛️ Using historical couple MingJu data from data store"
+			);
+
+			// Populate content cache with historical data
+			setContentCache(historicalData);
+
+			// Set current tab content based on the cache key structure
+			const currentTabKey = getCacheKey(
+				selectedTab,
+				user1,
+				user2,
+				currentYear
+			);
+			const currentTabContent = historicalData[currentTabKey] || "";
+
+			if (selectedTab === "left") {
+				setTabContent(
+					typeof currentTabContent === "string"
+						? currentTabContent
+						: ""
+				);
+			} else {
+				setAiContent(
+					typeof currentTabContent === "string"
+						? currentTabContent
+						: ""
+				);
+			}
+
+			setAllTabsLoaded(true);
+			setInitialLoad(false);
+			setLoading(false);
+			return;
+		}
+	}, [
+		selectedTab,
+		user1.birthDateTime,
+		user2.birthDateTime,
+		concern,
+		currentYear,
+		databaseDataLoaded,
+	]);
+
 	// Check global couple MingJu cache first
 	useEffect(() => {
+		// Skip if database data was already loaded
+		if (databaseDataLoaded) return;
+
 		if (coupleMingJuCache) {
 			console.log("📋 Using global cached couple MingJu analysis");
 			setContentCache(coupleMingJuCache);
@@ -1302,7 +1513,14 @@ export function CoupleMingJu({ user1, user2, currentYear }) {
 				setLoading(false);
 			}
 		}
-	}, [coupleMingJuCache, selectedTab, user1, user2, currentYear]);
+	}, [
+		coupleMingJuCache,
+		selectedTab,
+		user1,
+		user2,
+		currentYear,
+		databaseDataLoaded,
+	]);
 
 	// Clear cache when user info changes significantly
 	useEffect(() => {
@@ -1363,6 +1581,12 @@ export function CoupleMingJu({ user1, user2, currentYear }) {
 					setContentCache((prev) => {
 						const updated = { ...prev, [cacheKey]: result };
 						console.log(`💾 Cached content for ${tab}`);
+
+						// Note: Database save will happen when all tabs are loaded
+						console.log(
+							`⏳ Tab ${tab} ready, waiting for all tabs to complete...`
+						);
+
 						return updated;
 					});
 
@@ -1421,6 +1645,51 @@ export function CoupleMingJu({ user1, user2, currentYear }) {
 		preloadAllTabs();
 	}, [user1, user2, currentYear, selectedTab]);
 
+	// Save complete data to database when all tabs are loaded
+	const saveCompleteCoupleMingJuData = (completeContentCache) => {
+		const sessionId =
+			`couple_${user1.birthDateTime}_${user2.birthDateTime}`.replace(
+				/[^a-zA-Z0-9]/g,
+				"_"
+			);
+
+		// Organize content by tabs
+		const organizedContent = {};
+
+		// Group content by tab (left, middle, right)
+		Object.keys(completeContentCache).forEach((cacheKey) => {
+			// Extract tab from cache key (format: "left_..." or "middle_..." or "right_...")
+			const tabMatch = cacheKey.match(/^(left|middle|right)_/);
+			if (tabMatch) {
+				const tab = tabMatch[1];
+				if (!organizedContent[tab]) {
+					organizedContent[tab] = {};
+				}
+				organizedContent[tab][cacheKey] =
+					completeContentCache[cacheKey];
+			}
+		});
+
+		console.log("💾 Saving complete CoupleMingJu data to database:", {
+			sessionId,
+			tabsCount: Object.keys(organizedContent).length,
+			tabs: Object.keys(organizedContent),
+		});
+
+		saveComponentContentWithUser(
+			session,
+			sessionId,
+			"coupleMingJu",
+			organizedContent,
+			{
+				birthday: user1.birthDateTime,
+				birthday2: user2.birthDateTime,
+				gender: user1.gender,
+				gender2: user2.gender,
+			}
+		);
+	};
+
 	// Update global cache when local cache changes - moved to separate effect to avoid render issues
 	useEffect(() => {
 		// Only update global cache when we're not in initial loading phase
@@ -1433,11 +1702,23 @@ export function CoupleMingJu({ user1, user2, currentYear }) {
 			const timeoutId = setTimeout(() => {
 				setCoupleMingJuCache(contentCache);
 				console.log("💾 Updated global couple MingJu cache");
+
+				// Save complete data to database
+				saveCompleteCoupleMingJuData(contentCache);
 			}, 0);
 
 			return () => clearTimeout(timeoutId);
 		}
-	}, [contentCache, allTabsLoaded, initialLoad, setCoupleMingJuCache]);
+	}, [
+		contentCache,
+		allTabsLoaded,
+		initialLoad,
+		setCoupleMingJuCache,
+		user1.birthDateTime,
+		user2.birthDateTime,
+		user1.gender,
+		user2.gender,
+	]);
 
 	// Handle tab selection - improved caching logic
 	useEffect(() => {
@@ -1732,6 +2013,7 @@ export function CoupleMingJu({ user1, user2, currentYear }) {
 									{selectedTab === "middle" ||
 									selectedTab === "right" ? (
 										aiContent &&
+										typeof aiContent === "string" &&
 										aiContent.trim().length > 0 ? (
 											renderStructuredContent(
 												concern,

@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Test Couple Complete Report API</title>
+	</head>
+	<body>
+		<h1>Test Couple Complete Report API</h1>
+		<button onclick="testAPI()">Test API</button>
+		<div id="result"></div>
+
+		<script>
+			async function testAPI() {
+				const sessionId = "couple_1999_09_03_2010_04_04";
+				const resultDiv = document.getElementById("result");
+
+				try {
+					resultDiv.innerHTML = "Loading...";
+					const response = await fetch(
+						`/api/couple-complete-report?sessionId=${sessionId}`
+					);
+					const data = await response.json();
+
+					resultDiv.innerHTML = `
+                    <h2>API Response:</h2>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+				} catch (error) {
+					resultDiv.innerHTML = `
+                    <h2>Error:</h2>
+                    <pre>${error.message}</pre>
+                `;
+				}
+			}
+		</script>
+	</body>
+</html>

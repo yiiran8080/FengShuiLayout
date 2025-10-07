@@ -19,21 +19,71 @@ export const CoupleAnalysisProvider = ({
 	user1,
 	user2,
 	specificProblem,
+	initialData, // Pre-saved data to prevent AI generation
 }) => {
 	const [analysisData, setAnalysisData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 
 	// Cache for component-specific analysis to prevent re-loading
-	const [annualAnalysisCache, setAnnualAnalysisCache] = useState(null);
-	const [godAnalysisCache, setGodAnalysisCache] = useState(null);
+	// Initialize with saved data if available
+	const [annualAnalysisCache, setAnnualAnalysisCache] = useState(
+		initialData?.annualAnalysis || null
+	);
+	const [godAnalysisCache, setGodAnalysisCache] = useState(
+		initialData?.godExplanation || null
+	);
 	const [individualAnalysisCache, setIndividualAnalysisCache] = useState({});
-	const [coupleMingJuCache, setCoupleMingJuCache] = useState(null);
-	const [coupleSeasonCache, setCoupleSeasonCache] = useState(null);
-	const [coupleCoreSuggestionCache, setCoupleCoreSuggestionCache] =
-		useState(null);
+	const [coupleMingJuCache, setCoupleMingJuCache] = useState(
+		initialData?.mingJuAnalysis || null
+	);
+	const [coupleSeasonCache, setCoupleSeasonCache] = useState(
+		initialData?.seasonAnalysis || null
+	);
+	const [coupleCoreSuggestionCache, setCoupleCoreSuggestionCache] = useState(
+		initialData?.coreSuggestions || null
+	);
 
 	useEffect(() => {
+		// If we have initial data (saved data), skip API calls
+		if (initialData) {
+			console.log(
+				"📋 CoupleAnalysisProvider received initialData:",
+				initialData
+			);
+			console.log("📋 InitialData keys:", Object.keys(initialData));
+			console.log(
+				"📋 InitialData values check:",
+				Object.keys(initialData).map((key) => ({
+					[key]: !!initialData[key],
+				}))
+			);
+
+			// Check if we have any valid saved content
+			const hasValidData = Object.values(initialData).some(
+				(value) => value !== null && value !== undefined
+			);
+			console.log("📋 Has valid saved data:", hasValidData);
+
+			if (hasValidData) {
+				console.log("✅ Using saved data, skipping AI generation");
+				console.log("📋 Cache states:", {
+					annualAnalysisCache: !!annualAnalysisCache,
+					godAnalysisCache: !!godAnalysisCache,
+					coupleMingJuCache: !!coupleMingJuCache,
+					coupleSeasonCache: !!coupleSeasonCache,
+					coupleCoreSuggestionCache: !!coupleCoreSuggestionCache,
+				});
+				setAnalysisData({ saved: true }); // Set minimal data to indicate ready
+				setLoading(false);
+				return;
+			} else {
+				console.log("❌ InitialData exists but no valid content found");
+			}
+		} else {
+			console.log("❌ No initialData provided to CoupleAnalysisProvider");
+		}
+
 		const fetchAnalysis = async () => {
 			if (!user1?.birthDateTime || !user2?.birthDateTime) {
 				setLoading(false);
@@ -84,7 +134,7 @@ export const CoupleAnalysisProvider = ({
 		};
 
 		fetchAnalysis();
-	}, [user1, user2, specificProblem]);
+	}, [user1, user2, specificProblem, initialData]);
 
 	const value = {
 		analysisData,

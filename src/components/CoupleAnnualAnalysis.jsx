@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { getCoupleComponentData } from "@/utils/coupleComponentDataStore";
 import {
 	Heart,
 	User,
@@ -15,6 +17,7 @@ import {
 	calculateUnifiedElements,
 	getPersonPrimaryElement,
 } from "@/lib/unifiedElementCalculation";
+import { saveComponentContentWithUser } from "@/utils/simpleCoupleContentSave";
 
 const CoupleAnnualAnalysis = ({
 	user1,
@@ -23,6 +26,7 @@ const CoupleAnnualAnalysis = ({
 	analyzeWuxingStrength,
 	determineUsefulGods,
 }) => {
+	const { data: session } = useSession();
 	const {
 		analysisData,
 		loading: aiLoading,
@@ -32,8 +36,33 @@ const CoupleAnnualAnalysis = ({
 	} = useCoupleAnalysis();
 	const [analysisResult, setAnalysisResult] = useState(null);
 	const [loading, setLoading] = useState(true);
+	const [individualAnalysisData, setIndividualAnalysisData] = useState({
+		user1: null,
+		user2: null,
+	});
 
 	useEffect(() => {
+		// Check for historical saved data first (highest priority)
+		const historicalData = getCoupleComponentData("coupleAnnualAnalysis");
+		if (historicalData) {
+			console.log(
+				"🏛️ Using historical couple annual analysis data from data store"
+			);
+			setAnalysisResult(historicalData);
+
+			// If historical data includes individual analysis, set it
+			if (historicalData.individualAnalysis) {
+				console.log("🏛️ Found historical individual analysis data");
+				setIndividualAnalysisData({
+					user1: historicalData.individualAnalysis.user1,
+					user2: historicalData.individualAnalysis.user2,
+				});
+			}
+
+			setLoading(false);
+			return;
+		}
+
 		// Check cache first to avoid re-loading
 		if (annualAnalysisCache) {
 			console.log("📋 Using cached annual analysis");
@@ -124,6 +153,12 @@ const CoupleAnnualAnalysis = ({
 				// Cache the result to prevent re-loading
 				setAnnualAnalysisCache(analysisResultData);
 				console.log("💾 Cached annual analysis for future use");
+
+				// Note: Complete data will be saved when individual analyses are ready
+				console.log(
+					"⏳ Waiting for individual analyses to complete before saving..."
+				);
+
 				setLoading(false);
 			} else if (!aiLoading && !analysisData) {
 				// Fallback analysis without AI data
@@ -133,6 +168,72 @@ const CoupleAnnualAnalysis = ({
 
 		generateAnnualAnalysis();
 	}, [analysisData, aiLoading, user1, user2]);
+
+	// Function to save complete analysis data including individual analysis
+	const saveCompleteAnalysisData = (
+		mainAnalysisData,
+		user1Analysis,
+		user2Analysis
+	) => {
+		const sessionId =
+			`couple_${user1.birthDateTime}_${user2.birthDateTime}`.replace(
+				/[^a-zA-Z0-9]/g,
+				"_"
+			);
+
+		const completeData = {
+			...mainAnalysisData,
+			individualAnalysis: {
+				user1: user1Analysis,
+				user2: user2Analysis,
+			},
+		};
+
+		console.log(
+			"💾 Saving complete couple annual analysis with individual data:",
+			{
+				mainAnalysis: !!mainAnalysisData,
+				user1Analysis: !!user1Analysis,
+				user2Analysis: !!user2Analysis,
+			}
+		);
+
+		saveComponentContentWithUser(
+			session,
+			sessionId,
+			"coupleAnnualAnalysis",
+			completeData,
+			{
+				birthday: user1.birthDateTime,
+				birthday2: user2.birthDateTime,
+				gender: user1.gender,
+				gender2: user2.gender,
+			}
+		);
+	};
+
+	// Effect to save complete data when both individual analyses are ready
+	useEffect(() => {
+		if (
+			analysisResult &&
+			individualAnalysisData.user1 &&
+			individualAnalysisData.user2
+		) {
+			console.log(
+				"🔄 Both individual analyses ready, saving complete data..."
+			);
+			saveCompleteAnalysisData(
+				analysisResult,
+				individualAnalysisData.user1,
+				individualAnalysisData.user2
+			);
+		}
+	}, [
+		analysisResult,
+		individualAnalysisData,
+		user1.birthDateTime,
+		user2.birthDateTime,
+	]);
 
 	const generateFallbackAnnualAnalysis = () => {
 		const user1BasicAnalysis = calculateUnifiedElements(
@@ -192,6 +293,12 @@ const CoupleAnnualAnalysis = ({
 		// Cache the fallback result too
 		setAnnualAnalysisCache(fallbackResult);
 		console.log("💾 Cached fallback annual analysis");
+
+		// Note: Complete data will be saved when individual analyses are ready
+		console.log(
+			"⏳ Waiting for individual analyses to complete before saving fallback..."
+		);
+
 		setLoading(false);
 	};
 
@@ -960,6 +1067,13 @@ const CoupleAnnualAnalysis = ({
 					gender={user1.gender === "male" ? "男方" : "女方"}
 					colorScheme={user1.gender === "male" ? "blue" : "pink"}
 					userAnalysis={analysisResult.user1Analysis}
+					savedIndividualData={individualAnalysisData.user1}
+					onAnalysisReady={(analysisData) => {
+						setIndividualAnalysisData((prev) => ({
+							...prev,
+							user1: analysisData,
+						}));
+					}}
 				/>
 			)}
 
@@ -970,6 +1084,13 @@ const CoupleAnnualAnalysis = ({
 					gender={user2.gender === "male" ? "男方" : "女方"}
 					colorScheme={user2.gender === "male" ? "blue" : "pink"}
 					userAnalysis={analysisResult.user2Analysis}
+					savedIndividualData={individualAnalysisData.user2}
+					onAnalysisReady={(analysisData) => {
+						setIndividualAnalysisData((prev) => ({
+							...prev,
+							user2: analysisData,
+						}));
+					}}
 				/>
 			)}
 		</div>
@@ -983,6 +1104,8 @@ const IndividualAnalysisSection = ({
 	gender,
 	colorScheme,
 	userAnalysis,
+	savedIndividualData,
+	onAnalysisReady,
 }) => {
 	const { individualAnalysisCache, setIndividualAnalysisCache } =
 		useCoupleAnalysis();
@@ -1010,15 +1133,51 @@ const IndividualAnalysisSection = ({
 	const color = colors[colorScheme];
 
 	useEffect(() => {
+		// Check for saved individual data first (highest priority)
+		if (savedIndividualData) {
+			console.log(
+				`🏛️ Using saved individual analysis data for ${gender}`,
+				savedIndividualData
+			);
+			setBaziData(savedIndividualData.baziData);
+			setIndividualAnalysis(savedIndividualData.analysis);
+
+			// Notify parent that saved data is loaded
+			if (onAnalysisReady) {
+				console.log(
+					`📤 Sending saved individual analysis data for ${gender} to parent`
+				);
+				onAnalysisReady(savedIndividualData);
+			}
+
+			setLoading(false);
+			return;
+		}
+
 		// Create a unique cache key for this user
 		const userCacheKey = `${user?.birthDateTime}_${gender}`;
 
-		// Check cache first to avoid re-loading
+		// Check cache second to avoid re-loading
 		if (individualAnalysisCache[userCacheKey]) {
 			console.log(`📋 Using cached individual analysis for ${gender}`);
 			const cached = individualAnalysisCache[userCacheKey];
 			setBaziData(cached.baziData);
 			setIndividualAnalysis(cached.analysis);
+
+			// Notify parent component that cached analysis is ready
+			if (onAnalysisReady) {
+				const completeIndividualData = {
+					baziData: cached.baziData,
+					analysis: cached.analysis,
+					gender: gender,
+					user: user,
+				};
+				console.log(
+					`📤 Sending cached individual analysis data for ${gender} to parent`
+				);
+				onAnalysisReady(completeIndividualData);
+			}
+
 			setLoading(false);
 			return;
 		}
@@ -1108,6 +1267,20 @@ const IndividualAnalysisSection = ({
 				}));
 				console.log(`💾 Cached individual analysis for ${gender}`);
 
+				// Notify parent component that analysis is ready
+				if (onAnalysisReady) {
+					const completeIndividualData = {
+						baziData: bazi,
+						analysis: analysis,
+						gender: gender,
+						user: user,
+					};
+					console.log(
+						`📤 Sending individual analysis data for ${gender} to parent`
+					);
+					onAnalysisReady(completeIndividualData);
+				}
+
 				setLoading(false);
 			} catch (error) {
 				console.error("Error generating individual analysis:", error);
@@ -1116,7 +1289,7 @@ const IndividualAnalysisSection = ({
 		};
 
 		generateIndividualAnalysis();
-	}, [user, userAnalysis, gender]);
+	}, [user, userAnalysis, gender, savedIndividualData]);
 
 	const parseIndividualAIAnalysis = (aiText, bazi) => {
 		// Enhanced parsing to handle various AI response formats and fix strengths/suggestions categorization
