@@ -20,6 +20,18 @@ module.exports = {
 				"noto-sans-hk": ["Noto Sans HK", "sans-serif"],
 				uoq: ["UoqMunThenKhung", "serif"],
 			},
+			textStroke: {
+				1: "1px",
+				2: "2px",
+				3: "3px",
+				4: "4px",
+				5: "5px",
+			},
+			textStrokeColor: {
+				white: "#ffffff",
+				black: "#000000",
+				gray: "#6b7280",
+			},
 			colors: {
 				border: "hsl(var(--border))",
 				input: "hsl(var(--input))",
@@ -76,5 +88,43 @@ module.exports = {
 			},
 		},
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [
+		require("tailwindcss-animate"),
+		function ({ addUtilities, theme }) {
+			const textStrokeUtilities = {};
+			const textStrokeColorUtilities = {};
+
+			// Generate text stroke width utilities
+			const strokeWidths = theme("textStroke");
+			Object.entries(strokeWidths).forEach(([key, value]) => {
+				textStrokeUtilities[`.text-stroke-${key}`] = {
+					"-webkit-text-stroke-width": value,
+				};
+			});
+
+			// Generate text stroke color utilities
+			const strokeColors = theme("textStrokeColor");
+			Object.entries(strokeColors).forEach(([key, value]) => {
+				textStrokeColorUtilities[`.text-stroke-${key}`] = {
+					"-webkit-text-stroke-color": value,
+				};
+			});
+
+			// Add paint order utility
+			const paintOrderUtilities = {
+				".paint-order-stroke-fill": {
+					"paint-order": "stroke fill",
+				},
+				".paint-order-fill-stroke": {
+					"paint-order": "fill stroke",
+				},
+			};
+
+			addUtilities({
+				...textStrokeUtilities,
+				...textStrokeColorUtilities,
+				...paintOrderUtilities,
+			});
+		},
+	],
 };

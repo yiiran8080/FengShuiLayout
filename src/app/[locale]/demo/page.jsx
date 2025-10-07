@@ -615,7 +615,7 @@ export default function DemoPage() {
 				{/* Tags Container with Drag */}
 				<div
 					ref={scrollContainerRef}
-					className="flex px-4 py-4 space-x-3 overflow-x-auto md:px-12 md:space-x-6 scrollbar-hide cursor-grab active:cursor-grabbing"
+					className="flex px-4 py-6 space-x-3 overflow-x-auto md:px-12 md:space-x-6 scrollbar-hide cursor-grab active:cursor-grabbing"
 					style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
 					onMouseDown={handleMouseDown}
 					onMouseLeave={handleMouseLeave}

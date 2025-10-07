@@ -1157,26 +1157,40 @@ export default function YourPage() {
 
 												<div className="pt-1 text-center text-white">
 													<div className="flex items-baseline justify-center gap-1 mb-1 -translate-x-10">
-														<span
-															className="bg-gradient-to-r from-[#99A800] to-[#5D6600] bg-clip-text text-transparent"
-															style={{
-																fontSize:
-																	"clamp(2rem, 8vw, 4rem)", // Responsive font size
-																fontWeight:
-																	"900", // Extra thick font weight
-																WebkitTextStroke:
-																	"4px white", // Thicker white border
-																WebkitTextFillColor:
-																	"transparent",
-																backgroundImage:
-																	"linear-gradient(to right, #99A800, #5D6600)",
-																WebkitBackgroundClip:
-																	"text",
-																fontFamily:
-																	"Arial Black, sans-serif", // Use a naturally thick font
-															}}
-														>
-															$188
+														<span className="relative inline-block">
+															{/* Background stroke layer */}
+															<span
+																className="absolute inset-0 font-noto-sans-hk text-stroke-white"
+																style={{
+																	fontSize:
+																		"clamp(2rem, 8vw, 4rem)",
+																	fontWeight:
+																		"900",
+																	WebkitTextFillColor:
+																		"transparent",
+																	WebkitTextStroke:
+																		"10px white", // Custom thicker stroke
+																}}
+																aria-hidden="true"
+															>
+																$188
+															</span>
+															{/* Foreground gradient text */}
+															<span
+																className="relative bg-gradient-to-r from-[#99A800] to-[#5D6600] font-noto-sans-hk bg-clip-text text-transparent"
+																style={{
+																	fontSize:
+																		"clamp(2rem, 8vw, 4rem)",
+																	fontWeight:
+																		"900",
+																	backgroundImage:
+																		"linear-gradient(to right, #99A800, #5D6600)",
+																	WebkitBackgroundClip:
+																		"text",
+																}}
+															>
+																$188
+															</span>
 														</span>
 														<span className="text-xs font-bold text-black sm:text-sm opacity-90">
 															/ {t("perTime")}
@@ -1446,26 +1460,40 @@ export default function YourPage() {
 
 												<div className="pt-1 text-center text-white">
 													<div className="flex items-baseline justify-center gap-1 mb-1 -translate-x-10">
-														<span
-															className="bg-gradient-to-r from-[#99A800] to-[#5D6600] bg-clip-text text-transparent"
-															style={{
-																fontSize:
-																	"clamp(2rem, 8vw, 4rem)", // Responsive font size
-																fontWeight:
-																	"900", // Extra thick font weight
-																WebkitTextStroke:
-																	"4px white", // Thicker white border
-																WebkitTextFillColor:
-																	"transparent",
-																backgroundImage:
-																	"linear-gradient(to right, #99A800, #5D6600)",
-																WebkitBackgroundClip:
-																	"text",
-																fontFamily:
-																	"Arial Black, sans-serif", // Use a naturally thick font
-															}}
-														>
-															$88
+														<span className="relative inline-block">
+															{/* Background stroke layer */}
+															<span
+																className="absolute inset-0 font-noto-sans-hk text-stroke-white"
+																style={{
+																	fontSize:
+																		"clamp(2rem, 8vw, 4rem)",
+																	fontWeight:
+																		"900",
+																	WebkitTextFillColor:
+																		"transparent",
+																	WebkitTextStroke:
+																		"10px white", // Custom thicker stroke
+																}}
+																aria-hidden="true"
+															>
+																$88
+															</span>
+															{/* Foreground gradient text */}
+															<span
+																className="relative bg-gradient-to-r from-[#99A800] to-[#5D6600] font-noto-sans-hk bg-clip-text text-transparent"
+																style={{
+																	fontSize:
+																		"clamp(2rem, 8vw, 4rem)",
+																	fontWeight:
+																		"900",
+																	backgroundImage:
+																		"linear-gradient(to right, #99A800, #5D6600)",
+																	WebkitBackgroundClip:
+																		"text",
+																}}
+															>
+																$88
+															</span>
 														</span>
 														<span className="text-xs font-bold text-black sm:text-sm opacity-90">
 															/ {t("perTime")}
@@ -1912,7 +1940,11 @@ export default function YourPage() {
 															</span>
 														</div>
 														<button
-															className="w-full bg-[#A3B116] hover:bg-[#8B9914] text-white py-2 text-sm rounded-lg font-medium transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+															className="w-full bg-gradient-to-b from-[#E8F37A] to-[#A3B116] text-[#575757] py-2 text-sm rounded-lg font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+															style={{
+																boxShadow:
+																	"0 12px 15.5px rgba(49, 67, 67, 0.2)",
+															}}
 															onClick={() =>
 																handleFortunePayment(
 																	"financial"
@@ -2395,7 +2427,11 @@ export default function YourPage() {
 															</span>
 														</div>
 														<button
-															className="w-full bg-[#A3B116] hover:bg-[#8B9914] text-white py-2 text-sm rounded-lg font-medium transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+															className="w-full bg-gradient-to-b from-[#E8F37A] to-[#A3B116] text-[#575757] py-2 text-sm rounded-lg font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+															style={{
+																boxShadow:
+																	"0 12px 15.5px rgba(49, 67, 67, 0.2)",
+															}}
 															onClick={() =>
 																handleFortunePayment(
 																	"love"
@@ -2879,8 +2915,13 @@ export default function YourPage() {
 																</span>
 															</span>
 														</div>
+
 														<button
-															className="w-full bg-[#A3B116] hover:bg-[#8B9914] text-white py-2 text-sm rounded-lg font-medium transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+															className="w-full bg-gradient-to-b from-[#E8F37A] to-[#A3B116] text-[#575757] py-2 text-sm rounded-lg font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+															style={{
+																boxShadow:
+																	"0 12px 15.5px rgba(49, 67, 67, 0.2)",
+															}}
 															onClick={() =>
 																handleFortunePayment(
 																	"health"
@@ -3364,7 +3405,11 @@ export default function YourPage() {
 															</span>
 														</div>
 														<button
-															className="w-full bg-[#A3B116] hover:bg-[#8B9914] text-white py-2 text-sm rounded-lg font-medium transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+															className="w-full bg-gradient-to-b from-[#E8F37A] to-[#A3B116] text-[#575757] py-2 text-sm rounded-lg font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+															style={{
+																boxShadow:
+																	"0 12px 15.5px rgba(49, 67, 67, 0.2)",
+															}}
 															onClick={() =>
 																handleFortunePayment(
 																	"career"
