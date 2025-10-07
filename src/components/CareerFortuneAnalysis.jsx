@@ -15,11 +15,14 @@ const CareerFortuneAnalysis = ({
 	wuxingData,
 	sessionId,
 	onDataUpdate,
+	showHistorical,
+	historicalData,
 }) => {
 	const [activeTab, setActiveTab] = useState("天賦特質解碼");
 	const [careerAnalysis, setCareerAnalysis] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isAIGenerated, setIsAIGenerated] = useState(false);
+	const [hasGenerated, setHasGenerated] = useState(false);
 
 	// Calculate dynamic fortune periods based on birth date
 	const fortunePeriods = userInfo?.birthDateTime
@@ -28,10 +31,26 @@ const CareerFortuneAnalysis = ({
 
 	// Generate AI analysis on component mount
 	useEffect(() => {
-		if (userInfo && wuxingData) {
+		// ✅ Load historical data when showing historical report
+		if (showHistorical && historicalData) {
+			setCareerAnalysis(historicalData.analysis || historicalData);
+			setIsAIGenerated(historicalData.isAIGenerated || false);
+			setIsLoading(false);
+			setHasGenerated(true);
+			return;
+		}
+
+		// ✅ Skip generation when showing historical data but no data available
+		if (showHistorical) {
+			setIsLoading(false);
+			return;
+		}
+
+		// ✅ Only generate once for new reports, prevent infinite loops
+		if (userInfo && wuxingData && !showHistorical && !hasGenerated) {
 			generateCareerAnalysis();
 		}
-	}, [userInfo, wuxingData]);
+	}, [userInfo, wuxingData, showHistorical, historicalData, hasGenerated]);
 
 	const generateCareerAnalysis = async () => {
 		try {
@@ -50,6 +69,7 @@ const CareerFortuneAnalysis = ({
 			if (result.success) {
 				setCareerAnalysis(result.analysis);
 				setIsAIGenerated(result.isAIGenerated || false);
+				setHasGenerated(true);
 				console.log(
 					`🎯 Using ${result.isAIGenerated ? "DeepSeek AI" : "Structured Mock"} career data`
 				);

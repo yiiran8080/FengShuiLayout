@@ -59,6 +59,7 @@ export default function ReportPage({
 	birthDateTime: propBirthDateTime,
 	gender: propGender,
 	sessionId: propSessionId,
+	showHistorical,
 }) {
 	const isMobile = useMobile();
 	const router = useRouter();
@@ -1299,21 +1300,28 @@ export default function ReportPage({
 			setIsPrinting(false);
 		}, 3000);
 	};
-	// 滚动监听，高亮当前章节
+	// 滚动监听，高亮当前章节 - Use useCallback to prevent infinite re-renders
+	const handleScroll = useCallback(() => {
+		if (sectionRefs.current.length === 0 || anchorList.length === 0) return;
+
+		const offsets = sectionRefs.current.map((ref) =>
+			ref ? ref.getBoundingClientRect().top : Infinity
+		);
+		const index = offsets.findIndex((offset) => offset > 80); // 80为Navbar高度
+		const newActiveIndex =
+			index === -1 ? anchorList.length - 1 : Math.max(0, index - 1);
+
+		setActiveIndex((current) => {
+			// Only update if the index actually changed
+			return current !== newActiveIndex ? newActiveIndex : current;
+		});
+	}, [anchorList.length]);
+
 	useEffect(() => {
-		const handleScroll = () => {
-			const offsets = sectionRefs.current.map((ref) =>
-				ref ? ref.getBoundingClientRect().top : Infinity
-			);
-			const index = offsets.findIndex((offset) => offset > 80); // 80为Navbar高度
-			setActiveIndex(
-				index === -1 ? anchorList.length - 1 : Math.max(0, index - 1)
-			);
-		};
 		window.addEventListener("scroll", handleScroll);
-		handleScroll();
+		handleScroll(); // Call once on mount
 		return () => window.removeEventListener("scroll", handleScroll);
-	}, []);
+	}, [handleScroll]);
 
 	const { data: session } = useSession();
 
@@ -1410,13 +1418,13 @@ export default function ReportPage({
 			}
 
 			// Initialize four fortune data if it exists
-			if (reportDocData.fourFortuneAnalysisData) {
+			if (reportDocData.fourFortuneData) {
 				const {
 					healthFortuneData,
 					careerFortuneData,
 					wealthFortuneData,
 					relationshipFortuneData,
-				} = reportDocData.fourFortuneAnalysisData;
+				} = reportDocData.fourFortuneData;
 
 				setFourFortuneData((prev) => ({
 					healthFortuneData:
@@ -1433,6 +1441,104 @@ export default function ReportPage({
 			}
 		}
 	}, [reportDocData]);
+
+	// ✅ NEW: Load historical report data when showHistorical is true
+	useEffect(() => {
+		const loadHistoricalData = async () => {
+			if (showHistorical && propSessionId) {
+				console.log(
+					"📜 Loading historical report data for sessionId:",
+					propSessionId
+				);
+				try {
+					const { success, data } =
+						await getReportData(propSessionId);
+					if (success && data) {
+						console.log("✅ Historical data loaded:", data);
+
+						// Load basic report data (命理分析)
+						if (data.basicReportData) {
+							if (data.basicReportData.mingLiData) {
+								setMingLiData(data.basicReportData.mingLiData);
+							}
+							if (data.basicReportData.liuNianData) {
+								setLiuNianData(
+									data.basicReportData.liuNianData
+								);
+							}
+							if (data.basicReportData.jiajuProData) {
+								setJiajuProData(
+									data.basicReportData.jiajuProData
+								);
+							}
+						}
+
+						// Load four fortune data
+						if (data.fourFortuneData) {
+							console.log(
+								"📜 Historical fourFortuneData loaded:",
+								data.fourFortuneData
+							);
+							console.log(
+								"📜 fourFortuneData keys:",
+								Object.keys(data.fourFortuneData)
+							);
+							if (data.fourFortuneData.healthFortuneData) {
+								console.log(
+									"📜 healthFortuneData structure:",
+									Object.keys(
+										data.fourFortuneData.healthFortuneData
+									)
+								);
+							}
+							setFourFortuneData(data.fourFortuneData);
+						}
+
+						// Load AI generated content
+						if (data.aiGeneratedContent) {
+							// Load comprehensive AI analysis
+							if (
+								data.aiGeneratedContent.comprehensiveAI
+									?.lifeAdvice
+							) {
+								setComprehensiveLifeAdvice(
+									data.aiGeneratedContent.comprehensiveAI
+										.lifeAdvice
+								);
+							}
+
+							// Load wuxing analysis
+							if (data.aiGeneratedContent.wuxingAnalysis) {
+								setAiAnalysis(
+									data.aiGeneratedContent.wuxingAnalysis
+								);
+							}
+
+							// Load life stage analysis
+							if (data.aiGeneratedContent.lifeStageAnalysis) {
+								setLifeStageAnalysis(
+									data.aiGeneratedContent.lifeStageAnalysis
+								);
+							}
+						}
+
+						console.log(
+							"🎯 Historical report data loaded successfully"
+						);
+					} else {
+						console.warn(
+							"⚠️ No historical data found for sessionId:",
+							propSessionId
+						);
+					}
+				} catch (error) {
+					console.error("❌ Error loading historical data:", error);
+				}
+			}
+		};
+
+		loadHistoricalData();
+	}, [showHistorical, propSessionId]);
 
 	useEffect(() => {
 		// PRIORITY 1: If URL parameters are provided, ALWAYS use them (even if user is logged in)
@@ -1505,23 +1611,28 @@ export default function ReportPage({
 	// Saves both Report.jsx data and FourFortuneAnalysis.jsx data together
 	useEffect(() => {
 		const saveCompleteLifeReport = async () => {
-			// Only save when we have basic report data
-			if (!mingLiData && !liuNianData && !jiajuProData) return;
-
-			console.log("💾 Auto-saving complete life report...");
-			console.log("📊 Report data:", {
-				mingLiData: !!mingLiData,
-				liuNianData: !!liuNianData,
-				jiajuProData: !!jiajuProData,
-			});
-			console.log("🎯 Fortune data:", fourFortuneData);
-
-			// Determine report status
-			let reportStatus = "generating";
+			// Check if we have any data worth saving
 			const hasBasicData = mingLiData || liuNianData || jiajuProData;
 			const hasFourFortuneData = Object.values(fourFortuneData).some(
 				(data) => data !== null
 			);
+			const hasAIContent =
+				comprehensiveLifeAdvice ||
+				aiAnalysis ||
+				Object.values(lifeStageAnalysis).some((data) => data !== null);
+
+			// Only save if we have at least some meaningful data
+			if (!hasBasicData && !hasFourFortuneData && !hasAIContent) {
+				console.log("🚫 No data to save yet, skipping...");
+				return;
+			}
+
+			// console.log("💾 Auto-saving complete life report...");
+			// Auto-save logging reduced to prevent console spam
+			// console.log("🎯 Fortune data:", fourFortuneData);
+
+			// Determine report status
+			let reportStatus = "generating";
 
 			if (hasBasicData && hasFourFortuneData) {
 				const allFortunesComplete = Object.values(
@@ -1576,12 +1687,18 @@ export default function ReportPage({
 
 			const result = await saveLifeReport(reportData);
 
-			// ✅ NEW: Also save to alternative reportData collection (no auth required)
+			// ✅ NEW: Also save to reportData collection with userId for user identification
 			try {
+				console.log(
+					"🔧 Preparing to save to reportData collection with userId:",
+					session?.user?.userId
+				);
 				const alternativeReportData = {
 					sessionId: currentSessionId,
+					userId: session?.user?.userId || null, // Include userId for user identification
 					birthDateTime: userInfo?.birthDateTime || propBirthDateTime,
 					gender: userInfo?.gender || propGender,
+					language: locale || "zh-TW", // Include language for proper categorization
 					basicReportData: {
 						mingLiData,
 						liuNianData,
@@ -1607,7 +1724,17 @@ export default function ReportPage({
 				);
 				if (alternativeResult.success) {
 					console.log(
-						"🎉 Report data also saved to reportData collection!"
+						"✅ Report data saved successfully to reportData collection!"
+					);
+					console.log(
+						"🎯 Data saved with userId:",
+						session?.user?.userId
+					);
+					console.log("📋 Session ID:", currentSessionId);
+				} else {
+					console.error(
+						"❌ Failed to save to reportData collection:",
+						alternativeResult.error
 					);
 				}
 			} catch (error) {
@@ -1642,8 +1769,8 @@ export default function ReportPage({
 		fourFortuneData,
 		// comprehensiveInterpersonalAdvice, // HIDDEN: 人際調衡要點
 		comprehensiveLifeAdvice,
-		saveLifeReport,
-		saveReportData, // NEW: Alternative save function
+		// saveLifeReport,           // ✅ REMOVED: These are memoized hooks, don't need in deps
+		// saveReportData,           // ✅ REMOVED: These are memoized hooks, don't need in deps
 		session?.user?.userId,
 		propSessionId,
 		searchParams,
@@ -1656,7 +1783,7 @@ export default function ReportPage({
 	// ✅ NEW: Four Fortune Data Update Handler
 	// This function will be passed to FourFortuneAnalysis to update fortune data
 	const updateFortuneData = useCallback((fortuneType, data) => {
-		console.log(`🎯 Updating ${fortuneType} fortune data:`, data);
+		// console.log(`🎯 Updating ${fortuneType} fortune data`);
 		setFourFortuneData((prev) => ({
 			...prev,
 			[`${fortuneType}FortuneData`]: data,
@@ -1665,13 +1792,14 @@ export default function ReportPage({
 
 	// Memoized loading state to prevent unnecessary re-renders
 	const isAIGenerating = useMemo(() => {
+		// ✅ FIXED: Remove fourFortuneData dependency to prevent infinite loops
+		// Only check loading states, not data existence
 		return (
 			Object.values(isLoadingLifeStage).some((loading) => loading) ||
 			Object.values(isLoadingInterpersonal).some((loading) => loading) ||
 			Object.values(isLoadingLifeAdvice).some((loading) => loading) ||
 			// isLoadingComprehensiveInterpersonal || // HIDDEN: 人際調衡要點
 			isLoadingComprehensiveLifeAdvice ||
-			Object.values(fourFortuneData).some((data) => data === null) ||
 			// !comprehensiveInterpersonalAdvice || // HIDDEN: 人際調衡要點
 			!comprehensiveLifeAdvice
 		);
@@ -1681,7 +1809,6 @@ export default function ReportPage({
 		isLoadingLifeAdvice,
 		// isLoadingComprehensiveInterpersonal, // HIDDEN: 人際調衡要點
 		isLoadingComprehensiveLifeAdvice,
-		fourFortuneData,
 		// comprehensiveInterpersonalAdvice, // HIDDEN: 人際調衡要點
 		comprehensiveLifeAdvice,
 	]);
@@ -1689,6 +1816,14 @@ export default function ReportPage({
 	// Fetch AI analysis for wuxing patterns
 	useEffect(() => {
 		const getAiAnalysis = async () => {
+			// ✅ NEW: Skip AI generation when showing historical data
+			if (showHistorical) {
+				console.log(
+					"📜 Skipping wuxing analysis - showing historical data"
+				);
+				return;
+			}
+
 			if (!userInfo) return;
 
 			try {
@@ -1718,11 +1853,19 @@ export default function ReportPage({
 			}
 		};
 		getAiAnalysis();
-	}, [userInfo]);
+	}, [userInfo, showHistorical]);
 
 	// Fetch AI analysis for element flow obstacles
 	useEffect(() => {
 		const getElementFlowAnalysis = async () => {
+			// ✅ NEW: Skip AI generation when showing historical data
+			if (showHistorical) {
+				console.log(
+					"📜 Skipping element flow analysis - showing historical data"
+				);
+				return;
+			}
+
 			if (!userInfo) return;
 
 			try {
@@ -1732,11 +1875,19 @@ export default function ReportPage({
 			}
 		};
 		getElementFlowAnalysis();
-	}, [userInfo]);
+	}, [userInfo, showHistorical]);
 
 	// Generate life stage analysis for all four pillars
 	useEffect(() => {
 		const generateAllAnalyses = async () => {
+			// ✅ NEW: Skip AI generation when showing historical data
+			if (showHistorical) {
+				console.log(
+					"📜 Skipping AI generation - showing historical data"
+				);
+				return;
+			}
+
 			if (!userInfo || !reportDocData) {
 				console.log("Skipping AI generation - missing data:", {
 					hasUserInfo: !!userInfo,
@@ -1959,7 +2110,7 @@ export default function ReportPage({
 		};
 
 		startAIGeneration();
-	}, [userInfo, reportDocData, aiGenerationStarted]);
+	}, [userInfo, reportDocData, aiGenerationStarted, showHistorical]);
 
 	// Set the first 十神 tab when AI analysis is loaded
 	useEffect(() => {
@@ -2012,11 +2163,6 @@ export default function ReportPage({
 	}
 
 	// console.log('reportDocData:', activeIndex);
-	console.log("Report rendering with data:", {
-		hasReportDocData: !!reportDocData,
-		hasUserInfo: !!userInfo,
-		loading,
-	});
 
 	// Helper functions for element analysis
 	function getStar(strength) {
@@ -2102,6 +2248,24 @@ export default function ReportPage({
 	return (
 		<div className="min-h-screen bg-[#EFEFEF] ">
 			{!isPrinting && <Navbar from="report" />}
+
+			{/* Historical Report Banner */}
+			{!isPrinting && showHistorical && (
+				<div className="max-w-6xl px-4 pt-4 mx-auto mt-16">
+					<div className="p-4 border border-yellow-200 rounded-lg bg-yellow-50">
+						<p className="text-yellow-800">
+							<strong>注意：</strong>
+							您正在查看已保存的歷史報告內容。
+							<a
+								href={`${window.location.pathname}${window.location.search.replace("showHistorical=true", "").replace("&showHistorical=true", "").replace("?showHistorical=true&", "?")}`}
+								className="ml-2 text-blue-600 underline hover:text-blue-800"
+							>
+								點擊這裡生成新的報告
+							</a>
+						</p>
+					</div>
+				</div>
+			)}
 
 			{/* Navigation Row */}
 			{!isPrinting && (
@@ -7460,6 +7624,8 @@ export default function ReportPage({
 					wuxingData={wuxingAnalysis?.wuxingData}
 					sessionId={propSessionId || searchParams.get("sessionId")}
 					onFortuneDataUpdate={updateFortuneData}
+					showHistorical={showHistorical}
+					fortuneDataState={fourFortuneData}
 				/>
 			</div>
 			{/* 第二章 流年运程解析 */}

@@ -152,7 +152,8 @@ export default function useReportDoc(locale, userInfo) {
 								zhData,
 								random
 							),
-							yunchengData: zhData.yunchengData[nayin][random],
+							yunchengData:
+								zhData?.yunchengData?.[nayin]?.[random] || {},
 							jiajuData: getJiajuData(
 								zhData.jiajuData,
 								jiajuRandom
@@ -195,7 +196,8 @@ export default function useReportDoc(locale, userInfo) {
 								twData,
 								random
 							),
-							yunchengData: twData.yunchengData[nayin][random],
+							yunchengData:
+								twData?.yunchengData?.[nayin]?.[random] || {},
 							jiajuData: getJiajuData(
 								twData.jiajuData,
 								jiajuRandom

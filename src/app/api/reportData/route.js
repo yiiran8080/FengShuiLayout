@@ -3,7 +3,7 @@ import dbConnect from "@/lib/mongoose";
 import { genSuccessData, genErrorData } from "../utils/gen-res-data";
 import mongoose from "mongoose";
 
-// Create a new schema for report data that doesn't depend on user authentication
+// Create a new schema for report data with user identification
 const ReportDataSchema = new mongoose.Schema(
 	{
 		sessionId: {
@@ -11,6 +11,12 @@ const ReportDataSchema = new mongoose.Schema(
 			required: true,
 			unique: true,
 			index: true,
+		},
+		userId: {
+			type: String,
+			required: false,
+			index: true,
+			default: null,
 		},
 		birthDateTime: {
 			type: String,
@@ -93,10 +99,11 @@ const ReportDataSchema = new mongoose.Schema(
 	}
 );
 
-// Create or get the model
-const ReportData =
-	mongoose.models.ReportData ||
-	mongoose.model("ReportData", ReportDataSchema);
+// Clear any existing model and create fresh
+if (mongoose.models.ReportData) {
+	delete mongoose.models.ReportData;
+}
+const ReportData = mongoose.model("ReportData", ReportDataSchema);
 
 // GET - Retrieve report data by sessionId
 export async function GET(request) {
@@ -126,6 +133,8 @@ export async function POST(request) {
 		const body = await request.json();
 		const { sessionId, birthDateTime, gender } = body;
 
+		console.log("🔑 POST API received userId:", body.userId); // Debug log to verify userId
+
 		if (!sessionId || !birthDateTime || !gender) {
 			return NextResponse.json(
 				genErrorData(
@@ -146,6 +155,7 @@ export async function POST(request) {
 
 		const reportData = await ReportData.create({
 			sessionId,
+			userId: body.userId, // Add userId field for user-specific report tracking
 			birthDateTime,
 			gender,
 			language: body.language || "zh-TW",
@@ -159,23 +169,39 @@ export async function POST(request) {
 			"✅ Report data created successfully for session:",
 			sessionId
 		);
+		console.log("🔍 Created document with userId:", reportData.userId); // Debug log
+		console.log(
+			"🔍 Full document keys:",
+			Object.keys(reportData.toObject())
+		);
+		console.log(
+			"🔍 Full document:",
+			JSON.stringify(reportData.toObject(), null, 2)
+		);
 		return NextResponse.json(genSuccessData(reportData));
 	} catch (error) {
-		console.error("Error creating report data:", error);
-		return NextResponse.json(genErrorData("Error creating report data"));
+		console.error("🔥 DETAILED ERROR creating report data:", error);
+		console.error("🔥 Error stack:", error.stack);
+		console.error("🔥 Error message:", error.message);
+		return NextResponse.json(
+			genErrorData("Error creating report data: " + error.message)
+		);
 	}
 }
 
 // PATCH - Update existing report data
 export async function PATCH(request) {
 	try {
+		console.log("🚨 PATCH API CALLED - THIS SHOULD SHOW UP!");
 		const body = await request.json();
+		console.log("🚨 REQUEST BODY:", JSON.stringify(body, null, 2));
 		const { sessionId } = body;
 
 		if (!sessionId) {
 			return NextResponse.json(genErrorData("SessionId is required"));
 		}
 
+		console.log("🔑 API received userId:", body.userId); // Debug log to verify userId
 		await dbConnect();
 
 		let reportData = await ReportData.findOne({ sessionId });
@@ -183,6 +209,7 @@ export async function PATCH(request) {
 			// Create new report if it doesn't exist
 			reportData = await ReportData.create({
 				sessionId,
+				userId: body.userId, // Add userId for user-specific report tracking
 				birthDateTime: body.birthDateTime || new Date().toISOString(),
 				gender: body.gender || "male",
 				language: body.language || "zh-TW",
@@ -191,21 +218,31 @@ export async function PATCH(request) {
 		}
 
 		// Update fields
+		if (body.userId) {
+			reportData.userId = body.userId; // Update userId for user association
+			console.log("🔑 Setting userId to:", body.userId); // Debug log
+		}
 		if (body.basicReportData) {
 			reportData.basicReportData = {
-				...reportData.basicReportData.toObject(),
+				...(reportData.basicReportData
+					? reportData.basicReportData.toObject()
+					: {}),
 				...body.basicReportData,
 			};
 		}
 		if (body.fourFortuneData) {
 			reportData.fourFortuneData = {
-				...reportData.fourFortuneData.toObject(),
+				...(reportData.fourFortuneData
+					? reportData.fourFortuneData.toObject()
+					: {}),
 				...body.fourFortuneData,
 			};
 		}
 		if (body.aiGeneratedContent) {
 			reportData.aiGeneratedContent = {
-				...reportData.aiGeneratedContent.toObject(),
+				...(reportData.aiGeneratedContent
+					? reportData.aiGeneratedContent.toObject()
+					: {}),
 				...body.aiGeneratedContent,
 			};
 		}
@@ -220,10 +257,23 @@ export async function PATCH(request) {
 			"✅ Report data updated successfully for session:",
 			sessionId
 		);
+		console.log("🔍 Final userId in saved document:", reportData.userId); // Debug log
+		console.log(
+			"🔍 Final document keys:",
+			Object.keys(reportData.toObject())
+		);
+		console.log(
+			"🔍 Final document:",
+			JSON.stringify(reportData.toObject(), null, 2)
+		);
 		return NextResponse.json(genSuccessData(reportData));
 	} catch (error) {
-		console.error("Error updating report data:", error);
-		return NextResponse.json(genErrorData("Error updating report data"));
+		console.error("🔥 DETAILED ERROR updating report data:", error);
+		console.error("🔥 Error stack:", error.stack);
+		console.error("🔥 Error message:", error.message);
+		return NextResponse.json(
+			genErrorData("Error updating report data: " + error.message)
+		);
 	}
 }
 

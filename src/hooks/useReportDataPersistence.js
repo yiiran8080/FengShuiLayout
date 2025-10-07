@@ -35,12 +35,14 @@ export function useReportDataPersistence() {
 					"📊 Report data includes:",
 					Object.keys(reportData)
 				);
+				console.log("🔑 userId in reportData:", reportData.userId);
 
 				const language = locale === "zh-CN" ? "zh" : "tw";
 
 				// Prepare complete report data structure
 				const reportPayload = {
 					sessionId: reportData.sessionId,
+					userId: reportData.userId, // Add userId for user-specific report tracking
 					birthDateTime: reportData.birthDateTime,
 					gender: reportData.gender,
 					language,
@@ -126,7 +128,7 @@ export function useReportDataPersistence() {
 					console.log(
 						"✅ Report data saved successfully to reportData collection"
 					);
-					console.log("🎯 Session:", reportData.sessionId);
+					// console.log("🎯 Session:", reportData.sessionId);
 					return { success: true, data };
 				} else {
 					console.error(

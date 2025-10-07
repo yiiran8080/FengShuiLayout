@@ -7,11 +7,19 @@ import {
 	formatFortunePeriod,
 } from "@/lib/fortunePeriodCalculator";
 
-const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
+const WealthFortuneAnalysis = ({
+	userInfo,
+	wuxingData,
+	sessionId,
+	onDataUpdate,
+	showHistorical,
+	historicalData,
+}) => {
 	const [activeTab, setActiveTab] = useState("奠基期");
 	const [wealthAnalysis, setWealthAnalysis] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isAIGenerated, setIsAIGenerated] = useState(false);
+	const [hasGenerated, setHasGenerated] = useState(false);
 
 	// Calculate dynamic fortune periods based on birth date
 	const fortunePeriods = userInfo?.birthDateTime
@@ -20,10 +28,34 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 
 	// Generate AI analysis on component mount
 	useEffect(() => {
-		if (userInfo && wuxingData) {
-			generateWealthAnalysis();
+		// ✅ Load historical data when showing historical report
+		if (showHistorical && historicalData) {
+			setWealthAnalysis(historicalData.analysis || historicalData);
+			setIsAIGenerated(historicalData.isAIGenerated || false);
+			setIsLoading(false);
+			setHasGenerated(true);
+			return;
 		}
-	}, [userInfo, wuxingData]);
+
+		// ✅ Skip generation when showing historical data but no data available
+		if (showHistorical) {
+			setIsLoading(false);
+			return;
+		}
+
+		// ✅ Only generate once for new reports, prevent infinite loops
+		if (userInfo && wuxingData && !showHistorical && !hasGenerated) {
+			console.log("💰 WealthFortuneAnalysis: Starting generation");
+			generateWealthAnalysis();
+		} else {
+			console.log("💰 WealthFortuneAnalysis: Skipping generation", {
+				userInfo: !!userInfo,
+				wuxingData: !!wuxingData,
+				showHistorical,
+				hasGenerated,
+			});
+		}
+	}, [userInfo, wuxingData, showHistorical, historicalData, hasGenerated]);
 
 	const generateWealthAnalysis = async () => {
 		try {
@@ -42,9 +74,23 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 			if (result.success) {
 				setWealthAnalysis(result.analysis);
 				setIsAIGenerated(result.isAIGenerated || false);
+				setHasGenerated(true);
 				console.log(
 					`🎯 Using ${result.isAIGenerated ? "DeepSeek AI" : "Structured Mock"} wealth data`
 				);
+
+				// ✅ NEW: Auto-save wealth fortune data
+				if (onDataUpdate && result.analysis) {
+					console.log("💾 Saving wealth fortune analysis data");
+					onDataUpdate({
+						analysis: result.analysis,
+						isAIGenerated: result.isAIGenerated || false,
+						generatedAt: new Date().toISOString(),
+						sessionId,
+						userInfo,
+						wuxingData,
+					});
+				}
 			} else {
 				// Fallback to mock data if API fails
 				console.warn(
@@ -57,6 +103,20 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 				);
 				setWealthAnalysis(mockAnalysis);
 				setIsAIGenerated(false);
+				setHasGenerated(true);
+
+				// ✅ NEW: Auto-save mock wealth fortune data
+				if (onDataUpdate && mockAnalysis) {
+					console.log("💾 Saving mock wealth fortune analysis data");
+					onDataUpdate({
+						analysis: mockAnalysis,
+						isAIGenerated: false,
+						generatedAt: new Date().toISOString(),
+						sessionId,
+						userInfo,
+						wuxingData,
+					});
+				}
 			}
 		} catch (error) {
 			console.error("Error generating wealth analysis:", error);
@@ -66,6 +126,22 @@ const WealthFortuneAnalysis = ({ userInfo, wuxingData }) => {
 				wuxingData
 			);
 			setWealthAnalysis(mockAnalysis);
+			setHasGenerated(true);
+
+			// ✅ NEW: Auto-save mock wealth fortune data on error
+			if (onDataUpdate && mockAnalysis) {
+				console.log(
+					"💾 Saving mock wealth fortune analysis data (error fallback)"
+				);
+				onDataUpdate({
+					analysis: mockAnalysis,
+					isAIGenerated: false,
+					generatedAt: new Date().toISOString(),
+					sessionId,
+					userInfo,
+					wuxingData,
+				});
+			}
 		} finally {
 			setIsLoading(false);
 		}

@@ -26,7 +26,6 @@ let wuxingCache = {};
 export default function getWuxingData(birthDateTime, gender) {
 	//先从缓存中取值
 	let birthStr = moment(birthDateTime).format("YYYY-MM-DD HH:mm:ss");
-	console.log("birthStr", birthStr);
 	if (wuxingCache[birthStr + "-" + gender])
 		return wuxingCache[birthStr + "-" + gender];
 

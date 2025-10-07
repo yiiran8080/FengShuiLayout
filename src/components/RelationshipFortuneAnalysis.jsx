@@ -7,11 +7,19 @@ import {
 	formatFortunePeriod,
 } from "@/lib/fortunePeriodCalculator";
 
-const RelationshipFortuneAnalysis = ({ userInfo, wuxingData }) => {
+const RelationshipFortuneAnalysis = ({
+	userInfo,
+	wuxingData,
+	sessionId,
+	onDataUpdate,
+	showHistorical,
+	historicalData,
+}) => {
 	const [activeTab, setActiveTab] = useState("正緣特徵三重認證");
 	const [relationshipAnalysis, setRelationshipAnalysis] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isAIGenerated, setIsAIGenerated] = useState(false);
+	const [hasGenerated, setHasGenerated] = useState(false);
 
 	// Calculate dynamic fortune periods based on birth date
 	const fortunePeriods = userInfo?.birthDateTime
@@ -20,10 +28,34 @@ const RelationshipFortuneAnalysis = ({ userInfo, wuxingData }) => {
 
 	// Generate AI analysis on component mount
 	useEffect(() => {
-		if (userInfo && wuxingData) {
-			generateRelationshipAnalysis();
+		// ✅ Load historical data when showing historical report
+		if (showHistorical && historicalData) {
+			setRelationshipAnalysis(historicalData.analysis || historicalData);
+			setIsAIGenerated(historicalData.isAIGenerated || false);
+			setIsLoading(false);
+			setHasGenerated(true);
+			return;
 		}
-	}, [userInfo, wuxingData]);
+
+		// ✅ Skip generation when showing historical data but no data available
+		if (showHistorical) {
+			setIsLoading(false);
+			return;
+		}
+
+		// ✅ Only generate once for new reports, prevent infinite loops
+		if (userInfo && wuxingData && !showHistorical && !hasGenerated) {
+			console.log("💕 RelationshipFortuneAnalysis: Starting generation");
+			generateRelationshipAnalysis();
+		} else {
+			console.log("💕 RelationshipFortuneAnalysis: Skipping generation", {
+				userInfo: !!userInfo,
+				wuxingData: !!wuxingData,
+				showHistorical,
+				hasGenerated,
+			});
+		}
+	}, [userInfo, wuxingData, showHistorical, historicalData, hasGenerated]);
 
 	const generateRelationshipAnalysis = async () => {
 		try {
@@ -45,9 +77,23 @@ const RelationshipFortuneAnalysis = ({ userInfo, wuxingData }) => {
 			if (result.success) {
 				setRelationshipAnalysis(result.analysis);
 				setIsAIGenerated(result.isAIGenerated || false);
+				setHasGenerated(true);
 				console.log(
 					`💕 Using ${result.isAIGenerated ? "DeepSeek AI" : "Structured Mock"} relationship data`
 				);
+
+				// ✅ NEW: Auto-save relationship fortune data
+				if (onDataUpdate && result.analysis) {
+					console.log("💾 Saving relationship fortune analysis data");
+					onDataUpdate({
+						analysis: result.analysis,
+						isAIGenerated: result.isAIGenerated || false,
+						generatedAt: new Date().toISOString(),
+						sessionId,
+						userInfo,
+						wuxingData,
+					});
+				}
 			} else {
 				// Fallback to mock data if API fails
 				console.warn(
@@ -60,6 +106,22 @@ const RelationshipFortuneAnalysis = ({ userInfo, wuxingData }) => {
 				);
 				setRelationshipAnalysis(mockAnalysis);
 				setIsAIGenerated(false);
+				setHasGenerated(true);
+
+				// ✅ NEW: Auto-save mock relationship fortune data
+				if (onDataUpdate && mockAnalysis) {
+					console.log(
+						"💾 Saving mock relationship fortune analysis data"
+					);
+					onDataUpdate({
+						analysis: mockAnalysis,
+						isAIGenerated: false,
+						generatedAt: new Date().toISOString(),
+						sessionId,
+						userInfo,
+						wuxingData,
+					});
+				}
 			}
 		} catch (error) {
 			console.error("Error generating relationship analysis:", error);
@@ -69,6 +131,23 @@ const RelationshipFortuneAnalysis = ({ userInfo, wuxingData }) => {
 				wuxingData
 			);
 			setRelationshipAnalysis(mockAnalysis);
+			setHasGenerated(true);
+
+			// ✅ NEW: Auto-save fallback relationship fortune data after error
+			if (onDataUpdate && mockAnalysis) {
+				console.log(
+					"💾 Saving fallback relationship fortune analysis data after error"
+				);
+				onDataUpdate({
+					analysis: mockAnalysis,
+					isAIGenerated: false,
+					generatedAt: new Date().toISOString(),
+					sessionId,
+					userInfo,
+					wuxingData,
+					error: error.message,
+				});
+			}
 		} finally {
 			setIsLoading(false);
 		}

@@ -5,7 +5,10 @@ import { useSession } from "next-auth/react";
 import { Heart, Users, Target } from "lucide-react";
 import { calculateUnifiedElements } from "@/lib/unifiedElementCalculation";
 import { useCoupleAnalysis } from "@/contexts/CoupleAnalysisContext";
-import { saveComponentContentWithUser, getSavedContent } from "@/utils/simpleCoupleContentSave";
+import {
+	saveComponentContentWithUser,
+	getSavedContent,
+} from "@/utils/simpleCoupleContentSave";
 import { getCoupleComponentData } from "@/utils/coupleComponentDataStore";
 import ChartDiagnosisSection from "./ChartDiagnosisSection";
 import EmergencyFengShuiSection from "./EmergencyFengShuiSection";
@@ -63,47 +66,63 @@ const EnhancedCoupleSpecificProblemSolution = ({
 	// Function to handle subsection data collection
 	const handleSubsectionData = (sectionName, data) => {
 		console.log(`📊 Received data from ${sectionName}:`, !!data);
-		setSubsectionData(prev => ({
+		setSubsectionData((prev) => ({
 			...prev,
-			[sectionName]: data
+			[sectionName]: data,
 		}));
 	};
 
 	// Function to save complete data including all subsections
 	const saveCompleteAnalysisData = (baseData, subsections) => {
-		const sessionId = `couple_${user1.birthDateTime}_${user2.birthDateTime}`.replace(/[^a-zA-Z0-9]/g, '_');
-		
+		const sessionId =
+			`couple_${user1.birthDateTime}_${user2.birthDateTime}`.replace(
+				/[^a-zA-Z0-9]/g,
+				"_"
+			);
+
 		const completeData = {
 			...baseData,
 			subsections: subsections,
 			completedAt: new Date().toISOString(),
 		};
 
-		console.log('💾 Saving complete EnhancedCoupleSpecificProblemSolution data:', {
-			baseData: !!baseData,
-			subsectionsCount: Object.keys(subsections).length,
-			subsections: Object.keys(subsections),
-		});
+		console.log(
+			"💾 Saving complete EnhancedCoupleSpecificProblemSolution data:",
+			{
+				baseData: !!baseData,
+				subsectionsCount: Object.keys(subsections).length,
+				subsections: Object.keys(subsections),
+			}
+		);
 
-		saveComponentContentWithUser(session, sessionId, 'enhancedCoupleSpecificProblemSolution', completeData, {
-			birthday: user1.birthDateTime,
-			birthday2: user2.birthDateTime,
-			gender: user1.gender,
-			gender2: user2.gender,
-			specificProblem: specificProblem,
-			problemCategory: problemCategory
-		});
+		saveComponentContentWithUser(
+			session,
+			sessionId,
+			"enhancedCoupleSpecificProblemSolution",
+			completeData,
+			{
+				birthday: user1.birthDateTime,
+				birthday2: user2.birthDateTime,
+				gender: user1.gender,
+				gender2: user2.gender,
+				specificProblem: specificProblem,
+				problemCategory: problemCategory,
+			}
+		);
 	};
 
 	// Effect to save complete data when all subsections are ready
 	useEffect(() => {
 		if (analysisData && Object.keys(subsectionData).length > 0) {
-			console.log('🔄 Checking if all expected subsections are ready...', {
-				analysisData: !!analysisData,
-				subsectionsCount: Object.keys(subsectionData).length,
-				subsectionKeys: Object.keys(subsectionData),
-			});
-			
+			console.log(
+				"🔄 Checking if all expected subsections are ready...",
+				{
+					analysisData: !!analysisData,
+					subsectionsCount: Object.keys(subsectionData).length,
+					subsectionKeys: Object.keys(subsectionData),
+				}
+			);
+
 			// Save complete data (we'll collect subsections as they become available)
 			const timeoutId = setTimeout(() => {
 				saveCompleteAnalysisData(analysisData, subsectionData);
@@ -111,7 +130,13 @@ const EnhancedCoupleSpecificProblemSolution = ({
 
 			return () => clearTimeout(timeoutId);
 		}
-	}, [analysisData, subsectionData, user1.birthDateTime, user2.birthDateTime, specificProblem]);
+	}, [
+		analysisData,
+		subsectionData,
+		user1.birthDateTime,
+		user2.birthDateTime,
+		specificProblem,
+	]);
 
 	// Use CoupleAnnualAnalysis approach (BETTER: single source of truth, cached, consistent)
 	const compatibilityScore = useMemo(() => {
@@ -181,49 +206,86 @@ const EnhancedCoupleSpecificProblemSolution = ({
 
 	// Load saved data from database first (highest priority)
 	useEffect(() => {
-		console.log("🐛 DEBUG: useEffect triggered - user1:", user1, "user2:", user2);
+		console.log(
+			"🐛 DEBUG: useEffect triggered - user1:",
+			user1,
+			"user2:",
+			user2
+		);
 		console.log("🐛 DEBUG: femaleUser:", femaleUser, "maleUser:", maleUser);
-		
+
 		if (user1 && user2) {
 			const loadSavedData = async () => {
-				const sessionId = `couple_${user1.birthDateTime}_${user2.birthDateTime}`.replace(
-					/[^a-zA-Z0-9]/g,
-					"_"
-				);
+				const sessionId =
+					`couple_${user1.birthDateTime}_${user2.birthDateTime}`.replace(
+						/[^a-zA-Z0-9]/g,
+						"_"
+					);
 
 				try {
-					console.log("🔍 Loading EnhancedCoupleSpecificProblemSolution data from database for session:", sessionId);
+					console.log(
+						"🔍 Loading EnhancedCoupleSpecificProblemSolution data from database for session:",
+						sessionId
+					);
 					const result = await getSavedContent(sessionId);
-					
+
 					console.log("🐛 DEBUG: getSavedContent result:", result);
 					console.log("🐛 DEBUG: result.success:", result.success);
-					console.log("🐛 DEBUG: result.savedContent:", result.savedContent);
-					console.log("🐛 DEBUG: savedContent keys:", result.savedContent ? Object.keys(result.savedContent) : 'no savedContent');
-					
-					if (result.success && result.savedContent && result.savedContent.enhancedCoupleSpecificProblemSolution) {
-						console.log("🏛️ Found saved EnhancedCoupleSpecificProblemSolution data in database:", result.savedContent.enhancedCoupleSpecificProblemSolution);
-						const savedData = result.savedContent.enhancedCoupleSpecificProblemSolution;
-						
+					console.log(
+						"🐛 DEBUG: result.savedContent:",
+						result.savedContent
+					);
+					console.log(
+						"🐛 DEBUG: savedContent keys:",
+						result.savedContent
+							? Object.keys(result.savedContent)
+							: "no savedContent"
+					);
+
+					if (
+						result.success &&
+						result.savedContent &&
+						result.savedContent
+							.enhancedCoupleSpecificProblemSolution
+					) {
+						console.log(
+							"🏛️ Found saved EnhancedCoupleSpecificProblemSolution data in database:",
+							result.savedContent
+								.enhancedCoupleSpecificProblemSolution
+						);
+						const savedData =
+							result.savedContent
+								.enhancedCoupleSpecificProblemSolution;
+
 						setAnalysisData(savedData);
 						setDatabaseDataLoaded(true);
 						setLoading(false);
-						
+
 						// Also set subsection data if available
 						if (savedData.subsections) {
 							setSubsectionData(savedData.subsections);
 						}
-						
+
 						// Set problem category from saved metadata if available
-						if (result.metadata && result.metadata.problemCategory) {
+						if (
+							result.metadata &&
+							result.metadata.problemCategory
+						) {
 							setProblemCategory(result.metadata.problemCategory);
 						}
-						
+
 						return;
 					} else {
-						console.log("🔍 No saved EnhancedCoupleSpecificProblemSolution data found in database", result);
+						console.log(
+							"🔍 No saved EnhancedCoupleSpecificProblemSolution data found in database",
+							result
+						);
 					}
 				} catch (error) {
-					console.error("❌ Error loading saved EnhancedCoupleSpecificProblemSolution data:", error);
+					console.error(
+						"❌ Error loading saved EnhancedCoupleSpecificProblemSolution data:",
+						error
+					);
 				}
 			};
 
@@ -235,12 +297,16 @@ const EnhancedCoupleSpecificProblemSolution = ({
 	useEffect(() => {
 		// Skip if database data was already loaded
 		if (databaseDataLoaded) return;
-		
+
 		if (femaleUser && maleUser && specificProblem) {
 			// Check for historical data from browser storage (fallback)
-			const historicalData = getCoupleComponentData('enhancedCoupleSpecificProblemSolution');
+			const historicalData = getCoupleComponentData(
+				"enhancedCoupleSpecificProblemSolution"
+			);
 			if (historicalData) {
-				console.log("📚 Loading historical data from browser storage for Enhanced Couple Specific Problem Solution");
+				console.log(
+					"📚 Loading historical data from browser storage for Enhanced Couple Specific Problem Solution"
+				);
 				setAnalysisData(historicalData);
 				setLoading(false);
 			} else {
@@ -357,18 +423,22 @@ const EnhancedCoupleSpecificProblemSolution = ({
 			if (response.ok) {
 				const data = await response.json();
 				setAnalysisData(data);
-				
+
 				// Note: Complete data will be saved when subsections are ready
-				console.log('⏳ Base analysis ready, waiting for subsections...');
+				console.log(
+					"⏳ Base analysis ready, waiting for subsections..."
+				);
 			} else {
 				// Try to get data from response even if not ok
 				try {
 					const errorData = await response.json();
 					if (errorData.female && errorData.male) {
 						setAnalysisData(errorData);
-						
+
 						// Note: Complete data will be saved when subsections are ready
-						console.log('⏳ Base analysis ready (from error response), waiting for subsections...');
+						console.log(
+							"⏳ Base analysis ready (from error response), waiting for subsections..."
+						);
 					} else {
 						throw new Error("No valid data in response");
 					}
@@ -517,7 +587,9 @@ const EnhancedCoupleSpecificProblemSolution = ({
 						maleUser={maleUser}
 						analysisData={analysisData}
 						savedData={subsectionData.chartDiagnosis}
-						onDataReady={(data) => handleSubsectionData('chartDiagnosis', data)}
+						onDataReady={(data) =>
+							handleSubsectionData("chartDiagnosis", data)
+						}
 					/>
 
 					<div className="mb-4 sm:mb-6">
@@ -537,7 +609,9 @@ const EnhancedCoupleSpecificProblemSolution = ({
 							maleUser={maleUser}
 							analysisData={analysisData}
 							savedData={subsectionData.emergencyFengShui}
-							onDataReady={(data) => handleSubsectionData('emergencyFengShui', data)}
+							onDataReady={(data) =>
+								handleSubsectionData("emergencyFengShui", data)
+							}
 						/>
 					</div>
 
@@ -558,7 +632,9 @@ const EnhancedCoupleSpecificProblemSolution = ({
 							maleUser={maleUser}
 							analysisData={analysisData}
 							savedData={subsectionData.restartChemistry}
-							onDataReady={(data) => handleSubsectionData('restartChemistry', data)}
+							onDataReady={(data) =>
+								handleSubsectionData("restartChemistry", data)
+							}
 						/>
 					</div>
 				</div>

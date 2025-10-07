@@ -5,7 +5,8 @@ import Footer from "@/components/home/Footer";
 
 export default async function ReportPage({ params, searchParams }) {
 	const { locale } = await params;
-	const { birthDateTime, gender, sessionId } = await searchParams;
+	const { birthDateTime, gender, sessionId, showHistorical } =
+		await searchParams;
 
 	return (
 		<div>
@@ -14,6 +15,7 @@ export default async function ReportPage({ params, searchParams }) {
 				gender={gender}
 				sessionId={sessionId}
 				locale={locale}
+				showHistorical={showHistorical === "true"}
 			/>
 			<Footer />
 		</div>

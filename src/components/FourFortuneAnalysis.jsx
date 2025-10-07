@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, {
+	useRef,
+	useState,
+	useEffect,
+	useCallback,
+	useMemo,
+} from "react";
 import { useSearchParams, useParams, useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
@@ -29,6 +35,8 @@ export default function FourFortuneAnalysis({
 	userInfo: propUserInfo,
 	wuxingData: propWuxingData,
 	onFortuneDataUpdate,
+	showHistorical,
+	fortuneDataState: propFortuneDataState,
 }) {
 	const router = useRouter();
 	const locale = useLocale();
@@ -70,38 +78,94 @@ export default function FourFortuneAnalysis({
 		}
 	}, [propUserInfo, birthDateTime, gender, sessionId]);
 
-	// ✅ NEW: Auto-save fortune data when any fortune analysis is generated
+	// Use direct callback reference to prevent memoization loops
+
+	// ✅ NEW: Load historical fortune data when showHistorical is true
+	const loadedHistoricalRef = useRef(false);
+
 	useEffect(() => {
 		if (
-			onFortuneDataUpdate &&
-			Object.values(fortuneDataState).some((data) => data !== null)
+			showHistorical &&
+			propFortuneDataState &&
+			Object.keys(propFortuneDataState).length > 0 &&
+			!loadedHistoricalRef.current
 		) {
+			console.log("🎯 FourFortuneAnalysis - Loading historical data");
+			console.log("🎯 propFortuneDataState:", propFortuneDataState);
 			console.log(
-				"🎯 Four Fortune Analysis data updated:",
-				fortuneDataState
+				"🎯 propFortuneDataState keys:",
+				Object.keys(propFortuneDataState)
 			);
 
-			// Send updated data to Report.jsx for comprehensive saving
-			Object.entries(fortuneDataState).forEach(([type, data]) => {
-				if (data) {
-					onFortuneDataUpdate(type, data);
-				}
-			});
+			const newState = {
+				health: propFortuneDataState.healthFortuneData || null,
+				career: propFortuneDataState.careerFortuneData || null,
+				wealth: propFortuneDataState.wealthFortuneData || null,
+				relationship:
+					propFortuneDataState.relationshipFortuneData || null,
+			};
+
+			console.log("🎯 newState:", newState);
+			console.log("🎯 newState.health:", newState.health);
+
+			setFortuneDataState(newState);
+			loadedHistoricalRef.current = true;
+
+			// ✅ FIXED: Don't call parent callback in historical mode to prevent loops
+			// Historical data is already loaded, no need to notify parent
 		}
-	}, [fortuneDataState, onFortuneDataUpdate]);
+
+		// Reset flag when showHistorical changes to false
+		if (!showHistorical) {
+			loadedHistoricalRef.current = false;
+		}
+	}, [showHistorical, propFortuneDataState]);
+
+	// ✅ REMOVED: Redundant auto-save that was causing infinite loops
+	// Individual components already call handleFortuneUpdate which saves to parent
 
 	// ✅ NEW: Handle fortune data updates from child components
-	const handleFortuneUpdate = (fortuneType, data) => {
-		console.log(`💾 Saving ${fortuneType} fortune analysis:`, data);
-		setFortuneDataState((prev) => ({
-			...prev,
-			[fortuneType]: {
+	const handleFortuneUpdate = useCallback(
+		(fortuneType, data) => {
+			// console.log(`💾 Saving ${fortuneType} fortune analysis data`);
+			const fortuneDataWithMeta = {
 				...data,
 				generatedAt: new Date().toISOString(),
 				sessionId,
-			},
-		}));
-	};
+			};
+
+			setFortuneDataState((prev) => ({
+				...prev,
+				[fortuneType]: fortuneDataWithMeta,
+			}));
+
+			// ✅ NEW: Also call the parent's onFortuneDataUpdate to persist to database
+			// Don't call parent callback in historical mode to prevent loops
+			if (onFortuneDataUpdate && !showHistorical) {
+				// console.log(`🔄 Calling parent onFortuneDataUpdate for ${fortuneType} fortune`);
+				onFortuneDataUpdate(fortuneType, fortuneDataWithMeta);
+			}
+		},
+		[sessionId, showHistorical]
+	);
+
+	// Create stable callback references to prevent infinite loops
+	const handleHealthUpdate = useCallback(
+		(data) => handleFortuneUpdate("health", data),
+		[handleFortuneUpdate]
+	);
+	const handleCareerUpdate = useCallback(
+		(data) => handleFortuneUpdate("career", data),
+		[handleFortuneUpdate]
+	);
+	const handleWealthUpdate = useCallback(
+		(data) => handleFortuneUpdate("wealth", data),
+		[handleFortuneUpdate]
+	);
+	const handleRelationshipUpdate = useCallback(
+		(data) => handleFortuneUpdate("relationship", data),
+		[handleFortuneUpdate]
+	);
 
 	// Analyze wuxing strength - same logic as Report.jsx
 	const analyzeWuxingStrength = (elementCounts) => {
@@ -226,7 +290,7 @@ export default function FourFortuneAnalysis({
 	};
 
 	// Get wuxing analysis - prioritize prop data from Report.jsx
-	const wuxingAnalysis = (() => {
+	const wuxingAnalysis = useMemo(() => {
 		if (propWuxingData && userInfo) {
 			// Use wuxingData passed from Report.jsx to ensure consistency
 			return {
@@ -237,7 +301,7 @@ export default function FourFortuneAnalysis({
 		}
 		// Fallback to own calculation if no prop data
 		return userInfo ? calculateWuxingAnalysis(userInfo) : null;
-	})();
+	}, [propWuxingData, userInfo]);
 
 	return (
 		<div className="min-h-screen bg-[#EFEFEF]">
@@ -552,7 +616,15 @@ export default function FourFortuneAnalysis({
 				<section className="w-[95%] sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-3 sm:p-8 lg:p-13 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
 					{(() => {
 						const analysis = wuxingAnalysis;
-						if (!analysis) {
+						// ✅ FIXED: In historical mode, check for historical data instead of analysis
+						const shouldShowLoading = showHistorical
+							? !fortuneDataState.health ||
+								!fortuneDataState.health.analysis
+							: !analysis;
+
+						// Debug logging removed to prevent infinite loops
+
+						if (shouldShowLoading) {
 							return (
 								<div className="py-20 text-center">
 									<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
@@ -573,9 +645,9 @@ export default function FourFortuneAnalysis({
 								userInfo={userInfo}
 								wuxingData={analysis.wuxingData}
 								sessionId={sessionId}
-								onDataUpdate={(data) =>
-									handleFortuneUpdate("health", data)
-								}
+								onDataUpdate={handleHealthUpdate}
+								showHistorical={showHistorical}
+								historicalData={fortuneDataState.health}
 							/>
 						);
 					})()}
@@ -585,7 +657,13 @@ export default function FourFortuneAnalysis({
 				<section className="w-[95%] sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-3 sm:p-8 lg:p-13 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
 					{(() => {
 						const analysis = wuxingAnalysis;
-						if (!analysis) {
+						// ✅ FIXED: In historical mode, check for historical data instead of analysis
+						const shouldShowLoading = showHistorical
+							? !fortuneDataState.career ||
+								!fortuneDataState.career.analysis
+							: !analysis;
+
+						if (shouldShowLoading) {
 							return (
 								<div className="py-20 text-center">
 									<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
@@ -606,9 +684,9 @@ export default function FourFortuneAnalysis({
 								userInfo={userInfo}
 								wuxingData={analysis.wuxingData}
 								sessionId={sessionId}
-								onDataUpdate={(data) =>
-									handleFortuneUpdate("career", data)
-								}
+								onDataUpdate={handleCareerUpdate}
+								showHistorical={showHistorical}
+								historicalData={fortuneDataState.career}
 							/>
 						);
 					})()}
@@ -618,7 +696,13 @@ export default function FourFortuneAnalysis({
 				<section className="w-[95%] sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-3 sm:p-8 lg:p-13 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
 					{(() => {
 						const analysis = wuxingAnalysis;
-						if (!analysis) {
+						// ✅ FIXED: In historical mode, check for historical data instead of analysis
+						const shouldShowLoading = showHistorical
+							? !fortuneDataState.wealth ||
+								!fortuneDataState.wealth.analysis
+							: !analysis;
+
+						if (shouldShowLoading) {
 							return (
 								<div className="py-20 text-center">
 									<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
@@ -639,9 +723,9 @@ export default function FourFortuneAnalysis({
 								userInfo={userInfo}
 								wuxingData={analysis.wuxingData}
 								sessionId={sessionId}
-								onDataUpdate={(data) =>
-									handleFortuneUpdate("wealth", data)
-								}
+								onDataUpdate={handleWealthUpdate}
+								showHistorical={showHistorical}
+								historicalData={fortuneDataState.wealth}
 							/>
 						);
 					})()}
@@ -651,7 +735,13 @@ export default function FourFortuneAnalysis({
 				<section className="w-[95%] sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-3 sm:p-8 lg:p-13 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
 					{(() => {
 						const analysis = wuxingAnalysis;
-						if (!analysis) {
+						// ✅ FIXED: In historical mode, check for historical data instead of analysis
+						const shouldShowLoading = showHistorical
+							? !fortuneDataState.relationship ||
+								!fortuneDataState.relationship.analysis
+							: !analysis;
+
+						if (shouldShowLoading) {
 							return (
 								<div className="py-20 text-center">
 									<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
@@ -672,9 +762,9 @@ export default function FourFortuneAnalysis({
 								userInfo={userInfo}
 								wuxingData={analysis.wuxingData}
 								sessionId={sessionId}
-								onDataUpdate={(data) =>
-									handleFortuneUpdate("relationship", data)
-								}
+								onDataUpdate={handleRelationshipUpdate}
+								showHistorical={showHistorical}
+								historicalData={fortuneDataState.relationship}
 							/>
 						);
 					})()}

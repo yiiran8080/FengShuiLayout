@@ -12,11 +12,14 @@ const HealthFortuneAnalysis = ({
 	wuxingData,
 	sessionId,
 	onDataUpdate,
+	showHistorical,
+	historicalData,
 }) => {
 	const [activeTab, setActiveTab] = useState("腎骨系統核心");
 	const [healthAnalysis, setHealthAnalysis] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isAIGenerated, setIsAIGenerated] = useState(false);
+	const [hasGenerated, setHasGenerated] = useState(false);
 
 	// Calculate dynamic fortune periods based on birth date
 	const fortunePeriods = userInfo?.birthDateTime
@@ -25,10 +28,56 @@ const HealthFortuneAnalysis = ({
 
 	// Generate AI analysis on component mount
 	useEffect(() => {
-		if (userInfo && wuxingData) {
-			generateHealthAnalysis();
+		// ✅ DEBUG: Log historical data structure
+		if (showHistorical) {
+			console.log(
+				"🏥 HealthFortuneAnalysis - showHistorical:",
+				showHistorical
+			);
+			console.log(
+				"🏥 HealthFortuneAnalysis - historicalData:",
+				historicalData
+			);
+			if (historicalData) {
+				console.log(
+					"🏥 HealthFortuneAnalysis - historicalData keys:",
+					Object.keys(historicalData)
+				);
+				console.log(
+					"🏥 HealthFortuneAnalysis - historicalData.analysis:",
+					historicalData.analysis
+				);
+			}
 		}
-	}, [userInfo, wuxingData]);
+
+		// ✅ Load historical data when showing historical report
+		if (showHistorical && historicalData) {
+			setHealthAnalysis(historicalData.analysis || historicalData);
+			setIsAIGenerated(historicalData.isAIGenerated || false);
+			setIsLoading(false);
+			setHasGenerated(true);
+			return;
+		}
+
+		// ✅ Skip generation when showing historical data but no data available
+		if (showHistorical) {
+			setIsLoading(false);
+			return;
+		}
+
+		// ✅ Only generate once for new reports, prevent infinite loops
+		if (userInfo && wuxingData && !showHistorical && !hasGenerated) {
+			console.log("🏥 HealthFortuneAnalysis: Starting generation");
+			generateHealthAnalysis();
+		} else {
+			console.log("🏥 HealthFortuneAnalysis: Skipping generation", {
+				userInfo: !!userInfo,
+				wuxingData: !!wuxingData,
+				showHistorical,
+				hasGenerated,
+			});
+		}
+	}, [userInfo, wuxingData, showHistorical, historicalData, hasGenerated]);
 
 	const generateHealthAnalysis = async () => {
 		try {
@@ -47,6 +96,7 @@ const HealthFortuneAnalysis = ({
 			if (result.success) {
 				setHealthAnalysis(result.analysis);
 				setIsAIGenerated(result.isAIGenerated || false);
+				setHasGenerated(true);
 				console.log(
 					`🎯 Using ${result.isAIGenerated ? "DeepSeek AI" : "Structured Mock"} data`
 				);
@@ -72,6 +122,7 @@ const HealthFortuneAnalysis = ({
 				);
 				setHealthAnalysis(mockAnalysis);
 				setIsAIGenerated(false);
+				setHasGenerated(true);
 
 				// ✅ NEW: Auto-save mock health fortune data
 				if (onDataUpdate && mockAnalysis) {
@@ -94,6 +145,7 @@ const HealthFortuneAnalysis = ({
 				wuxingData
 			);
 			setHealthAnalysis(mockAnalysis);
+			setHasGenerated(true);
 
 			// ✅ NEW: Auto-save error fallback health fortune data
 			if (onDataUpdate && mockAnalysis) {

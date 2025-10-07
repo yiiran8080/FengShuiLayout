@@ -24,15 +24,12 @@ export function useLifeReportPersistence() {
 			const userId = session?.user?.userId;
 			if (!userId) {
 				console.warn("❌ No userId found, cannot save life report");
+				console.warn("📋 Session data:", session);
 				return { success: false, error: "No user session" };
 			}
 
 			try {
-				console.log("💾 Saving complete life report for user:", userId);
-				console.log(
-					"📊 Report data includes:",
-					Object.keys(reportData)
-				);
+				// console.log("💾 Saving complete life report for user:", userId);
 
 				const language = locale === "zh-CN" ? "zh" : "tw";
 				const sessionId = reportData.sessionId;
@@ -122,22 +119,34 @@ export function useLifeReportPersistence() {
 					reportGeneratedAt: new Date(),
 				};
 
+				console.log(
+					"🚀 Making PATCH request to:",
+					`/api/reportUserDoc/${userId}/${language}`
+				);
+				console.log(
+					"📤 Payload size:",
+					JSON.stringify(lifeReportPayload).length,
+					"characters"
+				);
+
 				const { status, data } = await patch(
 					`/api/reportUserDoc/${userId}/${language}`,
 					lifeReportPayload
 				);
 
+				console.log("📥 API Response status:", status);
 				if (status === 0) {
 					console.log(
 						"✅ Life report saved successfully in AI content structure"
 					);
-					console.log("🎯 AI content saved for session:", sessionId);
+					// console.log("🎯 AI content saved for session:", sessionId);
 					return { success: true, data };
 				} else {
 					console.error(
 						"❌ Failed to save life report, status:",
 						status
 					);
+					console.error("📋 Response data:", data);
 					return {
 						success: false,
 						error: `API returned status ${status}`,
