@@ -744,27 +744,48 @@ export default function DemoPage() {
 
 													{/* Centered Price */}
 													<div className="flex flex-row justify-center flex-1">
-														<div
-															className="text-[45px] font-extrabold text-center sm:text-5xl font-arial-black md:text-7xl"
-															style={{
-																background:
-																	"linear-gradient(to bottom, #697304, #838A53)",
-																WebkitBackgroundClip:
-																	"text",
-																WebkitTextFillColor:
-																	"transparent",
-																backgroundClip:
-																	"text",
-																WebkitTextStroke:
-																	"2.5px white",
-																filter: "drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25))",
-															}}
-														>
-															{
-																getPricing()
-																	.discountPrice
-															}
-														</div>
+														<span className="relative inline-block">
+															{/* Background stroke layer */}
+															<span
+																className="absolute inset-0 font-noto-sans-hk text-stroke-white"
+																style={{
+																	fontSize:
+																		"clamp(2rem, 8vw, 4rem)",
+																	fontWeight:
+																		"900",
+																	WebkitTextFillColor:
+																		"transparent",
+																	WebkitTextStroke:
+																		"10px white", // Custom thicker stroke
+																}}
+																aria-hidden="true"
+															>
+																{
+																	getPricing()
+																		.discountPrice
+																}
+															</span>
+															{/* Foreground gradient text */}
+															<span
+																className="relative bg-gradient-to-r from-[#99A800] to-[#5D6600] font-noto-sans-hk bg-clip-text text-transparent"
+																style={{
+																	fontSize:
+																		"clamp(2rem, 8vw, 4rem)",
+																	fontWeight:
+																		"900",
+																	backgroundImage:
+																		"linear-gradient(to right, #99A800, #5D6600)",
+																	WebkitBackgroundClip:
+																		"text",
+																}}
+															>
+																{
+																	getPricing()
+																		.discountPrice
+																}
+															</span>
+														</span>
+
 														<div
 															className="text-xs text-white sm:text-sm font-noto-sans-hk md:text-base"
 															style={{

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import {
 	Send,
@@ -21,6 +21,7 @@ import Navbar from "@/components/Navbar";
 
 export default function Home() {
 	const { data: session } = useSession();
+	const router = useRouter();
 	const pathname = usePathname();
 	const currentLocale = pathname?.split("/")[1] || "zh-TW"; // Extract locale from URL
 	// 定義消息類型
@@ -316,6 +317,12 @@ export default function Home() {
 
 	const handleSendMessage = async () => {
 		if (!inputMessage.trim() || isLoading) return;
+
+		// Check if user is logged in before sending message
+		if (!session) {
+			router.push("/auth/login");
+			return;
+		}
 
 		// 隱藏落地頁，顯示正常聊天界面
 		if (showLandingPage) {

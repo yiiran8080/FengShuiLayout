@@ -22,7 +22,7 @@ const TAB_CONFIG = {
 			selectedBg: "#DEAB20",
 			selectedImg: "#FFFFFF",
 			unselectedBg: "#EFEFEF",
-			unselectedImg: "#DEAB20",
+			unselectedImg: "#D09900",
 		},
 		right: {
 			label: "調候與病源關鍵",
@@ -141,7 +141,7 @@ function getTabBg(tab, concern, selected) {
 }
 
 function getTabImgColor(tab, concern, selected) {
-	if (tab === "日主特性") return selected ? "#FFFFFF" : "#B4003C";
+	if (tab === "日主特性") return selected ? "#FFFFFF" : "#F";
 	if (tab === "middle")
 		return selected
 			? getTabConfig(concern).middle.selectedImg

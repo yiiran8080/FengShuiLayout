@@ -96,14 +96,14 @@ export default function MenuBar({ className, isOpen, setIsOpen, from }) {
 					>
 						{t("cta")}
 					</Link> */}
-					{isLogined && pathname.indexOf("/report") < 0 && (
+					{/* {isLogined && pathname.indexOf("/report") < 0 && (
 						<Link
 							className="block text-base focus:bg-secondary focus:text-primary py-3.5 px-4"
 							href="/report"
 						>
 							{t("readReport")}
 						</Link>
-					)}
+					)} */}
 
 					{/* Report History Link - only show for logged in users */}
 					{isLogined && (

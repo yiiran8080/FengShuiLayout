@@ -400,6 +400,13 @@ export default function YourPage() {
 
 	// Handle expert188 payment (direct payment without sqft)
 	const handleExpert188Payment = async () => {
+		// Check if user is logged in first
+		if (!session?.user?.userId) {
+			// Redirect to login page immediately
+			router.push("/auth/login");
+			return;
+		}
+
 		setIsProcessingPayment(true);
 		setCurrentCardType("expert188");
 
@@ -442,6 +449,13 @@ export default function YourPage() {
 
 	// Handle expert88 payment (direct payment without sqft)
 	const handleExpert88Payment = async () => {
+		// Check if user is logged in first
+		if (!session?.user?.userId) {
+			// Redirect to login page immediately
+			router.push("/auth/login");
+			return;
+		}
+
 		setIsProcessingPayment(true);
 		setCurrentCardType("expert88");
 
@@ -482,8 +496,15 @@ export default function YourPage() {
 		}
 	};
 
-	// Handle $38 fortune payment with concern type
+	// Handle $38 fortune payment with concern type and specific price IDs
 	const handleFortunePayment = async (concernType) => {
+		// Check if user is logged in first
+		if (!session?.user?.userId) {
+			// Redirect to login page immediately
+			router.push("/auth/login");
+			return;
+		}
+
 		setIsProcessingPayment(true);
 		setCurrentCardType(`fortune_${concernType}`);
 
@@ -499,16 +520,19 @@ export default function YourPage() {
 				regionToLocaleMap[storedRegion] || locale || "zh-TW";
 
 			console.log(
-				"💰 Price page individual payment - Using fresh locale:",
+				"💰 Fortune payment - Using locale:",
 				freshLocale,
+				"for concern:",
+				concernType,
 				"from stored region:",
 				storedRegion
 			);
 
-			// Prepare request body with chat context if available
+			// Prepare request body for the new fortune category API
 			const requestBody = {
-				concern: concernType, // financial, love, health, career
-				locale: freshLocale, // 🔥 Fix: Add locale parameter like couple payment
+				concernType: concernType, // financial, love, health, career, wealth, relationship
+				locale: freshLocale,
+				quantity: 1,
 			};
 
 			// Include chat-specific data if coming from chat
@@ -521,41 +545,33 @@ export default function YourPage() {
 				);
 			}
 
-			// Create checkout session for fortune reading
-			const response = await fetch("/api/payment-fortune", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(requestBody),
-			});
+			// Create checkout session using the new fortune category API
+			const response = await fetch(
+				"/api/checkoutSessions/payment-fortune-category",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(requestBody),
+				}
+			);
 
 			if (response.ok) {
 				const data = await response.json();
 				console.log("Fortune Payment Response:", data);
 
-				if (data.sessionId) {
-					// Import Stripe and redirect to checkout
-					const stripe = await import("@stripe/stripe-js").then(
-						(mod) =>
-							mod.loadStripe(
-								process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-							)
-					);
-
-					if (stripe) {
-						await stripe.redirectToCheckout({
-							sessionId: data.sessionId,
-						});
-					} else {
-						throw new Error("Failed to load Stripe");
-					}
+				if (data.data?.url) {
+					// Direct redirect to Stripe checkout URL (like expert payments)
+					window.location.href = data.data.url;
 				} else {
-					throw new Error("No session ID received");
+					throw new Error("No checkout URL received");
 				}
 			} else {
 				const errorData = await response.json();
-				throw new Error(errorData.error || "Payment error");
+				throw new Error(
+					errorData.message || errorData.error || "Payment error"
+				);
 			}
 		} catch (error) {
 			console.error("Fortune payment error:", error);
@@ -567,6 +583,13 @@ export default function YourPage() {
 
 	// Handle $88 couple payment
 	const handleCouplePayment = async () => {
+		// Check if user is logged in first
+		if (!session?.user?.userId) {
+			// Redirect to login page immediately
+			router.push("/auth/login");
+			return;
+		}
+
 		setIsProcessingPayment(true);
 		setCurrentCardType("couple");
 
@@ -1212,7 +1235,7 @@ export default function YourPage() {
 												{/* Original price section - moved to right */}
 												<div className="mb-6 text-right">
 													<div className="flex items-baseline justify-end gap-2 mb-2">
-														<span className="text-4xl font-bold text-gray-400 line-through">
+														<span className="text-4xl font-bold text-gray-400 line-through font-noto-sans-hk">
 															$388
 														</span>
 														<span className="text-sm font-bold text-gray-400">
@@ -1515,7 +1538,7 @@ export default function YourPage() {
 												{/* Original price section - moved to right */}
 												<div className="mb-6 text-right">
 													<div className="flex items-baseline justify-end gap-2 mb-2">
-														<span className="text-4xl font-bold text-gray-400 line-through">
+														<span className="text-4xl font-bold text-gray-400 line-through font-noto-sans-hk">
 															$168
 														</span>
 														<span className="text-sm font-bold text-gray-400">
@@ -1927,7 +1950,7 @@ export default function YourPage() {
 																	"premiumPlan"
 																)}
 															</span>
-															<span className="text-[28px] sm:text-2xl font-bold text-gray-600">
+															<span className="text-[28px] sm:text-2xl font-bold font-noto-sans-hk text-gray-600">
 																<span className="line-through">
 																	$88
 																</span>
@@ -2414,7 +2437,7 @@ export default function YourPage() {
 																	"premiumPlan"
 																)}
 															</span>
-															<span className="text-[28px] sm:text-2xl font-bold text-gray-600">
+															<span className="text-[28px] sm:text-2xl font-bold text-gray-600 font-noto-sans-hk">
 																<span className="line-through">
 																	$88
 																</span>
@@ -2903,7 +2926,7 @@ export default function YourPage() {
 																	"premiumPlan"
 																)}
 															</span>
-															<span className="text-[28px] sm:text-2xl font-bold text-gray-600">
+															<span className="text-[28px] sm:text-2xl font-bold text-gray-600 font-noto-sans-hk">
 																<span className="line-through">
 																	$88
 																</span>
@@ -3392,7 +3415,7 @@ export default function YourPage() {
 																	"premiumPlan"
 																)}
 															</span>
-															<span className="text-[28px] sm:text-2xl font-bold text-gray-600">
+															<span className="text-[28px] sm:text-2xl font-bold text-gray-600 font-noto-sans-hk">
 																<span className="line-through">
 																	$88
 																</span>

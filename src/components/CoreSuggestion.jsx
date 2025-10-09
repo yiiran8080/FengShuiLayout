@@ -412,7 +412,7 @@ export default function CoreSuggestion({ userInfo, currentYear = 2025 }) {
 								};
 								return (
 									colorMap[itemLabel] ||
-									(isActive ? "bg-gray-600" : "bg-gray-300")
+									(isActive ? "bg-[#DEAB20]" : "bg-white")
 								);
 							};
 
@@ -422,10 +422,11 @@ export default function CoreSuggestion({ userInfo, currentYear = 2025 }) {
 									行為心性: "/images/report/heart.png",
 									風水輔助: "/images/report/fengshui.png",
 									擇時而動: "/images/report/clock.png",
+									擇時調養: "/images/report/clock.png",
 								};
 								return (
 									imageMap[itemLabel] ||
-									"/images/report/star.png"
+									"/images/report/star2.png"
 								);
 							};
 

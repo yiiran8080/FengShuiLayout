@@ -15,6 +15,8 @@ export async function POST(req) {
 			fromChat,
 			specificProblem,
 			locale: requestLocale,
+			priceId: customPriceId, // Accept custom price ID from frontend
+			paymentType,
 		} = body;
 
 		if (!concern) {
@@ -55,11 +57,20 @@ export async function POST(req) {
 		console.log(`🔍 Fortune payment - Headers locale: ${headerLocale}`);
 		console.log(`🔍 Fortune payment - Referer URL: ${referer}`);
 
-		// Get the appropriate price ID for fortune based on locale
-		const priceId = getRegionalPriceId(locale, "fortune");
-		console.log(
-			`💰 Fortune payment - Using price ID: ${priceId} for fortune ${locale}`
-		);
+		// Use custom price ID if provided, otherwise fall back to regional pricing
+		let priceId;
+		if (customPriceId) {
+			priceId = customPriceId;
+			console.log(
+				`💰 Fortune payment - Using custom price ID: ${priceId} for concern: ${concern}, locale: ${locale}`
+			);
+		} else {
+			// Fallback to regional pricing for backward compatibility
+			priceId = getRegionalPriceId(locale, "fortune");
+			console.log(
+				`💰 Fortune payment - Using regional price ID: ${priceId} for fortune ${locale}`
+			);
+		}
 
 		// Build success URL with locale and chat context if available
 		const baseUrl = process.env.NEXTAUTH_URL;
