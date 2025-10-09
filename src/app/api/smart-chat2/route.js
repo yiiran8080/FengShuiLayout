@@ -3470,7 +3470,7 @@ export async function POST(request) {
 
 						// 🎯 創建並保存詳細合婚報告到數據庫 (複製自 Smart-Chat 邏輯)
 						const coupleReport = new CoupleReportDoc({
-							userId: userIntent.userEmail || "smart-chat2-user",
+							userId: userId, // Use the authenticated user's ID from session
 							sessionId: sessionId,
 							language: "zh-CN",
 							userProfile: {

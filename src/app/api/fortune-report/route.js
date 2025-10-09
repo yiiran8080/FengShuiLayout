@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/lib/mongoose";
 import FortuneReport from "@/models/FortuneReport";
 import { stripe } from "@/lib/stripe";
+import { auth } from "@/auth";
 
 export async function POST(request) {
 	try {
@@ -14,6 +15,17 @@ export async function POST(request) {
 				{ status: 400 }
 			);
 		}
+
+		// 🔐 獲取登入用戶會話信息
+		const authSession = await auth();
+		const loggedInUserEmail = authSession?.user?.email;
+		const loggedInUserId = loggedInUserEmail || null;
+
+		console.log("🔐 Auth session info:", {
+			hasAuthSession: !!authSession,
+			loggedInUserEmail,
+			loggedInUserId,
+		});
 
 		await dbConnect();
 
@@ -143,6 +155,7 @@ export async function POST(request) {
 
 			console.log("Creating new report with inputs:", {
 				sessionId,
+				loggedInUserId,
 				urlParams,
 				metadata,
 				finalUserInputs,
@@ -156,8 +169,12 @@ export async function POST(request) {
 			fortuneReport = new FortuneReport({
 				sessionId: sessionId,
 				userId:
-					session.customer_details?.email || metadata.userId || null,
+					loggedInUserId ||
+					session.customer_details?.email ||
+					metadata.userId ||
+					`guest-${sessionId}`, // Fallback for anonymous users
 				userEmail:
+					loggedInUserEmail ||
 					session.customer_details?.email ||
 					metadata.userEmail ||
 					null,

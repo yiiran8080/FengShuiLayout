@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongoose";
 import CoupleReportDoc from "@/models/CoupleReportDoc";
+import { auth } from "@/auth";
 
 export async function POST(request) {
 	try {
@@ -29,11 +30,22 @@ export async function POST(request) {
 			);
 		}
 
+		// 🔐 獲取登入用戶會話信息
+		const authSession = await auth();
+		const loggedInUserEmail = authSession?.user?.email;
+		const loggedInUserId = loggedInUserEmail || null;
+
+		console.log("🔐 Couple report auth session info:", {
+			hasAuthSession: !!authSession,
+			loggedInUserEmail,
+			loggedInUserId,
+		});
+
 		await connectDB();
 
 		// Create couple report document using Mongoose model
 		const coupleReportData = {
-			userId: sessionId, // Using sessionId as userId for guest reports
+			userId: loggedInUserId || `guest-${sessionId}`, // Use logged-in user ID or guest fallback
 			sessionId,
 			language: "zh-TW",
 			userProfile: {
