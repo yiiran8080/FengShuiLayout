@@ -1889,14 +1889,67 @@ export default function Home() {
 																	}
 																);
 															} else {
-																// 如果沒有結構化選項，整個內容都加粗（純AI回應）
-																return (
-																	<span className="font-bold">
-																		{
-																			content
+																// 檢查是否包含呼叫行動(CTA)部分
+																const ctaPattern =
+																	/(?=想要開始分析的話|想了解的話|想要分析的話)/;
+																const ctaParts =
+																	content.split(
+																		ctaPattern
+																	);
+
+																if (
+																	ctaParts.length >
+																	1
+																) {
+																	// 有CTA部分，分別處理
+																	return ctaParts.map(
+																		(
+																			part,
+																			index
+																		) => {
+																			// 第一部分是主要內容，加粗
+																			if (
+																				index ===
+																				0
+																			) {
+																				return (
+																					<span
+																						key={
+																							index
+																						}
+																						className="font-bold"
+																					>
+																						{
+																							part
+																						}
+																					</span>
+																				);
+																			}
+																			// CTA部分使用正常字重
+																			return (
+																				<span
+																					key={
+																						index
+																					}
+																					className="font-normal"
+																				>
+																					{
+																						part
+																					}
+																				</span>
+																			);
 																		}
-																	</span>
-																);
+																	);
+																} else {
+																	// 如果沒有結構化選項和CTA，整個內容都加粗（純AI回應）
+																	return (
+																		<span className="font-bold">
+																			{
+																				content
+																			}
+																		</span>
+																	);
+																}
 															}
 														})()}
 													</div>
