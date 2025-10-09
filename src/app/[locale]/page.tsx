@@ -969,14 +969,14 @@ export default function Home() {
 					const hasWelcomeMessage = formattedMessages.some(
 						(msg) =>
 							msg.role === "assistant" &&
-							msg.content.includes("歡迎來到智能風水顧問")
+							msg.content.includes("歡迎來到風鈴聊天室")
 					);
 
 					if (!hasWelcomeMessage) {
 						formattedMessages.unshift({
 							role: "assistant",
 							content:
-								"你好呀～我是風鈴！✨ 歡迎回到智能風水顧問 Smart-Chat2 (AI版)！\n\n繼續您之前的對話...",
+								"你好呀～我是風鈴！✨ 歡迎回到風鈴聊天室！\n\n繼續您之前的對話...",
 							timestamp: new Date(
 								data.metadata?.createdAt || Date.now()
 							),
@@ -993,7 +993,7 @@ export default function Home() {
 						{
 							role: "assistant",
 							content:
-								"你好呀～我是風鈴！✨ 歡迎來到智能風水顧問 Smart-Chat2 (AI版)！\n\n這是您之前的對話，請繼續...",
+								"你好呀～我是風鈴！✨ 歡迎來到風鈴聊天室！\n\n這是您之前的對話，請繼續...",
 							timestamp: new Date(),
 							aiAnalysis: null,
 							systemType: "smart-chat2",
