@@ -580,7 +580,8 @@ export default function Home() {
 					} else if (usePremiumPayment) {
 						paymentEndpoint = "/api/checkoutSessions/payment2"; // Premium ($188)
 					} else {
-						paymentEndpoint = "/api/payment-fortune"; // Fortune ($38)
+						paymentEndpoint =
+							"/api/checkoutSessions/payment-fortune-category"; // Fortune ($38) - Updated to use new category API
 					}
 
 					console.log(
@@ -626,7 +627,7 @@ export default function Home() {
 								}),
 							});
 						} else {
-							// 將 concern 從中文轉換為英文以符合 FortuneDataModal 期望
+							// 將 concern 從中文轉換為英文以符合新的 concernType 格式
 							const concernMapping = {
 								財運: "financial",
 								健康: "health",
@@ -635,7 +636,7 @@ export default function Home() {
 								感情: "love",
 							};
 
-							const englishConcern =
+							const concernType =
 								concernMapping[data.concern] || "financial";
 
 							// Get fresh locale from localStorage to ensure consistency
@@ -651,23 +652,26 @@ export default function Home() {
 								currentLocale;
 
 							console.log(
-								"💰 Main page individual payment - Using fresh locale:",
+								"💰 Main page fortune payment - Using fresh locale:",
 								freshLocale,
+								"for concernType:",
+								concernType,
 								"from stored region:",
 								storedRegion
 							);
 
-							// 使用原本的 fortune payment API
+							// 使用新的 fortune category API，與 price page 保持一致
 							paymentResponse = await fetch(paymentEndpoint, {
 								method: "POST",
 								headers: {
 									"Content-Type": "application/json",
 								},
 								body: JSON.stringify({
-									concern: englishConcern,
+									concernType: concernType, // 使用 concernType 而不是 concern
+									locale: freshLocale,
+									quantity: 1,
 									specificProblem: problemToUse,
 									fromChat: true,
-									locale: freshLocale, // 🔥 Fix: Add locale parameter
 								}),
 							});
 						}
@@ -679,46 +683,17 @@ export default function Home() {
 								paymentData
 							);
 
-							if (useComprehensivePayment || usePremiumPayment) {
-								// 處理 Expert88/Premium 回應 - 直接重定向到 Stripe URL
+							if (
+								useComprehensivePayment ||
+								usePremiumPayment ||
+								!useComprehensivePayment
+							) {
+								// 處理所有付款回應 - 直接重定向到 Stripe URL (fortune category API 也返回 data.url)
 								if (paymentData.data?.url) {
 									window.location.href = paymentData.data.url;
 								} else {
 									throw new Error(
-										`No checkout URL received from ${usePremiumPayment ? "Premium" : "Expert88"} payment`
-									);
-								}
-							} else {
-								// 處理 Fortune payment 回應 - 使用 Stripe.js
-								if (paymentData.sessionId) {
-									// Import Stripe and redirect to checkout
-									const stripePublicKey =
-										process.env
-											.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
-									if (!stripePublicKey) {
-										throw new Error(
-											"Stripe public key not configured"
-										);
-									}
-
-									const stripe = await import(
-										"@stripe/stripe-js"
-									).then((mod) =>
-										mod.loadStripe(stripePublicKey)
-									);
-
-									if (stripe) {
-										await stripe.redirectToCheckout({
-											sessionId: paymentData.sessionId,
-										});
-									} else {
-										throw new Error(
-											"Failed to load Stripe"
-										);
-									}
-								} else {
-									throw new Error(
-										"No session ID received from Fortune payment"
+										`No checkout URL received from ${useComprehensivePayment ? "Expert88" : usePremiumPayment ? "Premium" : "Fortune"} payment`
 									);
 								}
 							}
