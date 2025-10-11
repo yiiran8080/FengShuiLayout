@@ -107,6 +107,14 @@ export default function FourFortuneAnalysis({
 
 			console.log("🎯 newState:", newState);
 			console.log("🎯 newState.health:", newState.health);
+			console.log(
+				"🎯 DEBUG - propFortuneDataState.healthFortuneData:",
+				propFortuneDataState.healthFortuneData
+			);
+			console.log(
+				"🎯 DEBUG - propFortuneDataState structure:",
+				Object.keys(propFortuneDataState)
+			);
 
 			setFortuneDataState(newState);
 			loadedHistoricalRef.current = true;

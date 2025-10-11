@@ -69,32 +69,79 @@ export async function POST(request) {
 			});
 		}
 
-		// Try to parse AI response as JSON
+		// Try to parse AI response as JSON with comprehensive cleaning
 		let analysis;
+		let isAIGenerated = true;
+
 		try {
 			// Remove potential markdown formatting
-			const cleanContent = aiContent
+			let cleanContent = aiContent
 				.replace(/```json\n?/g, "")
 				.replace(/```\n?/g, "")
 				.trim();
+
 			analysis = JSON.parse(cleanContent);
+			console.log("✅ Successfully generated AI health analysis");
 		} catch (parseError) {
-			console.warn(
-				"⚠️ Failed to parse AI response, using mock data:",
-				parseError.message
-			);
-			analysis = generateMockHealthAnalysis(userInfo, wuxingData);
+			console.warn("⚠️ First parse failed:", parseError.message);
+
+			// Enhanced JSON cleaning for unterminated strings and other issues
+			try {
+				let cleanedContent = aiContent
+					.replace(/```json\n?/g, "")
+					.replace(/```\n?/g, "")
+					.trim();
+
+				// Count quotes to detect unterminated strings
+				const quoteCount = (cleanedContent.match(/"/g) || []).length;
+				console.log(
+					`🔧 Fixing unterminated string (${quoteCount} quotes)`
+				);
+
+				// If odd number of quotes, add closing quote at end
+				if (quoteCount % 2 !== 0) {
+					cleanedContent += '"';
+				}
+
+				// Additional cleaning steps
+				cleanedContent = cleanedContent
+					// Fix incomplete arrays
+					.replace(/,\s*$/, "")
+					.replace(/,(\s*[}\]])/g, "$1")
+					// Fix trailing commas in objects/arrays
+					.replace(/,(\s*[}\]])/g, "$1")
+					// Ensure proper object/array closure
+					.replace(/([^}\]]\s*)$/, "$1}");
+
+				console.log("🔧 Applied cleaning, trying parse again");
+				analysis = JSON.parse(cleanedContent);
+				console.log("✅ Parsed JSON successfully after cleaning");
+			} catch (secondParseError) {
+				console.warn(
+					"⚠️ Failed to parse AI response after cleaning, using mock data:",
+					secondParseError.message
+				);
+				console.warn(
+					"📄 Raw AI content (first 300 chars):",
+					aiContent.substring(0, 300)
+				);
+				analysis = generateMockHealthAnalysis(userInfo, wuxingData);
+				isAIGenerated = false; // Mark as mock data
+			}
 		}
 
 		return NextResponse.json({
 			analysis,
-			isAIGenerated: true,
+			isAIGenerated,
+			success: true,
 		});
 	} catch (error) {
 		console.error("Health fortune analysis API error:", error);
 		return NextResponse.json({
 			error: "Analysis failed",
 			analysis: generateMockHealthAnalysis(userInfo, wuxingData),
+			isAIGenerated: false,
+			success: false,
 		});
 	}
 }

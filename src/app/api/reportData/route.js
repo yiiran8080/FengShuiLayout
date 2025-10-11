@@ -133,7 +133,7 @@ export async function POST(request) {
 		const body = await request.json();
 		const { sessionId, birthDateTime, gender } = body;
 
-		console.log("🔑 POST API received userId:", body.userId); // Debug log to verify userId
+		// console.log("🔑 POST API received userId:", body.userId); // Debug log to verify userId
 
 		if (!sessionId || !birthDateTime || !gender) {
 			return NextResponse.json(
@@ -169,15 +169,9 @@ export async function POST(request) {
 			"✅ Report data created successfully for session:",
 			sessionId
 		);
-		console.log("🔍 Created document with userId:", reportData.userId); // Debug log
-		console.log(
-			"🔍 Full document keys:",
-			Object.keys(reportData.toObject())
-		);
-		console.log(
-			"🔍 Full document:",
-			JSON.stringify(reportData.toObject(), null, 2)
-		);
+		// console.log("🔍 Created document with userId:", reportData.userId); // Debug log
+		// console.log("🔍 Full document keys:", Object.keys(reportData.toObject()));
+		// console.log("🔍 Full document:", JSON.stringify(reportData.toObject(), null, 2));
 		return NextResponse.json(genSuccessData(reportData));
 	} catch (error) {
 		console.error("🔥 DETAILED ERROR creating report data:", error);
@@ -192,16 +186,16 @@ export async function POST(request) {
 // PATCH - Update existing report data
 export async function PATCH(request) {
 	try {
-		console.log("🚨 PATCH API CALLED - THIS SHOULD SHOW UP!");
+		// console.log("🚨 PATCH API CALLED - THIS SHOULD SHOW UP!");
 		const body = await request.json();
-		console.log("🚨 REQUEST BODY:", JSON.stringify(body, null, 2));
+		// console.log("🚨 REQUEST BODY:", JSON.stringify(body, null, 2));
 		const { sessionId } = body;
 
 		if (!sessionId) {
 			return NextResponse.json(genErrorData("SessionId is required"));
 		}
 
-		console.log("🔑 API received userId:", body.userId); // Debug log to verify userId
+		// console.log("🔑 API received userId:", body.userId); // Debug log to verify userId
 		await dbConnect();
 
 		let reportData = await ReportData.findOne({ sessionId });
@@ -220,7 +214,7 @@ export async function PATCH(request) {
 		// Update fields
 		if (body.userId) {
 			reportData.userId = body.userId; // Update userId for user association
-			console.log("🔑 Setting userId to:", body.userId); // Debug log
+			// console.log("🔑 Setting userId to:", body.userId); // Debug log
 		}
 		if (body.basicReportData) {
 			reportData.basicReportData = {
@@ -257,15 +251,9 @@ export async function PATCH(request) {
 			"✅ Report data updated successfully for session:",
 			sessionId
 		);
-		console.log("🔍 Final userId in saved document:", reportData.userId); // Debug log
-		console.log(
-			"🔍 Final document keys:",
-			Object.keys(reportData.toObject())
-		);
-		console.log(
-			"🔍 Final document:",
-			JSON.stringify(reportData.toObject(), null, 2)
-		);
+		// console.log("🔍 Final userId in saved document:", reportData.userId); // Debug log
+		// console.log("🔍 Final document keys:", Object.keys(reportData.toObject()));
+		// console.log("🔍 Final document:", JSON.stringify(reportData.toObject(), null, 2));
 		return NextResponse.json(genSuccessData(reportData));
 	} catch (error) {
 		console.error("🔥 DETAILED ERROR updating report data:", error);

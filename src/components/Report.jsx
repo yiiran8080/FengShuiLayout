@@ -1454,7 +1454,13 @@ export default function ReportPage({
 					const { success, data } =
 						await getReportData(propSessionId);
 					if (success && data) {
-						console.log("✅ Historical data loaded:", data);
+						console.log("✅ Historical data loaded (summary):", {
+							hasBasicData: !!data.basicReportData,
+							hasFourFortune: !!data.fourFortuneData,
+							hasAIContent: !!data.aiGeneratedContent,
+							wuxingAnalysisExists:
+								!!data.aiGeneratedContent?.wuxingAnalysis,
+						});
 
 						// Load basic report data (命理分析)
 						if (data.basicReportData) {
@@ -1473,25 +1479,50 @@ export default function ReportPage({
 							}
 						}
 
-						// Load four fortune data
-						if (data.fourFortuneData) {
+						// Load four fortune data - check both locations
+						let fortuneData = null;
+
+						// First check the new structure in aiGeneratedContent
+						if (data.aiGeneratedContent?.fourFortuneAI) {
+							fortuneData = data.aiGeneratedContent.fourFortuneAI;
 							console.log(
-								"📜 Historical fourFortuneData loaded:",
-								data.fourFortuneData
+								"📜 Four fortune data loaded from aiGeneratedContent:",
+								{
+									health: !!fortuneData.healthFortuneData,
+									career: !!fortuneData.careerFortuneData,
+									wealth: !!fortuneData.wealthFortuneData,
+									relationship:
+										!!fortuneData.relationshipFortuneData,
+								}
 							);
 							console.log(
-								"📜 fourFortuneData keys:",
-								Object.keys(data.fourFortuneData)
+								"📜 DEBUG - Full fourFortuneAI structure:",
+								Object.keys(fortuneData)
 							);
-							if (data.fourFortuneData.healthFortuneData) {
+							if (fortuneData.healthFortuneData) {
 								console.log(
-									"📜 healthFortuneData structure:",
-									Object.keys(
-										data.fourFortuneData.healthFortuneData
-									)
+									"📜 DEBUG - healthFortuneData keys:",
+									Object.keys(fortuneData.healthFortuneData)
 								);
 							}
-							setFourFortuneData(data.fourFortuneData);
+						}
+						// Fallback to old structure
+						else if (data.fourFortuneData) {
+							fortuneData = data.fourFortuneData;
+							console.log(
+								"📜 Four fortune data loaded from fourFortuneData:",
+								{
+									health: !!fortuneData.healthFortuneData,
+									career: !!fortuneData.careerFortuneData,
+									wealth: !!fortuneData.wealthFortuneData,
+									relationship:
+										!!fortuneData.relationshipFortuneData,
+								}
+							);
+						}
+
+						if (fortuneData) {
+							setFourFortuneData(fortuneData);
 						}
 
 						// Load AI generated content

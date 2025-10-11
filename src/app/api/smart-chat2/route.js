@@ -680,11 +680,10 @@ class AITopicClassifier {
 
 重要指示：必須使用繁體中文回應，不可使用簡體中文，不要包含字數統計標記。如果需要提及時間，請確保是當前的2025年，避免提及2024年或過去的時間。只在真正需要時間背景的情況下才提及日期。
 
-回應策略：
-1. 簡短回答問題
-2. 直接說明風水命理分析能解決更深層的問題
-3. 主動推薦具體服務並說明價值
-4. 創造緊迫感和需求感
+回應風格：
+- 先簡短回答問題，然後自然地說明風水命理分析能解決更深層的問題
+- 主動推薦具體服務並說明價值，創造緊迫感和需求感
+- 用自然對話的方式，避免機械式的回應
 
 語氣要求：友善但堅定，專注於服務銷售
 ${baseServices}
@@ -711,11 +710,10 @@ ${baseServices}
 
 重要指示：必須使用繁體中文回應，不可使用簡體中文，不要包含字數統計標記。如果需要提及時間，請確保是當前的2025年，避免提及2024年或過去的時間。只在真正需要時間背景的情況下才提及日期。
 
-回應策略：
-1. 給出實用答案
-2. 連結問題與運勢命理的關係
-3. 說明專業分析能提供的具體幫助
-4. 主動推薦最相關的服務並強調效果
+回應風格：
+- 先給出實用答案，然後自然地連結問題與運勢命理的關係
+- 說明專業分析能提供的具體幫助，主動推薦最相關的服務並強調效果
+- 用自然對話的方式，避免機械式的回應
 
 ${baseServices}
 
@@ -742,12 +740,11 @@ ${baseServices}
 
 重要指示：必須使用繁體中文回應，不可使用簡體中文，不要包含字數統計標記。如果需要提及時間，請確保是當前的2025年，避免提及2024年或過去的時間。只在真正需要時間背景的情況下才提及日期，不要強制在每個回應中都包含。
 
-回應要求：
-1. 先給出實用的答案或建議（要具體有用）
-2. 巧妙連結問題與命理運勢的關係
-3. 說明你的專業分析能提供更深入的幫助
-4. 推薦最相關的服務並強調能解決的問題
-5. 用風鈴的親切語氣，但要展現專業權威性
+回應風格：
+- 先給出實用的答案或建議（要具體有用），然後巧妙連結問題與命理運勢的關係
+- 說明你的專業分析能提供更深入的幫助，推薦最相關的服務並強調能解決的問題
+- 用風鈴的親切語氣，但要展現專業權威性
+- 用自然對話的方式，避免機械式列點回應
 
 ${baseServices}
 
@@ -803,53 +800,44 @@ ${baseServices}
 	// 💼 工作分析流程 - 使用AI生成contextual回應
 	async generateCareerFlow(analysis, originalMessage) {
 		try {
-			// 🤖 優先使用已有的 AI 分析結果
-			let aiResponse = analysis.aiResponse;
+			// 🤖 總是生成新的詳細AI回應，提供更好的用戶體驗
+			const specificProblem = analysis.specificProblem || originalMessage;
 
-			// 如果沒有 AI 分析結果，則重新生成
-			if (!aiResponse) {
-				const specificProblem =
-					analysis.specificProblem || originalMessage;
+			const aiResponse = await this.generateAIResponse(
+				`用戶說: "${originalMessage}"
+				
+分析結果: ${specificProblem}
 
-				aiResponse = await this.generateAIResponse(
-					`用戶說: "${originalMessage}"
-					
-	分析結果: ${specificProblem}
+請以風鈴的身份，針對這個具體的工作問題，提供自然對話式的回應。
 
-	請以風鈴的身份，針對這個具體的工作/生意問題，提供相關的風水建議和回應。
+回應內容要求:
+- 回應要豐富充實，至少3-4個段落，提供深度內容
+- 用自然對話的方式回應，就像知心朋友在深度聊天
+- 先深度表達理解和同理心
+- 提供多個層面的實用建議，自然融入對話中
+- 可以分享職場智慧、人生感悟
+- 語氣要溫暖親切且有深度，像風鈴在面對面深談
+- 適當使用emoji增加親切感
+- 最後自然地邀請分享生日做進一步分析
 
-	回應要求:
-	1. 要親切友善，用風鈴的語氣
-	2. 針對具體問題給出相關風水建議
-	3. 包含實用的風水佈局建議
-	4. 保持正面積極的態度
-	5. 不要超過200字
+回應風格:
+- 內容豐富、有深度、溫暖且實用
+- 像朋友間的深度對話，不是簡短回答
+- 要有層次感和深度
 
-	風鈴語氣特點: 親切、專業、帶有一點可愛的語氣，會用✨💼🌱等emoji`
-				);
-			} else {
-				console.log("✅ 使用已有的 AI 工作分析結果");
-				// 調整順序：風鈴問候 -> AI分析 -> 具體建議
-				const fengShuiGreeting = `哎呀親愛的別擔心，風鈴來幫你啦！💼✨
+請避免:
+- 簡短或表面的回應
+- 編號列點式回應
+- 機械式的用詞
+- 房屋風水佈局建議
 
-`;
-
-				const fengShuiAdvice = `
-
-首先檢查店家大門是否暢通無阻，家門口可以擺放綠色植物招財🌱。要保持整潔明亮，最好面向門口才能接住財氣！東南方擺個流水擺設或魚缸，讓財運流動起來～
-
-記得把破損的物品都修好，這代表修補財路哦！保持店面光線充足，正能量滿滿生意就會好轉的！加油！🌟`;
-
-				// 組合：問候 + AI回應 + 建議
-				aiResponse = fengShuiGreeting + aiResponse + fengShuiAdvice;
-			}
+重點關注: 深度心理支持、職場智慧、人生策略、實用溝通技巧`
+			);
 
 			// AI回應 + 生日分析邀請
 			return (
 				aiResponse +
 				`
-
-告訴風鈴你的生日，我可以幫你看看事業運勢和最佳發展時機！
 
 📅 **生日格式範例：**
 • 1999-03-15
@@ -918,46 +906,39 @@ ${baseServices}
 	// 💰 財運分析流程 - 使用AI生成contextual回應
 	async generateWealthFlow(analysis, originalMessage) {
 		try {
-			// 🤖 優先使用已有的 AI 分析結果
-			let aiResponse = analysis.aiResponse;
+			// 🤖 總是生成新的詳細AI回應，提供更好的用戶體驗
+			const specificProblem = analysis.specificProblem || originalMessage;
 
-			// 如果沒有 AI 分析結果，則重新生成
-			if (!aiResponse) {
-				const specificProblem =
-					analysis.specificProblem || originalMessage;
+			const aiResponse = await this.generateAIResponse(
+				`用戶說: "${originalMessage}"
+				
+分析結果: ${specificProblem}
 
-				aiResponse = await this.generateAIResponse(
-					`用戶說: "${originalMessage}"
-					
-	分析結果: ${specificProblem}
+請以風鈴的身份，針對這個具體的財運問題，提供自然對話式的回應。
 
-	請以風鈴的身份，針對這個具體的財運問題，提供相關的風水建議和回應。
+回應內容要求:
+- 回應要豐富充實，至少3-4個段落，提供深度財務洞察
+- 用自然對話的方式回應，就像理財顧問朋友在深度聊天
+- 先深度表達理解，可以分享理財心得
+- 提供多個層面的理財建議，自然融入對話中
+- 可以分享投資智慧、財務管理經驗
+- 語氣要溫暖親切且專業，像風鈴在面對面深談理財
+- 適當使用emoji增加親切感
+- 最後自然地邀請分享生日做進一步分析
 
-	回應要求:
-	1. 要親切友善，用風鈴的語氣
-	2. 針對具體問題給出相關財運風水建議
-	3. 包含實用的招財風水佈局建議
-	4. 保持正面積極的態度
-	5. 不要超過200字
+回應風格:
+- 內容豐富、有深度、溫暖且實用
+- 像理財朋友間的深度對話，不是簡短回答
+- 要有財務層次感和深度
 
-	風鈴語氣特點: 親切、專業、帶有一點可愛的語氣，會用✨💰🌱等emoji`
-				);
-			} else {
-				console.log("✅ 使用已有的 AI 財運分析結果");
-				// 調整順序：風鈴問候 -> AI分析 -> 具體建議
-				const fengShuiGreeting = `哇～你想了解財運呀！風鈴最喜歡幫人解決問題啦！✨
+請避免:
+- 簡短或表面的回應
+- 編號列點式回應
+- 機械式的用詞
+- 房屋風水佈局建議
 
-`;
-
-				const fengShuiAdvice = `
-
-建議在家中或辦公室的東南方（財位）擺放招財植物如發財樹或金錢樹🌱 保持這個區域乾淨明亮，可以放個小型流水擺件讓財氣流動！錢包要保持整潔，避免放太多雜物～💰
-
-記得門口要保持暢通，不要堆積雜物阻擋財運進入哦！正面心態也很重要，相信自己的財運會越來越好！加油！🌟`;
-
-				// 組合：問候 + AI回應 + 建議
-				aiResponse = fengShuiGreeting + aiResponse + fengShuiAdvice;
-			}
+重點關注: 深度財務分析、理財智慧、投資策略、財務心理學`
+			);
 
 			return (
 				aiResponse +
@@ -992,46 +973,39 @@ ${baseServices}
 	// 🌿 健康分析流程 - 使用AI生成contextual回應
 	async generateHealthFlow(analysis, originalMessage) {
 		try {
-			// 🤖 優先使用已有的 AI 分析結果
-			let aiResponse = analysis.aiResponse;
+			// 🤖 總是生成新的詳細AI回應，提供更好的用戶體驗
+			const specificProblem = analysis.specificProblem || originalMessage;
 
-			// 如果沒有 AI 分析結果，則重新生成
-			if (!aiResponse) {
-				const specificProblem =
-					analysis.specificProblem || originalMessage;
+			const aiResponse = await this.generateAIResponse(
+				`用戶說: "${originalMessage}"
+				
+分析結果: ${specificProblem}
 
-				aiResponse = await this.generateAIResponse(
-					`用戶說: "${originalMessage}"
-					
-	分析結果: ${specificProblem}
+請以風鈴的身份，針對這個具體的健康問題，提供自然對話式的回應。
 
-	請以風鈴的身份，針對這個具體的健康問題，提供相關的風水建議和回應。
+回應內容要求:
+- 回應要豐富充實，至少3-4個段落，提供深度健康關懷
+- 用自然對話的方式回應，就像關心健康的知心朋友在深度聊天
+- 先深度表達關心，可以分享養生心得
+- 提供多個層面的健康建議，自然融入對話中
+- 可以分享養生智慧、健康管理經驗
+- 語氣要溫暖關懷且有深度，像風鈴在面對面深談健康
+- 適當使用emoji增加關懷感
+- 最後自然地邀請分享生日做進一步分析
 
-	回應要求:
-	1. 要親切友善，用風鈴的語氣
-	2. 針對具體問題給出相關健康風水建議
-	3. 包含實用的養生風水佈局建議
-	4. 保持正面積極的態度
-	5. 不要超過200字
+回應風格:
+- 內容豐富、有深度、溫暖且關懷
+- 像健康朋友間的深度對話，不是簡短回答
+- 要有健康層次感和深度
 
-	風鈴語氣特點: 親切、專業、帶有一點可愛的語氣，會用✨🌿💚等emoji`
-				);
-			} else {
-				console.log("✅ 使用已有的 AI 健康分析結果");
-				// 調整順序：風鈴問候 -> AI分析 -> 具體建議
-				const fengShuiGreeting = `親愛的別太擔心～風鈴給你暖暖的擁抱💚
+請避免:
+- 簡短或表面的回應
+- 編號列點式回應
+- 醫療建議或機械式用詞
+- 房屋風水佈局建議
 
-`;
-
-				const fengShuiAdvice = `
-
-建議可以先調整臥室的風水喔！床頭要靠實牆，避免對門或窗，這樣能穩定氣場🌿 在東方擺放綠色植物或水晶，能增強健康運勢✨
-
-記得保持房間空氣流通，光線充足，也可以放些讓人放鬆的柔和音樂～最重要的是要配合醫生的治療，保持正面心情喔！加油！💪`;
-
-				// 組合：問候 + AI回應 + 建議
-				aiResponse = fengShuiGreeting + aiResponse + fengShuiAdvice;
-			}
+重點關注: 深度健康關懷、養生智慧、生活品質提升、身心平衡`
+			);
 
 			return (
 				aiResponse +
@@ -1066,46 +1040,39 @@ ${baseServices}
 	// � 命理分析流程
 	async generateMingliFlow(analysis, originalMessage) {
 		try {
-			// 🤖 優先使用已有的 AI 分析結果
-			let aiResponse = analysis.aiResponse;
+			// 🤖 總是生成新的詳細AI回應，提供更好的用戶體驗
+			const specificProblem = analysis.specificProblem || originalMessage;
 
-			// 如果沒有 AI 分析結果，則重新生成
-			if (!aiResponse) {
-				const specificProblem =
-					analysis.specificProblem || originalMessage;
+			const aiResponse = await this.generateAIResponse(
+				`用戶說: "${originalMessage}"
+				
+分析結果: ${specificProblem}
 
-				aiResponse = await this.generateAIResponse(
-					`用戶說: "${originalMessage}"
-					
-	分析結果: ${specificProblem}
+請以風鈴的身份，針對這個具體的命理問題，提供自然對話式的回應。
 
-	請以風鈴的身份，針對這個具體的命理問題，提供相關的風水建議和回應。
+回應內容要求:
+- 回應要豐富充實，至少3-4個段落，提供深度人生智慧
+- 用自然對話的方式回應，就像人生導師朋友在深度聊天
+- 先深度表達理解，可以分享命理心得
+- 提供多個層面的人生建議，自然融入對話中
+- 可以分享人生智慧、命理經驗
+- 語氣要溫暖有智慧感且深度，像風鈴在面對面深談人生
+- 適當使用emoji增加溫暖感
+- 最後自然地邀請分享生日做進一步分析
 
-	回應要求:
-	1. 要親切友善，用風鈴的語氣
-	2. 針對具體問題給出相關命理風水建議
-	3. 包含實用的運勢提升和風水佈局建議
-	4. 保持正面積極的態度
-	5. 不要超過200字
+回應風格:
+- 內容豐富、有深度、溫暖且有智慧
+- 像人生導師間的深度對話，不是簡短回答
+- 要有人生哲理層次感和深度
 
-	風鈴語氣特點: 親切、專業、帶有一點可愛的語氣，會用✨🔮💫等emoji`
-				);
-			} else {
-				console.log("✅ 使用已有的 AI 命理分析結果");
-				// 調整順序：風鈴問候 -> AI分析 -> 具體建議
-				const fengShuiGreeting = `親愛的～命理的世界真的很神奇呢！風鈴來幫你解析💫
+請避免:
+- 簡短或表面的回應
+- 編號列點式回應
+- 過於玄學的用語或機械式用詞
+- 房屋風水佈局建議
 
-`;
-
-				const fengShuiAdvice = `
-
-命理配合風水佈局效果更好哦！可以在家中財位擺放水晶或招財植物🔮 根據你的八字五行調整居家色彩，比如缺水的話可以多用藍色系✨
-
-記得保持心境平和，積極正面的心態也是改運的關鍵！配合適當的風水調整，運勢會越來越好的～加油！💪`;
-
-				// 組合：問候 + AI回應 + 建議
-				aiResponse = fengShuiGreeting + aiResponse + fengShuiAdvice;
-			}
+重點關注: 深度人生洞察、命理智慧、性格成長、人生規劃`
+			);
 
 			return (
 				aiResponse +
@@ -1233,25 +1200,41 @@ ${baseServices}
 	// 風鈴會先給你一個簡單的分析，如果你覺得有幫助，還可以做更詳細的完整報告哦～💕`;
 	// }
 
-	// 🔄 預設流程
-	generateDefaultFlow(analysis, originalMessage) {
-		// 🤖 優先使用已有的 AI 分析結果
-		if (analysis.aiResponse) {
-			console.log("✅ 使用已有的 AI 默認分析結果");
+	// 🔄 預設流程 - 使用AI生成詳細回應
+	async generateDefaultFlow(analysis, originalMessage) {
+		try {
+			// 🤖 總是生成新的詳細AI回應，提供更好的用戶體驗
+			const specificProblem = analysis.specificProblem || originalMessage;
 			const topic = analysis.detectedTopic || "運勢";
-			const fengShuiGreeting = `哇～你想了解${topic}呀！風鈴最喜歡幫人解決問題啦！✨
 
-`;
+			const aiResponse = await this.generateAIResponse(
+				`用戶說: "${originalMessage}"
+				
+分析結果: ${specificProblem}
 
-			const fengShuiAdvice = `
+請以風鈴的身份，針對這個具體的${topic}問題，提供自然對話式的回應。
 
-保持正面的心態和積極的能量很重要！可以在家中擺放一些綠色植物或水晶，增強正能量流動。記住，好運需要好心情配合～✨`;
+回應風格要求:
+- 用自然對話的方式回應，就像朋友聊天一樣
+- 先表達理解關心，然後自然地分享一些建議
+- 語氣要溫暖親切，像風鈴在面對面聊天
+- 避免列點式、條列式的機械化回應
+- 建議要融入在對話中，不要刻意分段編號
+- 適當使用emoji，但不要過多
+- 最後自然地邀請分享生日做進一步分析
 
-			// 組合：問候 + AI回應 + 建議
+請避免:
+- 編號列點 (1. 2. 3. 4.)
+- 標題式分段 (如 ✨建議、💫方法等)
+- 過於結構化的回應
+- 機械式的用詞
+- 房屋風水佈局建議
+
+要像真人對話: 溫暖、自然、有同理心的朋友建議`
+			);
+
 			return (
-				fengShuiGreeting +
-				analysis.aiResponse +
-				fengShuiAdvice +
+				aiResponse +
 				`
 
 告訴風鈴你的生日，我可以幫你看看${topic}方面的運勢哦！
@@ -1263,10 +1246,10 @@ ${baseServices}
 
 風鈴會先給你一個簡單的分析，如果你覺得有幫助，還可以做更詳細的完整報告哦～💕`
 			);
-		}
-
-		// 備用模板回應
-		return `哇～你想了解${analysis.detectedTopic}呀！風鈴最喜歡幫人解決問題啦！✨
+		} catch (error) {
+			console.error("AI生成默認回應失敗:", error);
+			// 備用模板回應
+			return `哇～你想了解${analysis.detectedTopic}呀！風鈴最喜歡幫人解決問題啦！✨
 
 每個人的運勢都不一樣呢，就像每個人的生日不一樣一樣！
 
@@ -1278,6 +1261,7 @@ ${baseServices}
 • 1999年3月15日
 
 風鈴會先給你一個簡單的分析，如果你覺得有幫助，還可以做更詳細的完整報告哦～💕`;
+		}
 	}
 
 	// 🎯 生成服務選單
@@ -1814,7 +1798,10 @@ ${baseServices}
 					sessionId
 				);
 			default:
-				return this.generateDefaultFlow(analysis, originalMessage);
+				return await this.generateDefaultFlow(
+					analysis,
+					originalMessage
+				);
 		}
 	}
 

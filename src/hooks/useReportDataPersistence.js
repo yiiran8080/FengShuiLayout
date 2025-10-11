@@ -28,14 +28,11 @@ export function useReportDataPersistence() {
 
 			try {
 				console.log(
-					"💾 Saving complete report data for session:",
+					"💾 Saving report data for session:",
 					reportData.sessionId
 				);
-				console.log(
-					"📊 Report data includes:",
-					Object.keys(reportData)
-				);
-				console.log("🔑 userId in reportData:", reportData.userId);
+				// console.log("📊 Report data includes:", Object.keys(reportData));
+				// console.log("🔑 userId in reportData:", reportData.userId);
 
 				const language = locale === "zh-CN" ? "zh" : "tw";
 
@@ -159,14 +156,14 @@ export function useReportDataPersistence() {
 		}
 
 		try {
-			console.log("📖 Fetching report data for session:", sessionId);
+			// console.log("📖 Fetching report data for session:", sessionId);
 
 			const { status, data } = await get(
 				`/api/reportData?sessionId=${sessionId}`
 			);
 
 			if (status === 0) {
-				console.log("✅ Report data fetched successfully");
+				// console.log("✅ Report data fetched successfully");
 				return { success: true, data };
 			} else {
 				console.error(
