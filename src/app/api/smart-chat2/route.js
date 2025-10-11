@@ -2475,23 +2475,9 @@ ${displayTopic}宮主星：[分析對應主星，如：天府星（穩重權威�
 
 ───────────────────
 💎 **想要更深入的分析嗎？**
-根據你的狀況，風鈴為你推薦：
-
-**1️⃣ 一份關於${displayTopic}的詳細報告** 價值$88，限時優惠$38
-- 深度分析您的八字命理
-- 分析你的${displayTopic}運勢，提供具體建議和改善方案
-- 人際調衡要點
-
-**2️⃣ 一份綜合命理報告** 價值$168，限時優惠$88
-- 深度分析您的八字命理
-- 流年大運走勢
-- 全面覆蓋事業、財運、感情、健康等多個領域
-
-**3️⃣ 一份居家佈局報告** 價值$388，限時優惠$188
-- 根據您的八字提供專屬居家風水佈局建議
-- 空間配色、家具擺放、植物擺設等具體方案
-
-請回覆「1」、「2」或「3」選擇你想要的報告～
+**1️⃣ 详细报告** 價值$88，限時優惠$38
+**2️⃣ 综合命理报告** 價值$168，限時優惠$88  
+**3️⃣ 居家佈局報告** 價值$388，限時優惠$188
 
 要求：
 1. 保持風鈴可愛親切的語氣，使用表情符號和可愛語助詞
@@ -2921,7 +2907,7 @@ export async function POST(request) {
 				);
 
 				// 添加報告選擇選項
-				response += `\n\n───────────────────\n💎 **想要更深入的分析嗎？**\n選擇你想要的分析：\n\n**1️⃣ 一份關於合婚的詳細報告** 價值$168，限時優惠$88\n- 兩人八字姻緣配對分析\n- 深入分析你們的感情配對度，提供具體建議和改善方案\n\n**2️⃣ 一份綜合命理報告** 價值$168，限時優惠$88\n- 深度分析您的八字命理\n- 流年大運走勢\n- 全面覆蓋事業、財運、感情、健康等多個領域\n\n**3️⃣ 一份居家佈局報告** 價值$388，限時優惠$188\n- 根據您的八字提供專屬居家風水佈局建議\n- 空間配色、家具擺放、植物擺設等具體方案\n\n請回覆「1」、「2」或「3」選擇你想要的報告～`;
+				response += `\n\n───────────────────\n💎 **想要更深入的分析嗎？**\n**1️⃣ 详细报告** 價值$88，限時優惠$38\n**2️⃣ 综合命理报告** 價值$168，限時優惠$88\n**3️⃣ 居家佈局報告** 價值$388，限時優惠$188`;
 
 				analysis = {
 					detectedTopic: "感情",
@@ -2971,7 +2957,9 @@ export async function POST(request) {
 						userId: userId, // 🆕 新增：保存userId
 						conversationActive: true,
 						primaryConcern: topicAndBirthdayData.topic,
-						specificQuestion: `想了解${topicAndBirthdayData.topic}方面的運勢`,
+						specificQuestion:
+							topicAndBirthdayData.originalMessage ||
+							`想了解${topicAndBirthdayData.topic}方面的運勢`,
 						relationshipAnalysisType: "individual",
 						conversationState: "asking_detailed_report",
 						createdAt: new Date(),
@@ -2979,7 +2967,9 @@ export async function POST(request) {
 				} else {
 					// 更新現有的用戶意圖
 					userIntent.primaryConcern = topicAndBirthdayData.topic;
-					userIntent.specificQuestion = `想了解${topicAndBirthdayData.topic}方面的運勢`;
+					userIntent.specificQuestion =
+						topicAndBirthdayData.originalMessage ||
+						`想了解${topicAndBirthdayData.topic}方面的運勢`;
 					userIntent.conversationState = "asking_detailed_report";
 				}
 
@@ -2995,25 +2985,26 @@ export async function POST(request) {
 					response =
 						await EnhancedInitialAnalysis.generateLoveAnalysis(
 							topicAndBirthdayData.birthday.parsed,
-							"一般感情分析"
+							topicAndBirthdayData.originalMessage ||
+								"一般感情分析"
 						);
 				} else if (topicAndBirthdayData.topic === "財運") {
 					response =
 						await EnhancedInitialAnalysis.generateFinanceAnalysis(
 							topicAndBirthdayData.birthday.parsed,
-							"財運諮詢"
+							topicAndBirthdayData.originalMessage || "財運諮詢"
 						);
 				} else if (topicAndBirthdayData.topic === "工作") {
 					response =
 						await EnhancedInitialAnalysis.generateWorkAnalysis(
 							topicAndBirthdayData.birthday.parsed,
-							"工作運勢"
+							topicAndBirthdayData.originalMessage || "工作運勢"
 						);
 				} else if (topicAndBirthdayData.topic === "健康") {
 					response =
 						await EnhancedInitialAnalysis.generateHealthAnalysis(
 							topicAndBirthdayData.birthday.parsed,
-							"健康運勢"
+							topicAndBirthdayData.originalMessage || "健康運勢"
 						);
 				} else {
 					// 其他領域使用通用分析
@@ -3021,27 +3012,15 @@ export async function POST(request) {
 						await EnhancedInitialAnalysis.generatePersonalAnalysis(
 							topicAndBirthdayData.birthday.parsed,
 							topicAndBirthdayData.topic,
-							`${topicAndBirthdayData.topic}諮詢`
+							topicAndBirthdayData.originalMessage ||
+								`${topicAndBirthdayData.topic}諮詢`
 						);
 				}
 
-				// 添加詳細報告選項菜單
-				const concernName = topicAndBirthdayData.topic;
-				response += `\n\n───────────────────`;
-				response += `\n💎 **想要更深入的分析嗎？**`;
-				response += `\n根據你的狀況，風鈴為你推薦：`;
-				response += `\n\n**1️⃣ 一份關於${concernName}的詳細報告** 價值$88，限時優惠$38`;
-				response += `\n- 深度分析您的八字命理`;
-				response += `\n- 分析你的${concernName}運勢，提供具體建議和改善方案`;
-				response += `\n- 人際調衡要點`;
-				response += `\n\n**2️⃣ 一份綜合命理報告** 價值$168，限時優惠$88`;
-				response += `\n- 深度分析您的八字命理`;
-				response += `\n- 流年大運走勢`;
-				response += `\n- 全面覆蓋事業、財運、感情、健康等多個領域`;
-				response += `\n\n**3️⃣ 一份居家佈局報告** 價值$388，限時優惠$188`;
-				response += `\n- 根據您的八字提供專屬居家風水佈局建議`;
-				response += `\n- 空間配色、家具擺放、植物擺設等具體方案`;
-				response += `\n\n請回覆「1」、「2」或「3」選擇你想要的報告～`;
+				// 添加詳細報告選項菜單 - 現在使用 enhancedInitialAnalysis 中的方法
+				response += EnhancedInitialAnalysis.getReportRecommendations(
+					topicAndBirthdayData.topic
+				);
 
 				analysis = {
 					isWithinScope: true,
@@ -3315,7 +3294,7 @@ export async function POST(request) {
 						response =
 							await EnhancedInitialAnalysis.generateLoveAnalysis(
 								new Date(standardDate),
-								"個人感情分析"
+								userIntent.specificQuestion || "個人感情分析"
 							);
 					} else if (
 						userIntent.relationshipAnalysisType === "couple"
@@ -3323,7 +3302,8 @@ export async function POST(request) {
 						response =
 							await EnhancedInitialAnalysis.generateLoveAnalysis(
 								new Date(standardDate),
-								"合婚配對分析準備"
+								userIntent.specificQuestion ||
+									"合婚配對分析準備"
 							);
 						// 為合婚分析添加對方生日選項
 						response += `\n\n💕 **想做完整合婚分析嗎？**\n如果你有伴侶，可以提供對方的生日，我可以為你們做八字配對分析，看看感情相容度哦！`;
@@ -3338,13 +3318,13 @@ export async function POST(request) {
 					response =
 						await EnhancedInitialAnalysis.generateFinanceAnalysis(
 							new Date(standardDate),
-							"財運諮詢"
+							userIntent.specificQuestion || "財運諮詢"
 						);
 				} else if (userIntent.primaryConcern === "工作") {
 					response =
 						await EnhancedInitialAnalysis.generateWorkAnalysis(
 							new Date(standardDate),
-							"工作運勢"
+							userIntent.specificQuestion || "工作運勢"
 						);
 				} else {
 					// 其他領域使用通用分析
@@ -3352,27 +3332,15 @@ export async function POST(request) {
 						await EnhancedInitialAnalysis.generatePersonalAnalysis(
 							new Date(standardDate),
 							userIntent.primaryConcern,
-							`${userIntent.primaryConcern}諮詢`
+							userIntent.specificQuestion ||
+								`${userIntent.primaryConcern}諮詢`
 						);
 				}
 
-				// 添加詳細報告選項菜單 (完全複製 smart-chat 邏輯)
-				let concernName = userIntent.primaryConcern || "運勢";
-				response += `\n\n───────────────────`;
-				response += `\n💎 **想要更深入的分析嗎？**`;
-				response += `\n根據你的狀況，風鈴為你推薦：`;
-				response += `\n\n**1️⃣ 一份關於${concernName}的詳細報告** 價值$88，限時優惠$38`;
-				response += `\n- 深度分析您的八字命理`;
-				response += `\n- 分析你的${concernName}運勢，提供具體建議和改善方案`;
-				response += `\n- 人際調衡要點`;
-				response += `\n\n**2️⃣ 一份綜合命理報告** 價值$168，限時優惠$88`;
-				response += `\n- 深度分析您的八字命理`;
-				response += `\n- 流年大運走勢`;
-				response += `\n- 全面覆蓋事業、財運、感情、健康等多個領域`;
-				response += `\n\n**3️⃣ 一份居家佈局報告** 價值$388，限時優惠$188`;
-				response += `\n- 根據您的八字提供專屬居家風水佈局建議`;
-				response += `\n- 空間配色、家具擺放、植物擺設等具體方案`;
-				response += `\n\n請回覆「1」、「2」或「3」選擇你想要的報告～`;
+				// 添加詳細報告選項菜單
+				response += EnhancedInitialAnalysis.getReportRecommendations(
+					userIntent.primaryConcern
+				);
 
 				// 設置狀態為詢問詳細報告
 				userIntent.conversationState = "asking_detailed_report";
@@ -4491,8 +4459,13 @@ export async function POST(request) {
 					response = `請選擇你想要的分析類型：
 
 **1️⃣ 一份關於${concernName}的詳細報告** 價值$88，限時優惠$38
-**2️⃣ 一份綜合命理報告** 價值$168，限時優惠$88
+- 深入分析你的${concernName}運勢，提供具體建議和改善方案
+
+**2️⃣ 一份綜合命理報告** 價值$168，限時優惠$88  
+- 全面的八字命盤分析，包含各方面運勢預測
+
 **3️⃣ 一份居家佈局報告** 價值$388，限時優惠$188
+- 用居家佈局增強運勢，打造專屬風水空間
 
 請回覆「1」、「2」或「3」～`;
 
@@ -4786,25 +4759,9 @@ export async function POST(request) {
 
 ───────────────────
 💎 **想要更深入的分析嗎？**
-根據你的狀況，風鈴為你推薦：
-
-**1️⃣ 一份關於${enhancedResult.detectedTopic || "運勢"}的詳細報告** 價值$88，限時優惠$38
-- 深度分析您的八字命理
-- 分析你的${enhancedResult.detectedTopic || "運勢"}運勢，提供具體建議和改善方案
-- 人際調衡要點
-
-**2️⃣ 一份綜合命理報告** 價值$168，限時優惠$88
-- 深度分析您的八字命理
-- 流年大運走勢
-- 全面覆蓋事業、財運、感情、健康等多個領域
-
-
-
-**3️⃣ 一份居家佈局報告** 價值$388，限時優惠$188
-- 根據您的八字提供專屬居家風水佈局建議
-- 空間配色、家具擺放、植物擺設等具體方案
-
-請回覆「1」、「2」或「3」選擇你想要的報告～
+**1️⃣ 详细报告** 價值$88，限時優惠$38
+**2️⃣ 综合命理报告** 價值$168，限時優惠$88  
+**3️⃣ 居家佈局報告** 價值$388，限時優惠$188
 
 要求：
 1. 保持風鈴可愛親切的語氣
