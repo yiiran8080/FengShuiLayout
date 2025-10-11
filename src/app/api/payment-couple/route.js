@@ -17,6 +17,13 @@ export async function POST(request) {
 			fromChat,
 		} = body;
 
+		console.log("🔍 Payment-couple API received data:", {
+			requestLocale,
+			specificProblem,
+			concern,
+			fromChat,
+		});
+
 		// Detect user's locale (prioritize request body, then headers)
 		const detectedLocale = requestLocale || getLocaleFromRequest(request);
 		console.log(`🌍 Couple payment - Detected locale: ${detectedLocale}`);

@@ -184,12 +184,41 @@ export default function SmartChat2() {
 
 			setMessages((prev) => [...prev, responseMessage]);
 
-			// 優先使用最新的具體問題，然後是原始問題，最後是 concern
+			// 🔧 Use state variables that should now be properly updated from API responses
 			const problemToUse =
 				latestSpecificProblem ||
 				originalUserQuestion ||
 				concern ||
 				"感情關係和諧改善建議";
+
+			console.log("🎯 Problem selection debug:", {
+				latestSpecificProblem,
+				originalUserQuestion,
+				concern,
+				selectedProblem: problemToUse,
+			});
+
+			console.log(
+				"🔍 Final problem to use for couple payment:",
+				problemToUse
+			);
+			console.log("📊 Couple payment debug info:", {
+				problemFromLastMessage,
+				latestSpecificProblem,
+				originalUserQuestion,
+				concern,
+				finalProblemToUse: problemToUse,
+			});
+			console.log(
+				"🔍 All messages for debugging:",
+				messages.map((msg) => ({
+					role: msg.role,
+					hasSpecificProblem: !!msg.specificProblem,
+					hasAiAnalysis: !!msg.aiAnalysis,
+					specificProblemValue: msg.specificProblem,
+					contentPreview: msg.content?.substring(0, 50) + "...",
+				}))
+			);
 
 			// Call couple payment API directly
 			try {
@@ -210,6 +239,14 @@ export default function SmartChat2() {
 					"from stored region:",
 					storedRegion
 				);
+
+				console.log("🚀 Sending to payment-couple API:", {
+					locale: freshLocale,
+					specificProblem: problemToUse,
+					concern: concern,
+					fromChat: true,
+					sessionId: sessionId,
+				});
 
 				const paymentResponse = await fetch("/api/payment-couple", {
 					method: "POST",
@@ -313,9 +350,39 @@ export default function SmartChat2() {
 					timestamp: new Date(),
 					aiAnalysis: data.aiAnalysis,
 					systemType: data.systemType,
+					// 🔥 Store the specific problem from API response for later extraction
+					specificProblem: data.specificProblem,
+					specificQuestion: data.specificQuestion,
 				};
 
 				setMessages((prev) => [...prev, assistantMessage]);
+
+				// 🔥 Always update specific problem when available in API response
+				if (data.specificProblem) {
+					console.log(
+						"💾 Updating latestSpecificProblem from API response:",
+						data.specificProblem
+					);
+					setLatestSpecificProblem(data.specificProblem);
+
+					// Only set original question if not already set
+					if (!originalUserQuestion) {
+						console.log(
+							"📝 Setting originalUserQuestion:",
+							data.specificProblem
+						);
+						setOriginalUserQuestion(data.specificProblem);
+					}
+				}
+
+				// Also update concern if available
+				if (data.concern) {
+					console.log(
+						"💾 Updating concern from API response:",
+						data.concern
+					);
+					setConcern(data.concern);
+				}
 
 				// 注意：移除不必要的對話歷史重新載入，這會造成過多的API呼叫
 				// 只有在創建新對話時才需要更新歷史列表

@@ -250,6 +250,71 @@ function parseCouplesBirthdays(message) {
 	return null;
 }
 
+// 🔧 格式化合婚分析回應 - 將結構化對象轉換為字符串
+function formatCoupleAnalysisResponse(analysisResult) {
+	if (!analysisResult || typeof analysisResult !== "object") {
+		return analysisResult;
+	}
+
+	let formattedResponse = "";
+
+	// 1. 雙方基礎分析
+	if (analysisResult.basicAnalysis) {
+		formattedResponse += analysisResult.basicAnalysis + "\n\n";
+	}
+
+	// 2. 針對具體問題回應
+	if (analysisResult.problemResponse) {
+		formattedResponse += analysisResult.problemResponse + "\n\n";
+	}
+
+	// 3. 配對分析
+	if (analysisResult.compatibilityAnalysis) {
+		formattedResponse += analysisResult.compatibilityAnalysis + "\n\n";
+	}
+
+	// 4. 實用解決方案
+	if (analysisResult.practicalSolutions) {
+		formattedResponse += analysisResult.practicalSolutions + "\n\n";
+	}
+
+	// 5. 專屬感情解析
+	if (analysisResult.exclusiveInsights) {
+		formattedResponse += analysisResult.exclusiveInsights + "\n\n";
+	}
+
+	// 6. 合婚報告推薦
+	if (analysisResult.reportRecommendation) {
+		const rec = analysisResult.reportRecommendation;
+		formattedResponse += `───────────────────\n💎 **想要更深入的分析嗎？**\n根據你們的狀況，風鈴為你們推薦：\n\n`;
+
+		if (rec.options && rec.options.length > 0) {
+			// 處理多選項格式
+			rec.options.forEach((option) => {
+				formattedResponse += `**${option.number} ${option.title}** 價值${option.originalPrice}，限時優惠${option.price}\n`;
+				if (option.features && option.features.length > 0) {
+					option.features.forEach((feature) => {
+						formattedResponse += `- ${feature}\n`;
+					});
+				}
+				formattedResponse += `\n`;
+			});
+			formattedResponse += `${rec.action}`;
+		} else {
+			// 處理舊的單選項格式 (向後兼容)
+			formattedResponse += `**${rec.title}** 價值${rec.originalPrice}，限時優惠${rec.price}\n`;
+			if (rec.features && rec.features.length > 0) {
+				rec.features.forEach((feature) => {
+					formattedResponse += `- ${feature}\n`;
+				});
+			}
+			formattedResponse += `\n${rec.action}`;
+		}
+	}
+
+	return formattedResponse.trim();
+}
+
 // 🤖 AI 話題分類和問題檢測系統
 class AITopicClassifier {
 	constructor() {
@@ -2884,6 +2949,19 @@ export async function POST(request) {
 			});
 		}
 
+		// 🔍 Debug couple analysis condition
+		console.log("🔍 DEBUG - 合婚分析條件檢查:");
+		console.log("   couplesBirthdayData:", !!couplesBirthdayData);
+		console.log(
+			"   userIntent?.relationshipAnalysisType:",
+			userIntent?.relationshipAnalysisType
+		);
+		console.log(
+			"   條件是否滿足:",
+			couplesBirthdayData &&
+				userIntent?.relationshipAnalysisType === "couple"
+		);
+
 		if (
 			couplesBirthdayData &&
 			userIntent?.relationshipAnalysisType === "couple"
@@ -2898,18 +2976,65 @@ export async function POST(request) {
 					couplesBirthdayData.partnerBirthday;
 				userIntent.conversationState = "asking_detailed_report";
 
-				// 🔮 生成合婚分析報告 - 與 smart-chat 完全相同
+				// 🔮 生成合婚分析報告 - 使用原始用戶訊息
 				const { EnhancedInitialAnalysis } = await import(
 					"../../../lib/enhancedInitialAnalysis.js"
 				);
-				response = await EnhancedInitialAnalysis.generateCoupleAnalysis(
-					couplesBirthdayData.userBirthday,
-					couplesBirthdayData.partnerBirthday,
-					"合婚配對分析"
+
+				// 🔧 使用相同的優先級鏈確保原始訊息被使用
+				const specificQuestionForAnalysis =
+					userIntent.originalUserMessage ||
+					userIntent.originalSpecificProblem ||
+					userIntent.specificQuestion ||
+					"合婚配對分析";
+
+				console.log("🔍 DEBUG - 合婚分析原始訊息來源:");
+				console.log(
+					"   userIntent.originalUserMessage:",
+					userIntent.originalUserMessage
+				);
+				console.log(
+					"   userIntent.originalSpecificProblem:",
+					userIntent.originalSpecificProblem
+				);
+				console.log(
+					"   userIntent.specificQuestion:",
+					userIntent.specificQuestion
+				);
+				console.log(
+					"🔍 傳遞給 generateCoupleAnalysis 的具體問題:",
+					specificQuestionForAnalysis
 				);
 
-				// 添加報告選擇選項
-				response += `\n\n───────────────────\n💎 **想要更深入的分析嗎？**\n**1️⃣ 详细报告** 價值$88，限時優惠$38\n**2️⃣ 综合命理报告** 價值$168，限時優惠$88\n**3️⃣ 居家佈局報告** 價值$388，限時優惠$188`;
+				const coupleAnalysisResult =
+					await EnhancedInitialAnalysis.generateCoupleAnalysis(
+						couplesBirthdayData.userBirthday,
+						couplesBirthdayData.partnerBirthday,
+						specificQuestionForAnalysis
+					);
+
+				// 🔧 轉換結構化對象為格式化字符串
+				if (
+					typeof coupleAnalysisResult === "object" &&
+					coupleAnalysisResult.basicAnalysis
+				) {
+					response =
+						formatCoupleAnalysisResponse(coupleAnalysisResult);
+					console.log(
+						"🔧 DEBUG - 格式化後的response類型:",
+						typeof response
+					);
+					console.log(
+						"🔧 DEBUG - 格式化後的response長度:",
+						response?.length
+					);
+				} else {
+					response = coupleAnalysisResult; // 向後兼容字符串回應
+					console.log(
+						"🔧 DEBUG - 使用原始response，類型:",
+						typeof response
+					);
+				}
 
 				analysis = {
 					detectedTopic: "感情",
@@ -3938,12 +4063,43 @@ export async function POST(request) {
 					reportChoice.includes("綜合") ||
 					reportChoice.includes("第二")
 				) {
-					// 選擇2：綜合命理報告 - 使用 $88 couple payment API
-					userIntent.reportType = "comprehensive";
-					userIntent.conversationState = "collecting_payment_info";
-					shouldTriggerModal = true;
+					// 🔧 檢查是否為合婚分析情境
+					if (
+						userIntent.relationshipAnalysisType === "couple" &&
+						userIntent.partnerBirthday &&
+						userIntent.userBirthday
+					) {
+						// 合婚情境下的選擇2：綜合命理報告
+						userIntent.reportType = "comprehensive";
+						userIntent.conversationState =
+							"collecting_payment_info";
+						shouldTriggerModal = true;
 
-					response = `🔮 很棒的選擇！綜合命理報告是最全面的分析！
+						response = `🔮 很棒的選擇！為你製作綜合命理報告！
+
+這份報告將包含：
+📊 全面的八字命盤分析，包含各方面運勢預測
+🌟 流年大運走勢分析
+🎯 人際關係和事業發展建議
+
+請填寫付款資訊，我們立即開始製作你的專屬報告～`;
+
+						analysis = {
+							isWithinScope: true,
+							detectedTopic: "綜合運勢",
+							specificProblem: "用戶選擇綜合命理報告",
+							confidence: 0.95,
+							reportChoice: true,
+							paymentType: "comprehensive", // 使用綜合報告付款API
+						};
+					} else {
+						// 非合婚情境的選擇2：綜合命理報告
+						userIntent.reportType = "comprehensive";
+						userIntent.conversationState =
+							"collecting_payment_info";
+						shouldTriggerModal = true;
+
+						response = `🔮 很棒的選擇！綜合命理報告是最全面的分析！
 
 這份報告將包含：
 📊 完整八字命盤解析
@@ -3953,14 +4109,15 @@ export async function POST(request) {
 
 請填寫個人資料，準備製作你的專屬綜合命理報告～`;
 
-					analysis = {
-						isWithinScope: true,
-						detectedTopic: "綜合運勢",
-						specificProblem: "用戶選擇綜合命理報告",
-						confidence: 0.95,
-						reportChoice: true,
-						paymentType: "comprehensive", // 🔥 新增：標記使用 couple payment API
-					};
+						analysis = {
+							isWithinScope: true,
+							detectedTopic: "綜合運勢",
+							specificProblem: "用戶選擇綜合命理報告",
+							confidence: 0.95,
+							reportChoice: true,
+							paymentType: "comprehensive", // 🔥 新增：標記使用 couple payment API
+						};
+					}
 				} else if (
 					reportChoice === "3" ||
 					reportChoice.includes("居家") ||
@@ -5205,6 +5362,20 @@ export async function POST(request) {
 
 			await userIntent.save();
 
+			// 🔍 DEBUG - 檢查response類型before保存到ChatHistory
+			console.log("🔍 DEBUG - 保存前response檢查:");
+			console.log("   response類型:", typeof response);
+			console.log(
+				"   response是否為object:",
+				typeof response === "object"
+			);
+			console.log(
+				"   response預覽:",
+				typeof response === "string"
+					? response.substring(0, 100)
+					: "[OBJECT]"
+			);
+
 			// 🆕 保存對話到ChatHistory模型 (主要存儲)
 			await saveToChatHistory(
 				sessionId,
@@ -5409,7 +5580,17 @@ async function saveToChatHistory(
 
 		// 添加助手回應
 		if (assistantResponse) {
-			chatHistory.addMessage("assistant", assistantResponse, aiAnalysis);
+			// 🔧 Safety: 確保回應是字符串格式
+			let formattedResponse = assistantResponse;
+			if (
+				typeof assistantResponse === "object" &&
+				assistantResponse.basicAnalysis
+			) {
+				console.log("🔧 SAFETY - 在ChatHistory中格式化對象回應");
+				formattedResponse =
+					formatCoupleAnalysisResponse(assistantResponse);
+			}
+			chatHistory.addMessage("assistant", formattedResponse, aiAnalysis);
 		}
 
 		// 更新上下文

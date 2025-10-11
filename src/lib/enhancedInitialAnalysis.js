@@ -145,30 +145,25 @@ export class EnhancedInitialAnalysis {
 	) {
 		const year1 = birthday1.getFullYear();
 		const year2 = birthday2.getFullYear();
+		const month1 = birthday1.getMonth() + 1;
+		const month2 = birthday2.getMonth() + 1;
 
 		// 計算兩人的八字和五行
 		const bazi1 = this.calculateBazi(birthday1);
 		const bazi2 = this.calculateBazi(birthday2);
 		const element1 = this.calculateElement(year1);
 		const element2 = this.calculateElement(year2);
+		const zodiacAnimal1 = this.getChineseZodiac(year1);
+		const zodiacAnimal2 = this.getChineseZodiac(year2);
 
-		let response = `🔮 風鈴看了你們的生日，發現你們的緣分很特別呢！💕\n\n`;
+		// 1. 雙方基礎分析（類似個人分析的基礎部分）
+		const basicAnalysis = `**📊 你們的命理基礎分析**\n👨 男方：${year1}年${month1}月，生肖屬相：${zodiacAnimal1}\n👩 女方：${year2}年${month2}月，生肖屬相：${zodiacAnimal2}\n配對類型：${this.getCoupleType(element1, element2)}\n緣分指數：${this.getCompatibilityScore(element1, element2)}%`;
 
-		// 1. 命盤速讀 (雙人版)
-		response += `**1. 命盤速讀**\n`;
-		response += `👨 男方：${bazi1.year} ${bazi1.month} ${bazi1.day} ${bazi1.hour} (${element1}命)\n`;
-		response += `👩 女方：${bazi2.year} ${bazi2.month} ${bazi2.day} ${bazi2.hour} (${element2}命)\n`;
-		response += `配對類型：${this.getCoupleType(element1, element2)}\n`;
-		response += `緣分指數：${this.getCompatibilityScore(element1, element2)}%\n\n`;
+		// 2. 針對具體問題回應 - 合婚分析不需要單獨的問題回應區段
+		let problemResponse = "";
 
-		// 2. 契合度分析 (替代年度預警)
-		response += `**2. 契合度分析**\n`;
-		const compatibility = this.getCompatibilityAnalysis(element1, element2);
-		response += `五行互動：${compatibility.interaction}\n`;
-		response += `性格配對：${compatibility.personality}\n`;
-		response += `相處建議：${compatibility.advice}\n\n`;
-
-		// 3-4. 使用AI生成個人化配對分析
+		// 3. 配對分析 - AI生成的主要配對分析內容
+		let compatibilityAnalysis = "";
 		try {
 			const aiAnalysis = await this.generateCoupleAIAnalysis(
 				birthday1,
@@ -179,10 +174,10 @@ export class EnhancedInitialAnalysis {
 			);
 
 			if (aiAnalysis) {
-				response += aiAnalysis;
+				compatibilityAnalysis = aiAnalysis;
 			} else {
 				// AI失敗時使用備用模板
-				response += this.getFallbackCoupleAnalysis(
+				compatibilityAnalysis = this.getFallbackCoupleAnalysis(
 					element1,
 					element2,
 					specificQuestion
@@ -190,16 +185,30 @@ export class EnhancedInitialAnalysis {
 			}
 		} catch (error) {
 			console.error("AI generation failed:", error);
-			response += this.getFallbackCoupleAnalysis(
+			compatibilityAnalysis = this.getFallbackCoupleAnalysis(
 				element1,
 				element2,
 				specificQuestion
 			);
-			// Add couple report recommendations only for fallback
-			response += this.getCoupleReportRecommendations();
 		}
 
-		return response;
+		// 4. 實用解決方案 - 添加實際內容
+		const practicalSolutions = `**🔧 實用解決方案**\n**1. 優先建議** - 根據你們雙方的五行特質，建議在居家佈置上加強五行平衡：${element1}命者可在個人空間增加對應元素裝飾，${element2}命者則適合調整房間佈局增進相容性。\n\n**2. 時機掌握** - 每月農曆初一、十五是感情能量最旺的時期，適合進行深度溝通或規劃未來。\n\n**3. 日常互動** - 善用各自的五行優勢，${element1}命的穩定特質搭配${element2}命的活力，形成互補的相處模式。`;
+
+		// 5. 專屬感情解析 - 提供具體的感情建議
+		const exclusiveInsights = `**✨ 專屬感情解析**\n根據你們${element1}命和${element2}命的配對特質，以下是專屬的感情發展建議：\n\n🌸 **感情發展階段建議**\n• 初期相處：著重建立信任基礎，${element1}命宜展現包容，${element2}命可主動分享\n• 深化關係：利用雙方五行互補優勢，在生活細節中體現相互支持\n• 長期規劃：結合各自的命理特質，制定共同目標和成長方向\n\n🎯 **最佳互動時機**\n每月農曆初一、十五感情能量最旺，適合深度溝通。${month1}月和${month2}月出生的你們，在對方生日月份前後特別容易產生共鳴。\n\n**✨ 進階指引說明**\n以上分析僅基於年月框架，若要精準鎖定：\n- 雙方個人桃花宮位與最佳方位\n- 2025-2026具體感情發展時間點\n- 專屬你們的相處節奏與溝通策略\n需提供完整出生時辰（幾點幾分），透過八字排盤解析「夫妻宮格局」與「大運流年」的互動，才能制定個人化感情發展策略。風鈴可為你們製作專屬合婚報告，助你們掌握感情升溫的關鍵契機點。`;
+
+		// 6. 合婚報告推薦
+		const reportRecommendation = this.getCoupleReportRecommendations();
+
+		return {
+			basicAnalysis,
+			problemResponse,
+			compatibilityAnalysis,
+			practicalSolutions,
+			exclusiveInsights,
+			reportRecommendation,
+		};
 	}
 
 	// ==========================================
@@ -377,56 +386,44 @@ ${
 
 		const prompt = `你是專業的風水師「風鈴」，請根據以下信息生成個人化的合婚配對分析：
 
+**重要語言要求：必須使用繁體中文回應，絕對不可使用簡體中文！**
+
 雙方信息：
 - 男方：${year1}年${month1}月${day1}日，${element1}命，${age1}歲
 - 女方：${year2}年${month2}月${day2}日，${element2}命，${age2}歲
 - 當前時間：${currentYear}年${currentMonth}月
 - 具體問題：${specificQuestion || "無特定問題"}
 
-請生成以下部分的內容，要求個人化、具體、實用：
+**重要：請優先針對用戶的具體問題「${specificQuestion}」進行直接回應和提供相關建議！**
 
-**3. 星盤指引**
-根據雙方八字星盤分析，提供：
-- 遷移宮聯動：雙方感情發展的流年變化和關鍵時期
-- 夫妻宮信號：目前婚姻宮位的能量狀態和未來6個月趨勢
-- 關鍵法則：基於星盤配置的3個核心感情維護要點
+請生成配對分析的內容，要求個人化、具體、實用：
 
-**4. 配對分析**
-根據${element1}命和${element2}命的配對特質，分析：
-- 你們最近的相處狀況和互動模式
+**🎯 配對分析**
+根據${element1}命和${element2}命的配對特質，詳細分析你們在感情方面的特質和運勢，內容包括：
+- 結合雙方生肖和出生季節的性格特質分析
+- 你們的相處狀況和互動模式評估  
 - 未來3-6個月的感情發展趨勢
-- 雙方性格優勢如何互補
-- 需要注意的磨合點
+- 雙方性格優勢如何互補和需要注意的磨合點
 
-**5. 簡單的感情風水建議**
-根據雙方五行提供3個具體可行的風水建議：
-- 居家環境佈置建議
-- 約會地點和活動選擇
-- 穿著配色和配飾建議
+**重要要求：**
+- 不要包含任何評分或分數（如85/100、星星評分等），因為基礎分析已有緣分指數
+- 不要說「親愛的，風鈴特別想告訴你」這類開頭語
+- 不要提及「悄悄話：因為缺少具體出生時辰」這類內容
+- 專注於配對分析的實質內容，語調親切但不過於親暱
 
-**6. 💕 專屬感情解析**
 ${
-	specificQuestion
-		? `針對你們的具體問題「${specificQuestion}」，根據${element1}命和${element2}命配對分析：
-- 問題背後的深層原因（五行角度分析）
-- 改善關係的初步方向（2-3個建議）
-- 💒重要時機：你們在【當前季節】最適合深化關係
-- 風鈴溫馨提醒：想要詳細的感情改善計劃、吉日選擇和專屬佈局方案嗎？解鎖詳細報告，讓愛情開花結果！💕`
-		: `根據你們的配對特質，風鈴發現：
-- 一個即將影響感情走向的關鍵轉折點
-- 【未來3個月】內的重要感情發展機會
-- ⏰黃金期：錯過這次高峰期要等半年
-- 風鈴溫馨提醒：想知道具體進展時間表、求婚吉日和增進感情的風水秘訣嗎？解鎖詳細報告，把握愛情最佳時機！💕`
+	specificQuestion &&
+	!specificQuestion.includes("選擇:") &&
+	!specificQuestion.includes("選項")
+		? `**針對你們的具體問題：** 請特別關注用戶的問題「${specificQuestion}」，在配對分析中提供相關的命理見解和建議。`
+		: `請重點分析雙方的配對契合度和感情發展潛力。`
 }
 
 要求：
-1. 使用風鈴可愛親切的語調
-2. 內容要具體實用，針對雙方配對特質
-3. 考慮五行相生相剋關係
-4. 考慮當前時間因素
-5. 每部分控制在3-4行內
-6. 使用emoji增加親和力
-7. Point 5要讓用戶感受到價值但留有懸念，引導解鎖詳細報告`;
+- 必須使用繁體中文，絕對不可使用簡體中文
+- 內容適中，約500-700字即可
+- 語言要親切專業，像風鈴在一對一指導
+- 重點強調需要完整出生時辰才能提供更精確分析`;
 
 		const messages = [
 			{
@@ -2082,7 +2079,35 @@ ${
 	}
 
 	static getCoupleReportRecommendations() {
-		return `\n\n───────────────────\n💎 **想要更深入的分析嗎？**\n根據你們的狀況，風鈴為你們推薦：\n\n**1️⃣ 一份關於合盤的詳細報告** 價值$168，限時優惠$88\n- 深入分析你們的感情配對度，提供具體建議和改善方案\n- 兩人五行相配分析\n- 感情發展最佳時機\n\n**2️⃣ 一份綜合命理報告** 價值$168，限時優惠$88\n- 全面的八字命盤分析，包含各方面運勢預測\n- 個人和雙方運勢走向\n- 事業和家庭平衡建議\n\n**3️⃣ 一份居家佈局報告** 價值$388，限時優惠$188\n- 用居家佈局增強運勢，打造專屬風水空間\n- 適合雙方的家居環境設計\n- 促進感情和諧的空間布局\n\n請回覆「1」、「2」或「3」選擇你想要的報告～`;
+		return {
+			options: [
+				{
+					number: "1️⃣",
+					title: "💕 合婚配對詳細報告",
+					price: "$88",
+					originalPrice: "$168",
+					features: [
+						"深入分析你們的感情配對度，提供具體建議和改善方案",
+						"詳細的兩人五行相配分析",
+						"感情發展最佳時機指導",
+						"專屬的合婚風水佈局建議",
+						"雙方性格互補和磨合策略",
+					],
+				},
+				{
+					number: "2️⃣",
+					title: "一份綜合命理報告",
+					price: "$88",
+					originalPrice: "$168",
+					features: [
+						"全面的八字命盤分析，包含各方面運勢預測",
+						"流年大運走勢分析",
+						"人際關係和事業發展建議",
+					],
+				},
+			],
+			action: "請回覆「1」或「2」選擇你想要的報告",
+		};
 	}
 
 	// ==========================================

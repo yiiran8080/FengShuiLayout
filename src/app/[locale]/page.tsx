@@ -366,9 +366,24 @@ export default function Home() {
 				concern ||
 				"感情關係和諧改善建議";
 
+			console.log("🎯 Couple payment problem selection debug:", {
+				latestSpecificProblem,
+				originalUserQuestion,
+				concern,
+				selectedProblem: problemToUse,
+			});
+
 			// Call couple payment API directly
 			try {
 				setIsLoading(true);
+
+				console.log("🚀 Sending to payment-couple API:", {
+					locale: currentLocale,
+					specificProblem: problemToUse,
+					concern: concern,
+					fromChat: true,
+					sessionId: sessionId,
+				});
 
 				const paymentResponse = await fetch("/api/payment-couple", {
 					method: "POST",
@@ -501,6 +516,33 @@ export default function Home() {
 				);
 
 				setMessages((prev) => [...prev, emptyAssistantMessage]);
+
+				// 🔥 Always update specific problem when available in API response
+				if (data.specificProblem) {
+					console.log(
+						"💾 Updating latestSpecificProblem from API response:",
+						data.specificProblem
+					);
+					setLatestSpecificProblem(data.specificProblem);
+
+					// Only set original question if not already set
+					if (!originalUserQuestion) {
+						console.log(
+							"📝 Setting originalUserQuestion:",
+							data.specificProblem
+						);
+						setOriginalUserQuestion(data.specificProblem);
+					}
+				}
+
+				// Also update concern if available
+				if (data.concern) {
+					console.log(
+						"💾 Updating concern from API response:",
+						data.concern
+					);
+					setConcern(data.concern);
+				}
 
 				// 注意：移除不必要的對話歷史重新載入，這會造成過多的API呼叫
 				// 只有在創建新對話時才需要更新歷史列表
