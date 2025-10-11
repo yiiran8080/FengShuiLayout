@@ -2675,6 +2675,8 @@ export async function POST(request) {
 					conversationActive: true,
 					primaryConcern: mappedConcern,
 					specificQuestion: `想了解${mappedConcern}方面的運勢和風水建議`,
+					originalSpecificProblem: message, // 🔧 保存原始用戶訊息
+					originalUserMessage: message, // 🆕 永不覆蓋的原始訊息
 					relationshipAnalysisType: partnerBirthday
 						? "couple"
 						: "individual",
@@ -2960,6 +2962,8 @@ export async function POST(request) {
 						specificQuestion:
 							topicAndBirthdayData.originalMessage ||
 							`想了解${topicAndBirthdayData.topic}方面的運勢`,
+						originalUserMessage:
+							topicAndBirthdayData.originalMessage, // 🆕 永不覆蓋的原始訊息
 						relationshipAnalysisType: "individual",
 						conversationState: "asking_detailed_report",
 						createdAt: new Date(),
@@ -2982,29 +2986,66 @@ export async function POST(request) {
 				);
 
 				if (topicAndBirthdayData.topic === "感情") {
+					// 🔧 優先使用原始用戶訊息，而非AI分析的通用描述
+					const specificQuestionForAnalysis =
+						userIntent.originalUserMessage ||
+						topicAndBirthdayData.originalMessage ||
+						userIntent.originalSpecificProblem ||
+						userIntent.specificQuestion ||
+						"一般感情分析";
+
+					console.log("🔍 DEBUG - 分析原始訊息來源:");
+					console.log(
+						"   userIntent.originalUserMessage:",
+						userIntent.originalUserMessage
+					);
+					console.log(
+						"   topicAndBirthdayData.originalMessage:",
+						topicAndBirthdayData?.originalMessage
+					);
+					console.log(
+						"   userIntent.originalSpecificProblem:",
+						userIntent.originalSpecificProblem
+					);
+					console.log(
+						"   userIntent.specificQuestion:",
+						userIntent.specificQuestion
+					);
+					console.log(
+						"🔍 傳遞給 generateLoveAnalysis 的具體問題:",
+						specificQuestionForAnalysis
+					);
 					response =
 						await EnhancedInitialAnalysis.generateLoveAnalysis(
 							topicAndBirthdayData.birthday.parsed,
-							topicAndBirthdayData.originalMessage ||
-								"一般感情分析"
+							specificQuestionForAnalysis
 						);
 				} else if (topicAndBirthdayData.topic === "財運") {
 					response =
 						await EnhancedInitialAnalysis.generateFinanceAnalysis(
 							topicAndBirthdayData.birthday.parsed,
-							topicAndBirthdayData.originalMessage || "財運諮詢"
+							userIntent.originalSpecificProblem ||
+								userIntent.specificQuestion ||
+								topicAndBirthdayData.originalMessage ||
+								"財運諮詢"
 						);
 				} else if (topicAndBirthdayData.topic === "工作") {
 					response =
 						await EnhancedInitialAnalysis.generateWorkAnalysis(
 							topicAndBirthdayData.birthday.parsed,
-							topicAndBirthdayData.originalMessage || "工作運勢"
+							userIntent.originalSpecificProblem ||
+								userIntent.specificQuestion ||
+								topicAndBirthdayData.originalMessage ||
+								"工作運勢"
 						);
 				} else if (topicAndBirthdayData.topic === "健康") {
 					response =
 						await EnhancedInitialAnalysis.generateHealthAnalysis(
 							topicAndBirthdayData.birthday.parsed,
-							topicAndBirthdayData.originalMessage || "健康運勢"
+							userIntent.originalSpecificProblem ||
+								userIntent.specificQuestion ||
+								topicAndBirthdayData.originalMessage ||
+								"健康運勢"
 						);
 				} else {
 					// 其他領域使用通用分析
@@ -3012,7 +3053,9 @@ export async function POST(request) {
 						await EnhancedInitialAnalysis.generatePersonalAnalysis(
 							topicAndBirthdayData.birthday.parsed,
 							topicAndBirthdayData.topic,
-							topicAndBirthdayData.originalMessage ||
+							userIntent.originalSpecificProblem ||
+								userIntent.specificQuestion ||
+								topicAndBirthdayData.originalMessage ||
 								`${topicAndBirthdayData.topic}諮詢`
 						);
 				}
@@ -3291,27 +3334,65 @@ export async function POST(request) {
 
 				if (userIntent.primaryConcern === "感情") {
 					if (userIntent.relationshipAnalysisType === "individual") {
+						// 🔧 使用相同的優先級鏈確保原始訊息被使用
+						const specificQuestionForAnalysis =
+							userIntent.originalUserMessage ||
+							userIntent.originalSpecificProblem ||
+							userIntent.specificQuestion ||
+							"個人感情分析";
+
+						console.log("🔍 DEBUG - 多步流程分析原始訊息來源:");
+						console.log(
+							"   userIntent.originalUserMessage:",
+							userIntent.originalUserMessage
+						);
+						console.log(
+							"   userIntent.originalSpecificProblem:",
+							userIntent.originalSpecificProblem
+						);
+						console.log(
+							"   userIntent.specificQuestion:",
+							userIntent.specificQuestion
+						);
+						console.log(
+							"🔍 傳遞給 generateLoveAnalysis 的具體問題:",
+							specificQuestionForAnalysis
+						);
+
 						response =
 							await EnhancedInitialAnalysis.generateLoveAnalysis(
 								new Date(standardDate),
-								userIntent.specificQuestion || "個人感情分析"
+								specificQuestionForAnalysis
 							);
 					} else if (
 						userIntent.relationshipAnalysisType === "couple"
 					) {
+						// 🔧 使用相同的優先級鏈確保原始訊息被使用
+						const specificQuestionForAnalysis =
+							userIntent.originalUserMessage ||
+							userIntent.originalSpecificProblem ||
+							userIntent.specificQuestion ||
+							"合婚配對分析準備";
+
 						response =
 							await EnhancedInitialAnalysis.generateLoveAnalysis(
 								new Date(standardDate),
-								userIntent.specificQuestion ||
-									"合婚配對分析準備"
+								specificQuestionForAnalysis
 							);
 						// 為合婚分析添加對方生日選項
 						response += `\n\n💕 **想做完整合婚分析嗎？**\n如果你有伴侶，可以提供對方的生日，我可以為你們做八字配對分析，看看感情相容度哦！`;
 					} else {
+						// 🔧 使用相同的優先級鏈確保原始訊息被使用
+						const specificQuestionForAnalysis =
+							userIntent.originalUserMessage ||
+							userIntent.originalSpecificProblem ||
+							userIntent.specificQuestion ||
+							"一般感情分析";
+
 						response =
 							await EnhancedInitialAnalysis.generateLoveAnalysis(
 								new Date(standardDate),
-								"一般感情分析"
+								specificQuestionForAnalysis
 							);
 					}
 				} else if (userIntent.primaryConcern === "財運") {
@@ -3582,12 +3663,10 @@ export async function POST(request) {
 請提供：出生年月日（例如：1990年5月15日）`;
 					userIntent.relationshipAnalysisType = "individual";
 
-					// 🔧 新增：保存原始具體問題，避免被覆蓋
-					if (
-						!userIntent.originalSpecificProblem &&
-						userIntent.specificQuestion
-					) {
+					// 🔧 新增：保存原始具體問題，優先使用用戶原始訊息
+					if (!userIntent.originalSpecificProblem) {
 						userIntent.originalSpecificProblem =
+							userIntent.originalUserMessage ||
 							userIntent.specificQuestion;
 						console.log(
 							"💾 保存原始具體問題（個人分析）:",
@@ -3614,12 +3693,10 @@ export async function POST(request) {
 💡 小貼士：你也可以一次提供雙方生日，例如：「我1995/3/15，她1996/8/20」`;
 					userIntent.relationshipAnalysisType = "couple";
 
-					// 🔧 新增：保存原始具體問題，避免被覆蓋
-					if (
-						!userIntent.originalSpecificProblem &&
-						userIntent.specificQuestion
-					) {
+					// 🔧 新增：保存原始具體問題，優先使用用戶原始訊息
+					if (!userIntent.originalSpecificProblem) {
 						userIntent.originalSpecificProblem =
+							userIntent.originalUserMessage ||
 							userIntent.specificQuestion;
 						console.log(
 							"💾 保存原始具體問題（合婚分析）:",
@@ -4935,6 +5012,7 @@ export async function POST(request) {
 						: null,
 					// 🔧 FIX: 保存原始詳細問題描述，用於報告生成
 					originalSpecificProblem: analysis.specificProblem,
+					originalUserMessage: message, // 🆕 永不覆蓋的原始訊息
 				});
 			} else if (isBirthdayInput) {
 				// 更新狀態為詢問詳細報告
@@ -4955,10 +5033,20 @@ export async function POST(request) {
 					userIntent.userBirthday = new Date(message); // 嘗試直接解析
 				}
 
-				// 🔧 FIX: 保持原始詳細問題描述不變，只有在沒有時才設置
+				// 🔧 FIX: 確保原始用戶訊息被保存且永不覆蓋
+				if (
+					!userIntent.originalUserMessage &&
+					topicAndBirthdayData?.originalMessage
+				) {
+					userIntent.originalUserMessage =
+						topicAndBirthdayData.originalMessage;
+				}
 				if (!userIntent.originalSpecificProblem) {
 					userIntent.originalSpecificProblem =
-						userIntent.specificQuestion || "一般諮詢";
+						userIntent.originalUserMessage ||
+						topicAndBirthdayData?.originalMessage ||
+						userIntent.specificQuestion ||
+						"一般諮詢";
 				}
 
 				// 設置正確的問題描述
@@ -5111,6 +5199,7 @@ export async function POST(request) {
 			// 保存 AI 分析結果到 SmartUserIntent
 			userIntent.aiAnalysis = {
 				...analysis,
+				originalMessage: message, // 🔧 保存原始用戶訊息
 				lastAnalyzed: new Date(),
 			};
 
