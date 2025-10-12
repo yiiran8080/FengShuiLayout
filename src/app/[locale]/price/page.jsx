@@ -400,13 +400,6 @@ export default function YourPage() {
 
 	// Handle expert188 payment (direct payment without sqft)
 	const handleExpert188Payment = async () => {
-		// Check if user is logged in first
-		if (!session?.user?.userId) {
-			// Redirect to login page immediately
-			router.push("/auth/login");
-			return;
-		}
-
 		setIsProcessingPayment(true);
 		setCurrentCardType("expert188");
 
@@ -449,13 +442,6 @@ export default function YourPage() {
 
 	// Handle expert88 payment (direct payment without sqft)
 	const handleExpert88Payment = async () => {
-		// Check if user is logged in first
-		if (!session?.user?.userId) {
-			// Redirect to login page immediately
-			router.push("/auth/login");
-			return;
-		}
-
 		setIsProcessingPayment(true);
 		setCurrentCardType("expert88");
 
@@ -496,15 +482,8 @@ export default function YourPage() {
 		}
 	};
 
-	// Handle $38 fortune payment with concern type and specific price IDs
+	// Handle $38 fortune payment with concern type
 	const handleFortunePayment = async (concernType) => {
-		// Check if user is logged in first
-		if (!session?.user?.userId) {
-			// Redirect to login page immediately
-			router.push("/auth/login");
-			return;
-		}
-
 		setIsProcessingPayment(true);
 		setCurrentCardType(`fortune_${concernType}`);
 
@@ -520,19 +499,16 @@ export default function YourPage() {
 				regionToLocaleMap[storedRegion] || locale || "zh-TW";
 
 			console.log(
-				"💰 Fortune payment - Using locale:",
+				"💰 Price page individual payment - Using fresh locale:",
 				freshLocale,
-				"for concern:",
-				concernType,
 				"from stored region:",
 				storedRegion
 			);
 
-			// Prepare request body for the new fortune category API
+			// Prepare request body with chat context if available
 			const requestBody = {
-				concernType: concernType, // financial, love, health, career, wealth, relationship
-				locale: freshLocale,
-				quantity: 1,
+				concern: concernType, // financial, love, health, career
+				locale: freshLocale, // 🔥 Fix: Add locale parameter like couple payment
 			};
 
 			// Include chat-specific data if coming from chat
@@ -545,33 +521,41 @@ export default function YourPage() {
 				);
 			}
 
-			// Create checkout session using the new fortune category API
-			const response = await fetch(
-				"/api/checkoutSessions/payment-fortune-category",
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify(requestBody),
-				}
-			);
+			// Create checkout session for fortune reading
+			const response = await fetch("/api/payment-fortune", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(requestBody),
+			});
 
 			if (response.ok) {
 				const data = await response.json();
 				console.log("Fortune Payment Response:", data);
 
-				if (data.data?.url) {
-					// Direct redirect to Stripe checkout URL (like expert payments)
-					window.location.href = data.data.url;
+				if (data.sessionId) {
+					// Import Stripe and redirect to checkout
+					const stripe = await import("@stripe/stripe-js").then(
+						(mod) =>
+							mod.loadStripe(
+								process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+							)
+					);
+
+					if (stripe) {
+						await stripe.redirectToCheckout({
+							sessionId: data.sessionId,
+						});
+					} else {
+						throw new Error("Failed to load Stripe");
+					}
 				} else {
-					throw new Error("No checkout URL received");
+					throw new Error("No session ID received");
 				}
 			} else {
 				const errorData = await response.json();
-				throw new Error(
-					errorData.message || errorData.error || "Payment error"
-				);
+				throw new Error(errorData.error || "Payment error");
 			}
 		} catch (error) {
 			console.error("Fortune payment error:", error);
@@ -583,13 +567,6 @@ export default function YourPage() {
 
 	// Handle $88 couple payment
 	const handleCouplePayment = async () => {
-		// Check if user is logged in first
-		if (!session?.user?.userId) {
-			// Redirect to login page immediately
-			router.push("/auth/login");
-			return;
-		}
-
 		setIsProcessingPayment(true);
 		setCurrentCardType("couple");
 
@@ -1010,7 +987,27 @@ export default function YourPage() {
 
 						{/* New Hero Section with Image and Cards */}
 						{/* Mobile Layout - Matches attached image */}
-						<div className="block lg:hidden w-full max-w-[1200px] px-4 sm:px-6">
+
+						<div className="block lg:hidden w-full max-w-[1200px] px-4 sm:px-6 relative">
+							{/* Coming Soon Overlay */}
+							<div className="absolute inset-0 z-30 flex items-center justify-center bg-black/15 backdrop-blur-xs rounded-2xl">
+								<div className="bg-gradient-to-r from-[#E8F37A] to-[#A3B116] px-8 py-4 rounded-2xl shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-300">
+									<div className="text-center">
+										<div
+											className="text-2xl font-bold text-[#374A37] mb-2"
+											style={{
+												WebkitTextStroke: "1px #374A37",
+											}}
+										>
+											✨ Coming Soon ✨
+										</div>
+										<div className="text-sm text-[#374A37] font-medium">
+											敬請期待
+										</div>
+									</div>
+								</div>
+							</div>
+
 							{/* Title */}
 							<h3
 								className=" text-[#073e31] mb-6 text-left text-3xl font-bold"
@@ -1132,7 +1129,36 @@ export default function YourPage() {
 						</div>
 
 						{/* Desktop Layout - Original */}
-						<div className="hidden lg:flex w-full max-w-[1200px] flex-col lg:flex-row items-center justify-center gap-8 lg:gap-8 px-4 sm:px-6 lg:px-0">
+						<div className="hidden lg:flex w-full max-w-[1200px] flex-col lg:flex-row items-center justify-center gap-8 lg:gap-8 px-4 sm:px-6 lg:px-0 relative">
+							{/* Coming Soon Overlay - Desktop */}
+							<div className="absolute inset-0 bg-black/15 backdrop-blur-[2px] rounded-3xl z-30 flex items-center justify-center">
+								<div className="bg-gradient-to-br from-[#E8F37A] via-[#CFDC5A] to-[#A3B116] px-12 py-8 rounded-3xl shadow-2xl border-4 border-white/30 transform rotate-3 hover:rotate-0 hover:scale-105 transition-all duration-500">
+									<div className="relative text-center">
+										{/* Decorative elements */}
+										<div className="absolute w-8 h-8 rounded-full -top-4 -left-4 bg-white/40 animate-pulse"></div>
+										<div className="absolute w-6 h-6 delay-300 rounded-full -bottom-4 -right-4 bg-white/40 animate-pulse"></div>
+										<div className="absolute w-4 h-4 delay-700 rounded-full -top-2 -right-6 bg-white/30 animate-pulse"></div>
+
+										{/* Main content */}
+										<div
+											className="text-4xl font-bold text-[#374A37] mb-3"
+											style={{
+												WebkitTextStroke:
+													"1.5px #374A37",
+											}}
+										>
+											✨ Coming Soon ✨
+										</div>
+										<div className="text-lg text-[#374A37] font-medium mb-2">
+											敬請期待
+										</div>
+										<div className="text-sm text-[#2D3A2D] opacity-80">
+											New Features Loading...
+										</div>
+									</div>
+								</div>
+							</div>
+
 							{/* Left side - Image (50% width) */}
 							<div className="relative flex flex-col items-center justify-center w-full lg:w-1/2">
 								<div className="relative max-w-[600px] w-full">
@@ -1235,7 +1261,7 @@ export default function YourPage() {
 												{/* Original price section - moved to right */}
 												<div className="mb-6 text-right">
 													<div className="flex items-baseline justify-end gap-2 mb-2">
-														<span className="text-4xl font-bold text-gray-400 line-through font-noto-sans-hk">
+														<span className="text-4xl font-bold text-gray-400 line-through">
 															$388
 														</span>
 														<span className="text-sm font-bold text-gray-400">
@@ -1538,7 +1564,7 @@ export default function YourPage() {
 												{/* Original price section - moved to right */}
 												<div className="mb-6 text-right">
 													<div className="flex items-baseline justify-end gap-2 mb-2">
-														<span className="text-4xl font-bold text-gray-400 line-through font-noto-sans-hk">
+														<span className="text-4xl font-bold text-gray-400 line-through">
 															$168
 														</span>
 														<span className="text-sm font-bold text-gray-400">
@@ -1950,7 +1976,7 @@ export default function YourPage() {
 																	"premiumPlan"
 																)}
 															</span>
-															<span className="text-[28px] sm:text-2xl font-bold font-noto-sans-hk text-gray-600">
+															<span className="text-[28px] sm:text-2xl font-bold text-gray-600">
 																<span className="line-through">
 																	$88
 																</span>
@@ -2437,7 +2463,7 @@ export default function YourPage() {
 																	"premiumPlan"
 																)}
 															</span>
-															<span className="text-[28px] sm:text-2xl font-bold text-gray-600 font-noto-sans-hk">
+															<span className="text-[28px] sm:text-2xl font-bold text-gray-600">
 																<span className="line-through">
 																	$88
 																</span>
@@ -2926,7 +2952,7 @@ export default function YourPage() {
 																	"premiumPlan"
 																)}
 															</span>
-															<span className="text-[28px] sm:text-2xl font-bold text-gray-600 font-noto-sans-hk">
+															<span className="text-[28px] sm:text-2xl font-bold text-gray-600">
 																<span className="line-through">
 																	$88
 																</span>
@@ -3415,7 +3441,7 @@ export default function YourPage() {
 																	"premiumPlan"
 																)}
 															</span>
-															<span className="text-[28px] sm:text-2xl font-bold text-gray-600 font-noto-sans-hk">
+															<span className="text-[28px] sm:text-2xl font-bold text-gray-600">
 																<span className="line-through">
 																	$88
 																</span>

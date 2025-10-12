@@ -34,6 +34,29 @@ export default function GoogleAnalytics() {
 
 		const url = pathname + searchParams.toString();
 		pageview(url);
+
+		// Enhanced acquisition tracking
+		if (typeof window !== "undefined" && window.gtag) {
+			// Track referrer information
+			const referrer = document.referrer;
+			const utmSource = searchParams.get("utm_source");
+			const utmMedium = searchParams.get("utm_medium");
+			const utmCampaign = searchParams.get("utm_campaign");
+
+			// Send enhanced page view with acquisition data
+			window.gtag("event", "enhanced_page_view", {
+				page_path: pathname,
+				page_referrer: referrer || "(direct)",
+				utm_source: utmSource || "(not set)",
+				utm_medium: utmMedium || "(not set)",
+				utm_campaign: utmCampaign || "(not set)",
+				user_language: navigator.language || "unknown",
+				screen_resolution: `${screen.width}x${screen.height}`,
+				viewport_size: `${window.innerWidth}x${window.innerHeight}`,
+				connection_type:
+					navigator.connection?.effectiveType || "unknown",
+			});
+		}
 	}, [pathname, searchParams]);
 
 	if (!GA_TRACKING_ID) {

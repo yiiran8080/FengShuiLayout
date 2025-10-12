@@ -726,6 +726,35 @@ class AITopicClassifier {
 		return this.conversationMemory.get(sessionId);
 	}
 
+	// 🎯 生成帶有分析額度信息的生日收集模板
+	async generateBirthdayTemplate(userEmail, userId, topicText = "運勢") {
+		let rateLimitInfo = "";
+
+		try {
+			const userStats = await DailyAnalysisRateLimit.getUserStats(
+				userEmail,
+				userId
+			);
+			const remainingAnalyses = userStats.remaining || 10;
+			const dailyLimit = 10;
+
+			rateLimitInfo = `\n\n📊 **今日分析額度**: 您每日可進行 ${dailyLimit} 次專業分析，目前還剩 ${remainingAnalyses} 次機會哦～`;
+		} catch (error) {
+			console.log("⚠️ 獲取分析額度信息失敗:", error);
+		}
+
+		return `
+
+告訴風鈴你的生日，我可以幫你看看${topicText}方面的運勢哦！
+
+📅 **生日格式範例：**
+• 1999-03-15
+• 1999/3/15  
+• 1999年3月15日
+
+風鈴會先給你一個簡單的分析，如果你覺得有幫助，還可以做更詳細的完整報告哦～💕${rateLimitInfo}`;
+	}
+
 	// 🎯 Build customized prompt based on redirect level
 	buildRedirectPrompt(question, redirectLevel, context) {
 		// Get current date for context
@@ -3018,6 +3047,22 @@ export async function POST(request) {
 				await chatHistory.save();
 			} catch (error) {
 				console.error("💾 保存聊天記錄失敗:", error);
+			}
+
+			// 🔢 獲取用戶當前分析額度信息並添加到回應中
+			try {
+				const userStats = await DailyAnalysisRateLimit.getUserStats(
+					userEmail,
+					userId
+				);
+				const remainingAnalyses = userStats.remaining || 10;
+				const dailyLimit = 10;
+
+				// 在原回應後添加額度信息
+				const rateLimitInfo = `\n\n📊 **今日分析額度**: 您每日可進行 ${dailyLimit} 次專業分析，目前還剩 ${remainingAnalyses} 次機會哦～`;
+				response = response + rateLimitInfo;
+			} catch (error) {
+				console.log("⚠️ 獲取分析額度信息失敗:", error);
 			}
 
 			return NextResponse.json({
@@ -5461,6 +5506,28 @@ export async function POST(request) {
 						message,
 						sessionId
 					);
+
+					// 🔢 如果回應包含生日收集模板，添加分析額度信息
+					if (
+						response.includes(
+							"風鈴會先給你一個簡單的分析，如果你覺得有幫助，還可以做更詳細的完整報告哦～💕"
+						)
+					) {
+						try {
+							const userStats =
+								await DailyAnalysisRateLimit.getUserStats(
+									userEmail,
+									userId
+								);
+							const remainingAnalyses = userStats.remaining || 10;
+							const dailyLimit = 10;
+
+							const rateLimitInfo = `\n\n📊 **今日分析額度**: 您每日可進行 ${dailyLimit} 次初步分析，目前還剩 ${remainingAnalyses} 次機會哦～`;
+							response = response + rateLimitInfo;
+						} catch (error) {
+							console.log("⚠️ 獲取分析額度信息失敗:", error);
+						}
+					}
 				}
 			} catch (enhancedError) {
 				console.error(
@@ -5484,6 +5551,28 @@ export async function POST(request) {
 					message,
 					sessionId
 				);
+
+				// 🔢 如果回應包含生日收集模板，添加分析額度信息
+				if (
+					response.includes(
+						"風鈴會先給你一個簡單的分析，如果你覺得有幫助，還可以做更詳細的完整報告哦～💕"
+					)
+				) {
+					try {
+						const userStats =
+							await DailyAnalysisRateLimit.getUserStats(
+								userEmail,
+								userId
+							);
+						const remainingAnalyses = userStats.remaining || 10;
+						const dailyLimit = 10;
+
+						const rateLimitInfo = `\n\n📊 **今日分析額度**: 您每日可進行 ${dailyLimit} 次專業分析，目前還剩 ${remainingAnalyses} 次機會哦～`;
+						response = response + rateLimitInfo;
+					} catch (error) {
+						console.log("⚠️ 獲取分析額度信息失敗:", error);
+					}
+				}
 			}
 		}
 

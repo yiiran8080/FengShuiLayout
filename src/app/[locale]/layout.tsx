@@ -3,6 +3,9 @@ import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import AuthProvider from "@/components/AuthProvider";
 import PageTracker from "@/components/PageTracker";
+import AutoButtonTracker from "@/components/AutoButtonTracker";
+import UserBehaviorTracker from "@/components/UserBehaviorTracker";
+import FengShuiActivityTracker from "@/components/FengShuiActivityTracker";
 import { setRequestLocale } from "next-intl/server";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -26,6 +29,9 @@ export default async function LocaleLayout({
 	return (
 		<>
 			<PageTracker />
+			<AutoButtonTracker />
+			<UserBehaviorTracker />
+			<FengShuiActivityTracker />
 			<ToastContainer
 				position="top-center"
 				autoClose={1000}

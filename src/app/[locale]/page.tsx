@@ -1320,7 +1320,16 @@ export default function Home() {
 									backgroundRepeat: "no-repeat",
 								}}
 								onClick={handleMobileNavigation}
-							></div>
+							>
+								{/* Coming Soon Overlay */}
+								<div className="absolute inset-0 bg-black/20 backdrop-blur-[1px] rounded-lg z-10 flex items-center justify-center">
+									<div className="bg-gradient-to-r from-[#E8F37A] to-[#A3B116] px-3 py-1 rounded-lg shadow-lg">
+										<div className="text-sm font-bold text-[#374A37]">
+											Coming Soon
+										</div>
+									</div>
+								</div>
+							</div>
 						</Link>
 
 						<Link href="/demo?category=life">

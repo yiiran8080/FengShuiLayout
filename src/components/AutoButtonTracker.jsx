@@ -8,20 +8,54 @@ export default function AutoButtonTracker() {
 		const ensurePageTracking = () => {
 			if (window.gtag) {
 				const pageNames = {
+					// Home Pages
 					"/zh-TW": "Home Page",
-					"/zh-TW/free": "Free Analysis Page",
-					"/zh-TW/freereport": "Free Report Page",
-					"/zh-TW/design": "Design Page",
-					"/zh-TW/report": "Report Page",
+					"/zh-CN": "Home Page (CN)",
+
+					// Main Service Pages
+					"/zh-TW/design": "Room Design Page",
+					"/zh-TW/report": "General Report Page",
 					"/zh-TW/success": "Success Page",
 					"/zh-TW/price": "Pricing Page",
-					"/zh-CN": "Home Page (CN)",
-					"/zh-CN/free": "Free Analysis Page (CN)",
-					"/zh-CN/freereport": "Free Report Page (CN)",
-					"/zh-CN/design": "Design Page (CN)",
-					"/zh-CN/report": "Report Page (CN)",
+					"/zh-CN/design": "Room Design Page (CN)",
+					"/zh-CN/report": "General Report Page (CN)",
 					"/zh-CN/success": "Success Page (CN)",
 					"/zh-CN/price": "Pricing Page (CN)",
+
+					// Analysis & Report Pages
+					"/zh-TW/feng-shui-report": "Feng Shui Analysis Report",
+					"/zh-TW/couple-report": "Couple Analysis Report",
+					"/zh-TW/bazhai-report": "Bazhai Analysis Report",
+					"/zh-TW/four-fortune-analysis": "Four Fortune Analysis",
+					"/zh-CN/feng-shui-report": "Feng Shui Analysis Report (CN)",
+					"/zh-CN/couple-report": "Couple Analysis Report (CN)",
+					"/zh-CN/bazhai-report": "Bazhai Analysis Report (CN)",
+					"/zh-CN/four-fortune-analysis":
+						"Four Fortune Analysis (CN)",
+
+					// Entry & Input Pages
+					"/zh-TW/birthday-entry": "Birthday Entry Form",
+					"/zh-TW/couple-entry": "Couple Entry Form",
+					"/zh-TW/fortune-entry": "Fortune Entry Form",
+					"/zh-CN/birthday-entry": "Birthday Entry Form (CN)",
+					"/zh-CN/couple-entry": "Couple Entry Form (CN)",
+					"/zh-CN/fortune-entry": "Fortune Entry Form (CN)",
+
+					// Chat & Interactive Pages
+					"/zh-TW/chat": "Chat Interface",
+					"/zh-TW/smart-chat2": "AI Chat Interface",
+					"/zh-CN/chat": "Chat Interface (CN)",
+					"/zh-CN/smart-chat2": "AI Chat Interface (CN)",
+
+					// User Management Pages
+					"/zh-TW/auth": "Authentication",
+					"/zh-TW/customer": "Customer Dashboard",
+					"/zh-TW/payment": "Payment Page",
+					"/zh-TW/report-history": "Report History",
+					"/zh-CN/auth": "Authentication (CN)",
+					"/zh-CN/customer": "Customer Dashboard (CN)",
+					"/zh-CN/payment": "Payment Page (CN)",
+					"/zh-CN/report-history": "Report History (CN)",
 				};
 
 				const pathname = window.location.pathname;
@@ -33,7 +67,6 @@ export default function AutoButtonTracker() {
 					page_location: window.location.href,
 					page_path: pathname,
 					custom_page_name: pageName,
-					send_to: "G-FSF2H5X9S4", // Your GA tracking ID
 				});
 
 				console.log(
