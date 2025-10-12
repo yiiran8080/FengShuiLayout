@@ -484,7 +484,21 @@ export default function Home() {
 
 			const data = await response.json();
 
-			console.log("🔍 完整 API 回應:", data);
+			// 🚫 Create cleaned version for debug logging (hide rate limit info)
+			const cleanedDataForLogging = {
+				...data,
+				analysis: data.analysis ? {
+					...data.analysis,
+					// Remove rate limit debug info from logs
+					rateLimited: data.analysis.rateLimited ? "[HIDDEN]" : undefined,
+					currentCount: data.analysis.currentCount ? "[HIDDEN]" : undefined,
+					limit: data.analysis.limit ? "[HIDDEN]" : undefined,
+				} : data.analysis,
+				// Also hide rateLimitInfo if it exists
+				rateLimitInfo: data.rateLimitInfo ? "[HIDDEN]" : undefined
+			};
+
+			console.log("🔍 API 回應 (Rate Limit Info Hidden):", cleanedDataForLogging);
 			console.log("🔍 data.specificProblem:", data.specificProblem);
 			console.log("🔍 data.concern:", data.concern);
 
@@ -2081,6 +2095,57 @@ export default function Home() {
 																				.specificProblem
 																		}
 																	</p>
+																</div>
+															)}
+
+															{/* Rate Limit Information for Development */}
+															{message.aiAnalysis
+																.rateLimitInfo && (
+																<div className="pt-2 border-t border-gray-200">
+																	<div className="flex items-center gap-2">
+																		<span className="text-gray-600">
+																			分析額度:
+																		</span>
+																		<Badge
+																			variant={
+																				message
+																					.aiAnalysis
+																					.rateLimitInfo
+																					.remaining > 3
+																					? "default"
+																					: message
+																							.aiAnalysis
+																							.rateLimitInfo
+																							.remaining > 0
+																					? "secondary"
+																					: "destructive"
+																			}
+																		>
+																			{
+																				message
+																					.aiAnalysis
+																					.rateLimitInfo
+																					.current
+																			}
+																			/
+																			{
+																				message
+																					.aiAnalysis
+																					.rateLimitInfo
+																					.limit
+																			}
+																		</Badge>
+																		<span className="text-xs text-gray-500">
+																			(剩餘:{" "}
+																			{
+																				message
+																					.aiAnalysis
+																					.rateLimitInfo
+																					.remaining
+																			}
+																			)
+																		</span>
+																	</div>
 																</div>
 															)}
 														</div>

@@ -5,6 +5,7 @@ import SmartUserIntent from "@/models/SmartUserIntent";
 import ChatHistory from "@/models/ChatHistory"; // 🆕 新增：使用新的ChatHistory模型
 import CoupleReportDoc from "@/models/CoupleReportDoc"; // 🎯 新增：合婚報告模型
 import EnhancedConversationMemoryManager from "@/lib/enhancedConversationMemoryManager";
+import DailyAnalysisRateLimit from "@/lib/dailyAnalysisRateLimit"; // 🚫 新增：每日分析限制
 
 // 🔧 生日解析工具函數 - 複製自 Smart-Chat
 function parseFlexibleDate(dateString) {
@@ -2712,6 +2713,30 @@ export async function POST(request) {
 				reportType,
 			});
 
+			// 🚫 檢查每日分析限制
+			const rateLimitCheck = await DailyAnalysisRateLimit.checkUserLimit(userEmail, userId);
+			if (!rateLimitCheck.canAnalyze) {
+				const limitMessage = DailyAnalysisRateLimit.generateLimitExceededMessage(
+					rateLimitCheck.currentCount,
+					rateLimitCheck.limit
+				);
+				
+				return NextResponse.json({
+					response: limitMessage,
+					analysis: {
+						isWithinScope: false,
+						detectedTopic: "rate_limit_exceeded",
+						specificProblem: "每日分析次數已達上限",
+						confidence: 1.0,
+						rateLimited: true,
+						currentCount: rateLimitCheck.currentCount,
+						limit: rateLimitCheck.limit
+					},
+					reportUrl: null,
+					shouldTriggerModal: false,
+				});
+			}
+
 			let userIntent = await SmartUserIntent.findOne({
 				sessionId: sessionId,
 				conversationActive: true,
@@ -2823,12 +2848,34 @@ export async function POST(request) {
 
 				await userIntent.save();
 
+				// 🚫 記錄分析次數
+				const analysisType = userIntent.relationshipAnalysisType || "individual";
+				await DailyAnalysisRateLimit.recordAnalysis(
+					userEmail,
+					userId,
+					sessionId,
+					analysisType,
+					concern,
+					userIntent.originalSpecificProblem || userIntent.specificQuestion
+				);
+
+				// 🚫 檢查是否接近限制並添加警告
+				const updatedStats = await DailyAnalysisRateLimit.getUserStats(userEmail, userId);
+				const warningMessage = DailyAnalysisRateLimit.generateWarningMessage(updatedStats.remaining);
+				
+				const responseText = `✨ 太好了！你的專屬${concern}報告已經準備好了！\n\n正在為你打開報告頁面...${warningMessage ? '\n\n' + warningMessage : ''}`;
+
 				return NextResponse.json({
-					response: `✨ 太好了！你的專屬${concern}報告已經準備好了！\n\n正在為你打開報告頁面...`,
+					response: responseText,
 					conversationState: "report_generated",
 					systemType: "smart-chat2",
 					reportUrl: reportUrl,
 					timestamp: new Date().toISOString(),
+					analysisStats: {
+						currentCount: updatedStats.analysisCount,
+						remaining: updatedStats.remaining,
+						limit: 10
+					}
 				});
 			}
 		}
@@ -2969,6 +3016,29 @@ export async function POST(request) {
 			// 🎯 處理合婚分析的雙方生日輸入
 			console.log("🎯 檢測到合婚分析中的雙方生日:", couplesBirthdayData);
 
+			// 🚫 檢查每日初步分析限制（合婚分析）
+			const rateLimitCheck = await DailyAnalysisRateLimit.checkUserLimit(userEmail, userId);
+			if (!rateLimitCheck.canAnalyze) {
+				const limitMessage = DailyAnalysisRateLimit.generateLimitExceededMessage(
+					rateLimitCheck.currentCount,
+					rateLimitCheck.limit
+				);
+				
+				return NextResponse.json({
+					response: limitMessage,
+					analysis: {
+						isWithinScope: false,
+						detectedTopic: "rate_limit_exceeded",
+						specificProblem: "每日分析次數已達上限",
+						confidence: 1.0,
+						rateLimited: true,
+						currentCount: rateLimitCheck.currentCount,
+						limit: rateLimitCheck.limit
+					},
+					shouldTriggerModal: false,
+				});
+			}
+
 			try {
 				// 更新用戶資料
 				userIntent.userBirthday = couplesBirthdayData.userBirthday;
@@ -3061,6 +3131,17 @@ export async function POST(request) {
 					"   來源 - specificQuestion:",
 					userIntent.specificQuestion
 				);
+
+				// 🚫 記錄分析次數
+				await DailyAnalysisRateLimit.recordAnalysis(
+					userEmail,
+					userId,
+					sessionId,
+					"couple", // 合婚分析類型
+					"感情",
+					userIntent.originalUserMessage || userIntent.originalSpecificProblem || userIntent.specificQuestion
+				);
+
 			} catch (error) {
 				console.error("❌ 生成合婚分析失敗:", error);
 				response = "很抱歉，在分析你們的八字時遇到了問題，請稍後再試。";
@@ -3074,6 +3155,30 @@ export async function POST(request) {
 		} else if (topicAndBirthdayData) {
 			// 🎯 NEW: 處理同時包含主題和生日的輸入
 			console.log("🎯 檢測到主題+生日組合:", topicAndBirthdayData);
+
+			// 🚫 檢查每日分析限制
+			const rateLimitCheck = await DailyAnalysisRateLimit.checkUserLimit(userEmail, userId);
+			if (!rateLimitCheck.canAnalyze) {
+				const limitMessage = DailyAnalysisRateLimit.generateLimitExceededMessage(
+					rateLimitCheck.currentCount,
+					rateLimitCheck.limit
+				);
+				
+				return NextResponse.json({
+					response: limitMessage,
+					analysis: {
+						isWithinScope: false,
+						detectedTopic: "rate_limit_exceeded",
+						specificProblem: "每日分析次數已達上限",
+						confidence: 1.0,
+						rateLimited: true,
+						currentCount: rateLimitCheck.currentCount,
+						limit: rateLimitCheck.limit
+					},
+					reportUrl: null,
+					shouldTriggerModal: false,
+				});
+			}
 
 			try {
 				// 創建或更新用戶意圖
@@ -3105,7 +3210,32 @@ export async function POST(request) {
 				// 設置生日
 				userIntent.userBirthday = topicAndBirthdayData.birthday.parsed;
 
-				// 🔮 直接生成初步分析報告
+				// � 檢查每日初步分析限制（topic+birthday組合）
+				const rateLimitCheck = await DailyAnalysisRateLimit.checkUserLimit(userEmail, userId);
+				if (!rateLimitCheck.canAnalyze) {
+					const limitMessage = DailyAnalysisRateLimit.generateLimitExceededMessage(
+						rateLimitCheck.currentCount,
+						rateLimitCheck.limit
+					);
+					
+					await userIntent.save();
+					
+					return NextResponse.json({
+						response: limitMessage,
+						analysis: {
+							isWithinScope: false,
+							detectedTopic: "rate_limit_exceeded",
+							specificProblem: "每日分析次數已達上限",
+							confidence: 1.0,
+							rateLimited: true,
+							currentCount: rateLimitCheck.currentCount,
+							limit: rateLimitCheck.limit
+						},
+						shouldTriggerModal: false,
+					});
+				}
+
+				// �🔮 直接生成初步分析報告
 				const { EnhancedInitialAnalysis } = await import(
 					"../../../lib/enhancedInitialAnalysis.js"
 				);
@@ -3200,6 +3330,17 @@ export async function POST(request) {
 				};
 
 				console.log("✅ 主題+生日分析生成成功");
+
+				// 🚫 記錄分析次數
+				await DailyAnalysisRateLimit.recordAnalysis(
+					userEmail,
+					userId,
+					sessionId,
+					"individual", // topic+birthday組合都是個人分析
+					topicAndBirthdayData.topic,
+					userIntent.originalUserMessage || topicAndBirthdayData.originalMessage
+				);
+
 			} catch (error) {
 				console.error("❌ 主題+生日分析失敗:", error);
 				// 備用回應
@@ -3436,6 +3577,30 @@ export async function POST(request) {
 			}
 		} else if (isBirthdayInput && userIntent?.primaryConcern) {
 			// 生日輸入 - 生成初步分析報告 (完全複製 smart-chat 邏輯)
+			
+			// 🚫 檢查每日初步分析限制（生日輸入）
+			const rateLimitCheck = await DailyAnalysisRateLimit.checkUserLimit(userEmail, userId);
+			if (!rateLimitCheck.canAnalyze) {
+				const limitMessage = DailyAnalysisRateLimit.generateLimitExceededMessage(
+					rateLimitCheck.currentCount,
+					rateLimitCheck.limit
+				);
+				
+				return NextResponse.json({
+					response: limitMessage,
+					analysis: {
+						isWithinScope: false,
+						detectedTopic: "rate_limit_exceeded",
+						specificProblem: "每日分析次數已達上限",
+						confidence: 1.0,
+						rateLimited: true,
+						currentCount: rateLimitCheck.currentCount,
+						limit: rateLimitCheck.limit
+					},
+					shouldTriggerModal: false,
+				});
+			}
+
 			try {
 				// 解析並標準化生日格式
 				const cleanedDate = message
@@ -3546,6 +3711,16 @@ export async function POST(request) {
 				// 添加詳細報告選項菜單
 				response += EnhancedInitialAnalysis.getReportRecommendations(
 					userIntent.primaryConcern
+				);
+
+				// 🚫 記錄分析次數
+				await DailyAnalysisRateLimit.recordAnalysis(
+					userEmail,
+					userId,
+					sessionId,
+					userIntent.relationshipAnalysisType || "individual",
+					userIntent.primaryConcern,
+					userIntent.originalUserMessage || userIntent.originalSpecificProblem || userIntent.specificQuestion
 				);
 
 				// 設置狀態為詢問詳細報告
@@ -4288,9 +4463,25 @@ export async function POST(request) {
 				userIntent.primaryConcern = detectedTopic;
 				userIntent.conversationState = "birthday_collection";
 				userIntent.reportType = null;
+				// 🔧 更新具體問題為新主題的問題，避免使用舊主題的問題
+				userIntent.originalSpecificProblem = specificProblem;
+				userIntent.specificQuestion = specificProblem;
 
 				// 更新資料庫狀態
 				await userIntent.save();
+
+				// 🔢 獲取用戶當前分析額度信息
+				let rateLimitInfo = null;
+				try {
+					const userStats = await DailyAnalysisRateLimit.getUserStats(userEmail, userId);
+					rateLimitInfo = {
+						current: userStats.analysisCount || 0,
+						limit: 10,
+						remaining: userStats.remaining || 10
+					};
+				} catch (error) {
+					console.log("⚠️ 獲取用戶分析額度信息失敗:", error);
+				}
 
 				return NextResponse.json({
 					response: combinedResponse,
@@ -4306,6 +4497,7 @@ export async function POST(request) {
 						confidence: confidence,
 						analysisType: analysisType,
 						specificProblem: specificProblem,
+						rateLimitInfo: rateLimitInfo,
 					},
 				});
 			}
@@ -4348,9 +4540,25 @@ export async function POST(request) {
 							aiTopicAnalysis.detectedTopic;
 						userIntent.conversationState = "birthday_collection";
 						userIntent.reportType = null;
+						// 🔧 更新具體問題為新主題的問題，避免使用舊主題的問題
+						userIntent.originalSpecificProblem = aiTopicAnalysis.specificProblem;
+						userIntent.specificQuestion = aiTopicAnalysis.specificProblem;
 
 						// 更新資料庫狀態
 						await userIntent.save();
+
+						// 🔢 獲取用戶當前分析額度信息
+						let rateLimitInfo = null;
+						try {
+							const userStats = await DailyAnalysisRateLimit.getUserStats(userEmail, userId);
+							rateLimitInfo = {
+								current: userStats.analysisCount || 0,
+								limit: 10,
+								remaining: userStats.remaining || 10
+							};
+						} catch (error) {
+							console.log("⚠️ 獲取用戶分析額度信息失敗:", error);
+						}
 
 						return NextResponse.json({
 							response: combinedResponse,
@@ -4369,6 +4577,7 @@ export async function POST(request) {
 								analysisType: "ai_topic_switch",
 								specificProblem:
 									aiTopicAnalysis.specificProblem,
+								rateLimitInfo: rateLimitInfo,
 							},
 						});
 					}
@@ -4906,9 +5115,29 @@ export async function POST(request) {
 					// 🎯 優先處理問候語
 					if (enhancedResult.analysisType === "greeting") {
 						console.log("✅ 檢測到問候語，提供友善回應");
+						
+						// 🔢 獲取用戶當前分析額度信息
+						let rateLimitInfo = null;
+						try {
+							const userStats = await DailyAnalysisRateLimit.getUserStats(userEmail, userId);
+							rateLimitInfo = {
+								current: userStats.analysisCount || 0,
+								limit: 10,
+								remaining: userStats.remaining || 10
+							};
+						} catch (error) {
+							console.log("⚠️ 獲取用戶分析額度信息失敗:", error);
+						}
+
+						// 將 rate limit 信息添加到 enhancedResult
+						const enhancedResultWithRateLimit = {
+							...enhancedResult,
+							rateLimitInfo: rateLimitInfo,
+						};
+
 						return NextResponse.json({
 							response: enhancedResult.response,
-							aiAnalysis: enhancedResult,
+							aiAnalysis: enhancedResultWithRateLimit,
 							conversationState: "ai_analyzing",
 							systemType: "smart-chat2",
 							timestamp: new Date().toISOString(),
@@ -5486,9 +5715,31 @@ export async function POST(request) {
 			analysis?.specificProblem || userIntent?.specificQuestion || message
 		);
 
+		// 🔢 獲取用戶當前分析額度信息並添加到 analysis
+		let finalAnalysis = analysis;
+		try {
+			const userStats = await DailyAnalysisRateLimit.getUserStats(userEmail, userId);
+			const rateLimitInfo = {
+				current: userStats.analysisCount || 0,
+				limit: 10,
+				remaining: userStats.remaining || 10
+			};
+			
+			console.log("🔢 Debug - Rate Limit Info:", rateLimitInfo);
+			console.log("🔢 Debug - User Stats:", userStats);
+			
+			// 將 rate limit 信息添加到 analysis 對象
+			finalAnalysis = {
+				...analysis,
+				rateLimitInfo: rateLimitInfo,
+			};
+		} catch (error) {
+			console.log("⚠️ 獲取用戶分析額度信息失敗:", error);
+		}
+
 		return NextResponse.json({
 			response: response,
-			aiAnalysis: analysis,
+			aiAnalysis: finalAnalysis,
 			conversationState: userIntent?.conversationState || "ai_analyzed",
 			systemType: "smart-chat2",
 			timestamp: new Date().toISOString(),
