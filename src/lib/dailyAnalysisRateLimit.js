@@ -4,10 +4,11 @@ import DailyAnalysisLimit from "@/models/DailyAnalysisLimit";
  * Rate limiting utility for daily analysis limits
  */
 export class DailyAnalysisRateLimit {
-	
 	// 🔧 Configuration: Daily analysis limit per user
-	static DAILY_LIMIT = process.env.DAILY_ANALYSIS_LIMIT ? parseInt(process.env.DAILY_ANALYSIS_LIMIT) : 10;
-	
+	static DAILY_LIMIT = process.env.DAILY_ANALYSIS_LIMIT
+		? parseInt(process.env.DAILY_ANALYSIS_LIMIT)
+		: 10;
+
 	/**
 	 * Check if user can perform analysis today
 	 * @param {string} userEmail - User's email
@@ -15,9 +16,17 @@ export class DailyAnalysisRateLimit {
 	 * @param {number} customLimit - Custom limit (default: 10)
 	 * @returns {Promise<{canAnalyze: boolean, currentCount: number, limit: number, remaining: number}>}
 	 */
-	static async checkUserLimit(userEmail, userId, customLimit = this.DAILY_LIMIT) {
+	static async checkUserLimit(
+		userEmail,
+		userId,
+		customLimit = this.DAILY_LIMIT
+	) {
 		try {
-			return await DailyAnalysisLimit.canUserAnalyze(userEmail, userId, customLimit);
+			return await DailyAnalysisLimit.canUserAnalyze(
+				userEmail,
+				userId,
+				customLimit
+			);
 		} catch (error) {
 			console.error("❌ Error checking user analysis limit:", error);
 			// On error, allow analysis to prevent blocking users due to technical issues
@@ -26,11 +35,11 @@ export class DailyAnalysisRateLimit {
 				currentCount: 0,
 				limit: customLimit,
 				remaining: customLimit,
-				error: true
+				error: true,
 			};
 		}
 	}
-	
+
 	/**
 	 * Record a new analysis for the user
 	 * @param {string} userEmail - User's email
@@ -41,7 +50,14 @@ export class DailyAnalysisRateLimit {
 	 * @param {string} originalMessage - User's original message
 	 * @returns {Promise<Object>}
 	 */
-	static async recordAnalysis(userEmail, userId, sessionId, analysisType, topic, originalMessage) {
+	static async recordAnalysis(
+		userEmail,
+		userId,
+		sessionId,
+		analysisType,
+		topic,
+		originalMessage
+	) {
 		try {
 			const record = await DailyAnalysisLimit.incrementAnalysisCount(
 				userEmail,
@@ -51,25 +67,26 @@ export class DailyAnalysisRateLimit {
 				topic,
 				originalMessage
 			);
-			
-			console.log(`📊 Analysis recorded for user ${userEmail || userId}: ${record.analysisCount}/${this.DAILY_LIMIT}`);
-			
+
+			console.log(
+				`📊 Analysis recorded for user ${userEmail || userId}: ${record.analysisCount}/${this.DAILY_LIMIT}`
+			);
+
 			return {
 				success: true,
 				currentCount: record.analysisCount,
 				limit: this.DAILY_LIMIT,
-				remaining: Math.max(0, this.DAILY_LIMIT - record.analysisCount)
+				remaining: Math.max(0, this.DAILY_LIMIT - record.analysisCount),
 			};
-			
 		} catch (error) {
 			console.error("❌ Error recording analysis:", error);
 			return {
 				success: false,
-				error: error.message
+				error: error.message,
 			};
 		}
 	}
-	
+
 	/**
 	 * Get user's daily statistics
 	 * @param {string} userEmail - User's email
@@ -78,27 +95,33 @@ export class DailyAnalysisRateLimit {
 	 */
 	static async getUserStats(userEmail, userId) {
 		try {
-			return await DailyAnalysisLimit.getUserDailyStats(userEmail, userId);
+			return await DailyAnalysisLimit.getUserDailyStats(
+				userEmail,
+				userId
+			);
 		} catch (error) {
 			console.error("❌ Error getting user stats:", error);
 			return {
-				date: new Date().toISOString().split('T')[0],
+				date: new Date().toISOString().split("T")[0],
 				analysisCount: 0,
 				analyses: [],
 				canAnalyze: true,
 				remaining: this.DAILY_LIMIT,
-				error: true
+				error: true,
 			};
 		}
 	}
-	
+
 	/**
 	 * Generate rate limit exceeded response message
 	 * @param {number} currentCount - Current analysis count
 	 * @param {number} limit - Daily limit
 	 * @returns {string}
 	 */
-	static generateLimitExceededMessage(currentCount, limit = this.DAILY_LIMIT) {
+	static generateLimitExceededMessage(
+		currentCount,
+		limit = this.DAILY_LIMIT
+	) {
 		return `🚫 今日分析次數已達上限
 
 您今天已經使用了 ${currentCount}/${limit} 次免費分析服務。
@@ -113,7 +136,7 @@ export class DailyAnalysisRateLimit {
 
 感謝您的理解與支持！`;
 	}
-	
+
 	/**
 	 * Generate approaching limit warning message
 	 * @param {number} remaining - Remaining analyses
@@ -126,7 +149,7 @@ export class DailyAnalysisRateLimit {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Check if analysis type should be counted against limit
 	 * @param {string} analysisType - Type of analysis
@@ -138,12 +161,12 @@ export class DailyAnalysisRateLimit {
 		if (analysisType === "individual" || analysisType === "couple") {
 			return true;
 		}
-		
+
 		// Don't count follow-up questions or clarifications
 		if (context.isFollowUp || context.isClarification) {
 			return false;
 		}
-		
+
 		return true;
 	}
 }

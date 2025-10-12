@@ -3,7 +3,7 @@
  */
 
 console.log("📋 Daily Analysis Rate Limiting Implementation Summary");
-console.log("=" .repeat(60));
+console.log("=".repeat(60));
 
 console.log("\n🎯 What's implemented:");
 console.log("✅ DailyAnalysisLimit model to track user analysis counts");
@@ -22,7 +22,7 @@ console.log("• Types counted: Both individual & couple analyses");
 
 console.log("\n💬 User messages:");
 console.log("• Limit exceeded: Friendly message with reset time");
-console.log("• Near limit warning: When ≤2 analyses remaining"); 
+console.log("• Near limit warning: When ≤2 analyses remaining");
 console.log("• Analysis stats: Included in API responses");
 
 console.log("\n🔧 Technical implementation:");
@@ -39,7 +39,9 @@ console.log("4. Couple analysis generation (line ~3020)");
 
 console.log("\n🎉 Ready to test!");
 console.log("Users will now be limited to 10 initial analyses per day.");
-console.log("The chatbox will show appropriate messages when limits are reached.");
+console.log(
+	"The chatbox will show appropriate messages when limits are reached."
+);
 
-console.log("\n" + "=" .repeat(60));
+console.log("\n" + "=".repeat(60));
 console.log("✅ Implementation complete! Rate limiting is active.");

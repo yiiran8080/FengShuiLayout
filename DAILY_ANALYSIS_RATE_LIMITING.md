@@ -1,16 +1,20 @@
 # Daily Analysis Rate Limiting Implementation
 
 ## 📋 Overview
+
 Implemented a comprehensive rate limiting system to limit users to **10 initial analyses per day** in the chatbox. This applies to all initial fortune analyses (individual and couple) that users receive after inputting their birthday.
 
 ## 🎯 What Gets Limited
+
 The system limits the **initial analysis** generated in the chatbox when users:
+
 - Submit birthday through modal form
 - Input topic + birthday combination (e.g., "我想了解感情運勢，生日1990-5-15")
 - Input birthday after selecting a topic
 - Request couple analysis with both birthdays
 
 ## 🚫 Rate Limiting Details
+
 - **Daily Limit**: 10 analyses per user
 - **Tracking**: By userEmail (primary) or userId (fallback)
 - **Reset Time**: Daily at 00:00 Hong Kong time (automatic)
@@ -20,15 +24,17 @@ The system limits the **initial analysis** generated in the chatbox when users:
 ## 🔧 Technical Implementation
 
 ### Files Created/Modified:
+
 1. **`src/models/DailyAnalysisLimit.js`** - MongoDB model for tracking daily counts
 2. **`src/lib/dailyAnalysisRateLimit.js`** - Utility class with rate limiting logic
 3. **`src/app/api/smart-chat2/route.js`** - Integrated at 4 key analysis generation points
 
 ### Database Schema:
+
 ```javascript
 {
   userEmail: String,
-  userId: String, 
+  userId: String,
   date: String, // YYYY-MM-DD format
   analysisCount: Number,
   analyses: [{
@@ -42,19 +48,22 @@ The system limits the **initial analysis** generated in the chatbox when users:
 ```
 
 ### Integration Points:
+
 1. **Birthday form submission** (line ~2720) - Modal form with birthday + gender
-2. **Topic+Birthday detection** (line ~3180) - AI-detected topic + birthday combinations  
+2. **Topic+Birthday detection** (line ~3180) - AI-detected topic + birthday combinations
 3. **Birthday input processing** (line ~3540) - Separate birthday input after topic selection
 4. **Couple analysis generation** (line ~3020) - Dual birthday input for couple analysis
 
 ## 💬 User Experience
 
 ### When Limit Not Reached:
+
 - Normal analysis generation
 - Warning message when ≤2 analyses remaining:
-  > ⚠️ 提醒：您今天還剩 2 次免費分析機會。
+    > ⚠️ 提醒：您今天還剩 2 次免費分析機會。
 
 ### When Limit Exceeded:
+
 ```
 🚫 今日分析次數已達上限
 
@@ -74,18 +83,27 @@ The system limits the **initial analysis** generated in the chatbox when users:
 ## ⚙️ Configuration
 
 ### Environment Variable:
+
 ```env
 # Optional: Override default limit of 10
 DAILY_ANALYSIS_LIMIT=10
 ```
 
 ### Rate Limiting Methods:
+
 ```javascript
 // Check if user can analyze
 await DailyAnalysisRateLimit.checkUserLimit(userEmail, userId);
 
 // Record a new analysis
-await DailyAnalysisRateLimit.recordAnalysis(userEmail, userId, sessionId, analysisType, topic, originalMessage);
+await DailyAnalysisRateLimit.recordAnalysis(
+	userEmail,
+	userId,
+	sessionId,
+	analysisType,
+	topic,
+	originalMessage
+);
 
 // Get user's daily stats
 await DailyAnalysisRateLimit.getUserStats(userEmail, userId);
@@ -98,13 +116,16 @@ DailyAnalysisRateLimit.generateWarningMessage(remaining);
 ```
 
 ## 🔍 What's NOT Limited
+
 - Follow-up questions or clarifications
 - Report selection responses (選擇 1, 2, 3)
 - General chat messages
 - Paid report purchases (those have separate payment flows)
 
 ## 📊 Monitoring & Analytics
+
 Each analysis record includes:
+
 - User identification (email/userId)
 - Session ID for tracking
 - Analysis type (individual/couple)
@@ -113,7 +134,9 @@ Each analysis record includes:
 - Original user message
 
 ## 🎉 Testing
+
 The system is now active and will:
+
 1. ✅ Track all initial analysis requests
 2. ✅ Block users after 10 analyses per day
 3. ✅ Show appropriate warning and limit messages
@@ -121,6 +144,7 @@ The system is now active and will:
 5. ✅ Handle errors gracefully (fail-safe)
 
 ## 🛠️ Admin Utilities
+
 - `rate-limit-summary.js` - Implementation overview
 - `admin-rate-limit.js` - Admin utility examples
 - `test-rate-limit.js` - Test script (requires proper environment setup)
@@ -130,12 +154,14 @@ The system is now active and will:
 ## 🔒 Privacy & Debug Protection
 
 ### Debug Information Filtering
+
 - Rate limit details are hidden from frontend debug logs
 - User counts and limits not exposed in console output
 - Clean API responses without sensitive data
 - Internal tracking remains fully functional
 
 ### Frontend Log Filtering
+
 ```javascript
 // Rate limit info automatically hidden in debug logs
 console.log("🔍 API 回應 (Rate Limit Info Hidden):", cleanedDataForLogging);

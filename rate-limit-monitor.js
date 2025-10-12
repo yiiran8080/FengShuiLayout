@@ -4,7 +4,7 @@
  */
 
 console.log("📊 Rate Limit System - Admin Monitoring");
-console.log("=" .repeat(50));
+console.log("=".repeat(50));
 
 console.log("\n✅ Rate Limiting is Active:");
 console.log("• Daily limit: 10 initial analyses per user");
@@ -52,8 +52,10 @@ console.log("✅ Debug information hidden from users");
 console.log("✅ Clean user experience maintained");
 console.log("✅ System ready for production use");
 
-console.log("\n" + "=" .repeat(50));
-console.log("🔐 Rate limiting protects your system while maintaining user privacy.");
+console.log("\n" + "=".repeat(50));
+console.log(
+	"🔐 Rate limiting protects your system while maintaining user privacy."
+);
 
 // Example of what users see vs what system tracks
 console.log("\n📋 User vs System Information:");

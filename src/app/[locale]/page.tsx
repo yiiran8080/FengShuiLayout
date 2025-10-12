@@ -487,18 +487,27 @@ export default function Home() {
 			// 🚫 Create cleaned version for debug logging (hide rate limit info)
 			const cleanedDataForLogging = {
 				...data,
-				analysis: data.analysis ? {
-					...data.analysis,
-					// Remove rate limit debug info from logs
-					rateLimited: data.analysis.rateLimited ? "[HIDDEN]" : undefined,
-					currentCount: data.analysis.currentCount ? "[HIDDEN]" : undefined,
-					limit: data.analysis.limit ? "[HIDDEN]" : undefined,
-				} : data.analysis,
+				analysis: data.analysis
+					? {
+							...data.analysis,
+							// Remove rate limit debug info from logs
+							rateLimited: data.analysis.rateLimited
+								? "[HIDDEN]"
+								: undefined,
+							currentCount: data.analysis.currentCount
+								? "[HIDDEN]"
+								: undefined,
+							limit: data.analysis.limit ? "[HIDDEN]" : undefined,
+						}
+					: data.analysis,
 				// Also hide rateLimitInfo if it exists
-				rateLimitInfo: data.rateLimitInfo ? "[HIDDEN]" : undefined
+				rateLimitInfo: data.rateLimitInfo ? "[HIDDEN]" : undefined,
 			};
 
-			console.log("🔍 API 回應 (Rate Limit Info Hidden):", cleanedDataForLogging);
+			console.log(
+				"🔍 API 回應 (Rate Limit Info Hidden):",
+				cleanedDataForLogging
+			);
 			console.log("🔍 data.specificProblem:", data.specificProblem);
 			console.log("🔍 data.concern:", data.concern);
 
@@ -2111,14 +2120,16 @@ export default function Home() {
 																				message
 																					.aiAnalysis
 																					.rateLimitInfo
-																					.remaining > 3
+																					.remaining >
+																				3
 																					? "default"
 																					: message
-																							.aiAnalysis
-																							.rateLimitInfo
-																							.remaining > 0
-																					? "secondary"
-																					: "destructive"
+																								.aiAnalysis
+																								.rateLimitInfo
+																								.remaining >
+																						  0
+																						? "secondary"
+																						: "destructive"
 																			}
 																		>
 																			{

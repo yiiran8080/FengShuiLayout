@@ -6,7 +6,7 @@
 const commands = {
 	help: () => {
 		console.log("🔧 Daily Analysis Rate Limit Admin Utility");
-		console.log("=" .repeat(50));
+		console.log("=".repeat(50));
 		console.log("\nAvailable commands:");
 		console.log("• help - Show this help message");
 		console.log("• stats <email|userId> - Get user's daily stats");
@@ -20,11 +20,11 @@ const commands = {
 
 	example: () => {
 		console.log("🎯 Example Rate Limit Responses:");
-		console.log("=" .repeat(50));
-		
+		console.log("=".repeat(50));
+
 		console.log("\n📊 Warning message (2 remaining):");
 		console.log("⚠️ 提醒：您今天還剩 2 次免費分析機會。");
-		
+
 		console.log("\n🚫 Limit exceeded message:");
 		console.log(`🚫 今日分析次數已達上限
 
@@ -45,26 +45,26 @@ const commands = {
 		console.log("• Couple compatibility analysis (合婚配對分析)");
 		console.log("• Topic + birthday combinations");
 		console.log("• Modal form submissions");
-		
+
 		console.log("\n❌ What doesn't get tracked:");
 		console.log("• Follow-up questions");
 		console.log("• Clarifications");
 		console.log("• Report selections (1, 2, 3)");
 		console.log("• General chat messages");
-	}
+	},
 };
 
 const command = process.argv[2];
 
 if (command && commands[command]) {
 	commands[command]();
-} else if (command === 'example') {
+} else if (command === "example") {
 	commands.example();
 } else {
 	commands.help();
 }
 
-console.log("\n" + "=" .repeat(50));
+console.log("\n" + "=".repeat(50));
 console.log("💡 Note: This is a demonstration utility.");
 console.log("For actual database operations, implement the functions using");
 console.log("the DailyAnalysisRateLimit class in production code.");
