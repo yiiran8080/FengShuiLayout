@@ -193,14 +193,24 @@ async function generateMingJuAnalysis(
 
 			if (response.ok) {
 				const data = await response.json();
-				if (data.analysis && data.analysis.length > 50) {
-					// Ensure substantial content
-					console.log(`AI Success on attempt ${attempt}`);
-					return {
-						content: data.analysis,
-						isAI: true,
-						confidence: data.confidence || "medium",
-					};
+				// Parse the JSON content returned by AI API
+				try {
+					const aiData = JSON.parse(data.content);
+					if (aiData.analysis && aiData.analysis.length > 50) {
+						// Ensure substantial content
+						console.log(`AI Success on attempt ${attempt}`);
+						return {
+							content: aiData.analysis,
+							isAI: true,
+							confidence: data.confidence || "medium",
+						};
+					}
+				} catch (parseError) {
+					console.error(
+						`JSON parse error on attempt ${attempt}:`,
+						parseError
+					);
+					console.log("Raw content:", data.content);
 				}
 			} else {
 				console.log(

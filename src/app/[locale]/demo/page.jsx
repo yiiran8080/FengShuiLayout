@@ -119,6 +119,12 @@ export default function DemoPage() {
 			description: t("tags.relationship.description"),
 		},
 		{
+			id: "couple",
+			name: t("tags.couple.name"),
+			image: "/images/demo/couple2.png",
+			description: t("tags.couple.description"),
+		},
+		{
 			id: "health",
 			name: t("tags.health.name"),
 			image: "/images/demo/health.png",
@@ -129,12 +135,6 @@ export default function DemoPage() {
 			name: t("tags.career.name"),
 			image: "/images/demo/career.png",
 			description: t("tags.career.description"),
-		},
-		{
-			id: "couple",
-			name: t("tags.couple.name"),
-			image: "/images/demo/couple.png",
-			description: t("tags.couple.description"),
 		},
 	];
 
@@ -700,7 +700,7 @@ export default function DemoPage() {
 																fontFamily:
 																	"Noto Serif TC, serif",
 																WebkitTextStroke:
-																	" 1.5px #838A53",
+																	" 1.5px #635D3B",
 															}}
 														>
 															{t(

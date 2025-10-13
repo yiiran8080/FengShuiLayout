@@ -239,16 +239,19 @@ export default function Navbar({ from, backgroundColor = "transparent" }) {
 						) : isLogined && from !== "login" ? (
 							<Avatar />
 						) : (
-							<Link
-								className="block text-base focus:text-primary"
-								href={"/auth/login"}
-								style={{
-									fontFamily: "Noto Serif TC, serif",
-									color: navTextColor,
-								}}
-							>
-								{t2("login")}
-							</Link>
+							<div>
+								<Link
+									className="block text-sm px-1 py-2  bg-[#B4B4B4] rounded-full hover:bg-[#B4B4B4] focus:outline-none focus:text-primary"
+									href={"/auth/login"}
+									style={{
+										fontFamily: "Noto Serif TC, serif",
+										fontWeight: "bold",
+										color: "black",
+									}}
+								>
+									{t2("login")}
+								</Link>
+							</div>
 						)}
 					</div>
 				</div>

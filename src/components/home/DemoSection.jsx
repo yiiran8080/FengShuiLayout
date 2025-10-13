@@ -68,6 +68,12 @@ export default function DemoSection() {
 			image: "/images/demo/wealth.png",
 			description: t("tags.wealth.description"),
 		},
+		{
+			id: "couple",
+			name: t("tags.couple.name"),
+			image: "/images/demo/couple2.png",
+			description: t("tags.couple.description"),
+		},
 	];
 
 	const startAutoScroll = (direction) => {

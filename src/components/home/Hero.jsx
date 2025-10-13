@@ -474,7 +474,7 @@ export default function Hero() {
 
 				{/* Social icons at top right */}
 				<div
-					className="absolute z-30 flex flex-col space-y-4"
+					className="fixed z-30 flex flex-col space-y-4"
 					style={{
 						pointerEvents: "auto",
 						top: "90px",
@@ -496,7 +496,7 @@ export default function Hero() {
 									width={40}
 									height={40}
 									style={{
-										filter: "brightness(0) invert(1)",
+										filter: "brightness(0) invert(0.7)",
 									}}
 								/>
 							</a>
@@ -507,7 +507,7 @@ export default function Hero() {
 								alt=""
 								width={30}
 								height={30}
-								style={{ filter: "brightness(0) invert(1)" }}
+								style={{ filter: "brightness(0) invert(0.7)" }}
 							/>
 						)
 					)}

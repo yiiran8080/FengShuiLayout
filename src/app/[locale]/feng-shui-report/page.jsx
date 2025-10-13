@@ -246,6 +246,7 @@ export default function FengShuiReportPage() {
 
 			// Get URL parameters to pass to the API
 			const birthday = searchParams.get("birthday");
+			const birthTime = searchParams.get("birthTime");
 			const gender = searchParams.get("gender");
 			const concern = searchParams.get("concern");
 			const problem = searchParams.get("problem");
@@ -257,6 +258,7 @@ export default function FengShuiReportPage() {
 				window.location.origin
 			);
 			if (birthday) apiUrl.searchParams.set("birthday", birthday);
+			if (birthTime) apiUrl.searchParams.set("birthTime", birthTime);
 			if (gender) apiUrl.searchParams.set("gender", gender);
 			if (concern) apiUrl.searchParams.set("concern", concern);
 			if (problem) apiUrl.searchParams.set("problem", problem);
@@ -457,9 +459,22 @@ export default function FengShuiReportPage() {
 				"✅ Component data store populated with historical content"
 			);
 
+			// Create proper birthDateTime for historical reports too
+			// Default to 12:00 PM (noon) if no birth time is provided for better accuracy
+			const historicalBirthday = savedData.userInputs.birthday;
+			const historicalBirthTime = savedData.userInputs.birthTime;
+			let historicalBirthDateTime = historicalBirthday;
+			if (historicalBirthTime) {
+				historicalBirthDateTime = `${historicalBirthday} ${historicalBirthTime}`;
+			} else {
+				// Default to noon (12:00 PM) for better astrological accuracy
+				historicalBirthDateTime = `${historicalBirthday} 12:00`;
+			}
+
 			// Create report data structure from saved content
 			const reportData = {
-				birthday: savedData.userInputs.birthday,
+				birthday: historicalBirthDateTime, // Use combined birthDateTime
+				birthTime: historicalBirthTime,
 				gender: savedData.userInputs.gender,
 				concern: savedData.userInputs.concern,
 				problem: savedData.userInputs.problem,
@@ -485,6 +500,8 @@ export default function FengShuiReportPage() {
 			// Get parameters from URL or use stored user inputs
 			const birthday =
 				searchParams.get("birthday") || userInputs.birthday;
+			const birthTime =
+				searchParams.get("birthTime") || userInputs.birthTime;
 			const gender = searchParams.get("gender") || userInputs.gender;
 			const concern = searchParams.get("concern") || userInputs.concern;
 			const problem = searchParams.get("problem") || userInputs.problem;
@@ -492,9 +509,22 @@ export default function FengShuiReportPage() {
 				searchParams.get("partnerBirthday") ||
 				userInputs.partnerBirthday;
 
+			// Create proper birthDateTime by combining birthday and birthTime
+			// Default to 12:00 PM (noon) if no birth time is provided for better accuracy
+			let birthDateTime = birthday;
+			if (birthTime) {
+				// Combine date and time: "2024-10-13" + "14:30" = "2024-10-13 14:30"
+				birthDateTime = `${birthday} ${birthTime}`;
+			} else {
+				// Default to noon (12:00 PM) for better astrological accuracy
+				birthDateTime = `${birthday} 12:00`;
+			}
+
 			// Debug logging
 			console.log("Generating new report with params:");
 			console.log("- birthday:", birthday);
+			console.log("- birthTime:", birthTime);
+			console.log("- birthDateTime:", birthDateTime);
 			console.log("- gender:", gender);
 			console.log("- concern:", concern);
 			console.log("- problem:", problem);
@@ -506,7 +536,7 @@ export default function FengShuiReportPage() {
 				return;
 			}
 
-			const birthdayDate = new Date(birthday);
+			const birthdayDate = new Date(birthDateTime);
 			console.log(
 				"🔍 Calling BaziAnalysisSystem.generatePersonalAnalysisV2..."
 			);
@@ -594,7 +624,8 @@ export default function FengShuiReportPage() {
 			}
 
 			const reportData = {
-				birthday,
+				birthday: birthDateTime, // Use the combined birthDateTime
+				birthTime,
 				gender,
 				concern,
 				problem,

@@ -1456,7 +1456,7 @@ export default function YourPage() {
 												{t("paymentCalculation")}
 											</button>
 										</div>
-										<div className="text-right">
+										<div className="text-left">
 											<div className="mb-1 text-4xl font-extrabold text-black font-noto-sans-hk sm:text-5xl">
 												$88
 											</div>
