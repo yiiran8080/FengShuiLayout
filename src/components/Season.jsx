@@ -16,6 +16,61 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 	const [loadingMessage, setLoadingMessage] = useState("正在分析關鍵季節...");
 	const [requestInProgress, setRequestInProgress] = useState(false);
 
+	// Get current date and determine current season
+	const getCurrentSeasonInfo = () => {
+		const now = new Date();
+		const currentMonth = now.getMonth() + 1; // JavaScript months are 0-indexed
+		const currentDate = now.getDate();
+
+		// Define Chinese lunar seasons (approximate)
+		// Spring: 寅卯辰月 (Feb-Apr), Summer: 巳午未月 (May-Jul)
+		// Autumn: 申酉戌月 (Aug-Oct), Winter: 亥子丑月 (Nov-Jan)
+		let currentSeason, seasonStatus;
+
+		if (currentMonth >= 2 && currentMonth <= 4) {
+			currentSeason = "春季";
+			seasonStatus = "current";
+		} else if (currentMonth >= 5 && currentMonth <= 7) {
+			currentSeason = "夏季";
+			seasonStatus = "current";
+		} else if (currentMonth >= 8 && currentMonth <= 10) {
+			currentSeason = "秋季";
+			seasonStatus = "current";
+		} else {
+			currentSeason = "冬季";
+			seasonStatus = "current";
+		}
+
+		// Determine relevant seasons (current + future)
+		const allSeasons = ["春季", "夏季", "秋季", "冬季"];
+		const currentSeasonIndex = allSeasons.indexOf(currentSeason);
+
+		// Get current and future seasons for this year + next year if needed
+		let relevantSeasons = [];
+
+		if (currentMonth >= 2 && currentMonth <= 4) {
+			// Spring: show current spring, summer, autumn, winter
+			relevantSeasons = ["春季", "夏季", "秋季", "冬季"];
+		} else if (currentMonth >= 5 && currentMonth <= 7) {
+			// Summer: show current summer, autumn, winter, next spring
+			relevantSeasons = ["夏季", "秋季", "冬季", "春季"];
+		} else if (currentMonth >= 8 && currentMonth <= 10) {
+			// Autumn: show current autumn, winter, next spring, next summer
+			relevantSeasons = ["秋季", "冬季", "春季", "夏季"];
+		} else {
+			// Winter: show current winter, next spring, next summer, next autumn
+			relevantSeasons = ["冬季", "春季", "夏季", "秋季"];
+		}
+
+		return {
+			currentSeason,
+			currentMonth,
+			currentDate,
+			relevantSeasons,
+			isLatePart: currentDate > 15, // Consider second half of month as "late"
+		};
+	};
+
 	// Generate AI analysis based on user's birth info and current year
 	const generateSeasonAnalysis = async (userInfo, year) => {
 		// Prevent duplicate requests in development mode
@@ -27,7 +82,11 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 		setRequestInProgress(true);
 
 		try {
-			console.log("🔮 Season analysis starting... (v2)");
+			console.log("🔮 Season analysis starting... (v3 - Date Aware)");
+
+			// Get current season info
+			const seasonInfo = getCurrentSeasonInfo();
+			console.log("📅 Current season info:", seasonInfo);
 
 			// Update loading message
 			setLoadingMessage("正在分析八字與季節運勢...");
@@ -46,6 +105,14 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 						time: userInfo?.time || "",
 						concern: userInfo?.concern || "財運",
 					},
+					currentDate: {
+						year: new Date().getFullYear(),
+						month: seasonInfo.currentMonth,
+						date: seasonInfo.currentDate,
+						currentSeason: seasonInfo.currentSeason,
+						relevantSeasons: seasonInfo.relevantSeasons,
+						isLatePart: seasonInfo.isLatePart,
+					},
 				}),
 			});
 
@@ -61,6 +128,7 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 
 			console.log("✅ Season analysis successful");
 			setRequestInProgress(false);
+
 			return {
 				title: result.analysis.parsed.title,
 				seasons: result.analysis.parsed.seasons,
@@ -71,6 +139,8 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 				userGender: userInfo?.gender === "male" ? "男性" : "女性",
 				fullContent: result.analysis.parsed.fullContent,
 				timestamp: result.analysis.timestamp,
+				currentSeason: seasonInfo.currentSeason,
+				currentMonth: seasonInfo.currentMonth,
 			};
 		} catch (error) {
 			console.error("❌ Season analysis failed:", error);
@@ -89,75 +159,110 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 
 	// Enhanced fallback with useful content when AI is unavailable
 	const getMinimalFallbackData = (concern, year, userInfo) => {
+		const seasonInfo = getCurrentSeasonInfo();
+		const currentMonth = seasonInfo.currentMonth;
+
+		// Update content based on current date context
+		const getSeasonContext = (seasonName) => {
+			const now = new Date();
+			const currentSeason = seasonInfo.currentSeason;
+
+			if (seasonName === currentSeason) {
+				return "【當前季節】";
+			} else if (
+				seasonInfo.relevantSeasons.indexOf(seasonName) <=
+				seasonInfo.relevantSeasons.indexOf(currentSeason)
+			) {
+				return "【即將到來】";
+			} else {
+				return "【未來參考】";
+			}
+		};
+
 		const fallbackContent = {
 			財運: {
-				spring: "春季木旺生發，利於學習充實、建立人脈關係。適合制定財務計劃，但需謹慎投資，避免過度冒險。",
-				summer: "夏季火旺能量強烈，財運起伏較大。宜保守理財，避免投機，專注正業收入，控制支出。",
-				autumn: "秋季金旺收穫期，適合整理財務、回收投資。可考慮穩健理財產品，為冬季做準備。",
-				winter: "冬季水旺沉澱期，適合深度規劃來年財務目標。宜儲蓄積累，學習理財知識，厚積薄發。",
+				spring: `${getSeasonContext("春季")} 春季木旺生發，利於學習充實、建立人脈關係。適合制定財務計劃，但需謹慎投資，避免過度冒險。`,
+				summer: `${getSeasonContext("夏季")} 夏季火旺能量強烈，財運起伏較大。宜保守理財，避免投機，專注正業收入，控制支出。`,
+				autumn: `${getSeasonContext("秋季")} 秋季金旺收穫期，適合整理財務、回收投資。可考慮穩健理財產品，為冬季做準備。`,
+				winter: `${getSeasonContext("冬季")} 冬季水旺沉澱期，適合深度規劃來年財務目標。宜儲蓄積累，學習理財知識，厚積薄發。`,
 			},
 			健康: {
-				spring: "春季養肝正當時，多進行戶外運動，調節情緒。飲食宜清淡，多吃綠色蔬菜，注意情緒管理。",
-				summer: "夏季心火旺盛，需注意防暑降溫。避免劇烈運動，多補充水分，保持充足睡眠。",
-				autumn: "秋季養肺潤燥，適合進補調理。多吃滋陰食物如梨、銀耳，注意保暖，預防感冒。",
-				winter: "冬季腎氣收藏，宜早睡晚起養精神。適合溫補食療，避免過度消耗，儲備來年活力。",
+				spring: `${getSeasonContext("春季")} 春季養肝正當時，多進行戶外運動，調節情緒。飲食宜清淡，多吃綠色蔬菜，注意情緒管理。`,
+				summer: `${getSeasonContext("夏季")} 夏季心火旺盛，需注意防暑降溫。避免劇烈運動，多補充水分，保持充足睡眠。`,
+				autumn: `${getSeasonContext("秋季")} 秋季養肺潤燥，適合進補調理。多吃滋陰食物如梨、銀耳，注意保暖，預防感冒。`,
+				winter: `${getSeasonContext("冬季")} 冬季腎氣收藏，宜早睡晚起養精神。適合溫補食療，避免過度消耗，儲備來年活力。`,
 			},
 			事業: {
-				spring: "春季創意萌發，適合學習新技能、拓展人脈。可制定年度職業規劃，但行動需穩健。",
-				summer: "夏季行動力強，適合推進重要項目。需控制情緒，避免衝動決策，維護職場關係。",
-				autumn: "秋季收穫總結，適合展示工作成果。可考慮晉升機會，整理職業經驗，為轉換做準備。",
-				winter: "冬季深度思考，適合制定長期職業目標。宜充電學習，建立專業基礎，準備來年發展。",
+				spring: `${getSeasonContext("春季")} 春季創意萌發，適合學習新技能、拓展人脈。可制定年度職業規劃，但行動需穩健。`,
+				summer: `${getSeasonContext("夏季")} 夏季行動力強，適合推進重要項目。需控制情緒，避免衝動決策，維護職場關係。`,
+				autumn: `${getSeasonContext("秋季")} 秋季收穫總結，適合展示工作成果。可考慮晉升機會，整理職業經驗，為轉換做準備。`,
+				winter: `${getSeasonContext("冬季")} 冬季深度思考，適合制定長期職業目標。宜充電學習，建立專業基礎，準備來年發展。`,
 			},
 			感情: {
-				spring: "春季感情生發，單身者易遇良緣。有伴者關係升溫，適合深化感情，但需保持理性。",
-				summer: "夏季情感熱烈，容易產生激情。需控制情緒波動，避免因衝動傷害關係，保持溝通。",
-				autumn: "秋季感情成熟，適合考慮長期承諾。可規劃婚姻大事，但需慎重考慮現實因素。",
-				winter: "冬季感情深化，適合培養情感深度。透過深度交流增進理解，規劃共同未來。",
+				spring: `${getSeasonContext("春季")} 春季感情生發，單身者易遇良緣。有伴者關係升溫，適合深化感情，但需保持理性。`,
+				summer: `${getSeasonContext("夏季")} 夏季情感熱烈，容易產生激情。需控制情緒波動，避免因衝動傷害關係，保持溝通。`,
+				autumn: `${getSeasonContext("秋季")} 秋季感情成熟，適合考慮長期承諾。可規劃婚姻大事，但需慎重考慮現實因素。`,
+				winter: `${getSeasonContext("冬季")} 冬季感情深化，適合培養情感深度。透過深度交流增進理解，規劃共同未來。`,
 			},
 		};
 
 		const content = fallbackContent[concern] || fallbackContent["財運"];
 
+		// Order seasons based on current date - put current season first
+		const currentSeasonName = seasonInfo.currentSeason;
+		const seasonOrder = seasonInfo.relevantSeasons;
+
+		const allSeasons = [
+			{
+				name: "春季",
+				period: "寅卯辰月，木旺",
+				icon: "🌸",
+				color: "bg-green-500",
+				content: content.spring,
+				keyPoints: ["木旺生發", "制定計劃", "謹慎行動"],
+			},
+			{
+				name: "夏季",
+				period: "巳午未月，火土極旺",
+				icon: "☀️",
+				color: "bg-red-500",
+				content: content.summer,
+				keyPoints: ["火旺能量", "控制情緒", "保守策略"],
+			},
+			{
+				name: "秋季",
+				period: "申酉戌月，金旺",
+				icon: "🍂",
+				color: "bg-yellow-500",
+				content: content.autumn,
+				keyPoints: ["金旺收穫", "整理總結", "穩健投資"],
+			},
+			{
+				name: "冬季",
+				period: "亥子丑月，水旺",
+				icon: "❄️",
+				color: "bg-blue-500",
+				content: content.winter,
+				keyPoints: ["水旺沉澱", "深度規劃", "厚積薄發"],
+			},
+		];
+
+		// Reorder seasons based on relevance (current season first)
+		const reorderedSeasons = seasonOrder
+			.map((seasonName) =>
+				allSeasons.find((season) => season.name === seasonName)
+			)
+			.filter(Boolean);
+
 		return {
-			title: `關鍵季節 (${concern}指南)`,
-			seasons: [
-				{
-					name: "春季",
-					period: "寅卯辰月，木旺",
-					icon: "🌸",
-					color: "bg-green-500",
-					content: content.spring,
-					keyPoints: ["木旺生發", "制定計劃", "謹慎行動"],
-				},
-				{
-					name: "夏季",
-					period: "巳午未月，火土極旺",
-					icon: "☀️",
-					color: "bg-red-500",
-					content: content.summer,
-					keyPoints: ["火旺能量", "控制情緒", "保守策略"],
-				},
-				{
-					name: "秋季",
-					period: "申酉戌月，金旺",
-					icon: "🍂",
-					color: "bg-yellow-500",
-					content: content.autumn,
-					keyPoints: ["金旺收穫", "整理總結", "穩健投資"],
-				},
-				{
-					name: "冬季",
-					period: "亥子丑月，水旺",
-					icon: "❄️",
-					color: "bg-blue-500",
-					content: content.winter,
-					keyPoints: ["水旺沉澱", "深度規劃", "厚積薄發"],
-				},
-			],
+			title: `關鍵季節 (${concern}指南) - 當前：${currentSeasonName}`,
+			seasons: reorderedSeasons,
 			year,
 			concern,
 			userBirthday: userInfo?.birthDateTime || userInfo?.birthday || "",
 			userGender: userInfo?.gender === "male" ? "男性" : "女性",
+			currentSeason: currentSeasonName,
+			currentMonth: seasonInfo.currentMonth,
 			error: null,
 		};
 	};
@@ -174,6 +279,15 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 					"📖 Season using existing data from component store"
 				);
 				setAnalysisData(existingData);
+				// Set active season to current season if available
+				if (existingData.currentSeason && existingData.seasons) {
+					const currentSeasonIndex = existingData.seasons.findIndex(
+						(season) => season.name === existingData.currentSeason
+					);
+					if (currentSeasonIndex >= 0) {
+						setActiveSeasonIndex(currentSeasonIndex);
+					}
+				}
 				setIsLoading(false);
 				return;
 			}
@@ -186,9 +300,15 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 				.then((analysis) => {
 					if (isMounted && analysis) {
 						setAnalysisData(analysis);
+						// Set active season to current season (first in reordered array)
+						setActiveSeasonIndex(0);
 						// Store data for database saving
 						storeComponentData("seasonAnalysis", analysis);
 						console.log("📊 Stored Season fresh data:", "SUCCESS");
+						console.log(
+							"🎯 Set active season to current:",
+							analysis.currentSeason
+						);
 					}
 				})
 				.catch((error) => {
@@ -283,18 +403,46 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 			>
 				{/* Header */}
 				<div className="flex items-center justify-between mb-6 sm:mb-8">
-					<h2
-						className="text-center sm:text-left"
-						style={{
-							fontFamily: "Noto Serif TC, serif",
-							fontSize: "clamp(1.75rem, 5vw, 2.5rem)",
-							fontWeight: 800,
-							color: getConcernColor(userInfo),
-							lineHeight: 1.2,
-						}}
-					>
-						關鍵季節
-					</h2>
+					<div>
+						<h2
+							className="text-center sm:text-left"
+							style={{
+								fontFamily: "Noto Serif TC, serif",
+								fontSize: "clamp(1.75rem, 5vw, 2.5rem)",
+								fontWeight: 800,
+								color: getConcernColor(userInfo),
+								lineHeight: 1.2,
+							}}
+						>
+							關鍵季節
+						</h2>
+						{/* Current Season Indicator */}
+						{analysisData?.currentSeason && (
+							<div className="mt-2">
+								<span
+									className="inline-block px-3 py-1 text-sm font-medium text-white rounded-full"
+									style={{
+										backgroundColor: (() => {
+											const colorMap = {
+												春季: "#7cb856",
+												夏季: "#B4003C",
+												秋季: "#DEAB20",
+												冬季: "#568CB8",
+											};
+											return (
+												colorMap[
+													analysisData.currentSeason
+												] || "#666"
+											);
+										})(),
+									}}
+								>
+									當前：{analysisData.currentSeason} (
+									{analysisData.currentMonth}月)
+								</span>
+							</div>
+						)}
+					</div>
 				</div>
 
 				{/* Error Message */}
@@ -366,30 +514,40 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 							};
 
 							return (
-								<button
-									key={season.name}
-									onClick={() => setActiveSeasonIndex(index)}
-									className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center transition-all duration-300 shadow-[0_4px_4px_rgba(0,0,0,0.25)] ${getSeasonBgColor(
-										season.name,
-										activeSeasonIndex === index
-									)} ${
-										activeSeasonIndex === index
-											? "transform scale-110"
-											: "hover:scale-105"
-									}`}
-								>
-									<img
-										src={getSeasonImage(season.name)}
-										alt={season.name}
-										className="w-6 h-6 sm:w-8 sm:h-8"
-										style={{
-											filter: getImageFilter(
-												season.name,
-												activeSeasonIndex === index
-											),
-										}}
-									/>
-								</button>
+								<div key={season.name} className="relative">
+									<button
+										onClick={() =>
+											setActiveSeasonIndex(index)
+										}
+										className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center transition-all duration-300 shadow-[0_4px_4px_rgba(0,0,0,0.25)] ${getSeasonBgColor(
+											season.name,
+											activeSeasonIndex === index
+										)} ${
+											activeSeasonIndex === index
+												? "transform scale-110"
+												: "hover:scale-105"
+										}`}
+									>
+										<img
+											src={getSeasonImage(season.name)}
+											alt={season.name}
+											className="w-6 h-6 sm:w-8 sm:h-8"
+											style={{
+												filter: getImageFilter(
+													season.name,
+													activeSeasonIndex === index
+												),
+											}}
+										/>
+									</button>
+									{/* Current Season Badge */}
+									{analysisData?.currentSeason ===
+										season.name && (
+										<div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full font-bold shadow-lg">
+											現在
+										</div>
+									)}
+								</div>
 							);
 						})}
 					</div>
@@ -421,6 +579,15 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 								}}
 							>
 								{analysisData.seasons[activeSeasonIndex].name}
+								{/* Time Context Indicator */}
+								{analysisData?.currentSeason && (
+									<span className="ml-2 text-sm font-medium opacity-75">
+										{analysisData.seasons[activeSeasonIndex]
+											.name === analysisData.currentSeason
+											? "【當前季節】"
+											: "【未來參考】"}
+									</span>
+								)}
 							</h3>
 
 							{/* Period with Season Background */}
