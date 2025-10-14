@@ -4,6 +4,7 @@ export async function POST(req) {
 			user1Info,
 			user2Info,
 			currentYear,
+			currentDate,
 			concern = "感情",
 		} = await req.json();
 
@@ -17,14 +18,27 @@ export async function POST(req) {
 		const { birthday: birthday1, gender: gender1, name: name1 } = user1Info;
 		const { birthday: birthday2, gender: gender2, name: name2 } = user2Info;
 
-		// Enhanced prompt for balanced couple season analysis based on both partners' 八字
+		// Get current date information for season prioritization
+		const currentMonth = currentDate?.month || new Date().getMonth() + 1;
+		const currentSeasonName = currentDate?.currentSeason || "秋季";
+		const relevantSeasons = currentDate?.relevantSeasons || [
+			"秋季",
+			"冬季",
+			"春季",
+			"夏季",
+		];
+
+		// Enhanced date-aware prompt for couple season analysis
 		const prompt = `你是專業的八字命理分析師。請根據夫妻雙方的八字信息進行夫妻感情關鍵季節分析：
 
 夫妻八字信息：
 - ${name1}生日：${birthday1}，性別：${gender1}
 - ${name2}生日：${birthday2}，性別：${gender2}
 - 分析年份：${currentYear}
+- 當前時間：${currentYear}年${currentMonth}月，當前季節：${currentSeasonName}
 - 關注領域：夫妻${concern}
+
+**重要提示：當前是${currentSeasonName}（${currentMonth}月），請優先分析當前季節和未來季節，避免過度分析已過季節。按以下順序分析：${relevantSeasons.join("→")}**
 
 請針對夫妻雙方的具體八字合盤和夫妻${concern}關注領域，提供個人化的夫妻關鍵季節分析。**每個季節的內容長度要均衡，每季節約100字左右**：
 
@@ -147,7 +161,8 @@ export async function POST(req) {
 			aiContent,
 			concern,
 			user1Info,
-			user2Info
+			user2Info,
+			currentSeasonName
 		);
 
 		return Response.json({
@@ -168,10 +183,25 @@ export async function POST(req) {
 	}
 }
 
-function parseCoupleSeasonContent(content, concern, user1Info, user2Info) {
+function parseCoupleSeasonContent(
+	content,
+	concern,
+	user1Info,
+	user2Info,
+	currentSeasonName = "秋季"
+) {
 	try {
-		// Extract season sections
-		const seasons = [
+		// Get season context for time-aware content
+		const getSeasonContext = (season) => {
+			if (season === currentSeasonName) {
+				return "【當前季節】";
+			} else {
+				return "【未來參考】";
+			}
+		};
+
+		// Extract season sections with time context
+		const baseSeasonsData = [
 			{
 				name: "春季",
 				period: "寅卯辰月，木旺",
@@ -202,35 +232,56 @@ function parseCoupleSeasonContent(content, concern, user1Info, user2Info) {
 			},
 		];
 
+		// Reorder seasons: current first, then chronological future seasons
+		const currentIndex = baseSeasonsData.findIndex(
+			(s) => s.name === currentSeasonName
+		);
+		const orderedSeasonsData =
+			currentIndex >= 0
+				? [
+						...baseSeasonsData.slice(currentIndex),
+						...baseSeasonsData.slice(0, currentIndex),
+					]
+				: baseSeasonsData;
+
+		// Add time context to season names
+		const seasons = orderedSeasonsData.map((season) => ({
+			...season,
+			name: season.name + getSeasonContext(season.name),
+		}));
+
 		// Parse content for each season - try multiple formats
 		seasons.forEach((season) => {
 			let seasonContent = "";
+
+			// Use original season name without time context for parsing
+			const originalSeasonName = season.name.replace(/【[^】]*】/, "");
 
 			// Try different patterns that AI might use
 			const patterns = [
 				// Pattern 1: 【春季（寅卯辰月，木旺）】：
 				new RegExp(
-					`【${season.name}[^】]*】[：:]?\\s*([\\s\\S]*?)(?=【|####|$)`,
+					`【${originalSeasonName}[^】]*】[：:]?\\s*([\\s\\S]*?)(?=【|####|$)`,
 					"g"
 				),
 				// Pattern 2: **春季（寅卯辰月，木旺）**：
 				new RegExp(
-					`\\*\\*${season.name}[^*]*\\*\\*[：:]?\\s*([\\s\\S]*?)(?=\\*\\*|####|$)`,
+					`\\*\\*${originalSeasonName}[^*]*\\*\\*[：:]?\\s*([\\s\\S]*?)(?=\\*\\*|####|$)`,
 					"g"
 				),
 				// Pattern 3: #### **春季（寅卯辰月，木旺）**：
 				new RegExp(
-					`####\\s*\\*\\*${season.name}[^*]*\\*\\*[：:]?\\s*([\\s\\S]*?)(?=####|$)`,
+					`####\\s*\\*\\*${originalSeasonName}[^*]*\\*\\*[：:]?\\s*([\\s\\S]*?)(?=####|$)`,
 					"g"
 				),
 				// Pattern 4: 春季（寅卯辰月，木旺）：
 				new RegExp(
-					`${season.name}（[^）]*）[：:]?\\s*([\\s\\S]*?)(?=(?:春季|夏季|秋季|冬季)（|####|$)`,
+					`${originalSeasonName}（[^）]*）[：:]?\\s*([\\s\\S]*?)(?=(?:春季|夏季|秋季|冬季)（|####|$)`,
 					"g"
 				),
 				// Pattern 5: More flexible - season name followed by content
 				new RegExp(
-					`${season.name}[^\\n]*[：:]([\\s\\S]*?)(?=(?:春季|夏季|秋季|冬季)|###|$)`,
+					`${originalSeasonName}[^\\n]*[：:]([\\s\\S]*?)(?=(?:春季|夏季|秋季|冬季)|###|$)`,
 					"g"
 				),
 			];
@@ -257,11 +308,11 @@ function parseCoupleSeasonContent(content, concern, user1Info, user2Info) {
 				// Find any occurrence of season name and extract following content
 				const flexiblePatterns = [
 					new RegExp(
-						`${season.name}[^\\n]*\\n([\\s\\S]{50,400}?)(?=(?:春季|夏季|秋季|冬季)|$)`,
+						`${originalSeasonName}[^\\n]*\\n([\\s\\S]{50,400}?)(?=(?:春季|夏季|秋季|冬季)|$)`,
 						"g"
 					),
 					new RegExp(
-						`${season.name}[^。]*。([\\s\\S]{30,400}?)(?=(?:春季|夏季|秋季|冬季)|$)`,
+						`${originalSeasonName}[^。]*。([\\s\\S]{30,400}?)(?=(?:春季|夏季|秋季|冬季)|$)`,
 						"g"
 					),
 				];
@@ -297,7 +348,7 @@ function parseCoupleSeasonContent(content, concern, user1Info, user2Info) {
 				if (seasonContent.length < 200) {
 					// If content is too short, try to expand with fallback
 					const fallbackContent = getCoupleFallbackSeasonContent(
-						season.name,
+						originalSeasonName,
 						concern,
 						user1Info,
 						user2Info
@@ -315,7 +366,7 @@ function parseCoupleSeasonContent(content, concern, user1Info, user2Info) {
 			} else {
 				// Use enhanced fallback content for couples
 				season.content = getCoupleFallbackSeasonContent(
-					season.name,
+					originalSeasonName,
 					concern,
 					user1Info,
 					user2Info

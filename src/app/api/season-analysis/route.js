@@ -91,9 +91,9 @@ export async function POST(req) {
 請針對用戶的具體八字和${concern}關注領域，提供個人化的關鍵季節分析，重點分析順序為：${relevantSeasons.join(" → ")}
 
 **分析重點：**
-- 【當前季節】${currentSeasonName}：立即可執行的具體建議和注意事項
-- 【即將來臨】的季節：提前準備和規劃建議
-- 【未來參考】季節：長期規劃參考
+- ${currentSeasonName}：立即可執行的具體建議和注意事項
+- 即將來臨的季節：提前準備和規劃建議
+- 未來季節：長期規劃參考
 
 【關鍵季節分析 - 時間順序：${relevantSeasons.join(" → ")}】
 
@@ -121,10 +121,10 @@ ${seasonSections}
 1. 必須基於用戶具體八字進行個人化分析，不可泛泛而談
 2. ${concern === "工作" ? "請按事業運勢分析，" : ""}針對${concern}領域提供專業且具體的季節性建議
 3. **重點關注時間優先級**：
-   - 【當前季節】${currentSeasonName}：最詳細分析，提供當前${currentMonth}月${isLatePart ? "下旬" : "上旬"}的具體行動指導
-   - 【即將來臨】的季節：準備和預防措施
-   - 【未來參考】的季節：長期規劃參考
-4. 每個季節必須包含標準格式：#### **【優先級】季節名（地支月份，五行旺相）**：
+   - ${currentSeasonName}：最詳細分析，提供當前${currentMonth}月${isLatePart ? "下旬" : "上旬"}的具體行動指導
+   - 即將來臨的季節：準備和預防措施
+   - 未來的季節：長期規劃參考
+4. 每個季節必須包含標準格式：#### **季節名（地支月份，五行旺相）**：
 5. **當前季節${currentSeasonName}分析必須最詳細完整**，至少150字，包含：
    - 具體的八字分析原理
    - 當前${currentMonth}月的具體影響和緊急注意事項
@@ -229,8 +229,17 @@ ${seasonSections}
 
 function parseSeasonContent(content, concern, currentSeasonName = "秋季") {
 	try {
-		// Extract season sections
-		const seasons = [
+		// Get season context for time-aware content
+		const getSeasonContext = (season) => {
+			if (season === currentSeasonName) {
+				return "【當前季節】";
+			} else {
+				return "【未來參考】";
+			}
+		};
+
+		// Extract season sections with time context
+		const baseSeasonsData = [
 			{
 				name: "春季",
 				period: "寅卯辰月，木旺",
@@ -261,35 +270,56 @@ function parseSeasonContent(content, concern, currentSeasonName = "秋季") {
 			},
 		];
 
+		// Reorder seasons: current first, then chronological future seasons
+		const currentIndex = baseSeasonsData.findIndex(
+			(s) => s.name === currentSeasonName
+		);
+		const orderedSeasonsData =
+			currentIndex >= 0
+				? [
+						...baseSeasonsData.slice(currentIndex),
+						...baseSeasonsData.slice(0, currentIndex),
+					]
+				: baseSeasonsData;
+
+		// Add time context to season names
+		const seasons = orderedSeasonsData.map((season) => ({
+			...season,
+			name: season.name + getSeasonContext(season.name),
+		}));
+
 		// Parse content for each season - try multiple formats
 		seasons.forEach((season) => {
 			let seasonContent = "";
+
+			// Use original season name without time context for parsing
+			const originalSeasonName = season.name.replace(/【[^】]*】/, "");
 
 			// Try different patterns that AI might use
 			const patterns = [
 				// Pattern 1: 【春季（寅卯辰月，木旺）】：
 				new RegExp(
-					`【${season.name}[^】]*】[：:]?\\s*([\\s\\S]*?)(?=【|####|$)`,
+					`【${originalSeasonName}[^】]*】[：:]?\\s*([\\s\\S]*?)(?=【|####|$)`,
 					"g"
 				),
 				// Pattern 2: **春季（寅卯辰月，木旺）**：
 				new RegExp(
-					`\\*\\*${season.name}[^*]*\\*\\*[：:]?\\s*([\\s\\S]*?)(?=\\*\\*|####|$)`,
+					`\\*\\*${originalSeasonName}[^*]*\\*\\*[：:]?\\s*([\\s\\S]*?)(?=\\*\\*|####|$)`,
 					"g"
 				),
 				// Pattern 3: #### **春季（寅卯辰月，木旺）**：
 				new RegExp(
-					`####\\s*\\*\\*${season.name}[^*]*\\*\\*[：:]?\\s*([\\s\\S]*?)(?=####|$)`,
+					`####\\s*\\*\\*${originalSeasonName}[^*]*\\*\\*[：:]?\\s*([\\s\\S]*?)(?=####|$)`,
 					"g"
 				),
 				// Pattern 4: 春季（寅卯辰月，木旺）：
 				new RegExp(
-					`${season.name}（[^）]*）[：:]?\\s*([\\s\\S]*?)(?=(?:春季|夏季|秋季|冬季)（|####|$)`,
+					`${originalSeasonName}（[^）]*）[：:]?\\s*([\\s\\S]*?)(?=(?:春季|夏季|秋季|冬季)（|####|$)`,
 					"g"
 				),
 				// Pattern 5: More flexible - season name followed by content
 				new RegExp(
-					`${season.name}[^\\n]*[：:]([\\s\\S]*?)(?=(?:春季|夏季|秋季|冬季)|###|$)`,
+					`${originalSeasonName}[^\\n]*[：:]([\\s\\S]*?)(?=(?:春季|夏季|秋季|冬季)|###|$)`,
 					"g"
 				),
 			];
@@ -316,11 +346,11 @@ function parseSeasonContent(content, concern, currentSeasonName = "秋季") {
 				// Find any occurrence of season name and extract following content
 				const flexiblePatterns = [
 					new RegExp(
-						`${season.name}[^\\n]*\\n([\\s\\S]{50,500}?)(?=(?:春季|夏季|秋季|冬季)|$)`,
+						`${originalSeasonName}[^\\n]*\\n([\\s\\S]{50,500}?)(?=(?:春季|夏季|秋季|冬季)|$)`,
 						"g"
 					),
 					new RegExp(
-						`${season.name}[^。]*。([\\s\\S]{30,400}?)(?=(?:春季|夏季|秋季|冬季)|$)`,
+						`${originalSeasonName}[^。]*。([\\s\\S]{30,400}?)(?=(?:春季|夏季|秋季|冬季)|$)`,
 						"g"
 					),
 				];
@@ -373,7 +403,7 @@ function parseSeasonContent(content, concern, currentSeasonName = "秋季") {
 			} else {
 				// Use enhanced fallback content based on concern
 				season.content = getFallbackSeasonContent(
-					season.name,
+					originalSeasonName,
 					concern,
 					currentSeasonName
 				);

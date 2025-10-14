@@ -108,41 +108,69 @@ function parseSpecificSuggestionContent(aiResponse) {
 function parseSuggestionsFromText(text) {
 	const suggestions = [];
 
-	// Multiple parsing patterns
-	const patterns = [
-		/(\d+)[、.]\s*([^：:]+)[：:]([^。]+。?)/g,
-		/([^：:]+)[：:]([^。\n]+)/g,
-		/\*\*([^*]+)\*\*[：:]?([^。\n]+)/g,
-		/([一二三四五六七八九十]+)[、.]\s*([^：:]+)[：:]([^。]+)/g,
-	];
+	// Primary pattern: numbered list (1. Title: Content)
+	const primaryPattern =
+		/(\d+)[、.\s]*([^：:\n]+)[：:]([^]+?)(?=\n\d+[、.\s]*[^：:\n]+[：:]|\n【|$)/gs;
+	let matches = [...text.matchAll(primaryPattern)];
 
-	let matches = [];
-	for (const pattern of patterns) {
-		const patternMatches = [...text.matchAll(pattern)];
-		if (patternMatches.length > 0) {
-			matches = patternMatches;
-			break;
-		}
+	// Fallback pattern: simple numbered format
+	if (matches.length === 0) {
+		const fallbackPattern = /(\d+)[、.\s]*([^]+?)(?=\n\d+[、.\s]|\n【|$)/g;
+		matches = [...text.matchAll(fallbackPattern)];
+	}
+
+	// Additional fallback: Chinese numerals
+	if (matches.length === 0) {
+		const chinesePattern =
+			/([一二三四五])[、.\s]*([^]+?)(?=\n[一二三四五][、.\s]|\n【|$)/g;
+		matches = [...text.matchAll(chinesePattern)];
 	}
 
 	// Process matches
 	matches.forEach((match, index) => {
 		if (index < 5) {
 			// Limit to 5 suggestions
-			let title = match[2] || match[1] || `建議 ${index + 1}`;
-			let content = match[3] || match[2] || match[1] || "";
+			let title, content;
+
+			if (match[3]) {
+				// Format: "1. Title: Content"
+				title = match[2] || `建議 ${index + 1}`;
+				content = match[3];
+			} else {
+				// Format: "1. Title+Content" - split on first colon if exists
+				let fullText = match[2] || match[1] || "";
+				let colonIndex =
+					fullText.indexOf("：") || fullText.indexOf(":");
+				if (colonIndex > 0 && colonIndex < fullText.length * 0.4) {
+					title = fullText.substring(0, colonIndex);
+					content = fullText.substring(colonIndex + 1);
+				} else {
+					title = `建議 ${index + 1}`;
+					content = fullText;
+				}
+			}
 
 			// Clean up content
 			title = title.trim().replace(/[：:]/g, "");
 			content = content.trim();
 
-			// Ensure content is around 100 words
-			if (content.length < 80) {
-				content +=
-					"...根據你的八字分析，建議持續觀察並調整策略，以達到最佳效果。";
-			} else if (content.length > 120) {
-				content = content.substring(0, 100) + "...";
+			// Remove newlines and clean up formatting
+			content = content.replace(/\n+/g, " ").replace(/\s+/g, " ");
+
+			// Clean up content length
+			if (content.length > 150) {
+				content = content.substring(0, 120) + "...";
 			}
+
+			// Remove any existing repetitive endings
+			content = content.replace(
+				/\.\.\.根據你的八字分析，建議持續觀察並調整策略，以達到最佳效果。$/,
+				""
+			);
+			content = content.replace(
+				/根據你的八字分析，建議持續觀察並調整策略，以達到最佳效果。$/,
+				""
+			);
 
 			const icons = ["🎯", "💡", "⭐", "🚀", "🔮"];
 			const categories = [
@@ -168,41 +196,69 @@ function parseSuggestionsFromText(text) {
 function parseTaboosFromText(text) {
 	const taboos = [];
 
-	// Multiple parsing patterns for taboos
-	const patterns = [
-		/(\d+)[、.]\s*([^：:]+)[：:]([^。]+。?)/g,
-		/([^：:]+)[：:]([^。\n]+)/g,
-		/\*\*([^*]+)\*\*[：:]?([^。\n]+)/g,
-		/([一二三四五六七八九十]+)[、.]\s*([^：:]+)[：:]([^。]+)/g,
-	];
+	// Primary pattern: numbered list (1. Title: Content)
+	const primaryPattern =
+		/(\d+)[、.\s]*([^：:\n]+)[：:]([^]+?)(?=\n\d+[、.\s]*[^：:\n]+[：:]|\n【|$)/gs;
+	let matches = [...text.matchAll(primaryPattern)];
 
-	let matches = [];
-	for (const pattern of patterns) {
-		const patternMatches = [...text.matchAll(pattern)];
-		if (patternMatches.length > 0) {
-			matches = patternMatches;
-			break;
-		}
+	// Fallback pattern: simple numbered format
+	if (matches.length === 0) {
+		const fallbackPattern = /(\d+)[、.\s]*([^]+?)(?=\n\d+[、.\s]|\n【|$)/g;
+		matches = [...text.matchAll(fallbackPattern)];
+	}
+
+	// Additional fallback: Chinese numerals
+	if (matches.length === 0) {
+		const chinesePattern =
+			/([一二三四五])[、.\s]*([^]+?)(?=\n[一二三四五][、.\s]|\n【|$)/g;
+		matches = [...text.matchAll(chinesePattern)];
 	}
 
 	// Process matches
 	matches.forEach((match, index) => {
 		if (index < 5) {
 			// Limit to 5 taboos
-			let title = match[2] || match[1] || `禁忌 ${index + 1}`;
-			let content = match[3] || match[2] || match[1] || "";
+			let title, content;
+
+			if (match[3]) {
+				// Format: "1. Title: Content"
+				title = match[2] || `禁忌 ${index + 1}`;
+				content = match[3];
+			} else {
+				// Format: "1. Title+Content" - split on first colon if exists
+				let fullText = match[2] || match[1] || "";
+				let colonIndex =
+					fullText.indexOf("：") || fullText.indexOf(":");
+				if (colonIndex > 0 && colonIndex < fullText.length * 0.4) {
+					title = fullText.substring(0, colonIndex);
+					content = fullText.substring(colonIndex + 1);
+				} else {
+					title = `禁忌 ${index + 1}`;
+					content = fullText;
+				}
+			}
 
 			// Clean up content
 			title = title.trim().replace(/[：:]/g, "");
 			content = content.trim();
 
-			// Ensure content is around 100 words
-			if (content.length < 80) {
-				content +=
-					"...避免此行為可能導致的負面後果，建議謹慎處理相關事務。";
-			} else if (content.length > 120) {
-				content = content.substring(0, 100) + "...";
+			// Remove newlines and clean up formatting
+			content = content.replace(/\n+/g, " ").replace(/\s+/g, " ");
+
+			// Clean up content length
+			if (content.length > 150) {
+				content = content.substring(0, 120) + "...";
 			}
+
+			// Remove any existing repetitive endings
+			content = content.replace(
+				/\.\.\.避免此行為可能導致的負面後果，建議謹慎處理相關事務。$/,
+				""
+			);
+			content = content.replace(
+				/避免此行為可能導致的負面後果，建議謹慎處理相關事務。$/,
+				""
+			);
 
 			const icons = ["🚫", "⚠️", "❌", "🔴", "🛑"];
 			const levels = ["嚴禁", "避免", "謹慎", "警惕", "注意"];
@@ -353,12 +409,14 @@ function createSpecificSuggestionPrompt(userInfo) {
 5. [禁忌標題]：[必須避免的行為，約100字，說明為什麼要避免和可能後果]
 
 【格式要求】
+- **必須嚴格按照數字編號格式：1. 2. 3. 4. 5.**
 - 每個建議和禁忌都要具體可行
-- 內容長度控制在100字左右
+- 內容長度控制在80-120字左右
 - 結合八字命理原理
 - 針對具體問題提供解決方案
 - 語言專業但易懂
 - **重要：請全部使用繁體中文輸出，不要使用簡體中文**
+- **必須提供完整的5個建議和5個禁忌，不可少於此數量**
 
 請嚴格按照上述格式輸出，確保內容的專業性和實用性。所有回應必須使用繁體中文。`;
 }
