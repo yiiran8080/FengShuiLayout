@@ -207,9 +207,25 @@ export default function CoupleReportPage() {
 			}
 
 			// Create report data structure from saved content
+			// Ensure historical birthdays include time - add default time if missing
+			let historicalBirthday = data.report.metadata.birthday;
+			let historicalBirthday2 = data.report.metadata.birthday2;
+
+			// Check if birthday already includes time, if not add default noon time
+			if (historicalBirthday && !historicalBirthday.includes(" ")) {
+				historicalBirthday = `${historicalBirthday} 12:00`;
+			}
+			if (historicalBirthday2 && !historicalBirthday2.includes(" ")) {
+				historicalBirthday2 = `${historicalBirthday2} 12:00`;
+			}
+
+			console.log("🔍 Historical Birth DateTime preparation:");
+			console.log("   historicalBirthday:", historicalBirthday);
+			console.log("   historicalBirthday2:", historicalBirthday2);
+
 			const reportData = {
-				birthday: data.report.metadata.birthday,
-				birthday2: data.report.metadata.birthday2,
+				birthday: historicalBirthday,
+				birthday2: historicalBirthday2,
 				gender: data.report.metadata.gender,
 				gender2: data.report.metadata.gender2,
 				problem: data.report.metadata.problem || "感情配對分析", // Default problem for couple reports
@@ -367,6 +383,28 @@ export default function CoupleReportPage() {
 					);
 					console.log("📅 Birthday 1:", birthday);
 					console.log("📅 Birthday 2:", birthday2);
+					console.log("⏰ Time 1:", time);
+					console.log("⏰ Time 2:", time2);
+
+					// Create proper birthDateTime by combining birthday and time
+					// Default to 12:00 PM (noon) if no birth time is provided for better accuracy
+					let birthDateTime = birthday;
+					if (time) {
+						// Combine date and time: "2004-04-02" + "14:30" = "2004-04-02 14:30"
+						birthDateTime = `${birthday} ${time}`;
+					} else {
+						// Default to noon (12:00 PM) for better astrological accuracy
+						birthDateTime = `${birthday} 12:00`;
+					}
+
+					let birthDateTime2 = birthday2;
+					if (time2) {
+						// Combine date and time: "1995-03-15" + "09:15" = "1995-03-15 09:15"
+						birthDateTime2 = `${birthday2} ${time2}`;
+					} else {
+						// Default to noon (12:00 PM) for better astrological accuracy
+						birthDateTime2 = `${birthday2} 12:00`;
+					}
 
 					// 🔧 修正：優先使用 originalProblem 參數，確保保持用戶的具體問題
 					const originalProblem = searchParams.get("originalProblem");
@@ -381,21 +419,25 @@ export default function CoupleReportPage() {
 						specificProblem
 					);
 
-					// Set report data with fresh input
+					console.log("🔍 Birth DateTime combination:");
+					console.log("   birthDateTime:", birthDateTime);
+					console.log("   birthDateTime2:", birthDateTime2);
+
+					// Set report data with combined birthDateTime
 					setReportData({
-						birthday,
-						birthday2,
+						birthday: birthDateTime, // Combined date + time
+						birthday2: birthDateTime2, // Combined date + time
 						gender: gender || "male",
 						gender2: gender2 || "female",
-						time,
-						time2,
+						time, // Keep separate for reference
+						time2, // Keep separate for reference
 						concern: "感情", // Fixed concern for couple reports
 						problem: specificProblem,
 					});
 
 					console.log("📊 使用URL參數設置的報告數據:", {
-						birthday,
-						birthday2,
+						birthday: birthDateTime,
+						birthday2: birthDateTime2,
 						problem: specificProblem,
 						urlProblem: problem,
 						originalProblem: originalProblem,
@@ -430,11 +472,41 @@ export default function CoupleReportPage() {
 								return;
 							}
 
+							// Extract birth dates and times from inputs
+							const birthday =
+								inputs.birthday || inputs.user1_birthday;
+							const birthday2 =
+								inputs.birthday2 || inputs.user2_birthday;
+							const time = inputs.time || inputs.user1_time;
+							const time2 = inputs.time2 || inputs.user2_time;
+
+							// Create proper birthDateTime by combining birthday and time
+							// Default to 12:00 PM (noon) if no birth time is provided for better accuracy
+							let birthDateTime = birthday;
+							if (time) {
+								birthDateTime = `${birthday} ${time}`;
+							} else {
+								// Default to noon (12:00 PM) for better astrological accuracy
+								birthDateTime = `${birthday} 12:00`;
+							}
+
+							let birthDateTime2 = birthday2;
+							if (time2) {
+								birthDateTime2 = `${birthday2} ${time2}`;
+							} else {
+								// Default to noon (12:00 PM) for better astrological accuracy
+								birthDateTime2 = `${birthday2} 12:00`;
+							}
+
+							console.log(
+								"🔍 Database Birth DateTime combination:"
+							);
+							console.log("   birthDateTime:", birthDateTime);
+							console.log("   birthDateTime2:", birthDateTime2);
+
 							setReportData({
-								birthday:
-									inputs.birthday || inputs.user1_birthday,
-								birthday2:
-									inputs.birthday2 || inputs.user2_birthday,
+								birthday: birthDateTime, // Combined date + time
+								birthday2: birthDateTime2, // Combined date + time
 								gender:
 									inputs.gender ||
 									inputs.user1_gender ||
@@ -443,8 +515,8 @@ export default function CoupleReportPage() {
 									inputs.gender2 ||
 									inputs.user2_gender ||
 									"female",
-								time: inputs.time || inputs.user1_time,
-								time2: inputs.time2 || inputs.user2_time,
+								time: time, // Keep separate for reference
+								time2: time2, // Keep separate for reference
 								concern: "感情", // Fixed concern for couple reports
 								problem:
 									savedReport.reportMetadata
