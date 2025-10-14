@@ -637,17 +637,6 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 												activeSeasonIndex
 											].name
 										}
-										{/* Time Context Indicator */}
-										{analysisData?.currentSeason && (
-											<span className="ml-2 text-sm font-medium opacity-75">
-												{analysisData.seasons[
-													activeSeasonIndex
-												].name ===
-												analysisData.currentSeason
-													? "【當前季節】"
-													: "【未來參考】"}
-											</span>
-										)}
 									</h3>
 
 									{/* Period with Season Background */}

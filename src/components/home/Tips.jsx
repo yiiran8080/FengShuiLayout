@@ -90,7 +90,7 @@ export default function Tips({ onHeightChange }) {
 
 				{/* Mobile Tips List */}
 				<div className="w-full">
-					{Array.from({ length: 6 }, (_, index) => (
+					{Array.from({ length: 4 }, (_, index) => (
 						<div key={index} className="w-full mb-2">
 							<div
 								className="flex flex-row items-center justify-between px-4 py-4 transition-all duration-200 cursor-pointer hover:bg-white hover:bg-opacity-5"
@@ -284,7 +284,7 @@ export default function Tips({ onHeightChange }) {
 					className="flex flex-col w-full "
 					style={{ marginLeft: "0px" }}
 				>
-					{Array.from({ length: 6 }, (_, index) => (
+					{Array.from({ length: 4 }, (_, index) => (
 						<div key={index} className="w-full">
 							{/* Clickable Tip Row */}
 							<div

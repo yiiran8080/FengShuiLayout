@@ -984,6 +984,340 @@ export default function YourPage() {
 								</div>
 							</div> */}
 						</div>
+						{/* Second Hero Section with Cards on Left, Image on Right */}
+						{/* Mobile Layout - Matches first hero section format */}
+						<div className="block lg:hidden w-full max-w-[1200px] px-4 sm:px-6 mb-8">
+							{/* Title */}
+							<h3
+								className=" text-[#073e31] mb-6 text-left text-3xl font-bold"
+								style={{ WebkitTextStroke: "0.5px #073e31" }}
+							>
+								{t("destinyCalculation")}
+							</h3>
+
+							{/* Content Layout - Image left, Features right */}
+							<div className="flex flex-row gap-2 mb-6 sm:justify-center md:justify-center">
+								{/* Left side - Image */}
+								<div className="flex flex-col w-40 gap-2 sm:w-48 md:w-80 sm:gap-3 md:gap-4">
+									<Image
+										src="/images/hero/button-1.png"
+										alt={t("destinyCalculation")}
+										width={150}
+										height={150}
+										className="object-contain w-full h-auto rounded-lg sm:rounded-xl md:rounded-2xl"
+									/>
+								</div>
+
+								{/* Right side - Features List */}
+								<div>
+									{[
+										"destinyFeature_1",
+										"destinyFeature_2",
+										"destinyFeature_3",
+										"destinyFeature_4",
+										"destinyFeature_5",
+										"destinyFeature_6",
+									].map((featureKey, index) => (
+										<div
+											key={index}
+											className="flex items-center gap-3 mb-3 sm:gap-4 md:gap-5 sm:mb-4 md:mb-5"
+										>
+											<div className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 bg-[#A3B116] rounded-full flex items-center justify-center flex-shrink-0">
+												<svg
+													className="w-2 h-2 text-white sm:w-3 sm:h-3 md:w-4 md:h-4"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"
+													/>
+												</svg>
+											</div>
+											<span className="text-[#073e31] text-[11px] sm:text-[13px] md:text-[20px] font-noto-sans-hk font-medium">
+												{t(featureKey)}
+											</span>
+										</div>
+									))}
+								</div>
+							</div>
+
+							{/* Pricing Cards */}
+							<div className="relative max-w-sm mx-auto">
+								{/* Green Limited Time Offer Card - On Top */}
+								<div
+									className="bg-gradient-to-r from-[#E8F37A] to-[#A6B41B] rounded-2xl p-4 relative z-10"
+									style={{
+										boxShadow:
+											"0 17px 15px rgba(87, 105, 103, 0.25)",
+									}}
+								>
+									<div className="flex items-center justify-between">
+										<div>
+											<div
+												className="text-[#374A37] text-2xl sm:text-2xl  mb-1"
+												style={{
+													WebkitTextStroke:
+														"0.7px #374A37",
+												}}
+											>
+												{t("limitedTimeOffer")}
+											</div>
+											<button
+												onClick={handleExpert88Payment}
+												className="bg-white text-[#A3B116] font-noto-sans-hk px-10 sm:px-6 py-2 rounded-full text-sm sm:text-sm font-bold"
+											>
+												{t("paymentCalculation")}
+											</button>
+										</div>
+										<div className="text-left">
+											<div className="mb-1 text-4xl font-extrabold text-black font-noto-sans-hk sm:text-5xl">
+												$88
+											</div>
+											<div className="text-xs sm:text-sm text-[#073e31] opacity-80">
+												/ {t("perTime")}
+											</div>
+										</div>
+									</div>
+								</div>
+
+								{/* White Premium Version Card - Behind/Bottom */}
+								<div className="relative z-0 p-4 -mt-4 bg-white border border-gray-200 shadow-lg rounded-2xl">
+									<div className="flex items-center justify-between pt-4 ml-6">
+										<div
+											className="text-[#374A37] text-2xl sm:text-2xl  mb-1"
+											style={{
+												WebkitTextStroke:
+													"0.7px #374A37",
+											}}
+										>
+											{t("premiumVersion2")}
+										</div>
+										<div className="text-right">
+											<div className="mb-1 text-3xl font-extrabold text-black line-through font-noto-sans-hk opacity-70 sm:text-4xl">
+												$168
+											</div>
+											<div className="text-xs sm:text-sm text-[#073e31] opacity-80">
+												/ {t("perTime")}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						{/* Desktop Layout - Original */}
+						<div className="hidden w-full px-4 mx-auto lg:block max-w-7xl">
+							<div className="grid items-center grid-cols-1 gap-8 lg:grid-cols-2">
+								{/* Left Side - Cards Container */}
+								<div className="flex flex-col items-center justify-center">
+									<div className="relative w-full max-w-2xl">
+										{/* Main white card - made responsive */}
+										<div className="relative w-full max-w-[550px] min-h-[400px] bg-white rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 border border-gray-200 mx-auto">
+											{/* Small green discount card overlay - positioned at top-left */}
+											<div className="absolute -top-2 sm:-top-4 -left-2 sm:-left-4 bg-gradient-to-b from-[#E9F47C] to-[#A3B116] rounded-2xl px-8 sm:px-12 lg:px-24 py-2 shadow-lg z-10">
+												{/* "最多用戶選擇" Badge */}
+												<div className="absolute -right-1 sm:-right-[-0.5rem] transform bg-white/50 text-[#111827] px-2 sm:px-3 py-1 rounded-full text-xs font-bold shadow-md whitespace-nowrap">
+													{t("mostUserChoice")}
+												</div>
+
+												<div className="pt-1 text-center text-white">
+													<div className="flex items-baseline justify-center gap-1 mb-1 -translate-x-10">
+														<span className="relative inline-block">
+															{/* Background stroke layer */}
+															<span
+																className="absolute inset-0 font-noto-sans-hk text-stroke-white"
+																style={{
+																	fontSize:
+																		"clamp(2rem, 8vw, 4rem)",
+																	fontWeight:
+																		"900",
+																	WebkitTextFillColor:
+																		"transparent",
+																	WebkitTextStroke:
+																		"10px white", // Custom thicker stroke
+																}}
+																aria-hidden="true"
+															>
+																$88
+															</span>
+															{/* Foreground gradient text */}
+															<span
+																className="relative bg-gradient-to-r from-[#99A800] to-[#5D6600] font-noto-sans-hk bg-clip-text text-transparent"
+																style={{
+																	fontSize:
+																		"clamp(2rem, 8vw, 4rem)",
+																	fontWeight:
+																		"900",
+																	backgroundImage:
+																		"linear-gradient(to right, #99A800, #5D6600)",
+																	WebkitBackgroundClip:
+																		"text",
+																}}
+															>
+																$88
+															</span>
+														</span>
+														<span className="text-xs font-bold text-black sm:text-sm opacity-90">
+															/ {t("perTime")}
+														</span>
+													</div>
+													<div
+														className="font-['Noto_Serif_TC, serif'] font-extrabold text-[#284628] text-lg sm:text-xl lg:text-[45px] translate-x-15"
+														style={{
+															WebkitTextStroke:
+																"1.5px #284628",
+														}}
+													>
+														{t("limitedTimeOffer")}
+													</div>
+												</div>
+											</div>{" "}
+											{/* Main card content */}
+											<div className="flex flex-col w-full h-full gap-5 pt-2">
+												{/* Original price section - moved to right */}
+												<div className="mb-6 text-right">
+													<div className="flex items-baseline justify-end gap-2 mb-2">
+														<span className="text-4xl font-bold text-gray-400 line-through">
+															$168
+														</span>
+														<span className="text-sm font-bold text-gray-400">
+															/ {t("perTime")}
+														</span>
+													</div>
+													<div
+														className="text-4xl font-bold text-gray-400"
+														style={{
+															WebkitTextStroke:
+																"1px #9CA3AF",
+														}}
+													>
+														{t("premiumVersion2")}
+													</div>
+												</div>
+
+												{/* Features in 2-column grid */}
+												<div className="flex-1 mb-3">
+													<div className="grid grid-cols-2 gap-y-4 gap-x-8">
+														{[
+															"destinyFeature_1",
+															"destinyFeature_2",
+															"destinyFeature_3",
+															"destinyFeature_4",
+															"destinyFeature_5",
+															"destinyFeature_6",
+														].map(
+															(
+																featureKey,
+																index
+															) => (
+																<div
+																	key={index}
+																	className="flex items-start gap-3"
+																>
+																	<div
+																		className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+																		style={{
+																			backgroundColor:
+																				"#E8E2DA",
+																		}}
+																	>
+																		<svg
+																			className="w-4 h-4 text-black"
+																			fill="currentColor"
+																			viewBox="0 0 20 20"
+																		>
+																			<path
+																				fillRule="evenodd"
+																				d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+																				clipRule="evenodd"
+																			/>
+																		</svg>
+																	</div>
+																	<span
+																		className="text-[17px] leading-relaxed text-black"
+																		style={{
+																			fontFamily:
+																				'"Noto sans HK',
+																		}}
+																	>
+																		{t(
+																			featureKey
+																		)}
+																	</span>
+																</div>
+															)
+														)}
+													</div>
+												</div>
+
+												{/* Button */}
+												<div className="flex justify-center">
+													<button
+														onClick={
+															handleExpert88Payment
+														}
+														className="bg-gradient-to-b from-[#BDCF0C] to-[#7B8700] hover:from-[#A3B116] hover:to-[#5D6600] text-white font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+														style={{
+															width: "342px",
+															height: "48px",
+															borderRadius:
+																"20px",
+														}}
+														disabled={
+															isProcessingPayment &&
+															currentCardType ===
+																"expert88"
+														}
+													>
+														{isProcessingPayment &&
+														currentCardType ===
+															"expert88"
+															? t("processing")
+															: t(
+																	"paymentCalculation"
+																)}
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								{/* Right Side - Image */}
+								<div className="flex flex-col items-center justify-center">
+									{/* Title above image */}
+
+									<div className="relative max-w-[600px] w-full">
+										<img
+											src="/images/hero/button-5.png"
+											alt={t("destinyCalculation")}
+											className="object-contain w-full h-auto rounded-lg"
+										/>
+										{/* Button positioned to the right side and higher than center */}
+										<div className="absolute inset-0 flex items-center justify-end pr-4 sm:pr-8 md:pr-12">
+											<div className="flex justify-end w-full transform -translate-y-20 sm:-translate-y-30 md:-translate-y-31">
+												<button
+													className="bg-[#A3B116] hover:bg-[#8B9914] text-white px-4 py-2 sm:px-6 sm:py-2 text-[16px] sm:text-[18px] md:text-[20px] rounded-full font-medium transition-colors duration-300"
+													style={{
+														boxShadow:
+															"0 4px 12px rgba(0, 0, 0, 0.25)",
+													}}
+													onClick={() =>
+														router.push(
+															"/demo?category=life"
+														)
+													}
+												>
+													{t("previewButton")}
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 
 						{/* New Hero Section with Image and Cards */}
 						{/* Mobile Layout - Matches attached image */}
@@ -1369,341 +1703,6 @@ export default function YourPage() {
 							</div>
 						</div>
 
-						{/* Second Hero Section with Cards on Left, Image on Right */}
-						{/* Mobile Layout - Matches first hero section format */}
-						<div className="block lg:hidden w-full max-w-[1200px] px-4 sm:px-6 mb-8">
-							{/* Title */}
-							<h3
-								className=" text-[#073e31] mb-6 text-left text-3xl font-bold"
-								style={{ WebkitTextStroke: "0.5px #073e31" }}
-							>
-								{t("destinyCalculation")}
-							</h3>
-
-							{/* Content Layout - Image left, Features right */}
-							<div className="flex flex-row gap-2 mb-6 sm:justify-center md:justify-center">
-								{/* Left side - Image */}
-								<div className="flex flex-col w-40 gap-2 sm:w-48 md:w-80 sm:gap-3 md:gap-4">
-									<Image
-										src="/images/hero/button-1.png"
-										alt={t("destinyCalculation")}
-										width={150}
-										height={150}
-										className="object-contain w-full h-auto rounded-lg sm:rounded-xl md:rounded-2xl"
-									/>
-								</div>
-
-								{/* Right side - Features List */}
-								<div>
-									{[
-										"destinyFeature_1",
-										"destinyFeature_2",
-										"destinyFeature_3",
-										"destinyFeature_4",
-										"destinyFeature_5",
-										"destinyFeature_6",
-									].map((featureKey, index) => (
-										<div
-											key={index}
-											className="flex items-center gap-3 mb-3 sm:gap-4 md:gap-5 sm:mb-4 md:mb-5"
-										>
-											<div className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 bg-[#A3B116] rounded-full flex items-center justify-center flex-shrink-0">
-												<svg
-													className="w-2 h-2 text-white sm:w-3 sm:h-3 md:w-4 md:h-4"
-													fill="currentColor"
-													viewBox="0 0 20 20"
-												>
-													<path
-														fillRule="evenodd"
-														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-														clipRule="evenodd"
-													/>
-												</svg>
-											</div>
-											<span className="text-[#073e31] text-[11px] sm:text-[13px] md:text-[20px] font-noto-sans-hk font-medium">
-												{t(featureKey)}
-											</span>
-										</div>
-									))}
-								</div>
-							</div>
-
-							{/* Pricing Cards */}
-							<div className="relative max-w-sm mx-auto">
-								{/* Green Limited Time Offer Card - On Top */}
-								<div
-									className="bg-gradient-to-r from-[#E8F37A] to-[#A6B41B] rounded-2xl p-4 relative z-10"
-									style={{
-										boxShadow:
-											"0 17px 15px rgba(87, 105, 103, 0.25)",
-									}}
-								>
-									<div className="flex items-center justify-between">
-										<div>
-											<div
-												className="text-[#374A37] text-2xl sm:text-2xl  mb-1"
-												style={{
-													WebkitTextStroke:
-														"0.7px #374A37",
-												}}
-											>
-												{t("limitedTimeOffer")}
-											</div>
-											<button
-												onClick={handleExpert88Payment}
-												className="bg-white text-[#A3B116] font-noto-sans-hk px-10 sm:px-6 py-2 rounded-full text-sm sm:text-sm font-bold"
-											>
-												{t("paymentCalculation")}
-											</button>
-										</div>
-										<div className="text-left">
-											<div className="mb-1 text-4xl font-extrabold text-black font-noto-sans-hk sm:text-5xl">
-												$88
-											</div>
-											<div className="text-xs sm:text-sm text-[#073e31] opacity-80">
-												/ {t("perTime")}
-											</div>
-										</div>
-									</div>
-								</div>
-
-								{/* White Premium Version Card - Behind/Bottom */}
-								<div className="relative z-0 p-4 -mt-4 bg-white border border-gray-200 shadow-lg rounded-2xl">
-									<div className="flex items-center justify-between pt-4 ml-6">
-										<div
-											className="text-[#374A37] text-2xl sm:text-2xl  mb-1"
-											style={{
-												WebkitTextStroke:
-													"0.7px #374A37",
-											}}
-										>
-											{t("premiumVersion2")}
-										</div>
-										<div className="text-right">
-											<div className="mb-1 text-3xl font-extrabold text-black line-through font-noto-sans-hk opacity-70 sm:text-4xl">
-												$168
-											</div>
-											<div className="text-xs sm:text-sm text-[#073e31] opacity-80">
-												/ {t("perTime")}
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						{/* Desktop Layout - Original */}
-						<div className="hidden w-full px-4 mx-auto lg:block max-w-7xl">
-							<div className="grid items-center grid-cols-1 gap-8 lg:grid-cols-2">
-								{/* Left Side - Cards Container */}
-								<div className="flex flex-col items-center justify-center">
-									<div className="relative w-full max-w-2xl">
-										{/* Main white card - made responsive */}
-										<div className="relative w-full max-w-[550px] min-h-[400px] bg-white rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 border border-gray-200 mx-auto">
-											{/* Small green discount card overlay - positioned at top-left */}
-											<div className="absolute -top-2 sm:-top-4 -left-2 sm:-left-4 bg-gradient-to-b from-[#E9F47C] to-[#A3B116] rounded-2xl px-8 sm:px-12 lg:px-24 py-2 shadow-lg z-10">
-												{/* "最多用戶選擇" Badge */}
-												<div className="absolute -right-1 sm:-right-[-0.5rem] transform bg-white/50 text-[#111827] px-2 sm:px-3 py-1 rounded-full text-xs font-bold shadow-md whitespace-nowrap">
-													{t("mostUserChoice")}
-												</div>
-
-												<div className="pt-1 text-center text-white">
-													<div className="flex items-baseline justify-center gap-1 mb-1 -translate-x-10">
-														<span className="relative inline-block">
-															{/* Background stroke layer */}
-															<span
-																className="absolute inset-0 font-noto-sans-hk text-stroke-white"
-																style={{
-																	fontSize:
-																		"clamp(2rem, 8vw, 4rem)",
-																	fontWeight:
-																		"900",
-																	WebkitTextFillColor:
-																		"transparent",
-																	WebkitTextStroke:
-																		"10px white", // Custom thicker stroke
-																}}
-																aria-hidden="true"
-															>
-																$88
-															</span>
-															{/* Foreground gradient text */}
-															<span
-																className="relative bg-gradient-to-r from-[#99A800] to-[#5D6600] font-noto-sans-hk bg-clip-text text-transparent"
-																style={{
-																	fontSize:
-																		"clamp(2rem, 8vw, 4rem)",
-																	fontWeight:
-																		"900",
-																	backgroundImage:
-																		"linear-gradient(to right, #99A800, #5D6600)",
-																	WebkitBackgroundClip:
-																		"text",
-																}}
-															>
-																$88
-															</span>
-														</span>
-														<span className="text-xs font-bold text-black sm:text-sm opacity-90">
-															/ {t("perTime")}
-														</span>
-													</div>
-													<div
-														className="font-['Noto_Serif_TC, serif'] font-extrabold text-[#284628] text-lg sm:text-xl lg:text-[45px] translate-x-15"
-														style={{
-															WebkitTextStroke:
-																"1.5px #284628",
-														}}
-													>
-														{t("limitedTimeOffer")}
-													</div>
-												</div>
-											</div>{" "}
-											{/* Main card content */}
-											<div className="flex flex-col w-full h-full gap-5 pt-2">
-												{/* Original price section - moved to right */}
-												<div className="mb-6 text-right">
-													<div className="flex items-baseline justify-end gap-2 mb-2">
-														<span className="text-4xl font-bold text-gray-400 line-through">
-															$168
-														</span>
-														<span className="text-sm font-bold text-gray-400">
-															/ {t("perTime")}
-														</span>
-													</div>
-													<div
-														className="text-4xl font-bold text-gray-400"
-														style={{
-															WebkitTextStroke:
-																"1px #9CA3AF",
-														}}
-													>
-														{t("premiumVersion2")}
-													</div>
-												</div>
-
-												{/* Features in 2-column grid */}
-												<div className="flex-1 mb-3">
-													<div className="grid grid-cols-2 gap-y-4 gap-x-8">
-														{[
-															"destinyFeature_1",
-															"destinyFeature_2",
-															"destinyFeature_3",
-															"destinyFeature_4",
-															"destinyFeature_5",
-															"destinyFeature_6",
-														].map(
-															(
-																featureKey,
-																index
-															) => (
-																<div
-																	key={index}
-																	className="flex items-start gap-3"
-																>
-																	<div
-																		className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-																		style={{
-																			backgroundColor:
-																				"#E8E2DA",
-																		}}
-																	>
-																		<svg
-																			className="w-4 h-4 text-black"
-																			fill="currentColor"
-																			viewBox="0 0 20 20"
-																		>
-																			<path
-																				fillRule="evenodd"
-																				d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-																				clipRule="evenodd"
-																			/>
-																		</svg>
-																	</div>
-																	<span
-																		className="text-[17px] leading-relaxed text-black"
-																		style={{
-																			fontFamily:
-																				'"Noto sans HK',
-																		}}
-																	>
-																		{t(
-																			featureKey
-																		)}
-																	</span>
-																</div>
-															)
-														)}
-													</div>
-												</div>
-
-												{/* Button */}
-												<div className="flex justify-center">
-													<button
-														onClick={
-															handleExpert88Payment
-														}
-														className="bg-gradient-to-b from-[#BDCF0C] to-[#7B8700] hover:from-[#A3B116] hover:to-[#5D6600] text-white font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
-														style={{
-															width: "342px",
-															height: "48px",
-															borderRadius:
-																"20px",
-														}}
-														disabled={
-															isProcessingPayment &&
-															currentCardType ===
-																"expert88"
-														}
-													>
-														{isProcessingPayment &&
-														currentCardType ===
-															"expert88"
-															? t("processing")
-															: t(
-																	"paymentCalculation"
-																)}
-													</button>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-
-								{/* Right Side - Image */}
-								<div className="flex flex-col items-center justify-center">
-									{/* Title above image */}
-
-									<div className="relative max-w-[600px] w-full">
-										<img
-											src="/images/hero/button-5.png"
-											alt={t("destinyCalculation")}
-											className="object-contain w-full h-auto rounded-lg"
-										/>
-										{/* Button positioned to the right side and higher than center */}
-										<div className="absolute inset-0 flex items-center justify-end pr-4 sm:pr-8 md:pr-12">
-											<div className="flex justify-end w-full transform -translate-y-20 sm:-translate-y-30 md:-translate-y-31">
-												<button
-													className="bg-[#A3B116] hover:bg-[#8B9914] text-white px-4 py-2 sm:px-6 sm:py-2 text-[16px] sm:text-[18px] md:text-[20px] rounded-full font-medium transition-colors duration-300"
-													style={{
-														boxShadow:
-															"0 4px 12px rgba(0, 0, 0, 0.25)",
-													}}
-													onClick={() =>
-														router.push(
-															"/demo?category=life"
-														)
-													}
-												>
-													{t("previewButton")}
-												</button>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-
 						{/* Personal Fortune Analysis Section */}
 						<div className="w-full px-1 sm:px-4">
 							{/* Header */}
@@ -1954,29 +1953,53 @@ export default function YourPage() {
 								{/* Financial Fortune Card-Desktop */}
 								<div className="hidden w-full max-w-xs mx-auto overflow-hidden bg-white shadow-lg lg:block rounded-xl sm:rounded-2xl">
 									{/* Card Image Header */}
-									<div className="relative h-32 overflow-hidden sm:h-28 lg:h-32">
-										<Image
-											src="/images/price/wealth.png"
-											alt={t("wealthFortune")}
-											fill
-										/>
+									<div className="relative h-32 overflow-hidden ">
+										<div className="relative h-32 overflow-hidden">
+											<Image
+												src="/images/price/wealth.png"
+												alt={t("wealthFortune")}
+												fill
+											/>
+										</div>
 									</div>
 									{/* Card Content */}
 									<div className="p-3 sm:p-4">
 										{/* Flip Card Container */}
-										<div className="relative h-32 mb-4 group perspective-1000">
+										<div className="relative h-28 group perspective-1000">
 											{/* Card Inner (Flip Container) */}
 											<div className="relative w-full h-full transition-transform duration-700 ">
 												{/* Front Side - Premium Version ($88) */}
-												<div className="absolute inset-0 w-full h-full bg-white border-2 border-gray-300 rounded-lg shadow-sm backface-hidden">
-													<div className="flex flex-col justify-between h-full p-3">
-														<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-															<span className="text-[25px] sm:text-xl text-gray-600">
+												<div className="absolute inset-0 w-full h-full mb-2 bg-white ">
+													<div className="flex flex-col justify-between ">
+														<div className="flex flex-col mb-5 sm:flex-row sm:items-center sm:justify-between">
+															<span
+																className="font-bold"
+																style={{
+																	fontFamily:
+																		"Noto Serif TC, serif",
+																	fontSize:
+																		"27px",
+																	color: "#A1A1A1",
+																	WebkitTextStroke:
+																		"1px #A1A1A1",
+																}}
+															>
 																{t(
 																	"premiumPlan"
 																)}
 															</span>
-															<span className="text-[28px] sm:text-2xl font-bold text-gray-600">
+															<span
+																className="font-bold"
+																style={{
+																	fontFamily:
+																		"Noto Serif TC, serif",
+																	fontSize:
+																		"27px",
+																	color: "#A1A1A1",
+																	WebkitTextStroke:
+																		"1px #A1A1A1",
+																}}
+															>
 																<span className="line-through">
 																	$88
 																</span>
@@ -1989,7 +2012,7 @@ export default function YourPage() {
 															</span>
 														</div>
 														<button
-															className="w-full bg-gradient-to-b from-[#E8F37A] to-[#A3B116] text-[#575757] py-2 text-sm rounded-lg font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+															className="w-full bg-gradient-to-b from-[#E8F37A] to-[#A3B116] text-black py-2 text-sm rounded-full font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
 															style={{
 																boxShadow:
 																	"0 12px 15.5px rgba(49, 67, 67, 0.2)",
@@ -2439,7 +2462,7 @@ export default function YourPage() {
 								{/* Love Fortune Card-Desktop */}
 								<div className="hidden overflow-hidden bg-white shadow-lg lg:block rounded-2xl">
 									{/* Card Image Header */}
-									<div className="relative h-32 overflow-hidden bg-green-600">
+									<div className="relative h-32 overflow-hidden ">
 										<div className="relative h-32 overflow-hidden">
 											<Image
 												src="/images/price/relationship.png"
@@ -2451,19 +2474,41 @@ export default function YourPage() {
 									{/* Card Content */}
 									<div className="p-4">
 										{/* Flip Card Container */}
-										<div className="relative h-32 mb-4 group perspective-1000">
+										<div className="relative h-28 group perspective-1000">
 											{/* Card Inner (Flip Container) */}
-											<div className="relative w-full h-full transition-transform duration-700">
+											<div className="relative w-full h-full transition-transform duration-700 ">
 												{/* Front Side - Premium Version ($88) */}
-												<div className="absolute inset-0 w-full h-full bg-white border-2 border-gray-300 rounded-lg shadow-sm backface-hidden">
-													<div className="flex flex-col justify-between h-full p-3">
-														<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-															<span className="text-[25px] sm:text-xl text-gray-600">
+												<div className="absolute inset-0 w-full h-full mb-2 bg-white ">
+													<div className="flex flex-col justify-between ">
+														<div className="flex flex-col mb-5 sm:flex-row sm:items-center sm:justify-between">
+															<span
+																className="font-bold"
+																style={{
+																	fontFamily:
+																		"Noto Serif TC, serif",
+																	fontSize:
+																		"27px",
+																	color: "#A1A1A1",
+																	WebkitTextStroke:
+																		"1px #A1A1A1",
+																}}
+															>
 																{t(
 																	"premiumPlan"
 																)}
 															</span>
-															<span className="text-[28px] sm:text-2xl font-bold text-gray-600">
+															<span
+																className="font-bold"
+																style={{
+																	fontFamily:
+																		"Noto Serif TC, serif",
+																	fontSize:
+																		"27px",
+																	color: "#A1A1A1",
+																	WebkitTextStroke:
+																		"1px #A1A1A1",
+																}}
+															>
 																<span className="line-through">
 																	$88
 																</span>
@@ -2476,7 +2521,7 @@ export default function YourPage() {
 															</span>
 														</div>
 														<button
-															className="w-full bg-gradient-to-b from-[#E8F37A] to-[#A3B116] text-[#575757] py-2 text-sm rounded-lg font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+															className="w-full bg-gradient-to-b from-[#E8F37A] to-[#A3B116] text-black py-2 text-sm rounded-full font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
 															style={{
 																boxShadow:
 																	"0 12px 15.5px rgba(49, 67, 67, 0.2)",
@@ -2940,19 +2985,41 @@ export default function YourPage() {
 									{/* Card Content */}
 									<div className="p-4">
 										{/* Flip Card Container */}
-										<div className="relative h-32 mb-4 group perspective-1000">
+										<div className="relative h-28 group perspective-1000">
 											{/* Card Inner (Flip Container) */}
 											<div className="relative w-full h-full transition-transform duration-700 ">
 												{/* Front Side - Premium Version ($88) */}
-												<div className="absolute inset-0 w-full h-full bg-white border-2 border-gray-300 rounded-lg shadow-sm backface-hidden">
-													<div className="flex flex-col justify-between h-full p-3">
-														<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-															<span className="text-[25px] sm:text-xl text-gray-600">
+												<div className="absolute inset-0 w-full h-full mb-2 bg-white ">
+													<div className="flex flex-col justify-between ">
+														<div className="flex flex-col mb-5 sm:flex-row sm:items-center sm:justify-between">
+															<span
+																className="font-bold"
+																style={{
+																	fontFamily:
+																		"Noto Serif TC, serif",
+																	fontSize:
+																		"27px",
+																	color: "#A1A1A1",
+																	WebkitTextStroke:
+																		"1px #A1A1A1",
+																}}
+															>
 																{t(
 																	"premiumPlan"
 																)}
 															</span>
-															<span className="text-[28px] sm:text-2xl font-bold text-gray-600">
+															<span
+																className="font-bold"
+																style={{
+																	fontFamily:
+																		"Noto Serif TC, serif",
+																	fontSize:
+																		"27px",
+																	color: "#A1A1A1",
+																	WebkitTextStroke:
+																		"1px #A1A1A1",
+																}}
+															>
 																<span className="line-through">
 																	$88
 																</span>
@@ -2966,7 +3033,7 @@ export default function YourPage() {
 														</div>
 
 														<button
-															className="w-full bg-gradient-to-b from-[#E8F37A] to-[#A3B116] text-[#575757] py-2 text-sm rounded-lg font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+															className="w-full bg-gradient-to-b from-[#E8F37A] to-[#A3B116] text-black py-2 text-sm rounded-full font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
 															style={{
 																boxShadow:
 																	"0 12px 15.5px rgba(49, 67, 67, 0.2)",
@@ -3429,19 +3496,41 @@ export default function YourPage() {
 									{/* Card Content */}
 									<div className="p-4">
 										{/* Flip Card Container */}
-										<div className="relative h-32 mb-4 group perspective-1000">
+										<div className="relative h-28 group perspective-1000">
 											{/* Card Inner (Flip Container) */}
 											<div className="relative w-full h-full transition-transform duration-700 ">
 												{/* Front Side - Premium Version ($88) */}
-												<div className="absolute inset-0 w-full h-full bg-white border-2 border-gray-300 rounded-lg shadow-sm backface-hidden">
-													<div className="flex flex-col justify-between h-full p-3">
-														<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-															<span className="text-[25px] sm:text-xl text-gray-600">
+												<div className="absolute inset-0 w-full h-full mb-2 bg-white ">
+													<div className="flex flex-col justify-between ">
+														<div className="flex flex-col mb-5 sm:flex-row sm:items-center sm:justify-between">
+															<span
+																className="font-bold"
+																style={{
+																	fontFamily:
+																		"Noto Serif TC, serif",
+																	fontSize:
+																		"27px",
+																	color: "#A1A1A1",
+																	WebkitTextStroke:
+																		"1px #A1A1A1",
+																}}
+															>
 																{t(
 																	"premiumPlan"
 																)}
 															</span>
-															<span className="text-[28px] sm:text-2xl font-bold text-gray-600">
+															<span
+																className="font-bold"
+																style={{
+																	fontFamily:
+																		"Noto Serif TC, serif",
+																	fontSize:
+																		"27px",
+																	color: "#A1A1A1",
+																	WebkitTextStroke:
+																		"1px #A1A1A1",
+																}}
+															>
 																<span className="line-through">
 																	$88
 																</span>
@@ -3454,7 +3543,7 @@ export default function YourPage() {
 															</span>
 														</div>
 														<button
-															className="w-full bg-gradient-to-b from-[#E8F37A] to-[#A3B116] text-[#575757] py-2 text-sm rounded-lg font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+															className="w-full bg-gradient-to-b from-[#E8F37A] to-[#A3B116] text-black py-2 text-sm rounded-full font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
 															style={{
 																boxShadow:
 																	"0 12px 15.5px rgba(49, 67, 67, 0.2)",
@@ -3986,10 +4075,16 @@ export default function YourPage() {
 													{/* Features List - Right aligned */}
 													<div className="mb-6 space-y-4 mr-30">
 														<div className="flex items-center gap-3">
-															<div className="flex items-center justify-center w-6 h-6 rounded-full bg-[#E3E3E3]">
+															<div
+																className="flex items-center justify-center rounded-full w-7 h-7"
+																style={{
+																	backgroundColor:
+																		"#A3B116",
+																}}
+															>
 																<svg
-																	className="w-4 h-4"
-																	fill="#999999"
+																	className="w-5 h-5 text-white"
+																	fill="currentColor"
 																	viewBox="0 0 20 20"
 																>
 																	<path
@@ -4013,10 +4108,16 @@ export default function YourPage() {
 															</span>
 														</div>
 														<div className="flex items-center gap-3">
-															<div className="flex items-center justify-center w-6 h-6 rounded-full bg-[#E3E3E3]">
+															<div
+																className="flex items-center justify-center rounded-full w-7 h-7"
+																style={{
+																	backgroundColor:
+																		"#A3B116",
+																}}
+															>
 																<svg
-																	className="w-4 h-4"
-																	fill="#999999"
+																	className="w-5 h-5 text-white"
+																	fill="currentColor"
 																	viewBox="0 0 20 20"
 																>
 																	<path
@@ -4040,10 +4141,16 @@ export default function YourPage() {
 															</span>
 														</div>
 														<div className="flex items-center gap-3">
-															<div className="flex items-center justify-center w-6 h-6 rounded-full bg-[#E3E3E3]">
+															<div
+																className="flex items-center justify-center rounded-full w-7 h-7"
+																style={{
+																	backgroundColor:
+																		"#A3B116",
+																}}
+															>
 																<svg
-																	className="w-4 h-4"
-																	fill="#999999"
+																	className="w-5 h-5 text-white"
+																	fill="currentColor"
 																	viewBox="0 0 20 20"
 																>
 																	<path
@@ -4067,10 +4174,16 @@ export default function YourPage() {
 															</span>
 														</div>
 														<div className="flex items-center gap-3">
-															<div className="flex items-center justify-center w-6 h-6 rounded-full bg-[#E3E3E3]">
+															<div
+																className="flex items-center justify-center rounded-full w-7 h-7"
+																style={{
+																	backgroundColor:
+																		"#A3B116",
+																}}
+															>
 																<svg
-																	className="w-4 h-4"
-																	fill="#999999"
+																	className="w-5 h-5 text-white"
+																	fill="currentColor"
 																	viewBox="0 0 20 20"
 																>
 																	<path
@@ -4094,10 +4207,16 @@ export default function YourPage() {
 															</span>
 														</div>
 														<div className="flex items-center gap-3">
-															<div className="flex items-center justify-center w-6 h-6 rounded-full bg-[#E3E3E3]">
+															<div
+																className="flex items-center justify-center rounded-full w-7 h-7"
+																style={{
+																	backgroundColor:
+																		"#A3B116",
+																}}
+															>
 																<svg
-																	className="w-4 h-4"
-																	fill="#999999"
+																	className="w-5 h-5 text-white"
+																	fill="currentColor"
 																	viewBox="0 0 20 20"
 																>
 																	<path

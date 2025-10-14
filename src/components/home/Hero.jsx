@@ -159,7 +159,7 @@ export default function Hero() {
 	// MOBILE LAYOUT - Redesigned according to requirements
 	if (isMobile) {
 		return (
-			<div className="relative w-full min-h-[60vh] overflow-hidden b">
+			<div className="relative w-full min-h-[40vh] overflow-hidden b">
 				{/* Background Image */}
 				<div className="absolute inset-0 z-0">
 					<Image
@@ -187,10 +187,10 @@ export default function Hero() {
 				{/* Main Content Container */}
 				<div className="relative z-10 flex flex-col px-4 py-8 mt-15">
 					{/* Header Section */}
-					<div className="flex flex-col pt-5 pb-1 ml-7">
+					<div className="flex flex-col pt-5 pb-1">
 						{/* HarmoniQ Brand Name - right aligned */}
 						<p
-							className="mb-1 ml-2 "
+							className="mb-1 ml-2"
 							style={{
 								fontFamily: "Noto Serif TC, serif",
 								fontSize: "25px",
@@ -221,10 +221,10 @@ export default function Hero() {
 							{t("title2")}
 						</p>
 						<div
-							className="relative flex items-start mb-0 ml-2"
+							className="relative flex items-start mb-0 "
 							style={{ minHeight: "60px" }}
 						>
-							<div className="w-full">
+							<div className="w-full ml-2">
 								<p className="text-base sm:text-lg font-nano-sans-hk  text-[#FEF8EF] mb-0">
 									{t("subtitle1")}
 								</p>
@@ -247,7 +247,7 @@ export default function Hero() {
 									src="/images/風水妹/chart-button.png"
 									alt={t("cta")}
 									width={180}
-									height={20}
+									height={10}
 									className="cursor-pointer"
 									style={{
 										filter: "drop-shadow(0 8px 32px rgba(163, 177, 22, 0.22))",
@@ -262,7 +262,7 @@ export default function Hero() {
 								className="relative p-3 border w-[90%] shadow-xl backdrop-blur-sm bg-white/15 border-white/30 rounded-3xl"
 								style={{
 									minHeight: "180px",
-									height: "200px",
+									height: "180px",
 								}}
 							>
 								{/* Steps Grid - 2x2 Layout */}
@@ -280,9 +280,9 @@ export default function Hero() {
 												className="absolute inset-0 z-0 rounded-xl"
 												style={{
 													backgroundImage: `url(${step.image})`,
-													backgroundSize: "35% auto",
+													backgroundSize: "50% auto",
 													backgroundPosition:
-														"85% center",
+														"85% 30%",
 													backgroundRepeat:
 														"no-repeat",
 													opacity: 0.7,
@@ -474,7 +474,7 @@ export default function Hero() {
 
 				{/* Social icons at top right */}
 				<div
-					className="fixed z-30 flex flex-col space-y-4"
+					className="fixed flex flex-col space-y-8 z-390"
 					style={{
 						pointerEvents: "auto",
 						top: "90px",

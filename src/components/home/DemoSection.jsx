@@ -246,7 +246,6 @@ export default function DemoSection() {
 						{t("title")}
 					</h2>
 				</div>
-
 				{/* Draggable Tags - Auto-scroll on desktop, drag on mobile */}
 				<div className="mb-8 overflow-hidden sm:mb-10 md:mb-12 lg:mb-14 xl:mb-16">
 					<div
@@ -298,74 +297,63 @@ export default function DemoSection() {
 						))}
 					</div>
 				</div>
-
-				{/* Demo Preview Section - Responsive layout */}
-				{isClient && isMobile ? (
-					/* Mobile Layout - Original desktop layout moved to mobile only */
-					<div className="relative flex justify-center w-full">
-						{/* Center Image with overlapping elements */}
-						<div className="relative w-[80%]  lg:max-w-5xl xl:max-w-6xl">
-							<img
-								src="/images/demo/Demo.png"
-								alt={t("demoAltText")}
-								className="w-full h-auto ml-8 max-w-none sm:ml-4 md:ml-5 lg:ml-8 xl:ml-10"
-							/>
-
-							{/* Green Button - Responsive positioning */}
-							<div className="absolute bottom-4 left-[-45px] sm:bottom-6 sm:left-[-15px] md:bottom-8 md:left-[-20px] lg:bottom-10 lg:left-[-35px] xl:bottom-12 xl:left-[-80px]">
-								<Link
-									href="/demo"
-									className="bg-[#A3B116] text-white rounded-full font-bold hover:bg-[#8B9914] transition-colors duration-300 inline-flex items-center space-x-2 shadow-lg px-6 py-3 sm:px-8 sm:py-4 md:px-10 md:py-5 text-sm sm:text-base md:text-lg"
-								>
-									<span>{t("previewButton")}</span>
-								</Link>
+				{/* Demo Preview Section - Horizontal Layout on All Devices */}
+				<Link href="/price" className="block w-full px-2 sm:px-4">
+					<div className="relative flex flex-row items-center justify-center p-3 sm:p-5 md:p-6 lg:p-8 w-full max-w-[60%] xs:max-w-[55%] sm:max-w-[55%] md:max-w-[50%] lg:max-w-[50%] xl:max-w-[50%] 2xl:max-w-[65%] min-h-[140px] xs:min-h-[160px] sm:min-h-[200px] md:min-h-[200px] lg:min-h-[220px] xl:min-h-[200px] bg-white rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden shadow-[0_4px_8px_rgba(0,0,0,0.15)] mx-auto cursor-pointer hover:shadow-[0_8px_16px_rgba(0,0,0,0.25)] hover:-translate-y-2 active:scale-[0.98] transition-all duration-300 ease-out">
+						{/* Left side - Text content */}
+						<div className="relative z-10 flex items-center justify-center flex-1">
+							<div className="text-left">
+								<h3 className="leading-none select-none">
+									{/* 立即 - Smaller text */}
+									<span
+										className="block font-bold text-[#7c8806] mb-1 sm:mb-1"
+										style={{
+											fontFamily:
+												"Noto Sans HK, sans-serif",
+											fontSize: "clamp(20px, 5vw, 64px)",
+											lineHeight: "0.9",
+										}}
+									>
+										立即
+									</span>
+									{/* 測算 - Larger text */}
+									<span
+										className="block font-bold text-[#7c8806]"
+										style={{
+											fontFamily:
+												"Noto Sans HK, sans-serif",
+											fontSize: "clamp(32px, 7vw, 128px)",
+											lineHeight: "0.8",
+										}}
+									>
+										測算
+									</span>
+								</h3>
 							</div>
 						</div>
+
+						{/* Right side - 風水妹 character */}
+						<div className="relative z-10 flex items-center justify-center">
+							<div className="relative flex items-center justify-center">
+								{/* Main character image - Optimized for horizontal layout */}
+								<img
+									src="/images/風水妹/風水妹3.png"
+									alt="風水妹 Character"
+									className="h-auto select-none drop-shadow-2xl"
+									style={{
+										width: "clamp(70px, 12vw, 200px)",
+										maxWidth: "200px",
+										minWidth: "70px",
+									}}
+									draggable={false}
+								/>
+							</div>
+						</div>
+
+						{/* Optional: Subtle background gradient */}
+						<div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#7c8806]/5 pointer-events-none"></div>
 					</div>
-				) : (
-					/* Desktop Layout - New design with 風水妹 character - Responsive */
-					<Link href="/price" className="block">
-						<div className="relative flex flex-col sm:flex-row items-center justify-center p-3 sm:p-4 md:p-6 w-full sm:w-[85%] md:w-[75%] lg:w-[65%] xl:w-[60%] min-h-[180px] sm:min-h-[200px] md:min-h-[220px] lg:min-h-[240px] bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_4px_4px_rgba(0,0,0,0.3)] mx-auto cursor-pointer hover:shadow-[0_6px_6px_rgba(0,0,0,0.35)] hover:-translate-y-3 transition-all duration-300">
-							{/* Left side - Text content */}
-							<div className="relative z-10 flex justify-center flex-1 w-full px-4 sm:max-w-md sm:px-6 md:px-8 lg:px-12">
-								<div className="text-center sm:text-left">
-									<h3 className="mb-2 leading-tight sm:mb-4 md:mb-6">
-										<span
-											className="block font-bold text-[#7c8806] text-[32px] sm:text-[40px] md:text-[48px] lg:text-[56px] xl:text-[64px]"
-											style={{
-												fontFamily:
-													"Noto Sans HK, sans-serif",
-											}}
-										>
-											立即
-										</span>
-										<span
-											className="block font-bold text-[#7c8806] text-[48px] sm:text-[64px] md:text-[80px] lg:text-[96px] xl:text-[128px]"
-											style={{
-												fontFamily:
-													"Noto Sans HK, sans-serif",
-											}}
-										>
-											測算
-										</span>
-									</h3>
-								</div>
-							</div>
-
-							{/* Right side - 風水妹 character */}
-							<div className="relative z-10 flex items-center justify-center flex-1 mt-2 sm:mt-0">
-								<div className="relative">
-									{/* Main character image - Responsive sizing */}
-									<img
-										src="/images/風水妹/風水妹3.png"
-										alt="風水妹 Character"
-										className="w-24 h-auto sm:w-32 md:w-36 lg:w-40 xl:w-[200px] drop-shadow-2xl"
-									/>
-								</div>
-							</div>
-						</div>
-					</Link>
-				)}
+				</Link>
 			</div>
 
 			{/* Hide scrollbar styles */}

@@ -149,7 +149,7 @@ export default function CommentsCarousel() {
 						ref={emblaRef}
 						style={{
 							width: "100%",
-							height: "307px",
+							height: "337px",
 							overflow: "visible", // Changed to visible to show side cards
 						}}
 					>
@@ -157,7 +157,7 @@ export default function CommentsCarousel() {
 							className="embla__container"
 							style={{
 								display: "flex",
-								height: "100%",
+								height: "80%",
 							}}
 						>
 							{slideData.map((slide, index) => (
@@ -165,24 +165,26 @@ export default function CommentsCarousel() {
 									className="embla__slide"
 									key={index}
 									style={{
-										flex: "0 0 70%", // Changed to 70% to show side cards
+										flex: "0 0 90%", // Changed to 70% to show side cards
 										minWidth: 0,
 										display: "flex",
 										justifyContent: "center",
 										alignItems: "center",
-										padding: "0 10px", // Reduced padding
+										padding: "0px 5px", // Reduced padding
 									}}
 								>
 									{/* Card Content */}
 									<div
-										className={`flex flex-col px-4 py-6 bg-white shadow-lg rounded-xl transition-all duration-300 ${
+										className={`flex flex-col px-4 py-5 mt-20 bg-white shadow-lg rounded-xl transition-all duration-300 ${
 											index === selectedIndex
 												? "scale-100 opacity-100"
 												: "scale-90 opacity-70"
 										}`}
 										style={{
-											width: "240px", // Slightly smaller to fit better
-											maxWidth: "90%",
+											width: "200%",
+											maxWidth: "500px",
+											height: "100%",
+											overflow: "hidden",
 										}}
 									>
 										<p
@@ -469,8 +471,9 @@ export default function CommentsCarousel() {
 				className="relative z-30 flex flex-col items-center justify-center"
 				style={{
 					width: "268px",
-					height: "1110px",
+					height: "1px",
 					right: "5px",
+					top: "30px",
 				}}
 			>
 				<CarouselControls

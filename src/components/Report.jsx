@@ -4561,7 +4561,7 @@ export default function ReportPage({
 															>
 																{/* Element Header */}
 																<div
-																	className="flex items-center gap-3 p-3 text-white rounded-t-lg"
+																	className="flex items-center gap-3 p-3 text-white rounded-lg"
 																	style={{
 																		backgroundColor:
 																			wuxingColorMap[
@@ -4604,7 +4604,7 @@ export default function ReportPage({
 																					"clamp(12px, 3vw, 14px)",
 																			}}
 																		>
-																			數量:
+																			總量(包括藏干):
 																		</span>
 																		<span
 																			className="font-bold text-[#374A37]"
@@ -4728,7 +4728,7 @@ export default function ReportPage({
 																				"clamp(14px, 1.5vw, 16px)",
 																		}}
 																	>
-																		數量
+																		總量(包括藏干)
 																	</div>
 																	<div
 																		className="py-2 font-bold text-white"
@@ -5955,84 +5955,107 @@ export default function ReportPage({
 													key: "五行調和",
 													icon: "⭐",
 													image: "/images/report/star.png",
+													bgColor: "#FFD700", // Gold color for star
 												},
 												{
 													key: "身心養護",
 													icon: "❤️",
 													image: "/images/report/heart.png",
+													bgColor: "#FF6B6B", // Red color for heart
 												},
 												{
 													key: "事業方向",
 													icon: "💼",
 													image: "/images/report/bag.png",
+													bgColor: "#4ECDC4", // Teal color for business
 												},
-											].map((tab) => (
-												<div
-													key={tab.key}
-													className="flex flex-col items-center flex-1 min-w-0 gap-1 sm:gap-2 lg:gap-3"
-												>
-													<button
-														onClick={() =>
-															setActiveComprehensiveTab(
-																tab.key
-															)
-														}
-														className={`w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 rounded-full transition-all duration-300 flex items-center justify-center ${
-															activeComprehensiveTab ===
-															tab.key
-																? "bg-[#EFEFEF] shadow-lg border-2 border-black"
-																: "bg-[#EFEFEF] shadow-lg "
-														}`}
+											].map((tab) => {
+												const isSelected =
+													activeComprehensiveTab ===
+													tab.key;
+												return (
+													<div
+														key={tab.key}
+														className="flex flex-col items-center flex-1 min-w-0 gap-1 sm:gap-2 lg:gap-3"
 													>
-														{tab.image && (
-															<div className="flex items-center justify-center w-full h-full overflow-hidden rounded-full">
-																<img
-																	src={
-																		tab.image
-																	}
-																	alt={
-																		tab.key
-																	}
-																	className="object-contain w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 xl:w-20 xl:h-20"
-																	onError={(
-																		e
-																	) => {
-																		e.target.style.display =
-																			"none";
-																		e.target.nextSibling.style.display =
-																			"flex";
-																	}}
-																/>
-																<div
-																	className="flex items-center justify-center w-8 h-8 bg-gray-300 rounded-full sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 xl:w-20 xl:h-20"
-																	style={{
-																		display:
-																			"none",
-																		fontSize:
-																			"clamp(16px, 3vw, 28px)",
-																	}}
-																>
-																	{tab.icon}
+														<button
+															onClick={() =>
+																setActiveComprehensiveTab(
+																	tab.key
+																)
+															}
+															className="flex items-center justify-center w-16 h-16 transition-all duration-300 rounded-full shadow-lg sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32"
+															style={{
+																backgroundColor:
+																	isSelected
+																		? tab.bgColor
+																		: "#EFEFEF",
+															}}
+														>
+															{tab.image && (
+																<div className="flex items-center justify-center w-full h-full overflow-hidden rounded-full">
+																	<img
+																		src={
+																			tab.image
+																		}
+																		alt={
+																			tab.key
+																		}
+																		className="object-contain w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 xl:w-20 xl:h-20"
+																		style={{
+																			filter: isSelected
+																				? "brightness(0) invert(1)"
+																				: "none",
+																		}}
+																		onError={(
+																			e
+																		) => {
+																			e.target.style.display =
+																				"none";
+																			e.target.nextSibling.style.display =
+																				"flex";
+																		}}
+																	/>
+																	<div
+																		className="flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 xl:w-20 xl:h-20"
+																		style={{
+																			display:
+																				"none",
+																			fontSize:
+																				"clamp(16px, 3vw, 28px)",
+																			backgroundColor:
+																				isSelected
+																					? "transparent"
+																					: "#D1D5DB",
+																			color: isSelected
+																				? "white"
+																				: "inherit",
+																		}}
+																	>
+																		{
+																			tab.icon
+																		}
+																	</div>
 																</div>
-															</div>
-														)}
-													</button>
-													<span
-														className={`font-semibold text-center leading-tight ${
-															activeComprehensiveTab ===
-															tab.key
-																? "text-[#A3B116]"
-																: "text-gray-600"
-														}`}
-														style={{
-															fontSize:
-																"clamp(11px, 2.5vw, 18px)",
-														}}
-													>
-														{tab.key}
-													</span>
-												</div>
-											))}
+															)}
+														</button>
+														<span
+															className={`font-semibold text-center leading-tight ${
+																activeComprehensiveTab ===
+																tab.key
+																	? "text-[#A3B116]"
+																	: "text-gray-600"
+															}`}
+															style={{
+																fontSize:
+																	"clamp(11px, 2.5vw, 18px)",
+															}}
+														>
+															{tab.key}
+														</span>
+													</div>
+												);
+											})}
 										</div>
 
 										{/* Selected Tab Title */}

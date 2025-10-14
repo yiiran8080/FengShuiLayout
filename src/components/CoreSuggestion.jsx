@@ -515,7 +515,7 @@ export default function CoreSuggestion({ userInfo, currentYear = 2025 }) {
 					</div>
 
 					{/* Subsection Cards */}
-					<div className="grid grid-cols-1 gap-4 mt-6 sm:gap-6 sm:mt-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+					<div className="flex flex-wrap justify-center max-w-6xl gap-4 mx-auto mt-6 sm:gap-6 sm:mt-8">
 						{activeCategory.content.subsections &&
 							Object.entries(
 								activeCategory.content.subsections
@@ -563,7 +563,11 @@ export default function CoreSuggestion({ userInfo, currentYear = 2025 }) {
 									return (
 										<div
 											key={subsectionName}
-											className={`p-3 sm:p-4 transition-shadow bg-white border-2 border-gray-200 rounded-xl hover:shadow-lg`}
+											className={`p-3 sm:p-4 transition-shadow bg-white border-2 border-gray-200 rounded-xl hover:shadow-lg w-full max-w-sm flex-shrink-0`}
+											style={{
+												minWidth: "280px",
+												maxWidth: "320px",
+											}}
 										>
 											<div
 												className={`text-center p-2 sm:p-4 rounded-lg mb-3 sm:mb-4 ${colorScheme.bg}`}

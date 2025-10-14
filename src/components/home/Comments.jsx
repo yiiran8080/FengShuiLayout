@@ -37,7 +37,7 @@ export default function Comments() {
 	// Desktop layout - original with scaling
 	return (
 		<section
-			className="relative py-6 pb-6 overflow-visible bg-transparent sm:py-8 sm:pb-8 md:py-10 md:pb-10 lg:pb-30"
+			className="relative py-6 pb-6 overflow-visible bg-transparent "
 			style={{ fontFamily: "Noto Serif TC, serif" }}
 		>
 			<div className="w-full px-4 overflow-visible lg:px-4">

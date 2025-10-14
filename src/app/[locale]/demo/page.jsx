@@ -611,7 +611,7 @@ export default function DemoPage() {
 			<Navbar />
 
 			{/* Horizontal Tags Navigation */}
-			<div className="w-[95%] mx-auto px-2 md:px-4 pt-20 mb-8 md:mb-15">
+			<div className="w-[95%] mx-auto px-2 md:px-4 pt-20 mb-1 md:mb-15">
 				{/* Tags Container with Drag */}
 				<div
 					ref={scrollContainerRef}
@@ -680,12 +680,12 @@ export default function DemoPage() {
 												<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-400 mt-2"></div>
 											</h2>
 										</div>
-										<div className="flex justify-center px-2 space-x-4 md:px-4 md:space-x-8">
+										<div className="flex justify-center px-1 space-x-4 md:px-4 md:space-x-8">
 											{/* Overlapping Cards Container */}
 											<div className="relative flex items-center justify-center w-full max-w-sm mb-4 mr-8 sm:mr-20 md:max-w-md lg:max-w-md md:mb-0">
 												{/* Top Card - 限時優惠 (Green Discount) */}
 												<div
-													className="relative z-20 flex items-center w-full h-20 gap-1 px-5 sm:h-23 md:h-28 sm:px-5 md:px-7 rounded-xl"
+													className="relative z-20 flex items-center w-full h-20 gap-3 px-3 sm:h-23 md:h-28 sm:px-5 md:px-7 rounded-xl"
 													style={{
 														background:
 															"linear-gradient(to right, #E8F37A, #A6B41B)",
@@ -695,7 +695,7 @@ export default function DemoPage() {
 												>
 													<div className="flex flex-col">
 														<div
-															className="px-2 py-1 text-xl sm:text-3xl md:px-3 md:py-2 md:text-[36px]"
+															className="px-0 py-1 text-sm sm:text-3xl md:px-3 md:py-2 md:text-[36px]"
 															style={{
 																fontFamily:
 																	"Noto Serif TC, serif",
@@ -710,7 +710,7 @@ export default function DemoPage() {
 														{/* Right Side Button */}
 														<div className="flex items-center mb-2">
 															<button
-																className="bg-white text-[#A3B116] px-6 sm:px-10 rounded-full text-xs sm:text-sm md:text-base font-extrabold hover:bg-gray-100 hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+																className="bg-white text-[#A3B116] px-1 sm:px-10 rounded-full text-sm sm:text-sm md:text-base font-extrabold hover:bg-gray-100 hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
 																style={{
 																	background:
 																		"linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)",
@@ -787,7 +787,7 @@ export default function DemoPage() {
 														</span>
 
 														<div
-															className="text-xs text-white sm:text-sm font-noto-sans-hk md:text-base"
+															className="text-[10px] text-white sm:text-sm font-noto-sans-hk md:text-base"
 															style={{
 																marginTop:
 																	"auto",

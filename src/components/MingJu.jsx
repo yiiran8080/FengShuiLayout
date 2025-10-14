@@ -40,7 +40,7 @@ const TAB_CONFIG = {
 			selectedBg: "#DEAB20",
 			selectedImg: "#FFFFFF",
 			unselectedBg: "#EFEFEF",
-			unselectedImg: "#DEAB20",
+			unselectedImg: "#D09900",
 		},
 		right: {
 			label: "財星定位",
@@ -58,7 +58,7 @@ const TAB_CONFIG = {
 			selectedBg: "#DEAB20",
 			selectedImg: "#FFFFFF",
 			unselectedBg: "#EFEFEF",
-			unselectedImg: "#DEAB20",
+			unselectedImg: "#D09900",
 		},
 		right: {
 			label: "財星定位",
@@ -76,7 +76,7 @@ const TAB_CONFIG = {
 			selectedBg: "#DEAB20",
 			selectedImg: "#FFFFFF",
 			unselectedBg: "#EFEFEF",
-			unselectedImg: "#DEAB20",
+			unselectedImg: "#D09900",
 		},
 		right: {
 			label: "財星定位",
@@ -94,7 +94,7 @@ const TAB_CONFIG = {
 			selectedBg: "#DEAB20",
 			selectedImg: "#FFFFFF",
 			unselectedBg: "#EFEFEF",
-			unselectedImg: "#DEAB20",
+			unselectedImg: "#D09900",
 		},
 		right: {
 			label: "感情定位",

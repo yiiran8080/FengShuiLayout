@@ -1300,7 +1300,7 @@ export default function Home() {
 									<span className="text-lg text-[#606060] font-bold">
 										付費報告預覽
 									</span>
-									<span className="text-xl">👇</span>
+									<span className="text-xl"></span>
 								</div>
 							</div>
 						</div>
@@ -1308,6 +1308,19 @@ export default function Home() {
 
 					{/* 功能區域 */}
 					<div className="flex-1 px-4 pb-4 space-y-3 overflow-y-auto">
+						<Link href="/demo?category=life">
+							<div
+								className="bg-[#768976] rounded-lg py-7 mb-3 cursor-pointer hover:bg-[#6b7d6b] transition-colors relative overflow-hidden"
+								style={{
+									backgroundImage:
+										"url(/images/chatbox/life.png)",
+									backgroundSize: "cover",
+									backgroundPosition: "center",
+									backgroundRepeat: "no-repeat",
+								}}
+								onClick={handleMobileNavigation}
+							></div>
+						</Link>
 						{/* 其他功能 */}
 						<Link href="/demo?category=fengshui">
 							<div
@@ -1330,20 +1343,6 @@ export default function Home() {
 									</div>
 								</div>
 							</div>
-						</Link>
-
-						<Link href="/demo?category=life">
-							<div
-								className="bg-[#768976] rounded-lg py-7 mb-3 cursor-pointer hover:bg-[#6b7d6b] transition-colors relative overflow-hidden"
-								style={{
-									backgroundImage:
-										"url(/images/chatbox/life.png)",
-									backgroundSize: "cover",
-									backgroundPosition: "center",
-									backgroundRepeat: "no-repeat",
-								}}
-								onClick={handleMobileNavigation}
-							></div>
 						</Link>
 
 						<Link href="/demo?category=relationship">
