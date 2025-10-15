@@ -138,22 +138,44 @@ const EnhancedCoupleSpecificProblemSolution = ({
 		specificProblem,
 	]);
 
-	// Use CoupleAnnualAnalysis approach (BETTER: single source of truth, cached, consistent)
+	// � STABLE compatibility score with change tracking and prevention
+	const [stableScore, setStableScore] = useState(null);
+
 	const compatibilityScore = useMemo(() => {
-		// Priority 1: Use context data (same as CoupleAnnualAnalysis - RECOMMENDED)
-		if (contextAnalysisData?.compatibility?.score) {
-			const contextScore = parseInt(
-				contextAnalysisData.compatibility.score
-			);
+		// Removed setState call to prevent infinite re-render loop
+
+		console.log(
+			"🔄 EnhancedCoupleSpecificProblemSolution - Calculating compatibility score",
+			{
+				hasContextData: !!contextAnalysisData,
+				contextScore: contextAnalysisData?.compatibility?.score,
+				currentStableScore: stableScore,
+				femaleUser: !!femaleUser,
+				maleUser: !!maleUser,
+			}
+		);
+
+		// PRIORITY 0: If we already have a stable score, use it to prevent changes
+		if (stableScore !== null) {
 			console.log(
-				"✅ Using context score (BEST approach):",
-				contextScore
+				"🔒 EnhancedCoupleSpecificProblemSolution - Using LOCKED stable score:",
+				stableScore
 			);
-			return contextScore;
+			return stableScore;
 		}
 
-		// Priority 2: Calculate locally as fallback
-		if (femaleUser?.birthDateTime && maleUser?.birthDateTime) {
+		let calculatedScore = null;
+
+		// Priority 1: Use context analysis data (same logic as CoupleAnnualAnalysis)
+		if (contextAnalysisData?.compatibility?.score) {
+			calculatedScore = parseInt(contextAnalysisData.compatibility.score);
+			console.log(
+				"✅ EnhancedCoupleSpecificProblemSolution - Using context score (SYNCHRONIZED):",
+				calculatedScore
+			);
+		}
+		// Priority 2: Calculate locally using same logic as CoupleAnnualAnalysis
+		else if (femaleUser?.birthDateTime && maleUser?.birthDateTime) {
 			try {
 				const user1Analysis = calculateUnifiedElements(
 					femaleUser.birthDateTime,
@@ -164,26 +186,46 @@ const EnhancedCoupleSpecificProblemSolution = ({
 					maleUser.gender
 				);
 
-				const calculatedScore = calculateBasicCompatibilityScore(
+				calculatedScore = calculateBasicCompatibilityScore(
 					user1Analysis,
 					user2Analysis
 				);
 
 				console.log(
-					"⚠️ Using calculated score (fallback):",
+					"⚠️ EnhancedCoupleSpecificProblemSolution - Using calculated score (SYNCHRONIZED):",
 					calculatedScore
 				);
-				return calculatedScore;
 			} catch (error) {
 				console.error("Error calculating compatibility:", error);
-				return 75; // Default fallback
+				calculatedScore = 75; // Default fallback
 			}
 		}
+		// Ultimate fallback (same as CoupleAnnualAnalysis)
+		else {
+			calculatedScore = 75; // Changed to match CoupleAnnualAnalysis fallback
+			console.log(
+				"❌ EnhancedCoupleSpecificProblemSolution - Using ultimate fallback score:",
+				calculatedScore
+			);
+		}
 
-		// Ultimate fallback
-		console.log("❌ Using ultimate fallback score");
-		return 78;
-	}, [femaleUser, maleUser, contextAnalysisData?.compatibility?.score]);
+		return calculatedScore || 75;
+	}, [femaleUser, maleUser, contextAnalysisData, stableScore]);
+
+	// Lock the score when first calculated (using useEffect to avoid re-render loop)
+	useEffect(() => {
+		if (
+			stableScore === null &&
+			compatibilityScore !== null &&
+			compatibilityScore !== 75
+		) {
+			console.log(
+				"🔒 EnhancedCoupleSpecificProblemSolution - LOCKING score to prevent changes:",
+				compatibilityScore
+			);
+			setStableScore(compatibilityScore);
+		}
+	}, [compatibilityScore, stableScore]);
 
 	// Format birth date for display
 	const formatBirthDate = (birthDateTime) => {
@@ -790,23 +832,23 @@ const EnhancedCoupleSpecificProblemSolution = ({
 								className="w-full h-full transform -rotate-90"
 								viewBox="0 0 100 100"
 							>
-								{/* Background circle */}
+								{/* Background circle - Updated color and thickness */}
 								<circle
 									cx="50"
 									cy="50"
 									r="40"
 									fill="none"
-									stroke="#e5e7eb"
-									strokeWidth="6"
+									stroke="#817E7E"
+									strokeWidth="10"
 								/>
-								{/* Progress circle with gradient */}
+								{/* Progress circle with gradient - Updated thickness */}
 								<circle
 									cx="50"
 									cy="50"
 									r="40"
 									fill="none"
-									stroke="url(#gradient)"
-									strokeWidth="6"
+									stroke="url(#enhancedGradient)"
+									strokeWidth="10"
 									strokeLinecap="round"
 									strokeDasharray={`${(compatibilityScore * 251.2) / 100} 251.2`}
 									className="transition-all duration-1000 ease-out"
@@ -814,7 +856,7 @@ const EnhancedCoupleSpecificProblemSolution = ({
 								{/* Gradient definition */}
 								<defs>
 									<linearGradient
-										id="gradient"
+										id="enhancedGradient"
 										x1="0%"
 										y1="0%"
 										x2="100%"

@@ -24,6 +24,7 @@ export const CoupleAnalysisProvider = ({
 	const [analysisData, setAnalysisData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
+	const [apiCallMade, setApiCallMade] = useState(false); // Prevent multiple API calls
 
 	// Cache for component-specific analysis to prevent re-loading
 	// Initialize with saved data if available
@@ -43,6 +44,12 @@ export const CoupleAnalysisProvider = ({
 	const [coupleCoreSuggestionCache, setCoupleCoreSuggestionCache] = useState(
 		initialData?.coreSuggestions || null
 	);
+
+	// Generate stable session ID based on user data
+	const stableSessionId =
+		user1?.birthDateTime && user2?.birthDateTime
+			? `couple-analysis-${user1.birthDateTime.replace(/[^0-9]/g, "")}-${user2.birthDateTime.replace(/[^0-9]/g, "")}`
+			: `couple-analysis-${Date.now()}`;
 
 	useEffect(() => {
 		// If we have initial data (saved data), skip API calls
@@ -90,9 +97,22 @@ export const CoupleAnalysisProvider = ({
 				return;
 			}
 
+			// Prevent multiple API calls with the same session
+			if (apiCallMade) {
+				console.log(
+					"⚠️ API call already made for this session, skipping..."
+				);
+				setLoading(false);
+				return;
+			}
+
 			try {
 				setLoading(true);
-				console.log("🔮 Fetching comprehensive couple analysis...");
+				setApiCallMade(true); // Mark API call as made
+				console.log(
+					"🔮 Fetching comprehensive couple analysis with stable sessionId:",
+					stableSessionId
+				);
 
 				const response = await fetch("/api/couple-analysis", {
 					method: "POST",
@@ -105,7 +125,7 @@ export const CoupleAnalysisProvider = ({
 						gender: user1.gender || "male",
 						gender2: user2.gender || "female",
 						problem: specificProblem || "感情關係和諧改善建議",
-						sessionId: `couple-analysis-${Date.now()}`,
+						sessionId: stableSessionId, // Use stable session ID
 					}),
 				});
 
@@ -118,7 +138,10 @@ export const CoupleAnalysisProvider = ({
 				const result = await response.json();
 
 				if (result.success && result.data) {
-					console.log("✅ Couple analysis completed successfully");
+					console.log(
+						"✅ Couple analysis completed successfully with stable score:",
+						result.data?.compatibility?.score
+					);
 					setAnalysisData(result.data);
 					setError(null);
 				} else {
@@ -128,6 +151,7 @@ export const CoupleAnalysisProvider = ({
 				console.error("❌ Failed to fetch couple analysis:", err);
 				setError(err.message);
 				setAnalysisData(null);
+				setApiCallMade(false); // Reset on error to allow retry
 			} finally {
 				setLoading(false);
 			}
@@ -156,6 +180,7 @@ export const CoupleAnalysisProvider = ({
 		refetch: () => {
 			setAnalysisData(null);
 			setError(null);
+			setApiCallMade(false); // Reset API call flag to allow refetch
 			// Clear all caches when refetching
 			setAnnualAnalysisCache(null);
 			setGodAnalysisCache(null);

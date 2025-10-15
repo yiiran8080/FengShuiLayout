@@ -539,12 +539,32 @@ export default function ReportPage({
 		};
 	};
 
-	// AI-powered element flow analysis
+	// AI-powered element flow analysis with caching
 	const analyzeElementFlow = async (userInfo) => {
 		if (!userInfo || isLoadingFlowAnalysis) return;
 
+		// Create cache key for element flow analysis
+		const cacheKey = `elementFlow_${userInfo.birthDateTime}_${userInfo.gender}_${userInfo.sessionId || "default"}`;
+
+		// Check for cached result (valid for 1 hour)
+		try {
+			const cached = localStorage.getItem(cacheKey);
+			if (cached) {
+				const { data, timestamp } = JSON.parse(cached);
+				const oneHour = 3600000; // 1 hour in milliseconds
+				if (Date.now() - timestamp < oneHour) {
+					console.log("✅ Using cached element flow analysis");
+					setElementFlowAnalysis(data);
+					return;
+				}
+			}
+		} catch (error) {
+			console.log("Cache read error, proceeding with fresh generation");
+		}
+
 		setIsLoadingFlowAnalysis(true);
 		try {
+			console.log("🔥 Generating fresh element flow analysis");
 			const response = await fetch("/api/element-flow-analysis", {
 				method: "POST",
 				headers: {
@@ -560,6 +580,21 @@ export default function ReportPage({
 
 				if (result.success && result.analysis) {
 					setElementFlowAnalysis(result.analysis);
+
+					// Cache the successful result
+					try {
+						localStorage.setItem(
+							cacheKey,
+							JSON.stringify({
+								data: result.analysis,
+								timestamp: Date.now(),
+							})
+						);
+					} catch (cacheError) {
+						console.log(
+							"Cache write error, continuing without cache"
+						);
+					}
 				} else {
 					console.error("Invalid analysis result:", result);
 				}
@@ -573,13 +608,36 @@ export default function ReportPage({
 		}
 	};
 
-	// AI-powered life stage analysis for four pillars
+	// AI-powered life stage analysis for four pillars with caching
 	const generateLifeStageAnalysis = async (
 		pillarType,
 		pillarData,
 		userInfo
 	) => {
+		// Create cache key specific to pillar and user
+		const cacheKey = `lifeStageAnalysis_${userInfo.birthDateTime}_${userInfo.gender}_${pillarType}_${userInfo.sessionId || "default"}`;
+
+		// Check for cached result (valid for 1 hour)
 		try {
+			const cached = localStorage.getItem(cacheKey);
+			if (cached) {
+				const { data, timestamp } = JSON.parse(cached);
+				const oneHour = 3600000; // 1 hour in milliseconds
+				if (Date.now() - timestamp < oneHour) {
+					console.log(
+						`✅ Using cached life stage analysis for ${pillarType}`
+					);
+					return data;
+				}
+			}
+		} catch (error) {
+			console.log("Cache read error, proceeding with fresh generation");
+		}
+
+		try {
+			console.log(
+				`🔥 Generating fresh life stage analysis for ${pillarType}`
+			);
 			const stageMapping = {
 				年柱: "童年",
 				月柱: "青年",
@@ -608,6 +666,20 @@ export default function ReportPage({
 
 			if (response.ok) {
 				const result = await response.json();
+
+				// Cache the successful result
+				try {
+					localStorage.setItem(
+						cacheKey,
+						JSON.stringify({
+							data: result.analysis,
+							timestamp: Date.now(),
+						})
+					);
+				} catch (cacheError) {
+					console.log("Cache write error, continuing without cache");
+				}
+
 				return result.analysis;
 			}
 		} catch (error) {
@@ -658,7 +730,30 @@ export default function ReportPage({
 
 	// Generate interpersonal advice for each pillar
 	const generateInterpersonalAdvice = async (pillar, userInfo) => {
+		// Create cache key specific to pillar and user
+		const cacheKey = `interpersonalAdvice_${userInfo.birthDateTime}_${userInfo.gender}_${pillar}_${userInfo.sessionId || "default"}`;
+
+		// Check for cached result (valid for 1 hour)
 		try {
+			const cached = localStorage.getItem(cacheKey);
+			if (cached) {
+				const { data, timestamp } = JSON.parse(cached);
+				const oneHour = 3600000; // 1 hour in milliseconds
+				if (Date.now() - timestamp < oneHour) {
+					console.log(
+						`✅ Using cached interpersonal advice for ${pillar}`
+					);
+					return data;
+				}
+			}
+		} catch (error) {
+			console.log("Cache read error, proceeding with fresh generation");
+		}
+
+		try {
+			console.log(
+				`🔥 Generating fresh interpersonal advice for ${pillar}`
+			);
 			const response = await fetch("/api/interpersonal-advice", {
 				method: "POST",
 				headers: {
@@ -672,6 +767,20 @@ export default function ReportPage({
 
 			if (response.ok) {
 				const result = await response.json();
+
+				// Cache the successful result
+				try {
+					localStorage.setItem(
+						cacheKey,
+						JSON.stringify({
+							data: result.analysis,
+							timestamp: Date.now(),
+						})
+					);
+				} catch (cacheError) {
+					console.log("Cache write error, continuing without cache");
+				}
+
 				return result.analysis;
 			}
 		} catch (error) {
@@ -691,9 +800,28 @@ export default function ReportPage({
 		};
 	};
 
-	// Generate comprehensive life advice for each pillar
+	// Generate comprehensive life advice for each pillar with caching
 	const generateLifeAdvice = async (pillar, userInfo) => {
+		// Create cache key specific to pillar and user
+		const cacheKey = `lifeAdvice_${userInfo.birthDateTime}_${userInfo.gender}_${pillar}_${userInfo.sessionId || "default"}`;
+
+		// Check for cached result (valid for 1 hour)
 		try {
+			const cached = localStorage.getItem(cacheKey);
+			if (cached) {
+				const { data, timestamp } = JSON.parse(cached);
+				const oneHour = 3600000; // 1 hour in milliseconds
+				if (Date.now() - timestamp < oneHour) {
+					console.log(`✅ Using cached life advice for ${pillar}`);
+					return data;
+				}
+			}
+		} catch (error) {
+			console.log("Cache read error, proceeding with fresh generation");
+		}
+
+		try {
+			console.log(`🔥 Generating fresh life advice for ${pillar}`);
 			const response = await fetch("/api/comprehensive-advice", {
 				method: "POST",
 				headers: {
@@ -707,6 +835,20 @@ export default function ReportPage({
 
 			if (response.ok) {
 				const result = await response.json();
+
+				// Cache the successful result
+				try {
+					localStorage.setItem(
+						cacheKey,
+						JSON.stringify({
+							data: result.analysis,
+							timestamp: Date.now(),
+						})
+					);
+				} catch (cacheError) {
+					console.log("Cache write error, continuing without cache");
+				}
+
 				return result.analysis;
 			}
 		} catch (error) {
@@ -787,9 +929,28 @@ export default function ReportPage({
 		};
 	};
 
-	// Helper function to generate comprehensive life advice
+	// Helper function to generate comprehensive life advice with caching
 	const generateComprehensiveLifeAdvice = async (userInfo, wuxingData) => {
+		// Create cache key based on user data
+		const cacheKey = `lifeAdvice_${userInfo.birthDateTime}_${userInfo.gender}_${userInfo.sessionId || "default"}`;
+
+		// Check for cached result (valid for 1 hour)
 		try {
+			const cached = localStorage.getItem(cacheKey);
+			if (cached) {
+				const { data, timestamp } = JSON.parse(cached);
+				const oneHour = 3600000; // 1 hour in milliseconds
+				if (Date.now() - timestamp < oneHour) {
+					console.log("✅ Using cached comprehensive life advice");
+					return data;
+				}
+			}
+		} catch (error) {
+			console.log("Cache read error, proceeding with fresh generation");
+		}
+
+		try {
+			console.log("🔥 Generating fresh comprehensive life advice");
 			const response = await fetch("/api/comprehensive-life-advice", {
 				method: "POST",
 				headers: {
@@ -803,6 +964,20 @@ export default function ReportPage({
 
 			if (response.ok) {
 				const result = await response.json();
+
+				// Cache the result
+				try {
+					localStorage.setItem(
+						cacheKey,
+						JSON.stringify({
+							data: result.analysis,
+							timestamp: Date.now(),
+						})
+					);
+				} catch (cacheError) {
+					console.log("Cache write error, continuing without cache");
+				}
+
 				return result.analysis;
 			}
 		} catch (error) {
@@ -1956,46 +2131,60 @@ export default function ReportPage({
 			setAiGenerationStarted(true);
 			const pillars = ["年柱", "月柱", "日柱", "時柱"];
 
-			for (const pillar of pillars) {
-				// Generate life stage analysis
+			// ⚡ PERFORMANCE FIX: Generate ALL pillar analyses in PARALLEL instead of sequential
+			const pillarDataMap = {
+				年柱: reportDocData.nianzhuData,
+				月柱: reportDocData.yuezhuData,
+				日柱: reportDocData.rizhuData,
+				時柱: reportDocData.shizhuData,
+			};
+
+			// Create all promises at once for parallel execution
+			const allPromises = [];
+
+			pillars.forEach((pillar) => {
+				// Life stage analysis promise
 				if (!lifeStageAnalysis[pillar] && !isLoadingLifeStage[pillar]) {
 					setIsLoadingLifeStage((prev) => ({
 						...prev,
 						[pillar]: true,
 					}));
 
-					try {
-						const pillarDataMap = {
-							年柱: reportDocData.nianzhuData,
-							月柱: reportDocData.yuezhuData,
-							日柱: reportDocData.rizhuData,
-							時柱: reportDocData.shizhuData,
-						};
+					const lifeStagePromise = generateLifeStageAnalysis(
+						pillar,
+						pillarDataMap[pillar],
+						userInfo
+					)
+						.then((analysis) => {
+							setLifeStageAnalysis((prev) => ({
+								...prev,
+								[pillar]: analysis,
+							}));
+							return { type: "lifeStage", pillar, success: true };
+						})
+						.catch((error) => {
+							console.error(
+								`Error generating ${pillar} analysis:`,
+								error
+							);
+							return {
+								type: "lifeStage",
+								pillar,
+								success: false,
+								error,
+							};
+						})
+						.finally(() => {
+							setIsLoadingLifeStage((prev) => ({
+								...prev,
+								[pillar]: false,
+							}));
+						});
 
-						const analysis = await generateLifeStageAnalysis(
-							pillar,
-							pillarDataMap[pillar],
-							userInfo
-						);
-
-						setLifeStageAnalysis((prev) => ({
-							...prev,
-							[pillar]: analysis,
-						}));
-					} catch (error) {
-						console.error(
-							`Error generating ${pillar} analysis:`,
-							error
-						);
-					} finally {
-						setIsLoadingLifeStage((prev) => ({
-							...prev,
-							[pillar]: false,
-						}));
-					}
+					allPromises.push(lifeStagePromise);
 				}
 
-				// Generate interpersonal advice
+				// Interpersonal advice promise
 				if (
 					!interpersonalAdvice[pillar] &&
 					!isLoadingInterpersonal[pillar]
@@ -2005,29 +2194,44 @@ export default function ReportPage({
 						[pillar]: true,
 					}));
 
-					try {
-						const advice = await generateInterpersonalAdvice(
-							pillar,
-							userInfo
-						);
-						setInterpersonalAdvice((prev) => ({
-							...prev,
-							[pillar]: advice,
-						}));
-					} catch (error) {
-						console.error(
-							`Error generating interpersonal advice for ${pillar}:`,
-							error
-						);
-					} finally {
-						setIsLoadingInterpersonal((prev) => ({
-							...prev,
-							[pillar]: false,
-						}));
-					}
+					const interpersonalPromise = generateInterpersonalAdvice(
+						pillar,
+						userInfo
+					)
+						.then((advice) => {
+							setInterpersonalAdvice((prev) => ({
+								...prev,
+								[pillar]: advice,
+							}));
+							return {
+								type: "interpersonal",
+								pillar,
+								success: true,
+							};
+						})
+						.catch((error) => {
+							console.error(
+								`Error generating interpersonal advice for ${pillar}:`,
+								error
+							);
+							return {
+								type: "interpersonal",
+								pillar,
+								success: false,
+								error,
+							};
+						})
+						.finally(() => {
+							setIsLoadingInterpersonal((prev) => ({
+								...prev,
+								[pillar]: false,
+							}));
+						});
+
+					allPromises.push(interpersonalPromise);
 				}
 
-				// Generate comprehensive life advice
+				// Life advice promise
 				if (
 					!lifeAdviceAnalysis[pillar] &&
 					!isLoadingLifeAdvice[pillar]
@@ -2037,26 +2241,60 @@ export default function ReportPage({
 						[pillar]: true,
 					}));
 
-					try {
-						const advice = await generateLifeAdvice(
-							pillar,
-							userInfo
-						);
-						setLifeAdviceAnalysis((prev) => ({
-							...prev,
-							[pillar]: advice,
-						}));
-					} catch (error) {
-						console.error(
-							`Error generating life advice for ${pillar}:`,
-							error
-						);
-					} finally {
-						setIsLoadingLifeAdvice((prev) => ({
-							...prev,
-							[pillar]: false,
-						}));
-					}
+					const lifeAdvicePromise = generateLifeAdvice(
+						pillar,
+						userInfo
+					)
+						.then((advice) => {
+							setLifeAdviceAnalysis((prev) => ({
+								...prev,
+								[pillar]: advice,
+							}));
+							return {
+								type: "lifeAdvice",
+								pillar,
+								success: true,
+							};
+						})
+						.catch((error) => {
+							console.error(
+								`Error generating life advice for ${pillar}:`,
+								error
+							);
+							return {
+								type: "lifeAdvice",
+								pillar,
+								success: false,
+								error,
+							};
+						})
+						.finally(() => {
+							setIsLoadingLifeAdvice((prev) => ({
+								...prev,
+								[pillar]: false,
+							}));
+						});
+
+					allPromises.push(lifeAdvicePromise);
+				}
+			});
+
+			// Wait for all pillar analyses to complete (in parallel)
+			if (allPromises.length > 0) {
+				console.log(
+					`🚀 Starting ${allPromises.length} parallel AI generations...`
+				);
+				try {
+					const results = await Promise.allSettled(allPromises);
+					const successful = results.filter(
+						(r) => r.status === "fulfilled" && r.value.success
+					).length;
+					const failed = results.length - successful;
+					console.log(
+						`✅ Parallel generation complete: ${successful} successful, ${failed} failed`
+					);
+				} catch (error) {
+					console.error("Error in parallel generation:", error);
 				}
 			}
 
@@ -2137,7 +2375,7 @@ export default function ReportPage({
 		const startAIGeneration = () => {
 			setTimeout(() => {
 				generateAllAnalyses();
-			}, 2000); // 2 second delay to let page render completely and user see content first
+			}, 500); // Reduced delay for faster loading while still allowing page render
 		};
 
 		startAIGeneration();
@@ -2632,7 +2870,7 @@ export default function ReportPage({
 				</section>
 
 				{/* Zodiac and Four Pillars Detail Section */}
-				<section className="w-[95%] sm:w-[85%] mx-auto bg-white rounded-[24px] sm:rounded-[48px] lg:rounded-[80px] p-3 sm:p-3 lg:p-12 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.18)]">
+				<section className="w-[95%] sm:w-[85%] mx-auto bg-white rounded-[24px] sm:rounded-[48px] lg:rounded-[80px] p-3 px-6 pb-6sm:p-3 lg:p-20 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.18)]">
 					{(() => {
 						const analysis = calculateWuxingAnalysis(userInfo);
 						if (!analysis) return null;
@@ -2714,9 +2952,9 @@ export default function ReportPage({
 
 								<div className="w-full lg:w-[70%] flex flex-col gap-4 sm:gap-6">
 									{/* Four Pillars in responsive layout */}
-									<div className="flex flex-wrap justify-center gap-5 mt-4 mb-4 lg:justify-start sm:gap-4 sm:mb-6 lg:mt-10">
+									<div className="grid grid-cols-2 gap-1 mt-4 mb-4 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4 lg:gap-5 sm:mb-6 lg:mt-10 justify-items-center lg:justify-items-start">
 										{/* 年柱 */}
-										<div className="bg-white border-2 border-black rounded-full px-3 sm:px-6 lg:px-10 py-2 min-w-[100px] sm:min-w-[120px] lg:min-w-[140px] text-center flex-shrink-0">
+										<div className="bg-white border-2 border-black rounded-full px-7 sm:px-8 lg:px-10 py-2 min-w-[100px] sm:min-w-[120px] lg:min-w-[140px] text-center">
 											<div
 												className="font-bold text-[#374A37]"
 												style={{
@@ -2734,7 +2972,7 @@ export default function ReportPage({
 										</div>
 
 										{/* 月柱 */}
-										<div className="bg-white border-2 border-black rounded-full px-3 sm:px-6 lg:px-10 py-2 min-w-[100px] sm:min-w-[120px] lg:min-w-[140px] text-center flex-shrink-0">
+										<div className="bg-white border-2 border-black rounded-full px-7 sm:px-8 lg:px-10 py-2 min-w-[100px] sm:min-w-[120px] lg:min-w-[140px] text-center">
 											<div
 												className="font-bold text-[#374A37]"
 												style={{
@@ -2752,7 +2990,7 @@ export default function ReportPage({
 										</div>
 
 										{/* 日柱 */}
-										<div className="bg-white border-2 border-black rounded-full px-3 sm:px-6 lg:px-10 py-2 min-w-[100px] sm:min-w-[120px] lg:min-w-[140px] text-center flex-shrink-0">
+										<div className="bg-white border-2 border-black rounded-full px-7 sm:px-8 lg:px-10 py-2 min-w-[100px] sm:min-w-[120px] lg:min-w-[140px] text-center">
 											<div
 												className="font-bold text-[#374A37]"
 												style={{
@@ -2770,7 +3008,7 @@ export default function ReportPage({
 										</div>
 
 										{/* 時柱 */}
-										<div className="bg-white border-2 border-black rounded-full px-3 sm:px-6 lg:px-10 py-2 min-w-[100px] sm:min-w-[120px] lg:min-w-[140px] text-center flex-shrink-0">
+										<div className="bg-white border-2 border-black rounded-full px-7 sm:px-8 lg:px-10 py-2 min-w-[100px] sm:min-w-[120px] lg:min-w-[140px] text-center">
 											<div
 												className="font-bold text-[#374A37]"
 												style={{
@@ -2897,7 +3135,7 @@ export default function ReportPage({
 					})()}
 				</section>
 				{/* 四柱排盤&納音解析 - Tabbed Interface */}
-				<section className="relative w-[95%] sm:w-[95%] lg:w-[90%] mx-auto bg-white rounded-[20px] sm:rounded-[30px] lg:rounded-[40px] p-3 sm:p-6 lg:p-12 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
+				<section className="relative w-[95%] sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[30px] lg:rounded-[40px] p-3 sm:p-6 lg:p-12 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
 					{/* Background Image at Bottom Right */}
 					<div className="absolute bottom-0 right-0 overflow-hidden rounded-br-[20px] sm:rounded-br-[30px] lg:rounded-br-[40px]">
 						<Image
@@ -4811,7 +5049,7 @@ export default function ReportPage({
 																						alt={
 																							element
 																						}
-																						className="w-6 h-6 lg:w-8 lg:h-8"
+																						className="w-5 h-5 lg:w- lg:h-6"
 																						style={{
 																							filter: "brightness(0) saturate(100%) invert(1)",
 																						}}
@@ -4858,7 +5096,7 @@ export default function ReportPage({
 
 																				{/* 特性 */}
 																				<div
-																					className="bg-[#EFEFEF] py-3 rounded-lg text-[#374A37] text-left px-3"
+																					className="bg-[#EFEFEF] py-4 rounded-lg text-[#374A37] text-left px-3"
 																					style={{
 																						fontSize:
 																							"clamp(12px, 1.3vw, 16px)",
@@ -4873,7 +5111,7 @@ export default function ReportPage({
 
 																				{/* 對命主的影響 */}
 																				<div
-																					className="bg-[#EFEFEF] py-3 rounded-lg text-left px-3"
+																					className="bg-[#EFEFEF] py-4 rounded-lg text-left px-3"
 																					style={{
 																						fontSize:
 																							"clamp(12px, 1.3vw, 16px)",
@@ -6096,7 +6334,7 @@ export default function ReportPage({
 																activeWuxingTab ===
 																subTab
 																	? "bg-[#89960A] text-white shadow-lg border-2 border-black"
-																	: "bg-[#89960A] text-white "
+																	: "bg-[#EFEFEF] text-[#89960A] border-2 border-transparent"
 															}`}
 															style={{
 																fontSize:
@@ -6383,7 +6621,7 @@ export default function ReportPage({
 																activeHealthTab ===
 																subTab
 																	? "bg-[#B4003C] text-white shadow-lg border-2 border-black"
-																	: "bg-[#B4003C] text-white "
+																	: "bg-[#EFEFEF] text-[#B4003C] border-2 border-transparent"
 															}`}
 															style={{
 																fontSize:
@@ -6562,7 +6800,7 @@ export default function ReportPage({
 																activeCareerTab ===
 																subTab
 																	? "bg-[#007BFF] text-white shadow-lg border-2 border-black"
-																	: "bg-[#007BFF] text-white "
+																	: "bg-[#EFEFEF] text-[#007BFF] border-2 border-transparent"
 															}`}
 															style={{
 																fontSize:

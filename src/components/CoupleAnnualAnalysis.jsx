@@ -19,6 +19,25 @@ import {
 } from "@/lib/unifiedElementCalculation";
 import { saveComponentContentWithUser } from "@/utils/simpleCoupleContentSave";
 
+// Helper function to convert month number to Chinese month name
+const getChineseMonth = (monthNumber) => {
+	const chineseMonths = [
+		"一月",
+		"二月",
+		"三月",
+		"四月",
+		"五月",
+		"六月",
+		"七月",
+		"八月",
+		"九月",
+		"十月",
+		"十一月",
+		"十二月",
+	];
+	return chineseMonths[monthNumber - 1] || "未知月份";
+};
+
 const CoupleAnnualAnalysis = ({
 	user1,
 	user2,
@@ -92,22 +111,25 @@ const CoupleAnnualAnalysis = ({
 					analysisData
 				);
 
-				// Calculate compatibility score using the same logic as EnhancedCoupleSpecificProblemSolution
+				// 🔄 SYNCHRONIZED compatibility calculation (matches EnhancedCoupleSpecificProblemSolution exactly)
 				const calculatedCompatibilityScore =
 					calculateBasicCompatibilityScore(
 						user1BasicAnalysis,
 						user2BasicAnalysis
 					);
 
-				console.log("CoupleAnnualAnalysis compatibility calculation:", {
-					user1Element: user1BasicAnalysis?.dayMasterElement,
-					user2Element: user2BasicAnalysis?.dayMasterElement,
-					calculatedScore: calculatedCompatibilityScore,
-					apiScore: analysisData.compatibility?.score,
-					finalScore:
-						parseInt(analysisData.compatibility?.score) ||
-						calculatedCompatibilityScore,
-				});
+				console.log(
+					"🔄 CoupleAnnualAnalysis - Calculating compatibility score (SYNCHRONIZED):",
+					{
+						user1Element: user1BasicAnalysis?.dayMasterElement,
+						user2Element: user2BasicAnalysis?.dayMasterElement,
+						calculatedScore: calculatedCompatibilityScore,
+						apiScore: analysisData.compatibility?.score,
+						finalScore:
+							parseInt(analysisData.compatibility?.score) ||
+							calculatedCompatibilityScore,
+					}
+				);
 
 				const analysisResultData = {
 					compatibility: {
@@ -387,6 +409,7 @@ const CoupleAnnualAnalysis = ({
 					currentYear
 				),
 				monthlyFocus: monthlyAdvice[currentYear],
+				currentMonth: currentMonth, // Add current month information
 			},
 			[nextYear]: {
 				title: `${nextYear}年關鍵應對策略`,
@@ -426,7 +449,7 @@ const CoupleAnnualAnalysis = ({
 			火: {
 				caution: "情緒易波動，需要冷靜處理",
 				positive: "人際關係活躍，適合社交活動",
-				travel: "適合熱鬧的聚會和慶典",
+				travel: "適合秋季賞楓和溫馨聚會",
 			},
 			土: {
 				caution: "健康需要關注，工作壓力較大",
@@ -440,9 +463,17 @@ const CoupleAnnualAnalysis = ({
 			const templates =
 				monthAdviceTemplates[element] || monthAdviceTemplates["土"];
 
-			// Different advice based on month
+			// More specific advice based on current month
 			if (month <= 4) return templates.caution;
 			if (month <= 8) return templates.positive;
+
+			// October-specific advice (month 10)
+			if (month === 10) {
+				return element === "火"
+					? "適合秋季戶外活動，增進感情交流"
+					: templates.travel;
+			}
+
 			return templates.travel;
 		};
 
@@ -751,23 +782,23 @@ const CoupleAnnualAnalysis = ({
 								className="w-full h-full transform -rotate-90"
 								viewBox="0 0 100 100"
 							>
-								{/* Background circle */}
+								{/* Background circle - Updated color and thickness */}
 								<circle
 									cx="50"
 									cy="50"
 									r="40"
 									fill="none"
-									stroke="#e5e7eb"
-									strokeWidth="6"
+									stroke="#817E7E"
+									strokeWidth="10"
 								/>
-								{/* Progress circle with gradient */}
+								{/* Progress circle with gradient - Updated thickness */}
 								<circle
 									cx="50"
 									cy="50"
 									r="40"
 									fill="none"
-									stroke="url(#gradient)"
-									strokeWidth="6"
+									stroke="url(#annualGradient)"
+									strokeWidth="10"
 									strokeLinecap="round"
 									strokeDasharray={`${(compatibility.score * 251.2) / 100} 251.2`}
 									className="transition-all duration-1000 ease-out"
@@ -775,7 +806,7 @@ const CoupleAnnualAnalysis = ({
 								{/* Gradient definition */}
 								<defs>
 									<linearGradient
-										id="gradient"
+										id="annualGradient"
 										x1="0%"
 										y1="0%"
 										x2="100%"
@@ -936,7 +967,7 @@ const CoupleAnnualAnalysis = ({
 														}}
 													>
 														{year === "2025"
-															? "2025年九月"
+															? `2025年${getChineseMonth(strategy.currentMonth || 10)}`
 															: "2026年"}
 													</h4>
 												</div>

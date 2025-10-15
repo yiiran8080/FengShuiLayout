@@ -1168,7 +1168,7 @@ function formatLeftTabContent(content) {
 	return (
 		<div className="space-y-6">
 			{/* Title and Pattern */}
-			<div className="flex items-center justify-between">
+			<div className="flex items-center justify-start space-x-10">
 				<h1
 					className="text-[#C74772]"
 					style={{
@@ -1176,6 +1176,7 @@ function formatLeftTabContent(content) {
 						fontSize: "clamp(25px, 4vw, 56px)",
 						fontWeight: "400",
 						lineHeight: "1.0",
+						WebkitTextStroke: "1px #B4003C",
 					}}
 				>
 					{elementPairing}
