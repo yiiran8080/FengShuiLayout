@@ -132,10 +132,10 @@ class ResponseQualityManager {
 		// 語調適配器 - 根據用戶語調調整回應風格
 		this.toneAdapters = {
 			formal: {
-				greeting: "您好，我來為您分析",
-				transition: "讓我為您詳細說明",
-				question: "請問您想了解",
-				conclusion: "根據分析結果，建議您",
+				greeting: "你好，我來為你分析",
+				transition: "讓我為你詳細說明",
+				question: "請問你想了解",
+				conclusion: "根據分析結果，建議你",
 				politeness: "請問",
 			},
 			casual: {
@@ -184,7 +184,7 @@ class ResponseQualityManager {
 			hopeful: ["希望", "期待", "想要", "渴望", "盼望", "期盼", "祈求"],
 			confused: ["不知道", "困惑", "不確定", "搞不清楚", "迷茫", "糊塗"],
 			sad: ["難過", "傷心", "痛苦", "沮喪", "失落", "絕望", "心痛"],
-			formal: ["您", "請問", "麻煩", "勞煩", "打擾", "冒昧"],
+			formal: ["你", "請問", "麻煩", "勞煩", "打擾", "冒昧"],
 		};
 	}
 
@@ -331,7 +331,7 @@ class ResponseQualityManager {
 		const validationChecks = {
 			hasEmoji: /[✨😊🌸💰🔮🏠👥💼🌿👶🎯💕🤔📅💪🌟🔧📊🌐]/.test(response),
 			hasPersonalization:
-				response.includes("你") || response.includes("您"),
+				response.includes("你") || response.includes("你"),
 			appropriateLength: response.length > 15 && response.length < 800,
 			hasClearAction:
 				response.includes("分析") ||
@@ -371,7 +371,7 @@ class ResponseQualityManager {
 		const adapter = this.toneAdapters[detectedTone];
 
 		if (detectedTone === "formal") {
-			return response.includes("您") || response.includes("請問");
+			return response.includes("你") || response.includes("請問");
 		}
 		if (detectedTone === "emotional") {
 			return (
@@ -486,8 +486,8 @@ class ResponseQualityManager {
 			const tone = this.detectUserTone(context.userMessage || "");
 			const adapter = this.toneAdapters[tone];
 
-			if (tone === "formal" && !repairedResponse.includes("您")) {
-				repairedResponse = repairedResponse.replace(/你/g, "您");
+			if (tone === "formal" && !repairedResponse.includes("你")) {
+				repairedResponse = repairedResponse.replace(/您/g, "你");
 			}
 		}
 

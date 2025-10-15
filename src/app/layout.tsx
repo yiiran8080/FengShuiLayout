@@ -7,30 +7,30 @@ const inter = Inter({ subsets: ["latin"] });
 const lora = Lora({ subsets: ["latin", "symbols"] });
 
 export const metadata = {
-	title: "HarmoniqFengShui - 智慧風水命理分析平台",
+	title: "風鈴命理聊天室 - 開啟運勢之門",
 	description:
-		"專業風水命理分析平台 | 個人運勢解讀 | 情侶合盤分析 | 事業財運指導 | 桃花運提升 | AI智慧八字紫微斗數服務",
+		"風鈴命理聊天室歡迎您線上即時分享命運小謎團，不論尋找甜蜜桃花或喚醒財富寶藏，風鈴都會免費提供測算。一對一指導，超簡單上手，從家中佈局到改善小習慣，一起迎接正能量，開啟屬於您的快樂故事！",
 	keywords:
 		"風水, 命理, 運勢, 八字, 紫微斗數, 桃花運, 財運, 事業運, feng shui, fortune telling",
-	authors: [{ name: "HarmoniqFengShui" }],
-	creator: "HarmoniqFengShui",
-	publisher: "HarmoniqFengShui",
+	authors: [{ name: "風鈴命理聊天室" }],
+	creator: "風鈴命理聊天室",
+	publisher: "風鈴命理聊天室",
 
 	// Open Graph meta tags for social media sharing
 	openGraph: {
 		type: "website",
 		locale: "zh_TW",
-		url: "https://harmoniqfengshui.com",
-		siteName: "HarmoniqFengShui",
-		title: "HarmoniqFengShui - 智慧風水命理分析平台",
+		url: "https://www.harmoniqfengshui.com",
+		siteName: "風鈴命理聊天室",
+		title: "風鈴命理聊天室 - 開啟運勢之門",
 		description:
-			"專業風水命理分析平台 | 個人運勢解讀 | 情侶合盤分析 | 事業財運指導 | 桃花運提升 | AI智慧八字紫微斗數服務",
+			"風鈴命理聊天室歡迎您線上即時分享命運小謎團，不論尋找甜蜜桃花或喚醒財富寶藏，風鈴都會免費提供測算。一對一指導，超簡單上手，從家中佈局到改善小習慣，一起迎接正能量，開啟屬於您的快樂故事！",
 		images: [
 			{
 				url: "/images/hero/hero-bg.png", // Using hero background for better social media preview
 				width: 1200,
 				height: 630,
-				alt: "HarmoniqFengShui - 風鈴智慧風水命理分析平台",
+				alt: "風鈴命理聊天室 - 開啟運勢之門",
 			},
 		],
 	},
@@ -38,12 +38,12 @@ export const metadata = {
 	// Twitter Card meta tags
 	twitter: {
 		card: "summary_large_image",
-		title: "HarmoniqFengShui - 智慧風水命理分析平台",
+		title: "風鈴命理聊天室 - 開啟運勢之門",
 		description:
-			"專業風水命理分析平台 | 個人運勢解讀 | 情侶合盤分析 | 事業財運指導 | 桃花運提升 | AI智慧八字紫微斗數服務",
+			"風鈴命理聊天室歡迎您線上即時分享命運小謎團，不論尋找甜蜜桃花或喚醒財富寶藏，風鈴都會免費提供測算。一對一指導，超簡單上手，從家中佈局到改善小習慣，一起迎接正能量，開啟屬於您的快樂故事！",
 		images: ["/images/hero/hero-bg.png"], // Using hero background for consistent branding
-		creator: "@HarmoniqFengShui",
-		site: "@HarmoniqFengShui",
+		creator: "@風鈴命理聊天室",
+		site: "@風鈴命理聊天室",
 	},
 
 	// Favicon and app icons
@@ -51,18 +51,18 @@ export const metadata = {
 		icon: [
 			{ url: "/favicon.ico" },
 			{
-				url: "/images/logo/logo-black.png",
+				url: "/images/風水妹/風水妹.png",
 				sizes: "32x32",
 				type: "image/png",
 			},
 			{
-				url: "/images/logo/logo-black.png",
+				url: "/images/風水妹/風水妹.png",
 				sizes: "16x16",
 				type: "image/png",
 			},
 		],
 		shortcut: "/favicon.ico",
-		apple: "/images/logo/logo-black.png",
+		apple: "/images/風水妹/風水妹.png",
 	},
 
 	// Additional meta tags

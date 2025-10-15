@@ -191,7 +191,7 @@ const UploadPersonal = () => {
 				analysisResult
 			);
 
-			toast.success("正在為您分析個人命卦...");
+			toast.success("正在為你分析個人命卦...");
 
 			// Redirect to free personal report page
 			router.push(`/${locale}/freePersonal`);
@@ -297,7 +297,7 @@ const UploadPersonal = () => {
 								textAlign: "start",
 							}}
 						>
-							請填寫您的基本資料以進行個人命卦分析
+							請填寫你的基本資料以進行個人命卦分析
 						</p>
 
 						{/* Gender */}

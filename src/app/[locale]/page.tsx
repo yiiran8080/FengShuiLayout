@@ -2029,7 +2029,7 @@ export default function Home() {
 												</div>
 
 												{/* AI 分析結果顯示 */}
-												{message.aiAnalysis && (
+												{/* {message.aiAnalysis && (
 													<div className="p-2 mx-3 mb-3 text-xs border rounded-lg md:p-3 md:mx-4 md:mb-4 bg-gray-50">
 														<div className="flex items-center gap-2 mb-2">
 															<Sparkles
@@ -2113,10 +2113,10 @@ export default function Home() {
 																		}
 																	</p>
 																</div>
-															)}
+															)} */}
 
-															{/* Rate Limit Information for Development */}
-															{message.aiAnalysis
+												{/* Rate Limit Information for Development */}
+												{/* {message.aiAnalysis
 																.rateLimitInfo && (
 																<div className="pt-2 border-t border-gray-200">
 																	<div className="flex items-center gap-2">
@@ -2169,7 +2169,7 @@ export default function Home() {
 															)}
 														</div>
 													</div>
-												)}
+												)} */}
 
 												{/* 時間戳 */}
 												<div className="px-3 pb-2 md:px-4 md:pb-3">

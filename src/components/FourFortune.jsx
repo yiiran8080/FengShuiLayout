@@ -11,7 +11,7 @@ export default function FourFortune({ userInfo, wuxingData }) {
 						四大運勢分析
 					</h1>
 					<p className="text-gray-600">
-						全面分析您的事業、感情、財運、健康四大運勢
+						全面分析你的事業、感情、財運、健康四大運勢
 					</p>
 				</div>
 
@@ -31,7 +31,7 @@ export default function FourFortune({ userInfo, wuxingData }) {
 						</div>
 						<div className="space-y-4">
 							<p className="text-gray-700">
-								正在分析您的事業運勢...
+								正在分析你的事業運勢...
 							</p>
 							<div className="animate-pulse bg-gray-200 h-4 rounded"></div>
 							<div className="animate-pulse bg-gray-200 h-4 rounded w-3/4"></div>
@@ -52,7 +52,7 @@ export default function FourFortune({ userInfo, wuxingData }) {
 						</div>
 						<div className="space-y-4">
 							<p className="text-gray-700">
-								正在分析您的感情運勢...
+								正在分析你的感情運勢...
 							</p>
 							<div className="animate-pulse bg-gray-200 h-4 rounded"></div>
 							<div className="animate-pulse bg-gray-200 h-4 rounded w-3/4"></div>
@@ -72,7 +72,7 @@ export default function FourFortune({ userInfo, wuxingData }) {
 							</h2>
 						</div>
 						<div className="space-y-4">
-							<p className="text-gray-700">正在分析您的財運...</p>
+							<p className="text-gray-700">正在分析你的財運...</p>
 							<div className="animate-pulse bg-gray-200 h-4 rounded"></div>
 							<div className="animate-pulse bg-gray-200 h-4 rounded w-3/4"></div>
 						</div>
@@ -92,7 +92,7 @@ export default function FourFortune({ userInfo, wuxingData }) {
 						</div>
 						<div className="space-y-4">
 							<p className="text-gray-700">
-								正在分析您的健康運勢...
+								正在分析你的健康運勢...
 							</p>
 							<div className="animate-pulse bg-gray-200 h-4 rounded"></div>
 							<div className="animate-pulse bg-gray-200 h-4 rounded w-3/4"></div>

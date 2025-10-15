@@ -397,9 +397,9 @@ class EnhancedMessageAnalyzer {
 	detectGreeting(message) {
 		const greetingPatterns = [
 			// 直接問候
-			/^(你好|您好|hi|hello|嗨|hey)/i,
+			/^(你好|你好|hi|hello|嗨|hey)/i,
 			// 稱呼問候
-			/^(你好|您好|嗨|哈囉)[，,]?\s*(風鈴|老師|大師|師傅)/i,
+			/^(你好|你好|嗨|哈囉)[，,]?\s*(風鈴|老師|大師|師傅)/i,
 			// 客套話
 			/^(早安|午安|晚安|早上好|下午好|晚上好)/i,
 			// 感謝用語

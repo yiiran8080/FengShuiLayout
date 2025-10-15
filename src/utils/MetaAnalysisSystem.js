@@ -377,7 +377,7 @@ export class InsightGenerator {
 				priorities.push({
 					priority: 1,
 					category: userInfo.concern,
-					description: `基於您對${userInfo.concern}的關注，建議優先處理相關建議`,
+					description: `基於你對${userInfo.concern}的關注，建議優先處理相關建議`,
 					relatedComponents: concernRelatedAnalyses.map(
 						([comp]) => comp
 					),

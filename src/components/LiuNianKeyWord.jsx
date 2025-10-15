@@ -575,7 +575,7 @@ export default function LiuNianKeyWord({ userInfo, currentYear = 2025 }) {
 						<div className="p-3 border rounded-lg bg-white/50 backdrop-blur-sm border-amber-200">
 							<p className="flex items-center justify-center gap-2 text-xs text-amber-700">
 								<span className="animate-spin">⏳</span>
-								正在分析您的流年運勢...
+								正在分析你的流年運勢...
 								<span className="animate-spin">⏳</span>
 							</p>
 						</div>

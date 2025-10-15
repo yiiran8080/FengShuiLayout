@@ -124,7 +124,7 @@ export class DailyAnalysisRateLimit {
 	) {
 		return `🚫 今日分析次數已達上限
 
-您今天已經使用了 ${currentCount}/${limit} 次免費分析服務。
+你今天已經使用了 ${currentCount}/${limit} 次免費分析服務。
 
 為了確保服務品質，我們設定每日分析上限為 ${limit} 次。
 
@@ -134,7 +134,7 @@ export class DailyAnalysisRateLimit {
 • 明天再來獲取更多免費分析
 • 或考慮升級到付費版本以獲得無限制分析
 
-感謝您的理解與支持！`;
+感謝你的理解與支持！`;
 	}
 
 	/**
@@ -145,7 +145,7 @@ export class DailyAnalysisRateLimit {
 	 */
 	static generateWarningMessage(remaining, limit = this.DAILY_LIMIT) {
 		if (remaining <= 2 && remaining > 0) {
-			return `⚠️ 提醒：您今天還剩 ${remaining} 次免費分析機會。`;
+			return `⚠️ 提醒：你今天還剩 ${remaining} 次免費分析機會。`;
 		}
 		return null;
 	}

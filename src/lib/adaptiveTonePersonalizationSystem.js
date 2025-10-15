@@ -175,7 +175,7 @@ class AdaptiveTonePersonalizationSystem {
 			// Communication style indicators
 			communicationStyle: {
 				formal: {
-					patterns: [/您|請問|煩請|敬請|感謝您/],
+					patterns: [/你|請問|煩請|敬請|感謝你/],
 					preferredTones: ["professional", "empathetic"],
 					confidence: 0.8,
 				},
@@ -1111,7 +1111,7 @@ class AdaptiveTonePersonalizationSystem {
 
 	// Fallback personalization for error cases
 	fallbackPersonalization(baseResponse, messageContent) {
-		const isFormal = /您|請問|煩請/.test(messageContent);
+		const isFormal = /你|請問|煩請/.test(messageContent);
 		const isEmotional = /擔心|緊張|興奮|開心/.test(messageContent);
 
 		let tone = "encouraging";

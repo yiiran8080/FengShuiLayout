@@ -267,11 +267,11 @@ const PersonalReportDisplay = () => {
 
 		// Generate element-based data
 		elementData[tianganKey] =
-			`${pillarName}天干${stem}属${stemElement}，主要影响外在表现和性格特质。${stemElement}元素的特性在此柱位体现明显。这反映了您在${pillarName === "年柱" ? "童年时期" : pillarName === "月柱" ? "青年时期" : pillarName === "日柱" ? "成年时期" : "晚年时期"}的基本特征。`;
+			`${pillarName}天干${stem}属${stemElement}，主要影响外在表现和性格特质。${stemElement}元素的特性在此柱位体现明显。这反映了你在${pillarName === "年柱" ? "童年时期" : pillarName === "月柱" ? "青年时期" : pillarName === "日柱" ? "成年时期" : "晚年时期"}的基本特征。`;
 		elementData[dizhiKey] =
-			`${pillarName}地支${branch}属${branchElement}，主要影响内在潜力和环境因素。${branchElement}元素的力量在此发挥作用。这体现了您在${pillarName === "年柱" ? "家庭环境" : pillarName === "月柱" ? "社交关系" : pillarName === "日柱" ? "个人核心" : "子女关系"}方面的特质。`;
+			`${pillarName}地支${branch}属${branchElement}，主要影响内在潜力和环境因素。${branchElement}元素的力量在此发挥作用。这体现了你在${pillarName === "年柱" ? "家庭环境" : pillarName === "月柱" ? "社交关系" : pillarName === "日柱" ? "个人核心" : "子女关系"}方面的特质。`;
 		elementData[compositeKey] =
-			`${pillarName}${pillarKey}的组合，天干${stemElement}与地支${branchElement}相互作用，形成独特的能量场。这种${stemElement}与${branchElement}的配合，决定了您在相应人生阶段的主要运势走向和性格表现。`;
+			`${pillarName}${pillarKey}的组合，天干${stemElement}与地支${branchElement}相互作用，形成独特的能量场。这种${stemElement}与${branchElement}的配合，决定了你在相应人生阶段的主要运势走向和性格表现。`;
 
 		// Merge with similar data if found
 		const result = { ...elementData, ...similarData };
@@ -438,24 +438,24 @@ const PersonalReportDisplay = () => {
 
 		return {
 			nianzhuData: {
-				[`天干${yearStemWuxing}`]: `年柱天干${yearStem}屬${yearStemWuxing}，代表您的外在表現和性格特質。${yearStemWuxing}元素的特性在您的年柱中體現明顯，影響您的基本性格和命運走向。`,
-				[`地支${yearBranchWuxing}`]: `年柱地支${yearBranch}屬${yearBranchWuxing}，代表您的內在潛力和環境影響。${yearBranchWuxing}元素的力量在此發揮作用，與家庭背景、祖先遺傳等因素有關。`,
-				[`綜合${yearStemWuxing}${yearBranchWuxing}`]: `年柱${yearStem}${yearBranch}的組合，天干${yearStemWuxing}與地支${yearBranchWuxing}相互作用，形成獨特的能量場，決定了您童年時期的基本運勢格局。`,
+				[`天干${yearStemWuxing}`]: `年柱天干${yearStem}屬${yearStemWuxing}，代表你的外在表現和性格特質。${yearStemWuxing}元素的特性在你的年柱中體現明顯，影響你的基本性格和命運走向。`,
+				[`地支${yearBranchWuxing}`]: `年柱地支${yearBranch}屬${yearBranchWuxing}，代表你的內在潛力和環境影響。${yearBranchWuxing}元素的力量在此發揮作用，與家庭背景、祖先遺傳等因素有關。`,
+				[`綜合${yearStemWuxing}${yearBranchWuxing}`]: `年柱${yearStem}${yearBranch}的組合，天干${yearStemWuxing}與地支${yearBranchWuxing}相互作用，形成獨特的能量場，決定了你童年時期的基本運勢格局。`,
 			},
 			yuezhuData: {
-				[`天干${monthStemWuxing}`]: `月柱天干${monthStem}屬${monthStemWuxing}，代表您的情感表達和社交能力。${monthStemWuxing}元素影響您的人際關係模式和心理健康。`,
-				[`地支${monthBranchWuxing}`]: `月柱地支${monthBranch}屬${monthBranchWuxing}，反映您內在的情緒狀態和潛在影響力。${monthBranchWuxing}元素決定您的情感穩定性。`,
-				[`綜合${monthStemWuxing}${monthBranchWuxing}`]: `月柱${monthStem}${monthBranch}的組合顯示了您青年時期的發展特質，${monthStemWuxing}與${monthBranchWuxing}的配合影響您的學習和成長階段。`,
+				[`天干${monthStemWuxing}`]: `月柱天干${monthStem}屬${monthStemWuxing}，代表你的情感表達和社交能力。${monthStemWuxing}元素影響你的人際關係模式和心理健康。`,
+				[`地支${monthBranchWuxing}`]: `月柱地支${monthBranch}屬${monthBranchWuxing}，反映你內在的情緒狀態和潛在影響力。${monthBranchWuxing}元素決定你的情感穩定性。`,
+				[`綜合${monthStemWuxing}${monthBranchWuxing}`]: `月柱${monthStem}${monthBranch}的組合顯示了你青年時期的發展特質，${monthStemWuxing}與${monthBranchWuxing}的配合影響你的學習和成長階段。`,
 			},
 			rizhuData: {
-				[`天干${dayStemWuxing}`]: `日柱天干${dayStem}屬${dayStemWuxing}，這是您的日主，代表您的核心性格和行為模式。${dayStemWuxing}元素是您命格的根本。`,
-				[`地支${dayBranchWuxing}`]: `日柱地支${dayBranch}屬${dayBranchWuxing}，代表您的配偶宮和內在情感。${dayBranchWuxing}元素影響您的婚姻和情感生活。`,
-				[`綜合${dayStemWuxing}${dayBranchWuxing}`]: `日柱${dayStem}${dayBranch}是您命格的中心，${dayStemWuxing}與${dayBranchWuxing}的結合決定了您成年時期的主要運勢和人生方向。`,
+				[`天干${dayStemWuxing}`]: `日柱天干${dayStem}屬${dayStemWuxing}，這是你的日主，代表你的核心性格和行為模式。${dayStemWuxing}元素是你命格的根本。`,
+				[`地支${dayBranchWuxing}`]: `日柱地支${dayBranch}屬${dayBranchWuxing}，代表你的配偶宮和內在情感。${dayBranchWuxing}元素影響你的婚姻和情感生活。`,
+				[`綜合${dayStemWuxing}${dayBranchWuxing}`]: `日柱${dayStem}${dayBranch}是你命格的中心，${dayStemWuxing}與${dayBranchWuxing}的結合決定了你成年時期的主要運勢和人生方向。`,
 			},
 			shizhuData: {
-				[`天干${hourStemWuxing}`]: `時柱天干${hourStem}屬${hourStemWuxing}，代表您在社會中的表現和晚年運勢。${hourStemWuxing}元素影響您的事業發展和社交表現。`,
-				[`地支${hourBranchWuxing}`]: `時柱地支${hourBranch}屬${hourBranchWuxing}，代表子女宮和您的內在情感。${hourBranchWuxing}元素與子女、下屬的關係密切相關。`,
-				[`綜合${hourStemWuxing}${hourBranchWuxing}`]: `時柱${hourStem}${hourBranch}的組合揭示您晚年的生活狀態，${hourStemWuxing}與${hourBranchWuxing}共同影響您的長遠發展和家庭和諧。`,
+				[`天干${hourStemWuxing}`]: `時柱天干${hourStem}屬${hourStemWuxing}，代表你在社會中的表現和晚年運勢。${hourStemWuxing}元素影響你的事業發展和社交表現。`,
+				[`地支${hourBranchWuxing}`]: `時柱地支${hourBranch}屬${hourBranchWuxing}，代表子女宮和你的內在情感。${hourBranchWuxing}元素與子女、下屬的關係密切相關。`,
+				[`綜合${hourStemWuxing}${hourBranchWuxing}`]: `時柱${hourStem}${hourBranch}的組合揭示你晚年的生活狀態，${hourStemWuxing}與${hourBranchWuxing}共同影響你的長遠發展和家庭和諧。`,
 			},
 		};
 	};
@@ -783,7 +783,7 @@ const PersonalReportDisplay = () => {
 				<div className="text-center">
 					<div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
 					<p className="text-lg font-semibold text-[#5A5A5A]">
-						正在分析您的個人命卦...
+						正在分析你的個人命卦...
 					</p>
 				</div>
 			</div>

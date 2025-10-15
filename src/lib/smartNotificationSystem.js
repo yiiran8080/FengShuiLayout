@@ -552,7 +552,7 @@ class SmartNotificationSystem {
 				suggestions.push({
 					type: "advice",
 					title: "📝 建議檢查進度",
-					message: `您上次詢問關於${lastConversation.topic}的問題，現在可以檢查一下進展如何？`,
+					message: `你上次詢問關於${lastConversation.topic}的問題，現在可以檢查一下進展如何？`,
 					priority: "medium",
 					metadata: {
 						originalTopic: lastConversation.topic,
@@ -581,7 +581,7 @@ class SmartNotificationSystem {
 			suggestions.push({
 				type: "advice",
 				title: "👤 完善個人資料",
-				message: "完善您的個人資料可以獲得更精準的風水建議",
+				message: "完善你的個人資料可以獲得更精準的風水建議",
 				priority: "medium",
 				actions: [
 					{

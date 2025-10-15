@@ -277,7 +277,7 @@ function generatePersonalizedDayMaster(concern, gender, lifeStage, problem) {
 		!problem.includes("選項") &&
 		problem.length > 10;
 
-	return `根據您的出生信息分析，${concernAdvice[concern]}
+	return `根據你的出生信息分析，${concernAdvice[concern]}
 
 優勢表現在決策果斷、直覺敏銳兩方面，能夠快速掌握機會並做出正確判斷。
 

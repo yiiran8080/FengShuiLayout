@@ -230,7 +230,7 @@ class ProgressiveDataCollectionSystem {
 		this.personalizationRules = {
 			communicationStyle: {
 				formal: {
-					triggers: ["您", "請問", "煩請", "敬請"],
+					triggers: ["你", "請問", "煩請", "敬請"],
 					adaptations: {
 						tone: "respectful",
 						structure: "organized",
@@ -457,7 +457,7 @@ class ProgressiveDataCollectionSystem {
 		};
 
 		// Formal indicators
-		if (/您|請問|煩請|敬請|謝謝您/.test(messageContent)) {
+		if (/你|請問|煩請|敬請|謝謝你/.test(messageContent)) {
 			styles.formal += 0.3;
 		}
 

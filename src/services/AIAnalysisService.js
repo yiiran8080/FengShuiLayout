@@ -222,7 +222,7 @@ class AIAnalysisService {
 			content: `基於傳統八字分析的${concern}吉凶評估：
 
 【吉象分析】
-1. 根據您的出生時辰，日主得時令之助，基礎運勢穩定
+1. 根據你的出生時辰，日主得時令之助，基礎運勢穩定
 2. 五行中有生助之神，在${concern}方面有貴人相助的機會
 3. 時支藏干透出，代表未來發展潛力良好
 
@@ -267,7 +267,7 @@ class AIAnalysisService {
 	generateTraditionalSeason(userInfo) {
 		const concern = userInfo.concern || "財運";
 		return {
-			content: `傳統四季${concern}分析：根據您的八字特點，提供四季調養建議...`,
+			content: `傳統四季${concern}分析：根據你的八字特點，提供四季調養建議...`,
 			isTraditional: true,
 		};
 	}
@@ -291,7 +291,7 @@ class AIAnalysisService {
 
 	generateGenericFallback(userInfo) {
 		return {
-			content: `基於您${userInfo.birthDateTime}的生辰，提供傳統八字分析建議。建議諮詢專業命理師獲得更詳細的個人化分析。`,
+			content: `基於你${userInfo.birthDateTime}的生辰，提供傳統八字分析建議。建議諮詢專業命理師獲得更詳細的個人化分析。`,
 			isTraditional: true,
 		};
 	}

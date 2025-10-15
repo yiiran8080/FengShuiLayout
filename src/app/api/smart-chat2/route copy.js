@@ -642,9 +642,9 @@ class AITopicClassifier {
 
 			感情: `太棒了！感情分析是風鈴的專業強項呢～💕
 
-請提供你的生日，讓我幫你分析感情運勢：
+請提供你的**生日**，讓我幫你分析感情運勢：
 
-📅 請用以下格式提供生日：
+📅 **請用以下格式提供生日：**
 • 1999-03-15
 • 1999/3/15  
 • 1999年3月15日
@@ -653,9 +653,9 @@ class AITopicClassifier {
 
 			工作: `好的！工作事業運勢分析交給風鈴就對了～💼
 
-請告訴我你的生日，讓我為你分析事業運程：
+請告訴我你的**生日**，讓我為你分析事業運程：
 
-📅 請用以下格式提供生日：
+📅 **請用以下格式提供生日：**
 • 1999-03-15
 • 1999/3/15
 • 1999年3月15日
@@ -664,9 +664,9 @@ class AITopicClassifier {
 
 			健康: `健康運勢分析來了！風鈴會用心為你解讀～🌿
 
-請提供你的生日，讓我分析你的健康運程：
+請提供你的**生日**，讓我分析你的健康運程：
 
-📅 請用以下格式提供生日：
+📅 **請用以下格式提供生日：**
 • 1999-03-15
 • 1999/3/15
 • 1999年3月15日
@@ -675,9 +675,9 @@ class AITopicClassifier {
 
 			財運: `財運分析！風鈴最喜歡幫人看財運了～💰
 
-請告訴我你的生日，讓我分析你的財富運勢：
+請告訴我你的**生日**，讓我分析你的財富運勢：
 
-📅 請用以下格式提供生日：
+📅 **請用以下格式提供生日：**
 • 1999-03-15
 • 1999/3/15
 • 1999年3月15日
@@ -767,7 +767,7 @@ class AITopicClassifier {
 
 告訴風鈴你的生日，我可以幫你看看${topicText}方面的運勢哦！
 
-📅 生日格式範例：
+📅 **生日格式範例：**
 • 1999-03-15
 • 1999/3/15  
 • 1999年3月15日
@@ -962,7 +962,7 @@ ${baseServices}
 				aiResponse +
 				`
 
-📅 生日格式範例：
+📅 **生日格式範例：**
 • 1999-03-15
 • 1999/3/15  
 • 1999年3月15日
@@ -1015,7 +1015,7 @@ ${baseServices}
 
 告訴風鈴你的生日，我可以幫你看看事業運勢和最佳發展時機！
 
-📅 生日格式範例：
+📅 **生日格式範例：**
 • 1999-03-15
 • 1999/3/15  
 • 1999年3月15日
@@ -1069,7 +1069,7 @@ ${baseServices}
 
 告訴風鈴你的生日，我可以幫你看看財運方面的運勢哦！
 
-📅 生日格式範例：
+📅 **生日格式範例：**
 • 1999-03-15
 • 1999/3/15  
 • 1999年3月15日
@@ -1084,7 +1084,7 @@ ${baseServices}
 
 告訴風鈴你的生日，我可以幫你看看財運方面的運勢哦！
 
-📅 生日格式範例：
+📅 **生日格式範例：**
 • 1999-03-15
 • 1999/3/15  
 • 1999年3月15日
@@ -1136,7 +1136,7 @@ ${baseServices}
 
 告訴風鈴你的生日，我可以幫你看看健康方面的運勢哦！
 
-📅 生日格式範例：
+📅 **生日格式範例：**
 • 1999-03-15
 • 1999/3/15  
 • 1999年3月15日
@@ -1151,7 +1151,7 @@ ${baseServices}
 
 告訴風鈴你的生日，我可以幫你看看健康方面的運勢哦！
 
-📅 生日格式範例：
+📅 **生日格式範例：**
 • 1999-03-15
 • 1999/3/15  
 • 1999年3月15日
@@ -1203,7 +1203,7 @@ ${baseServices}
 
 告訴風鈴你的生日，我可以幫你做命理分析哦！
 
-📅 生日格式範例：
+📅 **生日格式範例：**
 • 1999-03-15
 • 1999/3/15  
 • 1999年3月15日
@@ -1218,7 +1218,7 @@ ${baseServices}
 
 告訴風鈴你的生日，我可以幫你做命理分析哦！
 
-📅 生日格式範例：
+📅 **生日格式範例：**
 • 1999-03-15
 • 1999/3/15  
 • 1999年3月15日
@@ -1362,7 +1362,7 @@ ${baseServices}
 
 告訴風鈴你的生日，我可以幫你看看${topic}方面的運勢哦！
 
-📅 生日格式範例：
+📅 **生日格式範例：**
 • 1999-03-15
 • 1999/3/15  
 • 1999年3月15日
@@ -1378,7 +1378,7 @@ ${baseServices}
 
 告訴風鈴你的生日，我可以幫你看看${analysis.detectedTopic}方面的運勢哦！
 
-📅 生日格式範例：
+📅 **生日格式範例：**
 • 1999-03-15
 • 1999/3/15  
 • 1999年3月15日
@@ -1979,12 +1979,12 @@ ${analysis.aiResponse}
 
 為了提供最適合的分析，請選擇：
 
-**1️⃣ 個人感情分析
+**1️⃣ 個人感情分析**
 - 分析你的桃花運勢和感情特質
 - 提供感情運勢建議和風水調整
 - 適合單身或想了解個人感情運的朋友
 
-**2️⃣ 合婚配對分析
+**2️⃣ 合婚配對分析** 
 - 分析你和伴侶的八字契合度
 - 提供雙方感情走向和發展建議  
 - 適合想了解感情配對度的情侶
@@ -1997,12 +1997,12 @@ ${analysis.aiResponse}
 
 為了提供最適合的分析，請選擇：
 
-**1️⃣ 個人感情分析
+**1️⃣ 個人感情分析**
 - 分析你的桃花運勢和感情特質
 - 提供感情運勢建議和風水調整
 - 適合單身或想了解個人感情運的朋友
 
-**2️⃣ 合婚配對分析 
+**2️⃣ 合婚配對分析** 
 - 分析你和伴侶的八字契合度
 - 提供雙方感情走向和發展建議  
 - 適合想了解感情配對度的情侶
@@ -2600,7 +2600,7 @@ ${displayTopic}宮主星：[分析對應主星，如：天府星（穩重權威�
 💎 **想要更深入的分析嗎？**
 **1️⃣ 详细报告** 價值$88，限時優惠$38
 **2️⃣ 综合命理报告** 價值$168，限時優惠$88  
-
+**3️⃣ 居家佈局報告** 價值$388，限時優惠$188
 
 要求：
 1. 保持風鈴可愛親切的語氣，使用表情符號和可愛語助詞
@@ -3092,7 +3092,7 @@ export async function POST(request) {
 				const dailyLimit = 10;
 
 				// 在原回應後添加額度信息
-				const rateLimitInfo = `\n\n📊 今日分析額度: 你每日可進行 ${dailyLimit} 次專業分析，目前還剩 ${remainingAnalyses} 次機會哦～`;
+				const rateLimitInfo = `\n\n📊 **今日分析額度**: 您每日可進行 ${dailyLimit} 次專業分析，目前還剩 ${remainingAnalyses} 次機會哦～`;
 				response = response + rateLimitInfo;
 			} catch (error) {
 				console.log("⚠️ 獲取分析額度信息失敗:", error);
@@ -3539,12 +3539,12 @@ export async function POST(request) {
 
 給自己一些時間療傷是很重要的，不要急著壓抑情緒哦！
 
-**🌸 現階段最重要的建議：
+**🌸 現階段最重要的建議：**
 **情感修復期** - 允許自己悲傷，但不要沉溺太久
 **能量清理** - 整理房間，特別是感情角落（西南方）
 **自我照顧** - 多接觸陽光，避免長期待在陰暗空間
 
-**💕 感情風水調整：
+**💕 感情風水調整：**
 - 收起合照但不要丟掉，放在抽屜裡
 - 在床頭放粉水晶，幫助療癒心傷
 - 多穿粉色或白色，有淨化負能量的效果
@@ -3554,13 +3554,13 @@ export async function POST(request) {
 為了提供最適合的分析，請選擇：
 
 如要增加個人能量，可選
-1️⃣ 個人感情分析
+**1️⃣ 個人感情分析**
 - 分析你的桃花運勢和感情特質
 - 提供感情運勢建議和風水調整
 - 適合單身或想了解個人感情運的朋友
 
 如要看是否跟伴侶合適，可選
-2️⃣ 合婚配對分析
+**2️⃣ 合婚配對分析** 
 - 分析你和伴侶的八字契合度
 - 提供雙方感情走向和發展建議  
 - 適合想了解感情配對度的情侶
@@ -3588,13 +3588,13 @@ export async function POST(request) {
 為了提供最適合的分析，請選擇：
 
 如要增加個人能量，可選
-1️⃣ 個人感情分析
+**1️⃣ 個人感情分析**
 - 分析你的桃花運勢和感情特質
 - 提供感情運勢建議和風水調整
 - 適合單身或想了解個人感情運的朋友
 
 如要看是否跟伴侶合適，可選
-2️⃣ 合婚配對分析
+**2️⃣ 合婚配對分析** 
 - 分析你和伴侶的八字契合度
 - 提供雙方感情走向和發展建議  
 - 適合想了解感情配對度的情侶
@@ -3623,13 +3623,13 @@ export async function POST(request) {
 為了提供最適合的分析，請選擇：
 
 如要增加個人能量，可選
-1️⃣ 個人感情分析
+**1️⃣ 個人感情分析**
 - 分析你的桃花運勢和感情特質
 - 提供感情運勢建議和風水調整
 - 適合單身或想了解個人感情運的朋友
 
 如要看是否跟伴侶合適，可選
-2️⃣ 合婚配對分析
+**2️⃣ 合婚配對分析** 
 - 分析你和伴侶的八字契合度
 - 提供雙方感情走向和發展建議  
 - 適合想了解感情配對度的情侶
@@ -3659,13 +3659,13 @@ export async function POST(request) {
 為了提供最適合的分析，請選擇：
 
 如要增加個人能量，可選
-1️⃣ 個人感情分析
+**1️⃣ 個人感情分析**
 - 分析你的桃花運勢和感情特質
 - 提供感情運勢建議和風水調整
 - 適合單身或想了解個人感情運的朋友
 
 如要看是否跟伴侶合適，可選
-2️⃣ 合婚配對分析
+**2️⃣ 合婚配對分析** 
 - 分析你和伴侶的八字契合度
 - 提供雙方感情走向和發展建議  
 - 適合想了解感情配對度的情侶
@@ -3678,7 +3678,7 @@ export async function POST(request) {
 
 請重新選擇你的感情狀態：
 
-💕 請選擇你的感情狀態：
+**💕 請選擇你的感情狀態：**
 - A. 剛分手，還很難過
 - B. 分手一段時間了，想重新開始  
 - C. 想復合，但不確定
@@ -3799,7 +3799,7 @@ export async function POST(request) {
 								specificQuestionForAnalysis
 							);
 						// 為合婚分析添加對方生日選項
-						response += `\n\n💕 想做完整合婚分析嗎？\n如果你有伴侶，可以提供對方的生日，我可以為你們做八字配對分析，看看感情相容度哦！`;
+						response += `\n\n💕 **想做完整合婚分析嗎？**\n如果你有伴侶，可以提供對方的生日，我可以為你們做八字配對分析，看看感情相容度哦！`;
 					} else {
 						// 🔧 使用相同的優先級鏈確保原始訊息被使用
 						const specificQuestionForAnalysis =
@@ -4198,7 +4198,7 @@ export async function POST(request) {
 					console.log("❌ 用戶尚未提供資料，要求生日");
 					response = `好的！告訴風鈴你的生日，我來為你做${userIntent.primaryConcern}分析：
 
-📅生日格式範例：
+📅 **生日格式範例：**
 • 1999-03-15
 • 1999/3/15  
 • 1999年3月15日
@@ -4585,9 +4585,9 @@ export async function POST(request) {
 				// 組合AI回應和主題切換訊息
 				let combinedResponse = "";
 				if (aiResponse && aiResponse.trim()) {
-					combinedResponse = `${aiResponse}\n\n💫 已為你切換到${detectedTopic}分析！請提供你的出生年月日（例如：1990年5月15日），我將為你進行專業的命理分析。✨`;
+					combinedResponse = `${aiResponse}\n\n💫 已為您切換到${detectedTopic}分析！請提供您的出生年月日（例如：1990年5月15日），我將為您進行專業的命理分析。✨`;
 				} else {
-					combinedResponse = `💫 已為你切換到${detectedTopic}分析！請提供你的出生年月日（例如：1990年5月15日），我將為你進行專業的命理分析。✨`;
+					combinedResponse = `💫 已為您切換到${detectedTopic}分析！請提供您的出生年月日（例如：1990年5月15日），我將為您進行專業的命理分析。✨`;
 				}
 
 				// 重置會話狀態並更新主要關注點
@@ -4676,9 +4676,9 @@ export async function POST(request) {
 							aiTopicAnalysis.aiResponse &&
 							aiTopicAnalysis.aiResponse.trim()
 						) {
-							combinedResponse = `${aiTopicAnalysis.aiResponse}\n\n💫 已為你切換到${aiTopicAnalysis.detectedTopic}分析！請提供你的出生年月日（例如：1990年5月15日），我將為你進行專業的命理分析。✨`;
+							combinedResponse = `${aiTopicAnalysis.aiResponse}\n\n💫 已為您切換到${aiTopicAnalysis.detectedTopic}分析！請提供您的出生年月日（例如：1990年5月15日），我將為您進行專業的命理分析。✨`;
 						} else {
-							combinedResponse = `💫 已為你切換到${aiTopicAnalysis.detectedTopic}分析！請提供你的出生年月日（例如：1990年5月15日），我將為你進行專業的命理分析。✨`;
+							combinedResponse = `💫 已為您切換到${aiTopicAnalysis.detectedTopic}分析！請提供您的出生年月日（例如：1990年5月15日），我將為您進行專業的命理分析。✨`;
 						}
 
 						// 重置會話狀態並更新主要關注點
@@ -4955,7 +4955,7 @@ export async function POST(request) {
 								"birthday_collection";
 							response = `💕 好的！為了進行準確的合婚分析，我需要你們雙方的生日資料。
                         
-請先提供你的生日（年月日），例如：1995年3月15日
+請先提供**你的生日**（年月日），例如：1995年3月15日
 
 💡 小貼士：你也可以一次提供雙方生日，例如：「我1995/3/15，她1996/8/20」`;
 							console.log("⚠️ 合婚分析 - 缺少生日資料，重新收集");
@@ -5057,13 +5057,16 @@ export async function POST(request) {
 					const concernName = userIntent.primaryConcern || "運勢";
 					response = `請選擇你想要的分析類型：
 
-1️⃣ 一份關於${concernName}的詳細報告 價值$88，限時優惠$38
+**1️⃣ 一份關於${concernName}的詳細報告** 價值$88，限時優惠$38
 - 深入分析你的${concernName}運勢，提供具體建議和改善方案
 
-2️⃣ 一份綜合命理報告 價值$168，限時優惠$88  
+**2️⃣ 一份綜合命理報告** 價值$168，限時優惠$88  
 - 全面的八字命盤分析，包含各方面運勢預測
 
-請回覆「1」或「2」～`;
+**3️⃣ 一份居家佈局報告** 價值$388，限時優惠$188
+- 用居家佈局增強運勢，打造專屬風水空間
+
+請回覆「1」、「2」或「3」～`;
 
 					analysis = {
 						isWithinScope: true,
@@ -5385,6 +5388,7 @@ export async function POST(request) {
 💎 **想要更深入的分析嗎？**
 **1️⃣ 详细报告** 價值$88，限時優惠$38
 **2️⃣ 综合命理报告** 價值$168，限時優惠$88  
+**3️⃣ 居家佈局報告** 價值$388，限時優惠$188
 
 要求：
 1. 保持風鈴可愛親切的語氣
@@ -5424,7 +5428,7 @@ export async function POST(request) {
 							console.log("✅ 八字 AI 回應生成成功");
 						} catch (error) {
 							console.error("❌ 八字 AI 回應生成失敗:", error);
-							response = `很抱歉，系統暫時無法處理你的八字分析請求。請稍後重試或聯絡客服。`;
+							response = `很抱歉，系統暫時無法處理您的八字分析請求。請稍後重試或聯絡客服。`;
 						}
 					} else if (
 						enhancedResult.analysisType === "emotional_support"
@@ -5531,7 +5535,7 @@ export async function POST(request) {
 							console.log(
 								"⚠️ 增強結果沒有response或enhancedResponse字段"
 							);
-							response = "抱歉，我正在處理你的請求，請稍候。";
+							response = "抱歉，我正在處理您的請求，請稍候。";
 						}
 					}
 					console.log("🎭 已應用自然對話優化");
@@ -5571,7 +5575,7 @@ export async function POST(request) {
 							const remainingAnalyses = userStats.remaining || 10;
 							const dailyLimit = 10;
 
-							const rateLimitInfo = `\n\n📊 **今日分析額度**: 你每日可進行 ${dailyLimit} 次初步分析，目前還剩 ${remainingAnalyses} 次機會哦～`;
+							const rateLimitInfo = `\n\n📊 **今日分析額度**: 您每日可進行 ${dailyLimit} 次初步分析，目前還剩 ${remainingAnalyses} 次機會哦～`;
 							response = response + rateLimitInfo;
 						} catch (error) {
 							console.log("⚠️ 獲取分析額度信息失敗:", error);
@@ -5616,7 +5620,7 @@ export async function POST(request) {
 						const remainingAnalyses = userStats.remaining || 10;
 						const dailyLimit = 10;
 
-						const rateLimitInfo = `\n\n📊 **今日分析額度**: 你每日可進行 ${dailyLimit} 次專業分析，目前還剩 ${remainingAnalyses} 次機會哦～`;
+						const rateLimitInfo = `\n\n📊 **今日分析額度**: 您每日可進行 ${dailyLimit} 次專業分析，目前還剩 ${remainingAnalyses} 次機會哦～`;
 						response = response + rateLimitInfo;
 					} catch (error) {
 						console.log("⚠️ 獲取分析額度信息失敗:", error);
@@ -6168,7 +6172,7 @@ function enhanceContextualResponse(enhancedResult, userIntent, message) {
 	const supportMessage =
 		supportMessages[problemType] || supportMessages["general_concern"];
 
-	let response = `${supportMessage}\n\n從你的生日 ${birthday}來看，你現在${age}歲，正值人生的重要階段！\n\n`;
+	let response = `${supportMessage}\n\n從你的生日 **${birthday}** 來看，你現在${age}歲，正值人生的重要階段！\n\n`;
 
 	// 根據問題類型提供建議
 	if (problemType === "work_problem") {

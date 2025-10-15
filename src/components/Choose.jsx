@@ -313,15 +313,16 @@ const Choose = () => {
 									color: "#374A37",
 								}}
 							>
-								{selectedMode === "personal"
-									? "請輸入您的生日"
-									: modalStep === 1
-										? "請選擇您的房間類型"
-										: modalStep === 2
-											? "請輸入您的生日"
-											: modalStep === 3
-												? "請選擇您的房屋朝向"
-												: "請選擇您的房間方位"}
+								{step === 1 ||
+								(selectedMode === "fengshui" && step === 1)
+									? "請輸入你的生日"
+									: step === 2
+										? "請選擇你的房間類型"
+										: step === 3
+											? "請輸入你的生日"
+											: step === 4
+												? "請選擇你的房屋朝向"
+												: "請選擇你的房間方位"}
 							</h2>
 						</div>
 
