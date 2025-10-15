@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import Image from "next/image";
 import {
 	ArrowLeft,
 	Calendar,
@@ -584,9 +585,44 @@ export default function CoupleReportPage() {
 	if (loading) {
 		return (
 			<div className="flex items-center justify-center min-h-screen bg-[#EFEFEF]">
-				<div className="text-center">
-					<div className="w-12 h-12 mx-auto mb-4 border-b-2 border-pink-500 rounded-full animate-spin"></div>
-					<p className="text-gray-600">生成合婚報告中...</p>
+				<div className="flex flex-col items-center justify-center py-12 space-y-4">
+					{/* Loading spinner */}
+					<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+					{/* 風水妹 loading image */}
+					<div className="flex items-center justify-center">
+						<Image
+							src="/images/風水妹/風水妹-loading.png"
+							alt="風水妹運算中"
+							width={120}
+							height={120}
+							className="object-contain"
+						/>
+					</div>
+
+					{/* Loading text */}
+					<div className="space-y-2 text-center">
+						<div
+							className="text-gray-700"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
+								fontWeight: 500,
+							}}
+						>
+							風水妹正在為你們準備專屬合婚分析報告
+						</div>
+						<div
+							className="text-gray-500"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
+								fontWeight: 400,
+							}}
+						>
+							請稍候，正在分析兩人的姻緣配對
+						</div>
+					</div>
 				</div>
 			</div>
 		);

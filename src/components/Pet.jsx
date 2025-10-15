@@ -9,6 +9,8 @@ import {
 	getPetUserData,
 } from "@/components/report/utilsTw";
 import moment from "moment";
+import Image from "next/image";
+import fengshuiLoading from "../../public/images/風水妹/風水妹-loading.png";
 
 export default function Pet() {
 	const { data: session } = useSession();
@@ -32,7 +34,8 @@ export default function Pet() {
 			const { status: userStatus, data: userData } = await get(
 				`/api/users/${session.user.userId}`
 			);
-			if (userStatus !== 0) {return;
+			if (userStatus !== 0) {
+				return;
 			}
 			setUserInfo(userData);
 
@@ -54,7 +57,8 @@ export default function Pet() {
 					await generateCompatibilityReport(userData, parsedPetData);
 				}
 			}
-		} catch (error) {} finally {
+		} catch (error) {
+		} finally {
 			setLoading(false);
 		}
 	};
@@ -78,10 +82,12 @@ export default function Pet() {
 				try {
 					const report = JSON.parse(response.content);
 					setCompatibilityReport(report);
-				} catch (parseError) {setCompatibilityReport({ rawContent: response.content });
+				} catch (parseError) {
+					setCompatibilityReport({ rawContent: response.content });
 				}
 			}
-		} catch (error) {// Fallback
+		} catch (error) {
+			// Fallback
 			setCompatibilityReport({
 				rawContent: `基於您的生肖${getChineseZodiac(userData.birthDateTime)}和您的${petInfo.type}生肖${getChineseZodiac(petInfo.birthDateTime)}，建議您們保持和諧的相處模式，注意寵物的健康管理。`,
 			});
@@ -116,10 +122,27 @@ export default function Pet() {
 
 	if (loading) {
 		return (
-			<div className="flex items-center justify-center min-h-screen">
-				<div className="text-center">
-					<div className="w-16 h-16 mx-auto border-b-2 border-green-500 rounded-full animate-spin"></div>
-					<p className="mt-4 text-lg">載入寵物資料中...</p>
+			<div
+				className="flex items-center justify-center min-h-screen"
+				style={{ backgroundColor: "#EFEFEF" }}
+			>
+				<div
+					className="text-center"
+					style={{ fontFamily: '"Noto Sans HK", sans-serif' }}
+				>
+					<div className="relative mb-6">
+						<Image
+							src={fengshuiLoading}
+							alt="Loading"
+							width={120}
+							height={120}
+							className="mx-auto"
+						/>
+						<div className="absolute inset-0 flex items-center justify-center">
+							<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+						</div>
+					</div>
+					<p className="text-lg text-gray-700">載入寵物資料中...</p>
 				</div>
 			</div>
 		);
@@ -211,9 +234,25 @@ export default function Pet() {
 			{/* AI Compatibility Report */}
 			{generating && (
 				<div className="p-6 mb-8 bg-white rounded-lg shadow-md">
-					<div className="text-center">
-						<div className="w-8 h-8 mx-auto mb-4 border-b-2 border-green-500 rounded-full animate-spin"></div>
-						<p>AI 正在分析您與寵物的命理相性...</p>
+					<div
+						className="text-center"
+						style={{ fontFamily: '"Noto Sans HK", sans-serif' }}
+					>
+						<div className="relative mb-4">
+							<Image
+								src={fengshuiLoading}
+								alt="Loading"
+								width={80}
+								height={80}
+								className="mx-auto"
+							/>
+							<div className="absolute inset-0 flex items-center justify-center">
+								<div className="w-6 h-6 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+							</div>
+						</div>
+						<p className="text-gray-700">
+							AI 正在分析您與寵物的命理相性...
+						</p>
 					</div>
 				</div>
 			)}

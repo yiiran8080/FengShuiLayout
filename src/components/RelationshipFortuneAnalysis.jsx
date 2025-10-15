@@ -6,6 +6,8 @@ import {
 	getCurrentFortunePeriods,
 	formatFortunePeriod,
 } from "@/lib/fortunePeriodCalculator";
+import Image from "next/image";
+import fengshuiLoading from "../../public/images/風水妹/風水妹-loading.png";
 
 const RelationshipFortuneAnalysis = ({
 	userInfo,
@@ -244,8 +246,22 @@ const RelationshipFortuneAnalysis = ({
 
 	if (isLoading) {
 		return (
-			<div className="py-20 text-center">
-				<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C74772] mx-auto mb-4"></div>
+			<div
+				className="py-20 text-center"
+				style={{ fontFamily: '"Noto Sans HK", sans-serif' }}
+			>
+				<div className="relative inline-block mb-4">
+					<Image
+						src={fengshuiLoading}
+						alt="風水妹運算中"
+						width={100}
+						height={100}
+						className="object-contain"
+					/>
+					<div className="absolute inset-0 flex items-center justify-center">
+						<div className="w-6 h-6 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+					</div>
+				</div>
 				<p className="text-lg text-[#5A5A5A]">
 					正在生成感情運勢分析...
 				</p>

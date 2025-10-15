@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import { ComponentErrorBoundary } from "./ErrorHandling";
 import { useCoupleAnalysis } from "@/contexts/CoupleAnalysisContext";
 import { getCoupleComponentData } from "@/utils/coupleComponentDataStore";
@@ -1406,20 +1407,44 @@ export default function CoupleCoreSuggestion({
 					borderRadius: "clamp(20px, 5vw, 45px)",
 				}}
 			>
-				<div className="flex items-center justify-center py-6 sm:py-8">
-					<div
-						className="border-b-2 border-pink-600 rounded-full animate-spin"
-						style={{
-							width: "clamp(24px, 6vw, 32px)",
-							height: "clamp(24px, 6vw, 32px)",
-						}}
-					></div>
-					<span
-						className="ml-2 text-gray-600 sm:ml-3"
-						style={{ fontSize: "clamp(14px, 3.5vw, 16px)" }}
-					>
-						生成夫妻開運建議中...
-					</span>
+				<div className="flex flex-col items-center justify-center py-12 space-y-4">
+					{/* Loading spinner */}
+					<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+					{/* 風水妹 loading image */}
+					<div className="flex items-center justify-center">
+						<Image
+							src="/images/風水妹/風水妹-loading.png"
+							alt="風水妹運算中"
+							width={120}
+							height={120}
+							className="object-contain"
+						/>
+					</div>
+
+					{/* Loading text */}
+					<div className="space-y-2 text-center">
+						<div
+							className="text-gray-700"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
+								fontWeight: 500,
+							}}
+						>
+							風水妹正在生成夫妻開運建議
+						</div>
+						<div
+							className="text-gray-500"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
+								fontWeight: 400,
+							}}
+						>
+							請稍候，正在分析最佳運勢提升方案
+						</div>
+					</div>
 				</div>
 			</section>
 		);

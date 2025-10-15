@@ -33,6 +33,7 @@ import Pet from "@/components/Pet";
 import FourFortuneAnalysis from "@/components/FourFortuneAnalysis";
 import { useLifeReportPersistence } from "@/hooks/useLifeReportPersistence";
 import { useReportDataPersistence } from "@/hooks/useReportDataPersistence";
+import fengshuiLoading from "../../public/images/風水妹/風水妹-loading.png";
 
 const wuxingColorMap = {
 	金: "#B2A062",
@@ -2413,18 +2414,43 @@ export default function ReportPage({
 	if (loading || !reportDocData || !userInfo) {
 		return (
 			<div className="min-h-screen bg-[#EFEFEF] flex items-center justify-center">
-				<div className="space-y-8">
-					<div className="text-center">
-						<div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#A3B115] mx-auto mb-4"></div>
-						<p className="text-xl text-[#5A5A5A]">
-							載入基本報告資料中...
-						</p>
+				<div className="flex flex-col items-center justify-center py-12 space-y-4">
+					{/* Loading spinner */}
+					<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+					{/* 風水妹 loading image */}
+					<div className="flex items-center justify-center">
+						<Image
+							src="/images/風水妹/風水妹-loading.png"
+							alt="風水妹運算中"
+							width={120}
+							height={120}
+							className="object-contain"
+						/>
 					</div>
-					<div className="max-w-lg mx-auto space-y-4">
-						<Skeleton className="h-4 w-[80%]" />
-						<Skeleton className="h-4 w-[70%]" />
-						<Skeleton className="h-4 w-[80%]" />
-						<Skeleton className="h-4 w-[70%]" />
+
+					{/* Loading text */}
+					<div className="space-y-2 text-center">
+						<div
+							className="text-gray-700"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
+								fontWeight: 500,
+							}}
+						>
+							風水妹正在為您準備專屬命理分析報告
+						</div>
+						<div
+							className="text-gray-500"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
+								fontWeight: 400,
+							}}
+						>
+							請稍候，正在深度解析您的八字命盤
+						</div>
 					</div>
 				</div>
 			</div>
@@ -3450,8 +3476,25 @@ export default function ReportPage({
 								{/* AI Life Stage Analysis Section for 年柱 */}
 								<div className="p-3 sm:p-6 lg:p-8">
 									{isLoadingLifeStage["年柱"] ? (
-										<div className="py-6 text-center sm:py-8">
-											<div className="animate-spin rounded-full w-8 h-8 sm:w-12 sm:h-12 border-b-2 border-[#A3B116] mx-auto mb-3 sm:mb-4"></div>
+										<div
+											className="py-6 text-center sm:py-8"
+											style={{
+												fontFamily:
+													'"Noto Sans HK", sans-serif',
+											}}
+										>
+											<div className="relative mb-4">
+												<Image
+													src={fengshuiLoading}
+													alt="風水妹運算中"
+													width={80}
+													height={80}
+													className="mx-auto object-contain"
+												/>
+												<div className="absolute inset-0 flex items-center justify-center">
+													<div className="w-6 h-6 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+												</div>
+											</div>
 											<p className="text-sm sm:text-lg text-[#5A5A5A]">
 												正在分析您的童年生活特征...
 											</p>
@@ -3804,8 +3847,25 @@ export default function ReportPage({
 								{/* AI Life Stage Analysis Section for 月柱 */}
 								<div className="p-3 sm:p-6 lg:p-8">
 									{isLoadingLifeStage["月柱"] ? (
-										<div className="py-6 text-center sm:py-8">
-											<div className="animate-spin rounded-full w-8 h-8 sm:w-12 sm:h-12 border-b-2 border-[#A3B116] mx-auto mb-3 sm:mb-4"></div>
+										<div
+											className="py-6 text-center sm:py-8"
+											style={{
+												fontFamily:
+													'"Noto Sans HK", sans-serif',
+											}}
+										>
+											<div className="relative mb-4">
+												<Image
+													src={fengshuiLoading}
+													alt="風水妹運算中"
+													width={80}
+													height={80}
+													className="mx-auto object-contain"
+												/>
+												<div className="absolute inset-0 flex items-center justify-center">
+													<div className="w-6 h-6 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+												</div>
+											</div>
 											<p className="text-sm sm:text-lg text-[#5A5A5A]">
 												正在分析您的青年时期特征...
 											</p>
@@ -4162,8 +4222,25 @@ export default function ReportPage({
 								{/* AI Life Stage Analysis Section for 日柱 */}
 								<div className="p-3 sm:p-6 lg:p-8">
 									{isLoadingLifeStage["日柱"] ? (
-										<div className="py-6 text-center sm:py-8">
-											<div className="animate-spin rounded-full w-8 h-8 sm:w-12 sm:h-12 border-b-2 border-[#A3B116] mx-auto mb-3 sm:mb-4"></div>
+										<div
+											className="py-6 text-center sm:py-8"
+											style={{
+												fontFamily:
+													'"Noto Sans HK", sans-serif',
+											}}
+										>
+											<div className="relative mb-4">
+												<Image
+													src={fengshuiLoading}
+													alt="風水妹運算中"
+													width={80}
+													height={80}
+													className="mx-auto object-contain"
+												/>
+												<div className="absolute inset-0 flex items-center justify-center">
+													<div className="w-6 h-6 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+												</div>
+											</div>
 											<p className="text-sm sm:text-lg text-[#5A5A5A]">
 												正在分析您的成年时期特征...
 											</p>
@@ -4516,8 +4593,25 @@ export default function ReportPage({
 								{/* AI Life Stage Analysis Section for 時柱 */}
 								<div className="p-3 sm:p-6 lg:p-8">
 									{isLoadingLifeStage["時柱"] ? (
-										<div className="py-6 text-center sm:py-8">
-											<div className="animate-spin rounded-full w-8 h-8 sm:w-12 sm:h-12 border-b-2 border-[#A3B116] mx-auto mb-3 sm:mb-4"></div>
+										<div
+											className="py-6 text-center sm:py-8"
+											style={{
+												fontFamily:
+													'"Noto Sans HK", sans-serif',
+											}}
+										>
+											<div className="relative mb-4">
+												<Image
+													src={fengshuiLoading}
+													alt="風水妹運算中"
+													width={80}
+													height={80}
+													className="mx-auto object-contain"
+												/>
+												<div className="absolute inset-0 flex items-center justify-center">
+													<div className="w-6 h-6 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+												</div>
+											</div>
 											<p className="text-sm sm:text-lg text-[#5A5A5A]">
 												正在分析您的老年时期特征...
 											</p>
@@ -5152,8 +5246,25 @@ export default function ReportPage({
 									<div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2 xl:grid-cols-3">
 										{/* Loading state */}
 										{isLoadingFlowAnalysis && (
-											<div className="py-8 text-center col-span-full sm:py-12">
-												<div className="inline-block animate-spin rounded-full w-6 h-6 sm:w-8 sm:h-8 border-b-2 border-[#A3B116] mb-3 sm:mb-4"></div>
+											<div
+												className="py-8 text-center col-span-full sm:py-12"
+												style={{
+													fontFamily:
+														'"Noto Sans HK", sans-serif',
+												}}
+											>
+												<div className="relative mb-4 inline-block">
+													<Image
+														src={fengshuiLoading}
+														alt="風水妹運算中"
+														width={60}
+														height={60}
+														className="object-contain"
+													/>
+													<div className="absolute inset-0 flex items-center justify-center">
+														<div className="w-4 h-4 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+													</div>
+												</div>
 												<p
 													className="text-[#5A5A5A]"
 													style={{
@@ -6058,8 +6169,25 @@ export default function ReportPage({
 
 									{/* Show loading state if no AI content */}
 									{!analysis?.lifeAdvice?.tips ? (
-										<div className="py-8 text-center sm:py-12">
-											<div className="animate-spin rounded-full w-8 h-8 sm:w-12 sm:h-12 border-b-2 border-[#A3B116] mx-auto mb-3 sm:mb-4"></div>
+										<div
+											className="py-8 text-center sm:py-12"
+											style={{
+												fontFamily:
+													'"Noto Sans HK", sans-serif',
+											}}
+										>
+											<div className="relative mb-4">
+												<Image
+													src={fengshuiLoading}
+													alt="風水妹運算中"
+													width={100}
+													height={100}
+													className="mx-auto object-contain"
+												/>
+												<div className="absolute inset-0 flex items-center justify-center">
+													<div className="w-6 h-6 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+												</div>
+											</div>
 											<p
 												className="text-[#5A5A5A] mb-3 sm:mb-4"
 												style={{
@@ -6177,8 +6305,25 @@ export default function ReportPage({
 
 								{isLoadingComprehensiveLifeAdvice ? (
 									<div className="p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl">
-										<div className="flex flex-col items-center justify-center gap-4 sm:flex-row sm:justify-between">
-											<div className="animate-spin rounded-full h-8 w-8 sm:h-10 sm:w-10 border-b-2 border-[#8B4513]"></div>
+										<div
+											className="flex flex-col items-center justify-center gap-4 sm:flex-row sm:justify-between"
+											style={{
+												fontFamily:
+													'"Noto Sans HK", sans-serif',
+											}}
+										>
+											<div className="relative">
+												<Image
+													src={fengshuiLoading}
+													alt="風水妹運算中"
+													width={60}
+													height={60}
+													className="object-contain"
+												/>
+												<div className="absolute inset-0 flex items-center justify-center">
+													<div className="w-4 h-4 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+												</div>
+											</div>
 											<span className="text-lg sm:text-xl text-[#8B4513] text-center">
 												AI正在生成綜合人生建議...
 											</span>
@@ -7221,8 +7366,25 @@ export default function ReportPage({
 
 									{isLoadingComprehensiveInterpersonal ? (
 										<div className="p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl">
-											<div className="flex flex-col items-center justify-center gap-4 sm:flex-row sm:justify-between">
-												<div className="animate-spin rounded-full h-8 w-8 sm:h-10 sm:w-10 border-b-2 border-[#8B4513]"></div>
+											<div
+												className="flex flex-col items-center justify-center gap-4 sm:flex-row sm:justify-between"
+												style={{
+													fontFamily:
+														'"Noto Sans HK", sans-serif',
+												}}
+											>
+												<div className="relative">
+													<Image
+														src={fengshuiLoading}
+														alt="風水妹運算中"
+														width={60}
+														height={60}
+														className="object-contain"
+													/>
+													<div className="absolute inset-0 flex items-center justify-center">
+														<div className="w-4 h-4 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+													</div>
+												</div>
 												<span className="text-lg sm:text-xl text-[#8B4513] text-center">
 													AI正在生成綜合人際關係建議...
 												</span>

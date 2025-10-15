@@ -17,6 +17,7 @@ import HealthFortuneAnalysis from "@/components/HealthFortuneAnalysis";
 import CareerFortuneAnalysis from "@/components/CareerFortuneAnalysis";
 import WealthFortuneAnalysis from "@/components/WealthFortuneAnalysis";
 import RelationshipFortuneAnalysis from "@/components/RelationshipFortuneAnalysis";
+import fengshuiLoading from "../../public/images/風水妹/風水妹-loading.png";
 
 const wuxingColorMap = {
 	金: "#B2A062",
@@ -344,18 +345,47 @@ export default function FourFortuneAnalysis({
 						const analysis = wuxingAnalysis;
 						if (!analysis)
 							return (
-								<div className="flex items-center justify-center py-20">
-									<div className="text-center">
-										<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
-										<p
+								<div className="flex flex-col items-center justify-center py-12 space-y-4">
+									{/* Loading spinner */}
+									<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+									{/* 風水妹 loading image */}
+									<div className="flex items-center justify-center">
+										<Image
+											src={fengshuiLoading}
+											alt="風水妹運算中"
+											width={120}
+											height={120}
+											className="object-contain"
+										/>
+									</div>
+
+									{/* Loading text */}
+									<div className="space-y-2 text-center">
+										<div
+											className="text-gray-700"
 											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
 												fontSize:
-													"clamp(14px, 3vw, 18px)",
+													"clamp(0.875rem, 2.5vw, 1rem)",
+												fontWeight: 500,
 											}}
-											className="text-[#5A5A5A]"
 										>
-											正在分析您的命理資料...
-										</p>
+											風水妹正在分析您的命理資料
+										</div>
+										<div
+											className="text-gray-500"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(0.75rem, 2vw, 0.875rem)",
+												fontWeight: 400,
+											}}
+										>
+											請稍候，正在解析四大運勢
+										</div>
 									</div>
 								</div>
 							);
@@ -634,16 +664,48 @@ export default function FourFortuneAnalysis({
 
 						if (shouldShowLoading) {
 							return (
-								<div className="py-20 text-center">
-									<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
-									<p
-										style={{
-											fontSize: "clamp(14px, 3vw, 18px)",
-										}}
-										className="text-[#5A5A5A]"
-									>
-										正在生成健康運勢分析...
-									</p>
+								<div className="flex flex-col items-center justify-center py-12 space-y-4">
+									{/* Loading spinner */}
+									<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+									{/* 風水妹 loading image */}
+									<div className="flex items-center justify-center">
+										<Image
+											src={fengshuiLoading}
+											alt="風水妹運算中"
+											width={120}
+											height={120}
+											className="object-contain"
+										/>
+									</div>
+
+									{/* Loading text */}
+									<div className="space-y-2 text-center">
+										<div
+											className="text-gray-700"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(0.875rem, 2.5vw, 1rem)",
+												fontWeight: 500,
+											}}
+										>
+											風水妹正在生成健康運勢分析
+										</div>
+										<div
+											className="text-gray-500"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(0.75rem, 2vw, 0.875rem)",
+												fontWeight: 400,
+											}}
+										>
+											請稍候，正在分析身體健康運勢
+										</div>
+									</div>
 								</div>
 							);
 						}
@@ -673,16 +735,48 @@ export default function FourFortuneAnalysis({
 
 						if (shouldShowLoading) {
 							return (
-								<div className="py-20 text-center">
-									<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
-									<p
-										style={{
-											fontSize: "clamp(14px, 3vw, 18px)",
-										}}
-										className="text-[#5A5A5A]"
-									>
-										正在生成事業運勢分析...
-									</p>
+								<div className="flex flex-col items-center justify-center py-12 space-y-4">
+									{/* Loading spinner */}
+									<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+									{/* 風水妹 loading image */}
+									<div className="flex items-center justify-center">
+										<Image
+											src={fengshuiLoading}
+											alt="風水妹運算中"
+											width={120}
+											height={120}
+											className="object-contain"
+										/>
+									</div>
+
+									{/* Loading text */}
+									<div className="space-y-2 text-center">
+										<div
+											className="text-gray-700"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(0.875rem, 2.5vw, 1rem)",
+												fontWeight: 500,
+											}}
+										>
+											風水妹正在生成事業運勢分析
+										</div>
+										<div
+											className="text-gray-500"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(0.75rem, 2vw, 0.875rem)",
+												fontWeight: 400,
+											}}
+										>
+											請稍候，正在解析事業發展運勢
+										</div>
+									</div>
 								</div>
 							);
 						}
@@ -712,16 +806,48 @@ export default function FourFortuneAnalysis({
 
 						if (shouldShowLoading) {
 							return (
-								<div className="py-20 text-center">
-									<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
-									<p
-										style={{
-											fontSize: "clamp(14px, 3vw, 18px)",
-										}}
-										className="text-[#5A5A5A]"
-									>
-										正在生成財運運勢分析...
-									</p>
+								<div className="flex flex-col items-center justify-center py-12 space-y-4">
+									{/* Loading spinner */}
+									<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+									{/* 風水妹 loading image */}
+									<div className="flex items-center justify-center">
+										<Image
+											src={fengshuiLoading}
+											alt="風水妹運算中"
+											width={120}
+											height={120}
+											className="object-contain"
+										/>
+									</div>
+
+									{/* Loading text */}
+									<div className="space-y-2 text-center">
+										<div
+											className="text-gray-700"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(0.875rem, 2.5vw, 1rem)",
+												fontWeight: 500,
+											}}
+										>
+											風水妹正在生成財運運勢分析
+										</div>
+										<div
+											className="text-gray-500"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(0.75rem, 2vw, 0.875rem)",
+												fontWeight: 400,
+											}}
+										>
+											請稍候，正在分析財富運勢
+										</div>
+									</div>
 								</div>
 							);
 						}
@@ -751,16 +877,48 @@ export default function FourFortuneAnalysis({
 
 						if (shouldShowLoading) {
 							return (
-								<div className="py-20 text-center">
-									<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A3B116] mx-auto mb-4"></div>
-									<p
-										style={{
-											fontSize: "clamp(14px, 3vw, 18px)",
-										}}
-										className="text-[#5A5A5A]"
-									>
-										正在生成感情運勢分析...
-									</p>
+								<div className="flex flex-col items-center justify-center py-12 space-y-4">
+									{/* Loading spinner */}
+									<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+									{/* 風水妹 loading image */}
+									<div className="flex items-center justify-center">
+										<Image
+											src={fengshuiLoading}
+											alt="風水妹運算中"
+											width={120}
+											height={120}
+											className="object-contain"
+										/>
+									</div>
+
+									{/* Loading text */}
+									<div className="space-y-2 text-center">
+										<div
+											className="text-gray-700"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(0.875rem, 2.5vw, 1rem)",
+												fontWeight: 500,
+											}}
+										>
+											風水妹正在生成感情運勢分析
+										</div>
+										<div
+											className="text-gray-500"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(0.75rem, 2vw, 0.875rem)",
+												fontWeight: 400,
+											}}
+										>
+											請稍候，正在分析桃花運勢
+										</div>
+									</div>
 								</div>
 							);
 						}

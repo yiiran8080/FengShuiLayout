@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 
 const ChartDiagnosisSection = ({
 	femaleUser,
@@ -139,20 +140,44 @@ const ChartDiagnosisSection = ({
 					borderRadius: "clamp(20px, 5vw, 30px)",
 				}}
 			>
-				<div className="flex items-center justify-center">
-					<div
-						className="border-b-2 border-pink-500 rounded-full animate-spin"
-						style={{
-							width: "clamp(20px, 5vw, 24px)",
-							height: "clamp(20px, 5vw, 24px)",
-						}}
-					></div>
-					<span
-						className="ml-2 text-gray-600"
-						style={{ fontSize: "clamp(13px, 3.2vw, 15px)" }}
-					>
-						生成盤面診斷中...
-					</span>
+				<div className="flex flex-col items-center justify-center py-12 space-y-4">
+					{/* Loading spinner */}
+					<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+					{/* 風水妹 loading image */}
+					<div className="flex items-center justify-center">
+						<Image
+							src="/images/風水妹/風水妹-loading.png"
+							alt="風水妹運算中"
+							width={120}
+							height={120}
+							className="object-contain"
+						/>
+					</div>
+
+					{/* Loading text */}
+					<div className="space-y-2 text-center">
+						<div
+							className="text-gray-700"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
+								fontWeight: 500,
+							}}
+						>
+							風水妹正在生成盤面診斷
+						</div>
+						<div
+							className="text-gray-500"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
+								fontWeight: 400,
+							}}
+						>
+							請稍候，正在分析命盤配對細節
+						</div>
+					</div>
 				</div>
 			</div>
 		);

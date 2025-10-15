@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import { getCoupleComponentData } from "@/utils/coupleComponentDataStore";
 import {
 	Heart,
@@ -111,12 +112,19 @@ const CoupleAnnualAnalysis = ({
 					analysisData
 				);
 
-				// 🔄 SYNCHRONIZED compatibility calculation (matches EnhancedCoupleSpecificProblemSolution exactly)
+				// 🔄 SYNCHRONIZED compatibility calculation - PRIORITY: Use context data first
 				const calculatedCompatibilityScore =
 					calculateBasicCompatibilityScore(
 						user1BasicAnalysis,
 						user2BasicAnalysis
 					);
+
+				// PRIORITY 1: Use context analysis data score if available (same as EnhancedCoupleSpecificProblemSolution)
+				const contextScore = parseInt(
+					analysisData.compatibility?.score
+				);
+				const finalCompatibilityScore =
+					contextScore || calculatedCompatibilityScore;
 
 				console.log(
 					"🔄 CoupleAnnualAnalysis - Calculating compatibility score (SYNCHRONIZED):",
@@ -124,21 +132,20 @@ const CoupleAnnualAnalysis = ({
 						user1Element: user1BasicAnalysis?.dayMasterElement,
 						user2Element: user2BasicAnalysis?.dayMasterElement,
 						calculatedScore: calculatedCompatibilityScore,
-						apiScore: analysisData.compatibility?.score,
-						finalScore:
-							parseInt(analysisData.compatibility?.score) ||
-							calculatedCompatibilityScore,
+						rawContextScore: analysisData.compatibility?.score,
+						contextScore: contextScore,
+						finalScore: finalCompatibilityScore,
+						usingContextScore: !!contextScore,
+						timestamp: new Date().toISOString(),
 					}
 				);
 
 				const analysisResultData = {
 					compatibility: {
-						score:
-							parseInt(analysisData.compatibility?.score) ||
-							calculatedCompatibilityScore,
+						score: finalCompatibilityScore,
 						level:
 							analysisData.compatibility?.level ||
-							getCompatibilityLevel(calculatedCompatibilityScore),
+							getCompatibilityLevel(finalCompatibilityScore),
 						description:
 							analysisData.compatibility?.description ||
 							"姻緣分析中...",
@@ -277,10 +284,13 @@ const CoupleAnnualAnalysis = ({
 			user2BasicAnalysis
 		);
 
+		// Use consistent score with context data priority
+		const fallbackScore = 75; // Default fallback when no context data
+
 		const fallbackResult = {
 			compatibility: {
-				score: compatibilityScore,
-				level: getCompatibilityLevel(compatibilityScore),
+				score: fallbackScore,
+				level: getCompatibilityLevel(fallbackScore),
 				description: "基於八字基礎分析的配對評估",
 			},
 			user1Analysis: {
@@ -621,14 +631,44 @@ const CoupleAnnualAnalysis = ({
 	if (loading) {
 		return (
 			<div className="p-6 bg-white rounded-lg shadow-sm">
-				<div className="flex items-center justify-center">
+				<div className="flex flex-col items-center justify-center py-12 space-y-4">
+					{/* Loading spinner */}
 					<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
-					<span className="ml-3 text-gray-600">
-						生成流年分析中...
-					</span>
-				</div>
-				<div className="mt-4 text-xs text-center text-gray-500">
-					如果載入時間過長，請檢查網路連線或稍後重試
+
+					{/* 風水妹 loading image */}
+					<div className="flex items-center justify-center">
+						<Image
+							src="/images/風水妹/風水妹-loading.png"
+							alt="風水妹運算中"
+							width={120}
+							height={120}
+							className="object-contain"
+						/>
+					</div>
+
+					{/* Loading text */}
+					<div className="space-y-2 text-center">
+						<div
+							className="text-gray-700"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
+								fontWeight: 500,
+							}}
+						>
+							風水妹正在分析你們的流年運勢
+						</div>
+						<div
+							className="text-gray-500"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
+								fontWeight: 400,
+							}}
+						>
+							請稍候，如果載入時間過長，請檢查網路連線
+						</div>
+					</div>
 				</div>
 			</div>
 		);

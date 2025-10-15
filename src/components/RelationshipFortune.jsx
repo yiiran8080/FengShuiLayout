@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { Heart, TrendingUp, Calendar, Star } from "lucide-react";
 import { useCoupleAnalysis } from "@/contexts/CoupleAnalysisContext";
 
@@ -32,10 +33,10 @@ const RelationshipFortune = ({ user1, user2, currentYear }) => {
 				},
 				monthlyFortune:
 					analysisData.fortuneAnalysis?.monthlyFortune ||
-					generateMonthlyFromAI(analysisData),
+					generateMonthlyFortuneFromCompatibility(analysisData),
 				monthlyPredictions:
 					analysisData.fortuneAnalysis?.monthlyFortune ||
-					generateMonthlyFromAI(analysisData),
+					generateMonthlyFortuneFromCompatibility(analysisData),
 				annualAdvice:
 					analysisData.advice?.[0] || "建議定期溝通，增進相互理解",
 				seasonalFortune:
@@ -106,25 +107,14 @@ const RelationshipFortune = ({ user1, user2, currentYear }) => {
 	};
 
 	// Helper functions to generate content from available AI data
-	const generateMonthlyFromAI = (aiData) => {
-		const months = [
-			"一",
-			"二",
-			"三",
-			"四",
-			"五",
-			"六",
-			"七",
-			"八",
-			"九",
-			"十",
-			"十一",
-			"十二",
-		];
-		const patterns = aiData.strengths || [
-			"感情和諧",
-			"默契良好",
-			"互相支持",
+	const generateMonthlyFortuneFromCompatibility = (aiData) => {
+		const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+		const patterns = [
+			"感情昇華",
+			"深度交流",
+			"矛盾化解",
+			"默契增進",
+			"信任建立",
 		];
 		const warnings = aiData.challenges || [
 			"注意溝通",
@@ -132,20 +122,31 @@ const RelationshipFortune = ({ user1, user2, currentYear }) => {
 			"保持耐心",
 		];
 
-		return months.map((month, index) => ({
-			month: `${month}月`,
-			score: Math.floor(Math.random() * 30) + 70, // 70-100 range based on good compatibility
-			fortuneLevel: Math.floor(Math.random() * 30) + 70, // Keeping both for compatibility
-			description:
-				index % 2 === 0
-					? `${patterns[index % patterns.length]}，感情運勢穩中有升`
-					: `需要${warnings[index % warnings.length]}，但整體關係良好`,
-			keyAdvice:
-				aiData.advice?.[index % (aiData.advice?.length || 1)] ||
-				"保持良好溝通",
-		}));
-	};
+		// Use stable base score from AI analysis instead of random
+		const baseScore = aiData.compatibility?.score || 75;
 
+		return months.map((month, index) => {
+			// Generate consistent monthly variations based on base score and month index
+			const variation = Math.sin((index * Math.PI) / 6) * 8; // -8 to +8 variation
+			const monthlyScore = Math.max(
+				50,
+				Math.min(100, Math.round(baseScore + variation))
+			);
+
+			return {
+				month: `${month}月`,
+				score: monthlyScore,
+				fortuneLevel: monthlyScore, // Keeping both for compatibility
+				description:
+					index % 2 === 0
+						? `${patterns[index % patterns.length]}，感情運勢穩中有升`
+						: `需要${warnings[index % warnings.length]}，但整體關係良好`,
+				keyAdvice:
+					aiData.advice?.[index % (aiData.advice?.length || 1)] ||
+					"保持良好溝通",
+			};
+		});
+	};
 	const generateSeasonalFortuneFromCompatibility = (aiData) => {
 		const baseScore = aiData.compatibility?.score || 75;
 		return [
@@ -624,11 +625,44 @@ const RelationshipFortune = ({ user1, user2, currentYear }) => {
 	if (loading) {
 		return (
 			<div className="w-full p-8 bg-white rounded-lg shadow-lg">
-				<div className="flex items-center justify-center">
-					<div className="w-8 h-8 border-b-2 border-green-500 rounded-full animate-spin"></div>
-					<span className="ml-2 text-gray-600">
-						分析感情運勢中...
-					</span>
+				<div className="flex flex-col items-center justify-center py-12 space-y-4">
+					{/* Loading spinner */}
+					<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+					{/* 風水妹 loading image */}
+					<div className="flex items-center justify-center">
+						<Image
+							src="/images/風水妹/風水妹-loading.png"
+							alt="風水妹運算中"
+							width={120}
+							height={120}
+							className="object-contain"
+						/>
+					</div>
+
+					{/* Loading text */}
+					<div className="space-y-2 text-center">
+						<div
+							className="text-gray-700"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
+								fontWeight: 500,
+							}}
+						>
+							風水妹正在分析你們的感情運勢
+						</div>
+						<div
+							className="text-gray-500"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
+								fontWeight: 400,
+							}}
+						>
+							請稍候，正在深度解析姻緣配對
+						</div>
+					</div>
 				</div>
 			</div>
 		);
@@ -676,9 +710,9 @@ const RelationshipFortune = ({ user1, user2, currentYear }) => {
 							整體運勢評分
 						</h3>
 					</div>
-					<div className="text-center p-6 border border-gray-200 rounded-lg bg-gradient-to-r from-purple-50 to-pink-50">
+					<div className="p-6 text-center border border-gray-200 rounded-lg bg-gradient-to-r from-purple-50 to-pink-50">
 						<div
-							className="text-5xl font-bold mb-2"
+							className="mb-2 text-5xl font-bold"
 							style={{
 								color:
 									(fortuneData?.relationshipFortune
@@ -694,14 +728,14 @@ const RelationshipFortune = ({ user1, user2, currentYear }) => {
 								75}
 							分
 						</div>
-						<h3 className="text-xl font-semibold text-gray-800 mb-2">
+						<h3 className="mb-2 text-xl font-semibold text-gray-800">
 							{currentYear}
 							{fortuneData?.relationshipFortune?.yearStem || ""}
 							{fortuneData?.relationshipFortune?.yearBranch || ""}
 							年 感情運勢
 						</h3>
 						<p
-							className="text-black mb-4"
+							className="mb-4 text-black"
 							style={{ fontSize: "15px" }}
 						>
 							{fortuneData?.relationshipFortune?.description ||
@@ -770,7 +804,7 @@ const RelationshipFortune = ({ user1, user2, currentYear }) => {
 									key={index}
 									className={`border-2 ${getSeasonContainerBorder(season?.name)} rounded-lg p-4 bg-white`}
 								>
-									<div className="text-center mb-3">
+									<div className="mb-3 text-center">
 										<div
 											className={`flex items-center justify-center w-16 h-16 mx-auto mb-3 rounded-full ${getSeasonBgColor(season?.name)}`}
 										>
@@ -805,7 +839,7 @@ const RelationshipFortune = ({ user1, user2, currentYear }) => {
 														season?.element ||
 														"未知"
 													}
-													className="w-6 h-6 object-contain mr-2"
+													className="object-contain w-6 h-6 mr-2"
 												/>
 												<span className="text-sm font-semibold text-gray-800">
 													{season?.element || "未知"}
@@ -822,7 +856,7 @@ const RelationshipFortune = ({ user1, user2, currentYear }) => {
 													"運勢分析中..."}
 											</p>
 											<p
-												className="text-gray-600 mt-1"
+												className="mt-1 text-gray-600"
 												style={{ fontSize: "13px" }}
 											>
 												{season.advice}
@@ -902,7 +936,7 @@ const RelationshipFortune = ({ user1, user2, currentYear }) => {
 										key={index}
 										className={`bg-white rounded-lg p-4 border-2 ${getMonthSeasonBorder(month?.month)}`}
 									>
-										<div className="flex justify-between items-center mb-2">
+										<div className="flex items-center justify-between mb-2">
 											<h4 className="font-medium text-gray-800">
 												{month?.month || "月份"}
 											</h4>
@@ -933,7 +967,7 @@ const RelationshipFortune = ({ user1, user2, currentYear }) => {
 													趨勢：
 												</span>
 												<span
-													className="text-xs ml-1"
+													className="ml-1 text-xs"
 													style={{
 														color:
 															month.trend ===
@@ -979,7 +1013,7 @@ const RelationshipFortune = ({ user1, user2, currentYear }) => {
 								(period, index) => (
 									<div
 										key={index}
-										className="bg-green-50 rounded-lg p-4 border border-green-200"
+										className="p-4 border border-green-200 rounded-lg bg-green-50"
 									>
 										<h4 className="font-medium text-green-800">
 											{period?.period || period}
@@ -1011,7 +1045,7 @@ const RelationshipFortune = ({ user1, user2, currentYear }) => {
 								(period, index) => (
 									<div
 										key={index}
-										className="bg-orange-50 rounded-lg p-4 border border-orange-200"
+										className="p-4 border border-orange-200 rounded-lg bg-orange-50"
 									>
 										<h4 className="font-medium text-orange-800">
 											{period?.period || period}
