@@ -1441,7 +1441,7 @@ export default function Home() {
 								/* 落地頁 */
 								<div className="flex flex-col items-center justify-center h-full px-2 sm:px-4">
 									{/* HarmoniQ Logo和風鈴 - 響應式設計 */}
-									<div className="flex flex-row items-center gap-3 mt-20 sm:flex-row sm:gap-6 md:gap-8 sm:mt-0">
+									<div className="flex flex-row items-center gap-3 sm:flex-row sm:gap-6 md:gap-8 sm:mt-0">
 										<img
 											src="/images/風水妹/風水妹.png"
 											alt="風鈴"

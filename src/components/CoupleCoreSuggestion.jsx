@@ -75,6 +75,110 @@ export default function CoupleCoreSuggestion({
 	};
 
 	// Transform AI response to component data structure
+	// Utility function to clean markdown formatting
+	const cleanMarkdownFormatting = (text) => {
+		if (!text) return text;
+
+		// Remove ** markdown formatting
+		return text
+			.replace(/\*\*(.*?)\*\*/g, "$1") // Remove ** bold markers
+			.replace(/\*\*\s*/g, "") // Remove hanging ** markers
+			.replace(/\s*\*\*/g, ""); // Remove trailing ** markers
+	};
+
+	// Utility function to convert simplified Chinese to traditional Chinese
+	const convertToTraditionalChinese = (text) => {
+		if (!text) return text;
+
+		const conversionMap = {
+			计划: "計劃",
+			约会: "約會",
+			时机与方法: "時機與方法",
+			时机: "時機",
+			发展: "發展",
+			过程: "過程",
+			说话: "說話",
+			沟通: "溝通",
+			经济: "經濟",
+			财务: "財務",
+			诚实: "誠實",
+			诚信: "誠信",
+			学习: "學習",
+			实践: "實踐",
+			实际: "實際",
+			实现: "實現",
+			应该: "應該",
+			应当: "應當",
+			选择: "選擇",
+			环境: "環境",
+			围绕: "圍繞",
+			创造: "創造",
+			营造: "營造",
+			维护: "維護",
+			维持: "維持",
+			关系: "關係",
+			问题: "問題",
+			处理: "處理",
+			联系: "聯系",
+			连接: "連接",
+			设计: "設計",
+			装饰: "裝飾",
+			风格: "風格",
+			样式: "樣式",
+			颜色: "顏色",
+			颜值: "顏值",
+			质量: "質量",
+			质感: "質感",
+			共同制定年度计划: "共同制定年度計劃",
+			制定: "制定",
+			讨论: "討論",
+			决定: "決定",
+			项目: "項目",
+			规划: "規劃",
+			管理: "管理",
+			资源: "資源",
+			资金: "資金",
+			资产: "資產",
+			协调: "協調",
+			协商: "協商",
+			调整: "調整",
+			调节: "調節",
+			调和: "調和",
+			运气: "運氣",
+			运势: "運勢",
+			行动建议: "行動建議",
+			时机与方法: "時機與方法",
+			升温: "升溫",
+			庆典: "慶典",
+			温暖: "溫暖",
+			压力: "壓力",
+			节点: "節點",
+			约会: "約會",
+			绿色: "綠色",
+			练习: "練習",
+			习惯: "習慣",
+		};
+
+		let convertedText = text;
+		for (const [simplified, traditional] of Object.entries(conversionMap)) {
+			const regex = new RegExp(simplified, "g");
+			convertedText = convertedText.replace(regex, traditional);
+		}
+
+		return convertedText;
+	};
+
+	// Combined function to clean and convert content
+	const cleanContent = (text) => {
+		if (!text) return text;
+
+		// First clean markdown formatting, then convert to traditional Chinese
+		let cleaned = cleanMarkdownFormatting(text);
+		cleaned = convertToTraditionalChinese(cleaned);
+
+		return cleaned;
+	};
+
 	const transformCoupleAIResponseToComponentData = (
 		analysisData,
 		user1,
@@ -291,10 +395,10 @@ export default function CoupleCoreSuggestion({
 				title: "溝通風格分析",
 				type: "partner-styles",
 				maleStyle: maleStyleMatch
-					? maleStyleMatch[1].trim()
+					? cleanContent(maleStyleMatch[1].trim())
 					: "土性沉穩擅長傾聽",
 				femaleStyle: femaleStyleMatch
-					? femaleStyleMatch[1].trim()
+					? cleanContent(femaleStyleMatch[1].trim())
 					: "火性直率需要表達空間",
 			};
 
@@ -341,9 +445,11 @@ export default function CoupleCoreSuggestion({
 					},
 				],
 				timing: timingMatch
-					? timingMatch[1].trim()
+					? cleanContent(timingMatch[1].trim())
 					: "巳時（9-11時）與午時（11-13時）",
-				methods: methodMatch ? methodMatch[1].trim() : "土火相生溝通法",
+				methods: methodMatch
+					? cleanContent(methodMatch[1].trim())
+					: "土火相生溝通法",
 			};
 
 			return {
@@ -352,7 +458,7 @@ export default function CoupleCoreSuggestion({
 			};
 		} catch (error) {
 			console.error("Error parsing communication advice content:", error);
-			return { type: "text", content: content };
+			return { type: "text", content: cleanContent(content) };
 		}
 	};
 
@@ -382,12 +488,15 @@ export default function CoupleCoreSuggestion({
 				if (!actionItems) {
 					actionItems = actionText
 						.split("•")
-						.filter((item) => item.trim().length > 0);
+						.map((item) => cleanContent(item.trim()))
+						.filter((item) => item.length > 0);
 				}
 
 				if (actionItems && actionItems.length > 0) {
 					return actionItems
-						.map((item) => item.replace(/^\d+\.\s*/, "").trim())
+						.map((item) =>
+							cleanContent(item.replace(/^\d+\.\s*/, "").trim())
+						)
 						.slice(0, 3);
 				}
 			}
@@ -400,7 +509,9 @@ export default function CoupleCoreSuggestion({
 		);
 		const fallbackMatches = content.match(fallbackPattern);
 		if (fallbackMatches && fallbackMatches.length > 0) {
-			return fallbackMatches.map((match) => match.trim()).slice(0, 2);
+			return fallbackMatches
+				.map((match) => cleanContent(match.trim()))
+				.slice(0, 2);
 		}
 
 		return [];
@@ -420,11 +531,14 @@ export default function CoupleCoreSuggestion({
 			const match = content.match(regex);
 
 			if (match && match[1]) {
-				const accessoryText = match[1].trim().replace(/^\s*：\s*/, "");
+				const accessoryText = cleanContent(
+					match[1].trim().replace(/^\s*：\s*/, "")
+				);
 				// Split by common separators and clean up
 				const accessories = accessoryText
 					.split(/[、，,]/)
-					.filter((item) => item.trim().length > 0);
+					.map((item) => cleanContent(item.trim()))
+					.filter((item) => item.length > 0);
 				return accessories.length > 0 ? accessories : accessoryText;
 			}
 		}
@@ -433,7 +547,7 @@ export default function CoupleCoreSuggestion({
 		const fallbackPattern = new RegExp(`${gender}適合[^。]*`, "g");
 		const fallbackMatch = content.match(fallbackPattern);
 		return fallbackMatch
-			? fallbackMatch[0].replace(`${gender}適合`, "").trim()
+			? cleanContent(fallbackMatch[0].replace(`${gender}適合`, "").trim())
 			: "";
 	};
 
@@ -452,9 +566,9 @@ export default function CoupleCoreSuggestion({
 			const match = content.match(pattern);
 
 			if (match && match[1]) {
-				return match[1].trim();
+				return cleanContent(match[1].trim());
 			} else if (match && match[0] && pattern.source.includes("每週六")) {
-				return match[0];
+				return cleanContent(match[0]);
 			}
 		}
 
@@ -467,7 +581,7 @@ export default function CoupleCoreSuggestion({
 
 		for (let pattern of alternativePatterns) {
 			const altMatch = content.match(pattern);
-			if (altMatch) return altMatch[0];
+			if (altMatch) return cleanContent(altMatch[0]);
 		}
 		return "";
 	};
@@ -489,7 +603,7 @@ export default function CoupleCoreSuggestion({
 			for (let pattern of patterns) {
 				const match = content.match(pattern);
 				if (match && match[1]) {
-					tableContent = match[1].trim();
+					tableContent = cleanContent(match[1].trim());
 					break;
 				}
 			}
@@ -510,7 +624,9 @@ export default function CoupleCoreSuggestion({
 					const situationMatch = tableContent.match(situationPattern);
 
 					if (situationMatch && situationMatch[1]) {
-						const situationText = situationMatch[1].trim();
+						const situationText = cleanContent(
+							situationMatch[1].trim()
+						);
 
 						// Extract male, female colors and energy function - fixed regex
 						const maleMatch = situationText.match(
@@ -527,11 +643,13 @@ export default function CoupleCoreSuggestion({
 							situations.push({
 								title: situationName,
 								colors: {
-									male: [maleMatch[1].trim()],
-									female: [femaleMatch[1].trim()],
+									male: [cleanContent(maleMatch[1].trim())],
+									female: [
+										cleanContent(femaleMatch[1].trim()),
+									],
 								},
 								energyFunction: energyMatch
-									? energyMatch[1].trim()
+									? cleanContent(energyMatch[1].trim())
 									: "五行調和",
 							});
 						}
@@ -673,13 +791,15 @@ export default function CoupleCoreSuggestion({
 
 			// Add lucky colors if available
 			if (luckyColorsMatch) {
-				energyStructure.luckyColors = luckyColorsMatch[1].trim();
+				energyStructure.luckyColors = cleanContent(
+					luckyColorsMatch[1].trim()
+				);
 			}
 
 			return energyStructure;
 		} catch (error) {
 			console.error("Error parsing energy enhancement content:", error);
-			return { type: "text", content: content };
+			return { type: "text", content: cleanContent(content) };
 		}
 	};
 
@@ -741,7 +861,7 @@ export default function CoupleCoreSuggestion({
 				if (line.startsWith("每月初")) {
 					tabooStructure.monthlyNote = {
 						title: "每月初",
-						content: line,
+						content: cleanContent(line),
 					};
 					continue;
 				}
@@ -876,19 +996,24 @@ export default function CoupleCoreSuggestion({
 	// Parse relationship development content into structured subsections
 	const parseRelationshipDevelopmentContent = (content) => {
 		try {
-			// Extract main analysis content
-			const analysisMatch = content.match(
-				/具体分析[：:]?([\s\S]*?)(?=行动建议|时机与方法|注意事项|$)/
-			);
-			const actionMatch = content.match(
-				/行动建议[：:]?([\s\S]*?)(?=时机与方法|注意事项|$)/
-			);
-			const timingMatch = content.match(
-				/时机与方法[：:]?([\s\S]*?)(?=注意事项|$)/
-			);
-			const noteMatch = content.match(/注意事项[：:]?([\s\S]*?)$/);
+			// Clean content first to remove markdown and convert to traditional Chinese
+			const cleanedContent = cleanContent(content);
 
-			// Structure the content into seasonal recommendations
+			// Extract main analysis content using both simplified and traditional patterns
+			const analysisMatch = cleanedContent.match(
+				/(?:具体分析|具體分析)[：:]?([\s\S]*?)(?=(?:行动建议|行動建議|时机与方法|時機與方法|注意事项|注意事項)|$)/
+			);
+			const actionMatch = cleanedContent.match(
+				/(?:行动建议|行動建議)[：:]?([\s\S]*?)(?=(?:时机与方法|時機與方法|注意事项|注意事項)|$)/
+			);
+			const timingMatch = cleanedContent.match(
+				/(?:时机与方法|時機與方法)[：:]?([\s\S]*?)(?=(?:注意事项|注意事項)|$)/
+			);
+			const noteMatch = cleanedContent.match(
+				/(?:注意事项|注意事項)[：:]?([\s\S]*?)$/
+			);
+
+			// Structure the content into seasonal recommendations - content already cleaned
 			const structuredContent = {
 				analysis: analysisMatch ? analysisMatch[1].trim() : "",
 				actions: actionMatch ? actionMatch[1].trim() : "",
@@ -906,8 +1031,11 @@ export default function CoupleCoreSuggestion({
 				content.includes("立春")
 			) {
 				const springContent =
-					extractSeasonalContent(content, "立春|年度|計劃|规划") ||
-					structuredContent.actions ||
+					extractSeasonalContent(
+						cleanedContent,
+						"立春|年度|計劃|規劃|计划|规划"
+					) ||
+					cleanContent(structuredContent.actions) ||
 					"避免重大關係決策（如同居、購房），優先經營日常溫情。";
 				subsections.push({
 					title: "春季-黃月",
@@ -924,10 +1052,10 @@ export default function CoupleCoreSuggestion({
 			) {
 				const summerContent =
 					extractSeasonalContent(
-						content,
-						"夏季|夏|四月|五月|六月|巳|午|未|升温|庆典"
+						cleanedContent,
+						"夏季|夏|四月|五月|六月|巳|午|未|升溫|升温|慶典|庆典"
 					) ||
-					structuredContent.timing ||
+					cleanContent(structuredContent.timing) ||
 					"每月安排一次「無目的約會」（如深夜散步、看星星），脫離現實壓力場景。最佳感情升溫期，適合見家長或舉辦慶典。";
 				subsections.push({
 					title: "立夏至處暑",
@@ -944,10 +1072,10 @@ export default function CoupleCoreSuggestion({
 			) {
 				const autumnContent =
 					extractSeasonalContent(
-						content,
-						"申|七月|八月|九月|注意|避免|分歧"
+						cleanedContent,
+						"申|七月|八月|九月|注意|避免|分歧|分岐"
 					) ||
-					structuredContent.notes ||
+					cleanContent(structuredContent.notes) ||
 					"男方主動策劃驚喜（丁火需木火激發熱情），例如親手製作禮物。需注意避免翻舊賬，加強溝通。";
 				subsections.push({
 					title: "白露後",
@@ -1007,8 +1135,8 @@ export default function CoupleCoreSuggestion({
 			if (sentenceMatches && sentenceMatches.length > 0) {
 				// Join the first 2-3 relevant sentences and allow full content
 				const relevantSentences = sentenceMatches.slice(0, 3).join("");
-				// Remove arbitrary truncation - return full relevant content
-				return relevantSentences;
+				// Clean the content before returning
+				return cleanContent(relevantSentences);
 			}
 
 			// Fallback: find any mention with broader context
@@ -1019,7 +1147,7 @@ export default function CoupleCoreSuggestion({
 			const contextMatches = fullContent.match(contextRegex);
 
 			if (contextMatches && contextMatches.length > 0) {
-				return contextMatches[0].trim() + "。";
+				return cleanContent(contextMatches[0].trim() + "。");
 			}
 
 			return null;
@@ -1032,16 +1160,18 @@ export default function CoupleCoreSuggestion({
 	// Clean and structure the extracted content
 	const cleanAndStructureContent = (content) => {
 		// Remove formatting markers and clean up
-		let cleanContent = content
+		let cleanedContent = content
 			.replace(/^[：:]\s*/, "")
 			.replace(/【[^】]*】/g, "")
-			.replace(/\*\*/g, "")
 			.replace(/####/g, "")
 			.replace(/\n\s*\n/g, "\n")
 			.trim();
 
+		// Apply our new cleaning functions
+		cleanedContent = cleanContent(cleanedContent);
+
 		// Return full content without truncation for complete AI analysis
-		return cleanContent;
+		return cleanedContent;
 	};
 
 	// Extract motto from AI content

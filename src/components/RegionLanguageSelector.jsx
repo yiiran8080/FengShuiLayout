@@ -17,6 +17,7 @@ import { useRegionDetectionWithRedirect } from "@/hooks/useRegionDetectionEnhanc
 export default function RegionLanguageSelector({
 	className,
 	navTextColor = "#fff",
+	compact = false,
 }) {
 	const pathname = usePathname();
 	const router = useRouter();
@@ -67,11 +68,17 @@ export default function RegionLanguageSelector({
 
 	// Get display text based on current state
 	const getDisplayText = () => {
-		if (!mounted) return "🌍 Loading...";
-		if (isLoading) return "🌍 Detecting...";
+		if (!mounted) return compact ? "…" : "🌍 Loading...";
+		if (isLoading) return compact ? "…" : "🌍 Detecting...";
 
 		// Find region that matches current locale
 		const matchingRegion = regions.find((r) => r.locale === currentLocale);
+
+		if (compact) {
+			// Return simplified Chinese character based on locale
+			return currentLocale === "zh-CN" ? "簡" : "繁";
+		}
+
 		return matchingRegion
 			? matchingRegion.displayText
 			: currentRegionConfig.displayText;
@@ -100,7 +107,9 @@ export default function RegionLanguageSelector({
 					className
 				)}
 			>
-				<span style={{ color: navTextColor }}>🌍 Loading...</span>
+				<span style={{ color: navTextColor }}>
+					{compact ? "…" : "🌍 Loading..."}
+				</span>
 			</div>
 		);
 	}
@@ -116,7 +125,9 @@ export default function RegionLanguageSelector({
 			>
 				<div style={{ color: navTextColor }}>
 					{getDisplayText()}
-					<ChevronDownIcon className="w-4 h-4 ml-1 inline" />
+					{!compact && (
+						<ChevronDownIcon className="w-4 h-4 ml-1 inline" />
+					)}
 				</div>
 			</DropdownMenuTrigger>
 
