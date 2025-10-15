@@ -1,6 +1,6 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useState, useEffect } from "react";
 import Image from "next/image";
 import { getConcernColor } from "../utils/colorTheme";
 
@@ -10,47 +10,132 @@ const Zodiac = memo(function Zodiac({
 	analyzeWuxingStrength,
 	determineUsefulGods,
 }) {
+	const [loading, setLoading] = useState(true);
+	const [analysisData, setAnalysisData] = useState(null);
+
 	// Check if userInfo is provided
 	if (!userInfo) {
 		return null;
 	}
 
-	const analysis = calculateWuxingAnalysis(userInfo);
-	if (!analysis) {
+	useEffect(() => {
+		const processData = async () => {
+			try {
+				const analysis = calculateWuxingAnalysis(userInfo);
+				if (!analysis) {
+					setLoading(false);
+					return;
+				}
+
+				// Calculate zodiac from birth year
+				const birthDate = new Date(userInfo.birthDateTime);
+				const birthYear = birthDate.getFullYear();
+				const zodiacAnimals = [
+					"鼠",
+					"牛",
+					"虎",
+					"兔",
+					"龍",
+					"蛇",
+					"馬",
+					"羊",
+					"猴",
+					"雞",
+					"狗",
+					"豬",
+				];
+				const userZodiac = zodiacAnimals[(birthYear - 1900) % 12];
+
+				// Calculate strength analysis and useful gods
+				const strengthAnalysis = analyzeWuxingStrength(
+					analysis.elementCounts
+				);
+				const usefulGods = determineUsefulGods(strengthAnalysis);
+
+				// Create enhanced analysis object with all needed data
+				const enhancedAnalysis = {
+					...analysis,
+					strengthAnalysis,
+					usefulGods,
+					userZodiac,
+					birthYear,
+				};
+
+				setAnalysisData(enhancedAnalysis);
+
+				// Store analysis data for database saving
+				if (typeof window !== "undefined") {
+					const zodiacData = {
+						userZodiac,
+						birthYear,
+						strengthAnalysis,
+						usefulGods,
+						enhancedAnalysis,
+						timestamp: new Date().toISOString(),
+					};
+
+					window.componentDataStore = window.componentDataStore || {};
+					window.componentDataStore.zodiacAnalysis = zodiacData;
+					console.log("📊 Stored Zodiac data:", "SUCCESS");
+				}
+			} catch (error) {
+				console.error("❌ Zodiac data processing error:", error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		processData();
+	}, [
+		userInfo,
+		calculateWuxingAnalysis,
+		analyzeWuxingStrength,
+		determineUsefulGods,
+	]);
+
+	// Show loading state
+	if (loading) {
+		return (
+			<section className="w-full max-w-full sm:w-[95%] mx-auto bg-white rounded-[24px] sm:rounded-[48px] lg:rounded-[80px] p-3 sm:p-3 lg:p-12 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.18)]">
+				<div className="flex flex-col items-center justify-center py-12 space-y-4">
+					{/* Loading spinner */}
+					<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+					{/* 風水妹 loading image */}
+					<div className="flex items-center justify-center">
+						<Image
+							src="/images/風水妹/風水妹-loading.png"
+							alt="風水妹運算中"
+							width={120}
+							height={120}
+							className="object-contain"
+						/>
+					</div>
+
+					{/* Loading text */}
+					<div className="space-y-2 text-center">
+						<div
+							className="text-gray-700"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(14px, 3.5vw, 16px)",
+							}}
+						>
+							風水妹已經在運算八字分析中，請稍候
+						</div>
+					</div>
+				</div>
+			</section>
+		);
+	}
+
+	// Return null if no data could be processed
+	if (!analysisData) {
 		return null;
 	}
 
-	const { wuxingData } = analysis;
-
-	// Calculate zodiac from birth year
-	const birthDate = new Date(userInfo.birthDateTime);
-	const birthYear = birthDate.getFullYear();
-	const zodiacAnimals = [
-		"鼠",
-		"牛",
-		"虎",
-		"兔",
-		"龍",
-		"蛇",
-		"馬",
-		"羊",
-		"猴",
-		"雞",
-		"狗",
-		"豬",
-	];
-	const userZodiac = zodiacAnimals[(birthYear - 1900) % 12];
-
-	// Calculate strength analysis and useful gods
-	const strengthAnalysis = analyzeWuxingStrength(analysis.elementCounts);
-	const usefulGods = determineUsefulGods(strengthAnalysis);
-
-	// Create enhanced analysis object with all needed data
-	const enhancedAnalysis = {
-		...analysis,
-		strengthAnalysis,
-		usefulGods,
-	};
+	const { wuxingData, userZodiac, strengthAnalysis, usefulGods } =
+		analysisData;
 
 	// Debug color assignment
 	const currentColor = getConcernColor(userInfo);
@@ -59,22 +144,6 @@ const Zodiac = memo(function Zodiac({
 		color: currentColor,
 		userInfo: userInfo,
 	});
-
-	// Store analysis data for database saving
-	if (typeof window !== "undefined") {
-		const zodiacData = {
-			userZodiac,
-			birthYear,
-			strengthAnalysis,
-			usefulGods,
-			enhancedAnalysis,
-			timestamp: new Date().toISOString(),
-		};
-
-		window.componentDataStore = window.componentDataStore || {};
-		window.componentDataStore.zodiacAnalysis = zodiacData;
-		console.log("📊 Stored Zodiac data:", "SUCCESS");
-	}
 
 	return (
 		<section className="w-full max-w-full sm:w-[95%] mx-auto bg-white rounded-[24px] sm:rounded-[48px] lg:rounded-[80px] p-3 sm:p-3 lg:p-12 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.18)]">
@@ -85,39 +154,42 @@ const Zodiac = memo(function Zodiac({
 						<div className="flex items-center justify-center w-40 h-40 mx-8 mx-auto mt-3 mb-0 sm:mb-4 sm:w-50 sm:h-50 lg:w-90 lg:h-90">
 							<Image
 								src={`/images/animals/${
-									userZodiac === "龍"
+									analysisData.userZodiac === "龍"
 										? "dragon"
-										: userZodiac === "鼠"
+										: analysisData.userZodiac === "鼠"
 											? "mouse"
-											: userZodiac === "牛"
+											: analysisData.userZodiac === "牛"
 												? "cow"
-												: userZodiac === "虎"
+												: analysisData.userZodiac ===
+													  "虎"
 													? "tiger"
-													: userZodiac === "兔"
+													: analysisData.userZodiac ===
+														  "兔"
 														? "rabbit"
-														: userZodiac === "蛇"
+														: analysisData.userZodiac ===
+															  "蛇"
 															? "snake"
-															: userZodiac ===
+															: analysisData.userZodiac ===
 																  "馬"
 																? "horse"
-																: userZodiac ===
+																: analysisData.userZodiac ===
 																	  "羊"
 																	? "sheep"
-																	: userZodiac ===
+																	: analysisData.userZodiac ===
 																		  "猴"
 																		? "monkey"
-																		: userZodiac ===
+																		: analysisData.userZodiac ===
 																			  "雞"
 																			? "chicken"
-																			: userZodiac ===
+																			: analysisData.userZodiac ===
 																				  "狗"
 																				? "dog"
-																				: userZodiac ===
+																				: analysisData.userZodiac ===
 																					  "豬"
 																					? "pig"
 																					: "mouse"
 								}.png`}
-								alt={userZodiac}
+								alt={analysisData.userZodiac}
 								width={280}
 								height={280}
 								className="object-contain"
@@ -140,7 +212,7 @@ const Zodiac = memo(function Zodiac({
 							>
 								年柱-
 								<span className="text-[#A3B116]">
-									{wuxingData.year}
+									{analysisData.wuxingData.year}
 								</span>
 							</div>
 						</div>
@@ -156,7 +228,7 @@ const Zodiac = memo(function Zodiac({
 							>
 								月柱-
 								<span className="text-[#A3B116]">
-									{wuxingData.month}
+									{analysisData.wuxingData.month}
 								</span>
 							</div>
 						</div>
@@ -172,7 +244,7 @@ const Zodiac = memo(function Zodiac({
 							>
 								日柱-
 								<span className="text-[#A3B116]">
-									{wuxingData.day}
+									{analysisData.wuxingData.day}
 								</span>
 							</div>
 						</div>
@@ -188,7 +260,7 @@ const Zodiac = memo(function Zodiac({
 							>
 								時柱-
 								<span className="text-[#A3B116]">
-									{wuxingData.hour}
+									{analysisData.wuxingData.hour}
 								</span>
 							</div>
 						</div>
@@ -210,7 +282,7 @@ const Zodiac = memo(function Zodiac({
 								}}
 							>
 								五行-
-								{enhancedAnalysis.strengthAnalysis.strengthDesc}
+								{analysisData.strengthAnalysis.strengthDesc}
 							</div>
 						</div>
 
@@ -229,7 +301,7 @@ const Zodiac = memo(function Zodiac({
 							>
 								{(() => {
 									const missingElements =
-										enhancedAnalysis.strengthAnalysis
+										analysisData.strengthAnalysis
 											.weakElements || [];
 									if (missingElements.length === 0) {
 										return "五行沒有缺失";
@@ -257,7 +329,7 @@ const Zodiac = memo(function Zodiac({
 						>
 							{(() => {
 								const { primaryGod, auxiliaryGod, strategy } =
-									enhancedAnalysis.usefulGods || {};
+									analysisData.usefulGods || {};
 
 								if (!primaryGod || !auxiliaryGod) {
 									return "根據五行分析，需要進一步確認用神配置以達到最佳平衡效果。";

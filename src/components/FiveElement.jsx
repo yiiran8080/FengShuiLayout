@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ComponentErrorBoundary } from "./ErrorHandling";
 import {
@@ -25,46 +26,105 @@ const FiveElement = ({
 	analyzeWuxingStrength,
 	determineUsefulGods,
 }) => {
+	const [loading, setLoading] = useState(true);
+	const [elementCounts, setElementCounts] = useState(null);
+	const [missingElements, setMissingElements] = useState([]);
+
 	// Check if userInfo is provided
 	if (!userInfo) {
 		return null;
 	}
 
-	// First check if we have existing historical data
-	const existingData = getComponentData("fiveElementAnalysis");
-	console.log(
-		"🔍 FiveElement checking for existing data:",
-		existingData ? "FOUND" : "NOT_FOUND"
-	);
+	useEffect(() => {
+		const processData = async () => {
+			try {
+				// First check if we have existing historical data
+				const existingData = getComponentData("fiveElementAnalysis");
+				console.log(
+					"🔍 FiveElement checking for existing data:",
+					existingData ? "FOUND" : "NOT_FOUND"
+				);
 
-	let elementCounts, missingElements;
+				if (existingData) {
+					// Use historical data
+					console.log("📚 FiveElement using historical data");
+					setElementCounts(existingData.elementCounts);
+					setMissingElements(existingData.missingElements);
+				} else {
+					// Generate fresh analysis
+					console.log("🆕 FiveElement generating fresh analysis");
+					const analysis = calculateWuxingAnalysis(userInfo);
+					if (analysis) {
+						setElementCounts(analysis.elementCounts);
+						setMissingElements(analysis.missingElements);
 
-	if (existingData) {
-		// Use historical data
-		console.log("📚 FiveElement using historical data");
-		elementCounts = existingData.elementCounts;
-		missingElements = existingData.missingElements;
-	} else {
-		// Generate fresh analysis
-		console.log("🆕 FiveElement generating fresh analysis");
-		const analysis = calculateWuxingAnalysis(userInfo);
-		if (!analysis) {
-			return null;
-		}
+						// Store analysis data for database saving
+						const analysisData = {
+							elementCounts: analysis.elementCounts,
+							missingElements: analysis.missingElements,
+							hasFullElements:
+								analysis.missingElements.length === 0,
+							timestamp: new Date().toISOString(),
+						};
 
-		elementCounts = analysis.elementCounts;
-		missingElements = analysis.missingElements;
-
-		// Store analysis data for database saving
-		const analysisData = {
-			elementCounts,
-			missingElements,
-			hasFullElements: missingElements.length === 0,
-			timestamp: new Date().toISOString(),
+						storeComponentData("fiveElementAnalysis", analysisData);
+						console.log(
+							"📊 Stored FiveElement fresh data:",
+							"SUCCESS"
+						);
+					}
+				}
+			} catch (error) {
+				console.error("❌ FiveElement data processing error:", error);
+			} finally {
+				setLoading(false);
+			}
 		};
 
-		storeComponentData("fiveElementAnalysis", analysisData);
-		console.log("📊 Stored FiveElement fresh data:", "SUCCESS");
+		processData();
+	}, [userInfo, calculateWuxingAnalysis]);
+
+	// Show loading state
+	if (loading) {
+		return (
+			<ComponentErrorBoundary componentName="FiveElement">
+				<section className="w-full sm:w-[85%] lg:w-[85%] mx-auto bg-white rounded-[30px] sm:rounded-[60px] lg:rounded-[160px] p-4 sm:p-6 lg:p-3 mb-6 sm:mb-10 shadow-[0_2px_5.3px_rgba(0,0,0,0.25)]">
+					<div className="flex flex-col items-center justify-center py-8 space-y-4">
+						{/* Loading spinner */}
+						<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+						{/* 風水妹 loading image */}
+						<div className="flex items-center justify-center">
+							<Image
+								src="/images/風水妹/風水妹-loading.png"
+								alt="風水妹運算中"
+								width={120}
+								height={120}
+								className="object-contain"
+							/>
+						</div>
+
+						{/* Loading text */}
+						<div className="space-y-2 text-center">
+							<div
+								className="text-gray-700"
+								style={{
+									fontFamily: "Noto Sans HK, sans-serif",
+									fontSize: "clamp(14px, 3.5vw, 16px)",
+								}}
+							>
+								風水妹已經在運算五行配置中，請稍候
+							</div>
+						</div>
+					</div>
+				</section>
+			</ComponentErrorBoundary>
+		);
+	}
+
+	// Return null if no data could be processed
+	if (!elementCounts) {
+		return null;
 	}
 
 	return (

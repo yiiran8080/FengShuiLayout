@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { ComponentErrorBoundary } from "./ErrorHandling";
 import { getConcernColor } from "../utils/colorTheme";
 
@@ -180,11 +181,33 @@ export default function SpecificSuggestion({ userInfo, currentYear = 2025 }) {
 	if (isLoading) {
 		return (
 			<section className="relative w-full sm:w-[95%] lg:w-[85%] mx-auto bg-white rounded-[20px] sm:rounded-[26px] p-4 sm:p-12 lg:p-20 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
-				<div className="flex items-center justify-center py-8">
-					<div className="w-8 h-8 border-b-2 border-blue-600 rounded-full animate-spin"></div>
-					<span className="ml-3 text-gray-600">
-						生成針對性建議中..
-					</span>
+				<div className="flex flex-col items-center justify-center py-12 space-y-4">
+					{/* Loading spinner */}
+					<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+					{/* 風水妹 loading image */}
+					<div className="flex items-center justify-center">
+						<Image
+							src="/images/風水妹/風水妹-loading.png"
+							alt="風水妹運算中"
+							width={120}
+							height={120}
+							className="object-contain"
+						/>
+					</div>
+
+					{/* Loading text */}
+					<div className="space-y-2 text-center">
+						<div
+							className="text-gray-700"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(14px, 3.5vw, 16px)",
+							}}
+						>
+							風水妹已經在運算針對性建議中，請稍候
+						</div>
+					</div>
 				</div>
 			</section>
 		);
@@ -239,7 +262,7 @@ export default function SpecificSuggestion({ userInfo, currentYear = 2025 }) {
 							className="font-bold text-green-700"
 							style={{ fontSize: "clamp(1.125rem, 3vw, 2rem)" }}
 						>
-							五大建議方案
+							建議方案
 						</h3>
 					</div>
 
@@ -296,7 +319,7 @@ export default function SpecificSuggestion({ userInfo, currentYear = 2025 }) {
 							className="font-bold text-red-700"
 							style={{ fontSize: "clamp(1.125rem, 3vw, 2rem)" }}
 						>
-							五大禁忌行為
+							禁忌行為
 						</h3>
 					</div>
 

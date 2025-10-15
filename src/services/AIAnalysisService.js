@@ -12,7 +12,14 @@ class AIAnalysisService {
 	}
 
 	/**
-	 * Generate AI analysis with automatic fallback
+	 * Generate AI anal		const keyData = {
+			birthday: userInfo.birthday,
+			concern: userInfo.concern,
+			problem: userInfo.problem,
+			component: componentType,
+		};
+		// Use Buffer for UTF-8 safe encoding instead of btoa which only supports ASCII
+		return Buffer.from(JSON.stringify(keyData), 'utf-8').toString('base64').replace(/[/+=]/g, "");th automatic fallback
 	 */
 	async generateAnalysis(prompt, userInfo, componentType) {
 		const cacheKey = this.getCacheKey(userInfo, componentType);
@@ -316,7 +323,9 @@ class AIAnalysisService {
 			problem: userInfo.problem,
 			component: componentType,
 		};
-		return btoa(JSON.stringify(keyData)).replace(/[/+=]/g, "");
+		return Buffer.from(JSON.stringify(keyData), "utf8")
+			.toString("base64")
+			.replace(/[/+=]/g, "");
 	}
 
 	async getCachedResult(key) {

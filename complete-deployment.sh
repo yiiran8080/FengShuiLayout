@@ -127,12 +127,20 @@ server_build_and_deploy() {
         # Ensure logs directory exists
         mkdir -p logs
         
-        # Start with PM2
-        echo "🚀 Starting application with PM2..."
-        pm2 start ecosystem.config.js
+        # Load server configuration
+        echo "⚙️  Loading server configuration..."
+        source server-config.sh || true
+        
+        # Start with PM2 using optimized configuration
+        echo "🚀 Starting application with PM2 (optimized)..."
+        pm2 start ecosystem.config.json --update-env
         
         # Save PM2 configuration
         pm2 save
+        
+        # Show process status
+        echo "📊 Process status:"
+        pm2 list
         
         echo "✅ Deployment completed successfully!"
 EOF

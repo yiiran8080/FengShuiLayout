@@ -25,10 +25,10 @@ const TAB_CONFIG = {
 		middle: {
 			label: "夫妻宮寅未暗合",
 			img: "/images/report/star2.png",
-			selectedBg: "#DEAB20",
+			selectedBg: "#E8B923",
 			selectedImg: "#FFFFFF",
 			unselectedBg: "#EFEFEF",
-			unselectedImg: "#DEAB20",
+			unselectedImg: "#E8B923",
 		},
 		right: {
 			label: "五行氣機修補",
@@ -54,7 +54,7 @@ const TAB_CONFIG = {
 			selectedBg: "#DEAB20",
 			selectedImg: "#FFFFFF",
 			unselectedBg: "#EFEFEF",
-			unselectedImg: "#DEAB20",
+			unselectedImg: "#E8B923",
 		},
 		right: {
 			label: "婚姻調候方案",
@@ -77,10 +77,10 @@ const TAB_CONFIG = {
 		middle: {
 			label: "夫妻合盤分析",
 			img: "/images/report/star2.png",
-			selectedBg: "#DEAB20",
+			selectedBg: "#E8B923",
 			selectedImg: "#FFFFFF",
 			unselectedBg: "#EFEFEF",
-			unselectedImg: "#DEAB20",
+			unselectedImg: "#E8B923",
 		},
 		right: {
 			label: "家庭和睦方案",
@@ -1898,9 +1898,14 @@ export function CoupleMingJu({ user1, user2, currentYear }) {
 
 												if (
 													unselectedColor ===
-													"#DEAB20"
+													"#E8B923"
 												) {
-													return "brightness(0) saturate(100%) invert(85%) sepia(89%) saturate(2000%) hue-rotate(30deg) brightness(95%) contrast(102%)";
+													return "brightness(0) saturate(100%) invert(85%) sepia(50%) saturate(2000%)  brightness(95%) contrast(102%)";
+												} else if (
+													unselectedColor ===
+													"#E8B923"
+												) {
+													return "brightness(0) saturate(100%) invert(85%) sepia(50%) saturate(2000%)  brightness(95%) contrast(102%)";
 												} else if (
 													unselectedColor ===
 													"#C74772"

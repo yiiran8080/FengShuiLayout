@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, memo } from "react";
+import Image from "next/image";
 import { ComponentErrorBoundary } from "./ErrorHandling";
 
 const JiXiong = memo(function JiXiong({
@@ -333,15 +334,34 @@ const JiXiong = memo(function JiXiong({
 	if (isLoading) {
 		return (
 			<ComponentErrorBoundary componentName="JiXiong">
-				<div className="flex items-center justify-center p-6 sm:p-8">
-					<div className="text-center">
-						<div className="inline-block animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-[#8B4513] mb-3 sm:mb-4"></div>
-						<p
-							className="text-[#8B4513] font-medium"
-							style={{ fontSize: "clamp(0.875rem, 2.5vw, 1rem)" }}
-						>
-							正在分析吉凶...
-						</p>
+				<div className="w-full max-w-full sm:w-[97%] mx-auto bg-white rounded-[20px] sm:rounded-[36px] lg:rounded-[48px] shadow-[0_4px_4px_rgba(0,0,0,0.18)] p-4 sm:p-8 lg:p-12">
+					<div className="flex flex-col items-center justify-center py-12 space-y-4">
+						{/* Loading spinner */}
+						<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+						{/* 風水妹 loading image */}
+						<div className="flex items-center justify-center">
+							<Image
+								src="/images/風水妹/風水妹-loading.png"
+								alt="風水妹運算中"
+								width={120}
+								height={120}
+								className="object-contain"
+							/>
+						</div>
+
+						{/* Loading text */}
+						<div className="space-y-2 text-center">
+							<div
+								className="text-gray-700"
+								style={{
+									fontFamily: "Noto Sans HK, sans-serif",
+									fontSize: "clamp(14px, 3.5vw, 16px)",
+								}}
+							>
+								風水妹已經在運算吉凶分析中，請稍候
+							</div>
+						</div>
 					</div>
 				</div>
 			</ComponentErrorBoundary>

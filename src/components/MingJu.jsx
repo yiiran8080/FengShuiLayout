@@ -2565,7 +2565,7 @@ export function MingJu({ userInfo, currentYear }) {
 													unselectedColor ===
 													"#DEAB20"
 												) {
-													return "brightness(0) saturate(100%) invert(85%) sepia(89%) saturate(2000%) hue-rotate(30deg) brightness(95%) contrast(102%)";
+													return "brightness(0) saturate(100%) invert(85%) sepia(50%) saturate(2000%)  brightness(95%) contrast(102%)";
 												} else if (
 													unselectedColor ===
 													"#389D7D"
@@ -2575,7 +2575,7 @@ export function MingJu({ userInfo, currentYear }) {
 													unselectedColor ===
 													"#D09900"
 												) {
-													return "brightness(0) saturate(100%) invert(75%) sepia(89%) saturate(2000%) hue-rotate(20deg) brightness(95%) contrast(102%)";
+													return "brightness(0) saturate(100%) invert(85%) sepia(50%) saturate(2000%)  brightness(95%) contrast(102%)";
 												} else if (
 													unselectedColor ===
 													"#3263C4"
@@ -2628,7 +2628,7 @@ export function MingJu({ userInfo, currentYear }) {
 				<div className="mt-4 sm:mt-6">
 					{selectedTab === "日主特性" ? (
 						<div
-							className="min-h-[250px] sm:min-h-[300px]"
+							className=" sm:min-h-[100px]"
 							style={{
 								backgroundColor: "white",
 								color: "black",
@@ -2636,11 +2636,35 @@ export function MingJu({ userInfo, currentYear }) {
 							}}
 						>
 							{loading ? (
-								<div className="flex items-center justify-center h-40">
-									<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#B4003C]"></div>
-									<span className="ml-3 text-gray-600">
-										AI 分析中...
-									</span>
+								<div className="flex flex-col items-center justify-center py-12 space-y-4">
+									{/* Loading spinner */}
+									<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+									{/* 風水妹 loading image */}
+									<div className="flex items-center justify-center">
+										<Image
+											src="/images/風水妹/風水妹-loading.png"
+											alt="風水妹運算中"
+											width={120}
+											height={120}
+											className="object-contain"
+										/>
+									</div>
+
+									{/* Loading text */}
+									<div className="space-y-2 text-center">
+										<div
+											className="text-gray-700"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(14px, 3.5vw, 16px)",
+											}}
+										>
+											風水妹已經在運算命局核心解析中，請稍候
+										</div>
+									</div>
 								</div>
 							) : (
 								<div
@@ -2664,11 +2688,35 @@ export function MingJu({ userInfo, currentYear }) {
 					) : (
 						<div className="min-h-[250px] sm:min-h-[300px]">
 							{loading ? (
-								<div className="flex items-center justify-center h-32 sm:h-40">
-									<div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-[#B4003C]"></div>
-									<span className="ml-2 text-sm text-gray-600 sm:ml-3 sm:text-base">
-										AI 分析中...
-									</span>
+								<div className="flex flex-col items-center justify-center py-12 space-y-4">
+									{/* Loading spinner */}
+									<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+									{/* 風水妹 loading image */}
+									<div className="flex items-center justify-center">
+										<Image
+											src="/images/風水妹/風水妹-loading.png"
+											alt="風水妹運算中"
+											width={120}
+											height={120}
+											className="object-contain"
+										/>
+									</div>
+
+									{/* Loading text */}
+									<div className="space-y-2 text-center">
+										<div
+											className="text-gray-700"
+											style={{
+												fontFamily:
+													"Noto Sans HK, sans-serif",
+												fontSize:
+													"clamp(14px, 3.5vw, 16px)",
+											}}
+										>
+											風水妹已經在運算命局核心解析中，請稍候
+										</div>
+									</div>
 								</div>
 							) : (
 								<div

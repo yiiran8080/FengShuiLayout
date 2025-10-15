@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { ComponentErrorBoundary } from "./ErrorHandling";
 import { getConcernColor } from "../utils/colorTheme";
 
@@ -890,26 +891,33 @@ export default function GanZhi({ userInfo, currentYear = 2025 }) {
 					boxShadow: "0 4px 4px rgba(0,0,0,0.25)",
 				}}
 			>
-				<div className="py-6 text-center sm:py-8">
-					<div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-[#A3B116] mx-auto mb-3 sm:mb-4"></div>
-					<p
-						className="text-[#5A5A5A] mb-2"
-						style={{
-							fontFamily: "Noto Sans HK, sans-serif",
-							fontSize: "clamp(1rem, 3vw, 1.125rem)",
-						}}
-					>
-						AI正在生成個性化流年干支分析...
-					</p>
-					<p
-						className="text-gray-500"
-						style={{
-							fontFamily: "Noto Sans HK, sans-serif",
-							fontSize: "clamp(0.875rem, 2.5vw, 0.875rem)",
-						}}
-					>
-						根據您的八字信息和關注領域進行深度分析
-					</p>
+				<div className="flex flex-col items-center justify-center py-12 space-y-4">
+					{/* Loading spinner */}
+					<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+					{/* 風水妹 loading image */}
+					<div className="flex items-center justify-center">
+						<Image
+							src="/images/風水妹/風水妹-loading.png"
+							alt="風水妹運算中"
+							width={120}
+							height={120}
+							className="object-contain"
+						/>
+					</div>
+
+					{/* Loading text */}
+					<div className="space-y-2 text-center">
+						<div
+							className="text-gray-700"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(14px, 3.5vw, 16px)",
+							}}
+						>
+							風水妹已經在運算流年干支分析中，請稍候
+						</div>
+					</div>
 				</div>
 			</div>
 		);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { ComponentErrorBoundary } from "./ErrorHandling";
 import { getConcernColor } from "../utils/colorTheme";
 import {
@@ -301,45 +302,56 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 			setIsLoading(true);
 			setError(null);
 
-			// Use AI to generate analysis
-			generateSeasonAnalysis(userInfo, currentYear)
-				.then((analysis) => {
-					if (isMounted && analysis) {
-						setAnalysisData(analysis);
-						// Set active season to current season (first in reordered array)
-						setActiveSeasonIndex(0);
-						// Store data for database saving
-						storeComponentData("seasonAnalysis", analysis);
-						console.log("📊 Stored Season fresh data:", "SUCCESS");
-						console.log(
-							"🎯 Set active season to current:",
-							analysis.currentSeason
-						);
-					}
-				})
-				.catch((error) => {
-					if (isMounted) {
-						console.error(
-							"Season analysis error in useEffect:",
-							error
-						);
-						setError(error.message);
-						// Set minimal fallback if generateSeasonAnalysis doesn't return fallback
-						setAnalysisData(
-							getMinimalFallbackData(
-								userInfo.concern || "財運",
-								currentYear,
-								userInfo
-							)
-						);
-					}
-				})
-				.finally(() => {
-					if (isMounted) {
-						setIsLoading(false);
-						setRequestInProgress(false);
-					}
-				});
+			// Add 5-second delay to stagger API calls and reduce server load
+			console.log(
+				"⏳ Staggering Season API call to avoid server resource conflicts..."
+			);
+			setTimeout(() => {
+				if (isMounted) {
+					// Use AI to generate analysis
+					generateSeasonAnalysis(userInfo, currentYear)
+						.then((analysis) => {
+							if (isMounted && analysis) {
+								setAnalysisData(analysis);
+								// Set active season to current season (first in reordered array)
+								setActiveSeasonIndex(0);
+								// Store data for database saving
+								storeComponentData("seasonAnalysis", analysis);
+								console.log(
+									"📊 Stored Season fresh data:",
+									"SUCCESS"
+								);
+								console.log(
+									"🎯 Set active season to current:",
+									analysis.currentSeason
+								);
+							}
+						})
+						.catch((error) => {
+							if (isMounted) {
+								console.error(
+									"Season analysis error in useEffect:",
+									error
+								);
+								setError(error.message);
+								// Set minimal fallback if generateSeasonAnalysis doesn't return fallback
+								setAnalysisData(
+									getMinimalFallbackData(
+										userInfo.concern || "財運",
+										currentYear,
+										userInfo
+									)
+								);
+							}
+						})
+						.finally(() => {
+							if (isMounted) {
+								setIsLoading(false);
+								setRequestInProgress(false);
+							}
+						});
+				}
+			}, 5000); // 5-second delay to reduce server load
 		} else {
 			// If no valid userInfo, show fallback immediately
 			console.warn(
@@ -364,20 +376,33 @@ export default function Season({ userInfo, currentYear = 2025 }) {
 				className="relative mx-auto bg-white rounded-[15px] sm:rounded-[20px] md:rounded-[26px] p-4 sm:p-8 md:p-12 lg:p-20 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]"
 				style={{ width: "95%" }}
 			>
-				<div className="flex flex-col items-center justify-center py-6 sm:py-8">
-					<div className="w-6 h-6 mb-3 border-b-2 rounded-full sm:w-8 sm:h-8 animate-spin border-amber-600"></div>
-					<span
-						className="text-center text-gray-600"
-						style={{ fontSize: "clamp(0.875rem, 2.5vw, 1rem)" }}
-					>
-						{loadingMessage}
-					</span>
-					<p
-						className="mt-2 text-center text-gray-400"
-						style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}
-					>
-						分析可能需要較長時間，請稍候...
-					</p>
+				<div className="flex flex-col items-center justify-center py-12 space-y-4">
+					{/* Loading spinner */}
+					<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+					{/* 風水妹 loading image */}
+					<div className="flex items-center justify-center">
+						<Image
+							src="/images/風水妹/風水妹-loading.png"
+							alt="風水妹運算中"
+							width={120}
+							height={120}
+							className="object-contain"
+						/>
+					</div>
+
+					{/* Loading text */}
+					<div className="space-y-2 text-center">
+						<div
+							className="text-gray-700"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(14px, 3.5vw, 16px)",
+							}}
+						>
+							風水妹已經在運算四季分析中，請稍候
+						</div>
+					</div>
 				</div>
 			</section>
 		);

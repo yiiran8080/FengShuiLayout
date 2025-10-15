@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import Image from "next/image";
 import { BaziAnalysisSystem } from "@/lib/newConversationFlow";
 import { ArrowLeft, Calendar, User, Target, AlertCircle } from "lucide-react";
 import FiveElement from "@/components/FiveElement";
@@ -851,15 +852,35 @@ export default function FengShuiReportPage() {
 
 	if (loading) {
 		return (
-			<div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50">
-				<div className="text-center">
-					<div className="w-12 h-12 mx-auto mb-4 border-b-2 border-purple-600 rounded-full animate-spin"></div>
-					<p className="text-gray-600">
-						正在檢查你的專屬風水分析報告...
-					</p>
-					<p className="mt-2 text-sm text-gray-500">
-						如果報告已存在，將直接顯示
-					</p>
+			<div className="flex items-center justify-center min-h-screen bg-[#EFEFEF]">
+				<div className="flex flex-col items-center justify-center py-12 space-y-4">
+					{/* Loading spinner */}
+					<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+					{/* 風水妹 loading image */}
+					<div className="flex items-center justify-center">
+						<Image
+							src="/images/風水妹/風水妹-loading.png"
+							alt="風水妹運算中"
+							width={120}
+							height={120}
+							className="object-contain"
+						/>
+					</div>
+
+					{/* Loading text */}
+					<div className="space-y-2 text-center">
+						<div
+							className="text-gray-700"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
+								fontWeight: 500,
+							}}
+						>
+							風水妹正在為你準備專屬風水分析報告
+						</div>
+					</div>
 				</div>
 			</div>
 		);

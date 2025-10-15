@@ -269,9 +269,16 @@ export async function POST(request) {
 4. 生活建議要實用具體
 `;
 
-		// OPTIMIZED API CALL - Reduced max_tokens and temperature
+		// OPTIMIZED API CALL - Different timeouts for server vs local
 		const controller = new AbortController();
-		const timeoutId = setTimeout(() => controller.abort(), 60000); // Increased to 60s for safety
+		const apiTimeout =
+			process.env.NODE_ENV === "production" ? 25000 : 60000; // 25s prod, 60s dev
+		const timeoutId = setTimeout(() => {
+			console.log(
+				`🚨 DeepSeek API timeout reached (${apiTimeout}ms), aborting request`
+			);
+			controller.abort();
+		}, apiTimeout);
 
 		const response = await fetch(
 			"https://api.deepseek.com/v1/chat/completions",
@@ -413,10 +420,22 @@ export async function POST(request) {
 			);
 		}
 
-		return NextResponse.json(
-			{ error: "Internal server error", details: error.message },
-			{ status: 500 }
+		// Return fallback analysis instead of error for server reliability
+		console.log(
+			`[${requestId}] 🔄 Returning fallback analysis due to server error`
 		);
+		const fallbackAnalysis = generateFallbackAnalysis(
+			calculationResult?.tenGodsElements || {}
+		);
+
+		return NextResponse.json({
+			success: true,
+			analysis: fallbackAnalysis,
+			aiGenerated: false,
+			contentType: "server-fallback",
+			timestamp: new Date().toISOString(),
+			requestId: requestId,
+		});
 	}
 }
 

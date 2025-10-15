@@ -1,5 +1,5 @@
-// Set API timeout to 50 seconds for this route to match client timeout
-export const maxDuration = 50;
+// Set API timeout to 120 seconds for this route to handle heavy server load
+export const maxDuration = 120;
 
 export async function POST(req) {
 	try {
@@ -72,77 +72,38 @@ export async function POST(req) {
 			.join("\n\n");
 
 		// Enhanced prompt for comprehensive Season analysis based on 八字
-		const prompt = `你是專業的八字命理分析師。請根據用戶的八字信息進行個人化的關鍵季節分析：
+		const prompt = `你是資深八字命理分析師。請為用戶生成詳細的四季運勢分析：
 
-用戶八字信息：
+用戶信息：
 - 生日：${birthday}
-- 性別：${gender}
+- 性別：${gender} 
 - 時間：${time}
 - 關注領域：${concern}
 
-**當前時間背景：**
-- 當前年份：${currentYear}年
-- 當前月份：${currentMonth}月
-- 當前季節：${currentSeasonName}
-- 時間狀況：${isLatePart ? "月份後半段" : "月份前半段"}
+當前時間：${currentYear}年${currentMonth}月（${currentSeasonName}）
 
-**重要提示：請特別關注當前和即將到來的季節，對於已經過去的季節僅作簡要參考。**
-
-請針對用戶的具體八字和${concern}關注領域，提供個人化的關鍵季節分析，重點分析順序為：${relevantSeasons.join(" → ")}
+分析要求：
+1. **季節順序**：按當前季節開始，依次分析四季（${relevantSeasons.join(" → ")}）
+2. **內容深度**：每季節120-160字的深度分析（平衡品質與效能）
+3. **格式標準**：#### **季節名【狀態標籤】**（月份，五行特性）：詳細分析內容
+4. **具體建議**：每季節提供4-6個可執行的具體建議
+5. **時間精確**：提及具體月份的重點時期和關鍵節氣
 
 **分析重點：**
-- ${currentSeasonName}：立即可執行的具體建議和注意事項
-- 即將來臨的季節：提前準備和規劃建議
-- 未來季節：長期規劃參考
+- 基於用戶八字五行分析該季節的影響
+- 針對${concern}領域的具體影響和對策
+- 詳細的時間節點建議（如"申月上旬"、"秋分前後"等）
+- 具體的行動方案和禁忌事項
+- 傳統節氣與現代實踐的結合建議
 
-【關鍵季節分析 - 時間順序：${relevantSeasons.join(" → ")}】
+**特別要求：**
+- 當前季節${currentSeasonName}需要額外詳細，包含"本月剩餘時間的緊急行動計劃"
+- 每個建議都要具體可操作，避免空泛描述
+- 結合五行生剋理論深度解析
+- 使用專業術語但保持易懂性
+- 重點突出季節轉換的關鍵時機
 
-${seasonSections}
-
-參考格式和風格：
-
-財運示例：
-春季（寅卯辰月，木旺）：印星旺，利學習、考證、維繫客戶/上司關係以保職位（護正財）。但木生火，野心易膨脹，嚴禁投資、合夥。辰月濕土稍緩燥。
-
-夏季（巳午未月，火土極旺）：凶險巔峰期！巳午月（火）應流年劫財，破財風險最高！務必：極度節儉、只做必要支出、全力保工作、杜絕任何投機/合夥/借貸。未月（土）未戌刑加劇，注意公司/平台內部問題或壓力。
-
-健康示例：
-夏季（巳午未月，火土極旺）：生死攸關期！巳午月（火）應流年凶煞，務必：絕對避免：暴曬、高溫作業、劇烈運動、情緒激動、熬夜、辛辣油膩飲食。嚴格執行：防暑降溫（空調、陰涼）、大量補充水分電解質（淡鹽水、清湯）、清淡飲食（粥、瓜果）、保證充足睡眠、隨身攜帶急救藥（如降壓、救心）。
-
-秋季（申酉戌月，金旺）：相對緩和期（金氣壓火）。申月（金水）：最佳調理窗口，利於滋陰潤燥（銀耳、百合）、修復夏季損傷、系統治療慢性病。酉月（純金）：繼續鞏固，重點保養肺與大腸（呼吸、皮膚、排便）。戌月（土金）：金氣漸弱，後半月運支戌土引動未戌刑，注意脾胃保養，防舊病復發。
-
-冬季（亥子丑月，水旺）示例：
-亥子月（水旺）：救命調候期！水制火潤燥，最利修復元氣、恢復健康。具體措施：溫補腎陰（黑豆、黑芝麻、山藥）、加強保暖（尤其腰腎）、早睡晚起養精神、溫和運動（太極、散步）。子月調候最佳，心神漸穩、體力恢復。丑月（土庫）：鞏固調候成果，土潤金生、金水相生，利於制定來年健康規劃，可考慮系統體檢、治療根本問題。
-
-工作/事業冬季示例：
-亥子月（水旺）：智慧調候期，水為傷官主創新思維，利於深度學習、策略規劃、創新方案研發。具體建議：參加培訓課程提升專業能力、研究市場趨勢制定來年計劃、與同行深度交流拓展視野、整理工作經驗形成知識體系。丑月（土庫）：收藏階段，土印生金，利於知識沉澱、經驗總結、制定長期職業規劃。
-
-要求：
-1. 必須基於用戶具體八字進行個人化分析，不可泛泛而談
-2. ${concern === "工作" ? "請按事業運勢分析，" : ""}針對${concern}領域提供專業且具體的季節性建議
-3. **重點關注時間優先級**：
-   - ${currentSeasonName}：最詳細分析，提供當前${currentMonth}月${isLatePart ? "下旬" : "上旬"}的具體行動指導
-   - 即將來臨的季節：準備和預防措施
-   - 未來的季節：長期規劃參考
-4. 每個季節必須包含標準格式：#### **季節名（地支月份，五行旺相）**：
-5. **當前季節${currentSeasonName}分析必須最詳細完整**，至少150字，包含：
-   - 具體的八字分析原理
-   - 當前${currentMonth}月的具體影響和緊急注意事項
-   - 本月剩餘時間的具體可執行建議措施（至少3條）
-   - 月份細分的特殊注意事項
-   - 即將到來下個月的提前準備指導
-6. 內容要具體實用，包含具體的行動指導，避免已經過去的時間建議
-7. 語言專業但易懂，體現八字命理的專業性
-8. 重點突出當前危險期的防護措施和有利期的把握方法
-9. 按季節重要性分月細述，當前季節需要最詳細的月份分析
-10. 提供具體實例和操作建議，避免空泛的概念性描述
-11. **優先確保當前和即將來臨季節的內容詳細實用**
-
-請確保每個季節的分析都足夠詳細深入，為用戶提供真正有價值的個人化指導。`;
-
-		// Add timeout to DeepSeek API call
-		const controller = new AbortController();
-		const timeoutId = setTimeout(() => controller.abort(), 40000); // 40 second timeout for external API
+請嚴格按照格式生成完整的四季分析，確保內容豐富實用。`;
 
 		const response = await fetch(
 			"https://api.deepseek.com/chat/completions",
@@ -161,14 +122,11 @@ ${seasonSections}
 						},
 					],
 					stream: false,
-					max_tokens: 8000, // Increased token limit for comprehensive seasonal analysis
-					temperature: 0.6,
+					max_tokens: 2000, // Optimized for server performance under load
+					temperature: 0.5, // More consistent responses for production
 				}),
-				signal: controller.signal,
 			}
 		);
-
-		clearTimeout(timeoutId);
 
 		if (!response.ok) {
 			console.error(
@@ -210,16 +168,6 @@ ${seasonSections}
 		});
 	} catch (error) {
 		console.error("Season Analysis Error:", error);
-
-		// Handle specific timeout errors
-		if (error.name === "AbortError") {
-			console.error("DeepSeek API timeout after 40 seconds");
-			return Response.json(
-				{ error: "分析請求超時，請稍後再試" },
-				{ status: 408 }
-			);
-		}
-
 		return Response.json(
 			{ error: "Analysis generation failed" },
 			{ status: 500 }

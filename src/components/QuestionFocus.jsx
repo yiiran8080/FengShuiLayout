@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { getConcernColor } from "../utils/colorTheme";
 import {
 	getComponentData,
@@ -128,13 +129,32 @@ export default function QuestionFocus({ userInfo }) {
 	if (loading) {
 		return (
 			<section className="w-full sm:w-[95%] lg:w-[95%] mx-auto bg-white rounded-[45px] p-6 sm:p-8 lg:p-10 mb-6 sm:mb-10 shadow-[0_4px_5.3px_rgba(0,0,0,0.25)]">
-				<div className="flex items-center justify-center py-20">
-					<div className="text-center">
+				<div className="flex flex-col items-center justify-center py-12 space-y-4">
+					{/* Loading spinner */}
+					<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+					{/* 風水妹 loading image */}
+					<div className="flex items-center justify-center">
+						<Image
+							src="/images/風水妹/風水妹-loading.png"
+							alt="風水妹運算中"
+							width={120}
+							height={120}
+							className="object-contain"
+						/>
+					</div>
+
+					{/* Loading text */}
+					<div className="space-y-2 text-center">
 						<div
-							className="inline-block w-8 h-8 mb-4 border-b-2 rounded-full animate-spin"
-							style={{ borderColor: themeColor }}
-						></div>
-						<p className="text-gray-600">AI正在分析您的問題...</p>
+							className="text-gray-700"
+							style={{
+								fontFamily: "Noto Sans HK, sans-serif",
+								fontSize: "clamp(14px, 3.5vw, 16px)",
+							}}
+						>
+							風水妹已經在運算問題分析中，請稍候
+						</div>
 					</div>
 				</div>
 			</section>

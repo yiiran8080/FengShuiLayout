@@ -138,17 +138,18 @@ const EnhancedCoupleSpecificProblemSolution = ({
 		specificProblem,
 	]);
 
-	// � STABLE compatibility score with change tracking and prevention
+	// � STABLE compatibility score with robust synchronization
 	const [stableScore, setStableScore] = useState(null);
+	const [contextDataStable, setContextDataStable] = useState(false);
 
+	// Enhanced synchronization with context data stability detection
 	const compatibilityScore = useMemo(() => {
-		// Removed setState call to prevent infinite re-render loop
-
 		console.log(
 			"🔄 EnhancedCoupleSpecificProblemSolution - Calculating compatibility score",
 			{
 				hasContextData: !!contextAnalysisData,
 				contextScore: contextAnalysisData?.compatibility?.score,
+				contextDataStable,
 				currentStableScore: stableScore,
 				femaleUser: !!femaleUser,
 				maleUser: !!maleUser,
@@ -164,18 +165,28 @@ const EnhancedCoupleSpecificProblemSolution = ({
 			return stableScore;
 		}
 
-		let calculatedScore = null;
-
-		// Priority 1: Use context analysis data (same logic as CoupleAnnualAnalysis)
-		if (contextAnalysisData?.compatibility?.score) {
-			calculatedScore = parseInt(contextAnalysisData.compatibility.score);
+		// PRIORITY 1: Wait for context data to stabilize before using it
+		if (contextAnalysisData?.compatibility?.score && contextDataStable) {
+			const calculatedScore = parseInt(
+				contextAnalysisData.compatibility.score
+			);
 			console.log(
-				"✅ EnhancedCoupleSpecificProblemSolution - Using context score (SYNCHRONIZED):",
+				"✅ EnhancedCoupleSpecificProblemSolution - Using STABLE context score (SYNCHRONIZED):",
 				calculatedScore
 			);
+			return calculatedScore;
 		}
-		// Priority 2: Calculate locally using same logic as CoupleAnnualAnalysis
-		else if (femaleUser?.birthDateTime && maleUser?.birthDateTime) {
+
+		// PRIORITY 2: Still waiting for context data to stabilize
+		if (contextAnalysisData === null || !contextDataStable) {
+			console.log(
+				"⏳ EnhancedCoupleSpecificProblemSolution - Waiting for STABLE context data, using temporary score"
+			);
+			return 75; // Temporary while waiting for stable data
+		}
+
+		// PRIORITY 3: Context data is stable but no score - calculate locally
+		if (femaleUser?.birthDateTime && maleUser?.birthDateTime) {
 			try {
 				const user1Analysis = calculateUnifiedElements(
 					femaleUser.birthDateTime,
@@ -186,46 +197,70 @@ const EnhancedCoupleSpecificProblemSolution = ({
 					maleUser.gender
 				);
 
-				calculatedScore = calculateBasicCompatibilityScore(
+				const calculatedScore = calculateBasicCompatibilityScore(
 					user1Analysis,
 					user2Analysis
 				);
 
 				console.log(
-					"⚠️ EnhancedCoupleSpecificProblemSolution - Using calculated score (SYNCHRONIZED):",
+					"⚠️ EnhancedCoupleSpecificProblemSolution - Using calculated score (FALLBACK):",
 					calculatedScore
 				);
+				return calculatedScore;
 			} catch (error) {
 				console.error("Error calculating compatibility:", error);
-				calculatedScore = 75; // Default fallback
+				return 75; // Default fallback
 			}
 		}
-		// Ultimate fallback (same as CoupleAnnualAnalysis)
-		else {
-			calculatedScore = 75; // Changed to match CoupleAnnualAnalysis fallback
-			console.log(
-				"❌ EnhancedCoupleSpecificProblemSolution - Using ultimate fallback score:",
-				calculatedScore
-			);
+
+		// Ultimate fallback
+		console.log(
+			"❌ EnhancedCoupleSpecificProblemSolution - Using ultimate fallback score"
+		);
+		return 75;
+	}, [
+		femaleUser,
+		maleUser,
+		contextAnalysisData,
+		contextDataStable,
+		stableScore,
+	]);
+
+	// Detect when context data has stabilized (give it time to load properly)
+	useEffect(() => {
+		if (contextAnalysisData?.compatibility?.score && !contextDataStable) {
+			// Add a small delay to ensure the context data is fully stable
+			const stabilityTimer = setTimeout(() => {
+				console.log(
+					"📊 EnhancedCoupleSpecificProblemSolution - Context data marked as STABLE"
+				);
+				setContextDataStable(true);
+			}, 1000); // 1 second stability buffer
+
+			return () => clearTimeout(stabilityTimer);
 		}
+	}, [contextAnalysisData, contextDataStable]);
 
-		return calculatedScore || 75;
-	}, [femaleUser, maleUser, contextAnalysisData, stableScore]);
-
-	// Lock the score when first calculated (using useEffect to avoid re-render loop)
+	// Lock the score only when we have stable context data
 	useEffect(() => {
 		if (
 			stableScore === null &&
-			compatibilityScore !== null &&
-			compatibilityScore !== 75
+			contextDataStable &&
+			contextAnalysisData?.compatibility?.score &&
+			compatibilityScore !== 75 // Don't lock temporary scores
 		) {
 			console.log(
-				"🔒 EnhancedCoupleSpecificProblemSolution - LOCKING score to prevent changes:",
+				"🔒 EnhancedCoupleSpecificProblemSolution - LOCKING STABLE score to prevent changes:",
 				compatibilityScore
 			);
 			setStableScore(compatibilityScore);
 		}
-	}, [compatibilityScore, stableScore]);
+	}, [
+		compatibilityScore,
+		stableScore,
+		contextAnalysisData,
+		contextDataStable,
+	]);
 
 	// Format birth date for display
 	const formatBirthDate = (birthDateTime) => {
@@ -236,6 +271,56 @@ const EnhancedCoupleSpecificProblemSolution = ({
 		} catch (error) {
 			return birthDateTime;
 		}
+	};
+
+	// Format BaZi description with structured content
+	const formatBaziDescription = (rawDescription) => {
+		if (!rawDescription) return "八字分析生成中...";
+
+		// If content is too long (over 300 characters), extract key points
+		if (rawDescription.length > 300) {
+			// Try to extract structured sections
+			const sections = rawDescription.split(/[**]|[###]|[\n]{2,}/);
+			const keyPoints = [];
+
+			// Look for key analysis patterns
+			const patterns = [
+				/日主分析[：:](.{1,120})/,
+				/十神特質[：:](.{1,120})/,
+				/關鍵矛盾[：:](.{1,120})/,
+				/性格特性[：:](.{1,120})/,
+				/主要優勢[：:](.{1,120})/,
+				/核心特質(.{1,120})/,
+			];
+
+			for (const pattern of patterns) {
+				const match = rawDescription.match(pattern);
+				if (match && match[1]) {
+					keyPoints.push(match[1].trim().replace(/[*#]/g, ""));
+					if (keyPoints.length >= 2) break; // Limit to 2 key points
+				}
+			}
+
+			// If we found structured content, use it
+			if (keyPoints.length > 0) {
+				return keyPoints.join(" ");
+			}
+
+			// Otherwise, truncate intelligently
+			const sentences = rawDescription.split(/[。！？]/);
+			let result = "";
+			for (const sentence of sentences) {
+				if (result.length + sentence.length < 200) {
+					result += sentence + "。";
+				} else {
+					break;
+				}
+			}
+			return result || rawDescription.substring(0, 180) + "...";
+		}
+
+		// For shorter content, clean up formatting
+		return rawDescription.replace(/[*#]/g, "").trim();
 	};
 
 	// Categorize problem when specificProblem changes
@@ -987,9 +1072,13 @@ const EnhancedCoupleSpecificProblemSolution = ({
 										style={{
 											fontSize: "clamp(12px, 3vw, 14px)",
 											lineHeight: "1.6",
+											minHeight:
+												"clamp(60px, 15vw, 80px)", // Ensure consistent height
 										}}
 									>
-										{analysisData.female.description}
+										{formatBaziDescription(
+											analysisData.female.description
+										)}
 									</div>
 								</div>
 							</div>
@@ -1079,9 +1168,13 @@ const EnhancedCoupleSpecificProblemSolution = ({
 										style={{
 											fontSize: "clamp(12px, 3vw, 14px)",
 											lineHeight: "1.6",
+											minHeight:
+												"clamp(60px, 15vw, 80px)", // Ensure consistent height
 										}}
 									>
-										{analysisData.male.description}
+										{formatBaziDescription(
+											analysisData.male.description
+										)}
 									</div>
 								</div>
 							</div>

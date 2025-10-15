@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { ComponentErrorBoundary } from "./ErrorHandling";
 import { getConcernColor } from "../utils/colorTheme";
 import {
@@ -538,46 +539,33 @@ export default function LiuNianKeyWord({ userInfo, currentYear = 2025 }) {
 	if (isLoading) {
 		return (
 			<ComponentErrorBoundary>
-				<div className="w-[95%] mx-auto bg-white rounded-[45px] shadow-[0_4px_4px_rgba(0,0,0,0.25)] p-6 space-y-6">
-					<div className="text-center">
-						<h3
-							className="text-start text-[30px] font-extrabold text-black mb-3"
-							style={{
-								fontFamily: "Noto Serif TC, serif",
-								fontWeight: 800,
-							}}
-						>
-							流年關鍵詞
-						</h3>
-						<div className="p-4 border rounded-lg bg-white/70 backdrop-blur-sm border-amber-200">
-							<div className="animate-pulse">
-								<div className="w-3/4 h-4 mx-auto rounded bg-amber-200"></div>
-							</div>
+				<div className="w-full max-w-full sm:w-[97%] mx-auto bg-white rounded-[20px] sm:rounded-[36px] lg:rounded-[48px] shadow-[0_4px_4px_rgba(0,0,0,0.18)] p-4 sm:p-8 lg:p-12">
+					<div className="flex flex-col items-center justify-center py-12 space-y-4">
+						{/* Loading spinner */}
+						<div className="w-8 h-8 border-b-2 border-pink-500 rounded-full animate-spin"></div>
+
+						{/* 風水妹 loading image */}
+						<div className="flex items-center justify-center">
+							<Image
+								src="/images/風水妹/風水妹-loading.png"
+								alt="風水妹運算中"
+								width={120}
+								height={120}
+								className="object-contain"
+							/>
 						</div>
-					</div>
-					<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-						{[1, 2, 3].map((i) => (
+
+						{/* Loading text */}
+						<div className="space-y-2 text-center">
 							<div
-								key={i}
-								className="p-6 shadow-lg bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl"
+								className="text-gray-700"
+								style={{
+									fontFamily: "Noto Sans HK, sans-serif",
+									fontSize: "clamp(14px, 3.5vw, 16px)",
+								}}
 							>
-								<div className="space-y-3 animate-pulse">
-									<div className="w-2/3 h-6 bg-gray-300 rounded"></div>
-									<div className="space-y-2">
-										<div className="h-4 bg-gray-300 rounded"></div>
-										<div className="w-5/6 h-4 bg-gray-300 rounded"></div>
-									</div>
-								</div>
+								風水妹已經在運算流年分析中，請稍候
 							</div>
-						))}
-					</div>
-					<div className="text-center">
-						<div className="p-3 border rounded-lg bg-white/50 backdrop-blur-sm border-amber-200">
-							<p className="flex items-center justify-center gap-2 text-xs text-amber-700">
-								<span className="animate-spin">⏳</span>
-								正在分析你的流年運勢...
-								<span className="animate-spin">⏳</span>
-							</p>
 						</div>
 					</div>
 				</div>

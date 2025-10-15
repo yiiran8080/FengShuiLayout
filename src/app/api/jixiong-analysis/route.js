@@ -1,3 +1,6 @@
+// Set API timeout to 120 seconds for this route to handle heavy server load
+export const maxDuration = 120;
+
 export async function POST(req) {
 	try {
 		const { userInfo } = await req.json();
@@ -94,7 +97,7 @@ export async function POST(req) {
 						},
 					],
 					stream: false,
-					max_tokens: 2500,
+					max_tokens: 2000, // Optimized for server performance under load
 					temperature: 0.6,
 				}),
 			}
