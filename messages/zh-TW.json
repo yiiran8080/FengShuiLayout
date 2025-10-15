@@ -156,6 +156,10 @@
 				"wealth": {
 					"name": "財運流年測算",
 					"description": "掌示財運走向，投資理財指導"
+				},
+				"couple": {
+					"name": "情侶合盤測算",
+					"description": "情侶八字合盤分析，感情運勢預測"
 				}
 			},
 			"startButton": "開始測算",
