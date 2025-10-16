@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { event } from "./GoogleAnalytics";
+import FengShuiMixpanel from "@/lib/mixpanel";
 
 export default function AutoButtonTracker() {
 	useEffect(() => {
@@ -219,6 +220,20 @@ export default function AutoButtonTracker() {
 							timestamp: new Date().toISOString(),
 						});
 					}
+
+					// Mixpanel 詳細追蹤
+					FengShuiMixpanel.trackButtonClick(buttonName, {
+						按鈕文字: buttonText,
+						按鈕連結: href,
+						按鈕類型: button.tagName.toLowerCase(),
+						按鈕上下文: contextualName,
+						頁面路徑: pageUrl,
+						頁面標題: pageTitle,
+						按鈕位置: {
+							x: button.getBoundingClientRect().left,
+							y: button.getBoundingClientRect().top,
+						},
+					});
 
 					console.log(
 						`🔘 Button/Link tracked: "${buttonName}" (text: "${buttonText}", context: "${contextualName}") -> ${href || "no-href"} on ${pageUrl}`

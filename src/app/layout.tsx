@@ -1,5 +1,7 @@
 import { Inter, Lora } from "next/font/google";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import MixpanelTracker from "@/components/MixpanelTracker";
+import MixpanelAuthTracker from "@/components/MixpanelAuthTracker";
 import { Suspense } from "react";
 import "./globals.css";
 
@@ -98,7 +100,12 @@ export default function RootLayout({
 					<GoogleAnalytics />
 				</Suspense>
 			</head>
-			<body className={lora.className}>{children}</body>
+			<body className={lora.className}>
+				<Suspense fallback={null}>
+					<MixpanelTracker />
+				</Suspense>
+				{children}
+			</body>
 		</html>
 	);
 }

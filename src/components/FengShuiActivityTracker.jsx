@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import FengShuiMixpanel from "@/lib/mixpanel";
 
 export default function FengShuiActivityTracker() {
 	useEffect(() => {
@@ -18,16 +19,30 @@ export default function FengShuiActivityTracker() {
 									node.matches('[class*="chat"]') ||
 									node.querySelector('[class*="message"]'))
 							) {
+								const messageType = node.textContent?.includes(
+									"AI"
+								)
+									? "ai_response"
+									: "user_message";
+
 								window.gtag &&
 									window.gtag("event", "chat_message_added", {
 										event_category: "Chat_Interaction",
-										message_type:
-											node.textContent?.includes("AI")
-												? "ai_response"
-												: "user_message",
+										message_type: messageType,
 										page_path: window.location.pathname,
 										timestamp: new Date().toISOString(),
 									});
+
+								// Mixpanel 聊天追蹤
+								FengShuiMixpanel.trackChatInteraction({
+									訊息類型:
+										messageType === "ai_response"
+											? "AI回應"
+											: "用戶訊息",
+									訊息長度: node.textContent?.length || 0,
+									包含圖片: !!node.querySelector("img"),
+									聊天頁面: window.location.pathname,
+								});
 							}
 
 							// Detect birthday modal opens

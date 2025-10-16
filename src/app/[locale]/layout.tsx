@@ -6,6 +6,10 @@ import PageTracker from "@/components/PageTracker";
 import AutoButtonTracker from "@/components/AutoButtonTracker";
 import UserBehaviorTracker from "@/components/UserBehaviorTracker";
 import FengShuiActivityTracker from "@/components/FengShuiActivityTracker";
+import MixpanelAuthTracker from "@/components/MixpanelAuthTracker";
+import MixpanelPageTracker from "@/components/MixpanelPageTracker";
+import MixpanelButtonTracker from "@/components/MixpanelButtonTracker";
+import ChatboxTracker from "@/components/ChatboxTracker";
 import { setRequestLocale } from "next-intl/server";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -32,6 +36,9 @@ export default async function LocaleLayout({
 			<AutoButtonTracker />
 			<UserBehaviorTracker />
 			<FengShuiActivityTracker />
+			<MixpanelPageTracker />
+			<MixpanelButtonTracker />
+			<ChatboxTracker />
 			<ToastContainer
 				position="top-center"
 				autoClose={1000}
@@ -45,6 +52,7 @@ export default async function LocaleLayout({
 				className={"text:sm"}
 			/>
 			<AuthProvider>
+				<MixpanelAuthTracker />
 				<UserProvider>
 					<ImageProvider>
 						<NextIntlClientProvider locale={locale}>
