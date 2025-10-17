@@ -26,7 +26,6 @@ export const regionConfig = {
 
 		// Display settings
 		currencyPosition: "before", // ¥688
-		flag: "🇨🇳",
 
 		// Payment methods available in China
 		paymentMethods: ["card", "alipay", "wechat_pay"],
@@ -54,10 +53,36 @@ export const regionConfig = {
 
 		// Display settings
 		currencyPosition: "before", // HK$888
-		flag: "🇭🇰",
 
 		// Payment methods available in Hong Kong
 		paymentMethods: ["card", "alipay_hk", "octopus"],
+	},
+
+	taiwan: {
+		// Basic info
+		name: "Taiwan",
+		code: "TW",
+		currency: "TWD",
+		symbol: "NT$",
+		locale: "zh-TW", // Traditional Chinese
+
+		// Pricing (you can adjust these values)
+		prices: {
+			basic: 888, // NT$888
+			premium: 1588, // NT$1588
+		},
+
+		// Stripe Price IDs (you'll create these in Stripe dashboard)
+		stripePriceIds: {
+			basic: "price_tw_basic_twd", // Replace with actual Stripe price ID
+			premium: "price_tw_premium_twd", // Replace with actual Stripe price ID
+		},
+
+		// Display settings
+		currencyPosition: "before", // NT$888
+
+		// Payment methods available in Taiwan
+		paymentMethods: ["card", "alipay", "line_pay"],
 	},
 };
 

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Footer from "@/components/home/Footer";
 import Navbar from "@/components/Navbar";
@@ -9,6 +9,7 @@ import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useRegionDetectionWithRedirect } from "@/hooks/useRegionDetectionEnhanced";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -21,20 +22,50 @@ import {
 } from "@/components/ui/alert-dialog";
 import { get, post, patch } from "@/lib/ajax";
 
+// Function to get region-specific image path for desktop only
+const getRegionSpecificImage = (category, region) => {
+	// Only apply region-specific images for desktop - mobile keeps original
+	const regionSuffix =
+		{
+			china: "cny",
+			hongkong: "hkd",
+			taiwan: "ntd",
+		}[region] || "hkd"; // Default to HKD
+
+	// Handle special cases - removed together handling since we now use couple
+
+	// Special case: wealth-hkd.png doesn't exist, so fall back to original for HKD
+	if (category === "wealth" && regionSuffix === "hkd") {
+		return `/images/price/wealth.png`; // Use original for HKD wealth
+	}
+
+	return `/images/price/${category}-${regionSuffix}.png`;
+};
+
 export default function YourPage() {
 	const t = useTranslations("pricePage");
 	const featuresT = useTranslations("home.features");
 	const locale = useLocale(); // Get current locale
 	const { data: session } = useSession();
 	const router = useRouter();
+
+	// Region detection hook
+	const { region, regionConfig } = useRegionDetectionWithRedirect({
+		autoRedirect: false, // Don't auto-redirect on price page
+		skipFirstRedirect: true,
+	});
+
 	const [isUnlocked, setIsUnlocked] = useState(false);
 	const [promoCode, setPromoCode] = useState("");
 	const [showPromoInput, setShowPromoInput] = useState(false);
 	const [promoError, setPromoError] = useState("");
 	const [copied, setCopied] = useState(false);
 
-	// Region selection state
-	const [selectedRegion, setSelectedRegion] = useState("hongkong"); // "hongkong" or "china"
+	// Force re-render trigger for region changes
+	const [renderKey, setRenderKey] = useState(0);
+
+	// Region selection state - now using detected region instead
+	// const [selectedRegion, setSelectedRegion] = useState("hongkong");
 
 	// Sharing states (simplified without Facebook SDK)
 	const [sharing, setSharing] = useState(false);
@@ -64,6 +95,64 @@ export default function YourPage() {
 	});
 
 	const validPromoCodes = ["UNLOCK2025", "HARMONIQ", "FENGSHUI"];
+
+	// Regional pricing configuration - memoized
+	const getRegionalPrice = useCallback(
+		(basePrice) => {
+			const priceMap = {
+				china: {
+					38: 38, // CNY ¥38
+					88: 88, // CNY ¥88
+					168: 168, // CNY ¥168
+					188: 188, // CNY ¥188
+					388: 388, // CNY ¥388
+				},
+				hongkong: {
+					38: 38, // HKD HK$38
+					88: 88, // HKD HK$88
+					168: 168, // HKD HK$168
+					188: 188, // HKD HK$188
+					388: 388, // HKD HK$388
+				},
+				taiwan: {
+					38: 158, // TWD NT$158 (was $38)
+					88: 368, // TWD NT$368 (was $88)
+					168: 668, // TWD NT$668 (was $168)
+					188: 748, // TWD NT$748 (was $188)
+					388: 1528, // TWD NT$1528 (was $388)
+				},
+			};
+
+			return priceMap[region]?.[basePrice] || basePrice;
+		},
+		[region]
+	); // Re-create when region changes
+
+	// Get currency symbol and formatting - memoized for performance
+	const formatPrice = useCallback(
+		(basePrice) => {
+			const price = getRegionalPrice(basePrice);
+			const symbols = {
+				china: "¥",
+				hongkong: "HK$",
+				taiwan: "NT$",
+			};
+
+			const symbol = symbols[region] || "HK$"; // Default to HK$ for other regions
+			return `${symbol}${price}`;
+		},
+		[region]
+	); // Re-create when region changes
+
+	// Force instant re-render when region changes
+	useEffect(() => {
+		if (region) {
+			setRenderKey((prev) => prev + 1);
+			console.log(
+				`⚡ Price page instant re-render for region: ${region}`
+			);
+		}
+	}, [region]);
 
 	// Check URL parameters for chat-originated payments
 	useEffect(() => {
@@ -110,7 +199,7 @@ export default function YourPage() {
 				// Trigger payment after a short delay to ensure component is mounted
 				setTimeout(() => {
 					if (isCoupleAnalysis || paymentType === "couple") {
-						// For couple analysis, go to $88 couple payment
+						// For couple analysis, go to {formatPrice(88)} couple payment
 						handleCouplePayment();
 					} else {
 						// For individual analysis, go to $38 fortune payment
@@ -123,7 +212,7 @@ export default function YourPage() {
 
 	// Get pricing info based on region
 	const getPricingInfo = () => {
-		if (selectedRegion === "china") {
+		if (region === "china") {
 			return {
 				currency: "¥",
 				premiumPrice: "5",
@@ -225,7 +314,7 @@ export default function YourPage() {
 		try {
 			// Choose API endpoint based on region for direct payment
 			let endpoint;
-			if (selectedRegion === "china") {
+			if (region === "china") {
 				endpoint = "/api/checkoutSessions/payment2-sqm";
 			} else {
 				endpoint = "/api/checkoutSessions/payment2";
@@ -234,7 +323,7 @@ export default function YourPage() {
 			// Create request body for one-time payment (no area multiplication)
 			const requestBody = {
 				quantity: 1, // Fixed quantity for one-time payment
-				region: selectedRegion,
+				region: region,
 				directPayment: true, // Flag to indicate this is a direct payment without area calculation
 			};
 
@@ -343,7 +432,7 @@ export default function YourPage() {
 		try {
 			// Choose API endpoint based on card type and region
 			let endpoint;
-			if (selectedRegion === "china") {
+			if (region === "china") {
 				// Use China-specific square meter endpoints
 				endpoint =
 					currentCardType === "premium"
@@ -362,14 +451,14 @@ export default function YourPage() {
 				quantity: Math.ceil(area), // Round up to nearest whole number
 			};
 
-			if (selectedRegion === "china") {
+			if (region === "china") {
 				requestBody.squareMeters = area;
 			} else {
 				requestBody.squareFeet = area;
 			}
 
 			// Add region info
-			requestBody.region = selectedRegion;
+			requestBody.region = region;
 
 			// Create checkout session
 			const response = await fetch(endpoint, {
@@ -446,6 +535,23 @@ export default function YourPage() {
 		setCurrentCardType("expert88");
 
 		try {
+			// Get fresh locale and region from localStorage to ensure consistency
+			const storedRegion = localStorage.getItem("userRegion");
+			const regionToLocaleMap = {
+				china: "zh-CN",
+				hongkong: "zh-TW",
+				taiwan: "zh-TW",
+			};
+			const freshLocale =
+				regionToLocaleMap[storedRegion] || locale || "zh-TW";
+
+			console.log(
+				"💰 Price page life payment - Using fresh locale:",
+				freshLocale,
+				"from stored region:",
+				storedRegion
+			);
+
 			// Create checkout session for expert88
 			const response = await fetch("/api/checkoutSessions/payment4", {
 				method: "POST",
@@ -454,6 +560,8 @@ export default function YourPage() {
 				},
 				body: JSON.stringify({
 					quantity: 1, // Fixed quantity for expert plan
+					locale: freshLocale, // Add locale parameter
+					region: storedRegion, // Add region parameter for NTD support
 				}),
 			});
 
@@ -509,6 +617,7 @@ export default function YourPage() {
 			const requestBody = {
 				concern: concernType, // financial, love, health, career
 				locale: freshLocale, // 🔥 Fix: Add locale parameter like couple payment
+				region: storedRegion, // 🔥 Add region parameter for NTD support
 			};
 
 			// Include chat-specific data if coming from chat
@@ -521,20 +630,30 @@ export default function YourPage() {
 				);
 			}
 
-			// Create checkout session for fortune reading
-			const response = await fetch("/api/payment-fortune", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(requestBody),
-			});
+			// Create checkout session for fortune reading with specific concern type
+			const response = await fetch(
+				"/api/checkoutSessions/payment-fortune-category",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						...requestBody,
+						concernType: concernType, // Use concernType instead of concern for the category API
+					}),
+				}
+			);
 
 			if (response.ok) {
 				const data = await response.json();
 				console.log("Fortune Payment Response:", data);
 
-				if (data.sessionId) {
+				// Handle different response structures
+				const sessionId = data.sessionId || data.data?.id;
+				console.log("Extracted session ID:", sessionId);
+
+				if (sessionId) {
 					// Import Stripe and redirect to checkout
 					const stripe = await import("@stripe/stripe-js").then(
 						(mod) =>
@@ -545,12 +664,13 @@ export default function YourPage() {
 
 					if (stripe) {
 						await stripe.redirectToCheckout({
-							sessionId: data.sessionId,
+							sessionId: sessionId,
 						});
 					} else {
 						throw new Error("Failed to load Stripe");
 					}
 				} else {
+					console.error("No session ID found in response:", data);
 					throw new Error("No session ID received");
 				}
 			} else {
@@ -565,15 +685,33 @@ export default function YourPage() {
 		}
 	};
 
-	// Handle $88 couple payment
+	// Handle {formatPrice(88)} couple payment
 	const handleCouplePayment = async () => {
 		setIsProcessingPayment(true);
 		setCurrentCardType("couple");
 
 		try {
+			// Get fresh locale and region from localStorage to ensure consistency
+			const storedRegion = localStorage.getItem("userRegion");
+			const regionToLocaleMap = {
+				china: "zh-CN",
+				hongkong: "zh-TW",
+				taiwan: "zh-TW",
+			};
+			const freshLocale =
+				regionToLocaleMap[storedRegion] || locale || "zh-TW";
+
+			console.log(
+				"💰 Price page couple payment - Using fresh locale:",
+				freshLocale,
+				"from stored region:",
+				storedRegion
+			);
+
 			// Prepare request body with chat context if available
 			const requestBody = {
-				locale: locale, // Use current locale instead of hardcoded "zh-TW"
+				locale: freshLocale, // Use detected locale
+				region: storedRegion, // 🔥 Add region parameter for NTD support
 			};
 
 			// Include chat-specific data if coming from chat
@@ -826,6 +964,7 @@ export default function YourPage() {
 				}}
 			>
 				<Navbar />
+
 				<section
 					className="self-stretch flex flex-col items-center justify-start mb-25 gap-16 sm:gap-24 lg:gap-[164px] max-w-full text-center text-2xl sm:text-3xl lg:text-[40px] text-[#073e31] font-[ABeeZee] px-4 sm:px-6 lg:px-0"
 					style={{ fontFamily: '"Noto Serif TC", serif' }}
@@ -943,7 +1082,7 @@ export default function YourPage() {
 												setSelectedRegion("hongkong")
 											}
 											className={`cursor-pointer px-8 py-4 rounded-xl text-lg font-bold transition-all duration-300 border-3 ${
-												selectedRegion === "hongkong"
+												region === "hongkong"
 													? "bg-[#096e56] text-white border-[#096e56] shadow-lg transform scale-105"
 													: "bg-white text-[#073e31] border-[#096e56] hover:bg-[#f0fdf4] hover:border-[#19ad6b]"
 											}`}
@@ -953,7 +1092,7 @@ export default function YourPage() {
 											}}
 										>
 											🇭🇰 {t("regionHongKong")}
-											{selectedRegion === "hongkong" && (
+											{region === "hongkong" && (
 												<div className="mt-1 text-sm font-medium opacity-90">
 													✓ 已選擇
 												</div>
@@ -964,7 +1103,7 @@ export default function YourPage() {
 												setSelectedRegion("china")
 											}
 											className={`cursor-pointer px-8 py-4 rounded-xl text-lg font-bold transition-all duration-300 border-3 ${
-												selectedRegion === "china"
+												region === "china"
 													? "bg-[#096e56] text-white border-[#096e56] shadow-lg transform scale-105"
 													: "bg-white text-[#073e31] border-[#096e56] hover:bg-[#f0fdf4] hover:border-[#19ad6b]"
 											}`}
@@ -974,7 +1113,7 @@ export default function YourPage() {
 											}}
 										>
 											🇨🇳 {t("regionChina")}
-											{selectedRegion === "china" && (
+											{region === "china" && (
 												<div className="mt-1 text-sm font-medium opacity-90">
 													✓ 已選擇
 												</div>
@@ -1071,9 +1210,9 @@ export default function YourPage() {
 												{t("paymentCalculation")}
 											</button>
 										</div>
-										<div className="text-left">
-											<div className="mb-1 text-4xl font-extrabold text-black font-noto-sans-hk sm:text-5xl">
-												$88
+										<div className="text-right">
+											<div className="mb-1 text-2xl font-extrabold text-black font-noto-sans-hk sm:text-3xl">
+												{formatPrice(88)}
 											</div>
 											<div className="text-xs sm:text-sm text-[#073e31] opacity-80">
 												/ {t("perTime")}
@@ -1095,8 +1234,8 @@ export default function YourPage() {
 											{t("premiumVersion2")}
 										</div>
 										<div className="text-right">
-											<div className="mb-1 text-3xl font-extrabold text-black line-through font-noto-sans-hk opacity-70 sm:text-4xl">
-												$168
+											<div className="mb-1 text-2xl font-extrabold text-black line-through font-noto-sans-hk opacity-70 sm:text-3xl">
+												{formatPrice(168)}
 											</div>
 											<div className="text-xs sm:text-sm text-[#073e31] opacity-80">
 												/ {t("perTime")}
@@ -1116,7 +1255,7 @@ export default function YourPage() {
 										{/* Main white card - made responsive */}
 										<div className="relative w-full max-w-[550px] min-h-[400px] bg-white rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 border border-gray-200 mx-auto">
 											{/* Small green discount card overlay - positioned at top-left */}
-											<div className="absolute -top-2 sm:-top-4 -left-2 sm:-left-4 bg-gradient-to-b from-[#E9F47C] to-[#A3B116] rounded-2xl px-8 sm:px-12 lg:px-24 py-2 shadow-lg z-10">
+											<div className="absolute -top-2 sm:-top-4 -left-2 sm:-left-4 bg-gradient-to-b from-[#E9F47C] to-[#A3B116] rounded-2xl w-[360px] lg:w-[360px] py-8 shadow-lg z-10">
 												{/* "最多用戶選擇" Badge */}
 												<div className="absolute -right-1 sm:-right-[-0.5rem] transform bg-white/50 text-[#111827] px-2 sm:px-3 py-1 rounded-full text-xs font-bold shadow-md whitespace-nowrap">
 													{t("mostUserChoice")}
@@ -1130,7 +1269,7 @@ export default function YourPage() {
 																className="absolute inset-0 font-noto-sans-hk text-stroke-white"
 																style={{
 																	fontSize:
-																		"clamp(2rem, 8vw, 4rem)",
+																		"44px",
 																	fontWeight:
 																		"900",
 																	WebkitTextFillColor:
@@ -1140,14 +1279,16 @@ export default function YourPage() {
 																}}
 																aria-hidden="true"
 															>
-																$88
+																{formatPrice(
+																	88
+																)}
 															</span>
 															{/* Foreground gradient text */}
 															<span
 																className="relative bg-gradient-to-r from-[#99A800] to-[#5D6600] font-noto-sans-hk bg-clip-text text-transparent"
 																style={{
 																	fontSize:
-																		"clamp(2rem, 8vw, 4rem)",
+																		"44px",
 																	fontWeight:
 																		"900",
 																	backgroundImage:
@@ -1156,7 +1297,9 @@ export default function YourPage() {
 																		"text",
 																}}
 															>
-																$88
+																{formatPrice(
+																	88
+																)}
 															</span>
 														</span>
 														<span className="text-xs font-bold text-black sm:text-sm opacity-90">
@@ -1164,7 +1307,7 @@ export default function YourPage() {
 														</span>
 													</div>
 													<div
-														className="font-['Noto_Serif_TC, serif'] font-extrabold text-[#284628] text-lg sm:text-xl lg:text-[45px] translate-x-15"
+														className="font-['Noto_Serif_TC, serif'] font-extrabold text-[#284628] text-lg sm:text-3xl lg:text-[35px] translate-x-15"
 														style={{
 															WebkitTextStroke:
 																"1.5px #284628",
@@ -1179,15 +1322,27 @@ export default function YourPage() {
 												{/* Original price section - moved to right */}
 												<div className="mb-6 text-right">
 													<div className="flex items-baseline justify-end gap-2 mb-2">
-														<span className="text-4xl font-bold text-gray-400 line-through">
-															$168
+														<span
+															className="font-bold text-gray-400 line-through "
+															style={{
+																fontSize:
+																	"clamp(0.1rem, 2vw, 2rem)",
+															}}
+														>
+															{formatPrice(168)}
 														</span>
-														<span className="text-sm font-bold text-gray-400">
+														<span
+															className="font-bold text-gray-400"
+															style={{
+																fontSize:
+																	"clamp(0.2rem, 1.5vw, 1rem)",
+															}}
+														>
 															/ {t("perTime")}
 														</span>
 													</div>
 													<div
-														className="text-4xl font-bold text-gray-400"
+														className="font-bold text-gray-400 text-34xl"
 														style={{
 															WebkitTextStroke:
 																"1px #9CA3AF",
@@ -1427,8 +1582,8 @@ export default function YourPage() {
 											</button>
 										</div>
 										<div className="text-right">
-											<div className="mb-1 text-4xl font-extrabold text-black font-noto-sans-hk sm:text-5xl">
-												$188
+											<div className="mb-1 text-2xl font-extrabold text-black font-noto-sans-hk sm:text-3xl">
+												{formatPrice(188)}
 											</div>
 											<div className="text-xs sm:text-sm text-[#073e31] opacity-80">
 												/ {t("perTime")}
@@ -1450,8 +1605,8 @@ export default function YourPage() {
 											{t("premiumVersion2")}
 										</div>
 										<div className="text-right">
-											<div className="text-4xl sm:text-3xl font-noto-sans-hk font-bold text-[#073e31] line-through opacity-70">
-												$388
+											<div className="mb-1 text-2xl font-extrabold text-black line-through font-noto-sans-hk opacity-70 sm:text-3xl">
+												{formatPrice(388)}
 											</div>
 											<div className="text-xs sm:text-sm text-[#073e31] opacity-80">
 												/ {t("perTime")}
@@ -1546,7 +1701,7 @@ export default function YourPage() {
 																className="absolute inset-0 font-noto-sans-hk text-stroke-white"
 																style={{
 																	fontSize:
-																		"clamp(2rem, 8vw, 4rem)",
+																		"44px",
 																	fontWeight:
 																		"900",
 																	WebkitTextFillColor:
@@ -1556,14 +1711,16 @@ export default function YourPage() {
 																}}
 																aria-hidden="true"
 															>
-																$188
+																{formatPrice(
+																	188
+																)}
 															</span>
 															{/* Foreground gradient text */}
 															<span
 																className="relative bg-gradient-to-r from-[#99A800] to-[#5D6600] font-noto-sans-hk bg-clip-text text-transparent"
 																style={{
 																	fontSize:
-																		"clamp(2rem, 8vw, 4rem)",
+																		"44px",
 																	fontWeight:
 																		"900",
 																	backgroundImage:
@@ -1572,7 +1729,9 @@ export default function YourPage() {
 																		"text",
 																}}
 															>
-																$188
+																{formatPrice(
+																	188
+																)}
 															</span>
 														</span>
 														<span className="text-xs font-bold text-black sm:text-sm opacity-90">
@@ -1580,7 +1739,7 @@ export default function YourPage() {
 														</span>
 													</div>
 													<div
-														className="font-['Noto_Serif_TC, serif'] font-extrabold text-[#284628] text-lg sm:text-xl lg:text-[45px] translate-x-15"
+														className="font-['Noto_Serif_TC, serif'] font-extrabold text-[#284628] text-lg sm:text-xl lg:text-[35px] translate-x-15"
 														style={{
 															WebkitTextStroke:
 																"1.5px #284628",
@@ -1595,15 +1754,27 @@ export default function YourPage() {
 												{/* Original price section - moved to right */}
 												<div className="mb-6 text-right">
 													<div className="flex items-baseline justify-end gap-2 mb-2">
-														<span className="text-4xl font-bold text-gray-400 line-through">
-															$388
+														<span
+															className="font-bold text-gray-400 line-through "
+															style={{
+																fontSize:
+																	"clamp(0.1rem, 2vw, 1.25rem)",
+															}}
+														>
+															{formatPrice(388)}
 														</span>
-														<span className="text-sm font-bold text-gray-400">
+														<span
+															className="font-bold text-gray-400"
+															style={{
+																fontSize:
+																	"clamp(0.2rem, 1.5vw, 1rem)",
+															}}
+														>
 															/ {t("perTime")}
 														</span>
 													</div>
 													<div
-														className="text-4xl font-bold text-gray-400"
+														className="font-bold text-gray-400 text-34xl"
 														style={{
 															WebkitTextStroke:
 																"1px #9CA3AF",
@@ -1850,12 +2021,12 @@ export default function YourPage() {
 												{/* Right - Pricing Section */}
 												<div className="flex flex-col items-end gap-2">
 													{/* Light Version */}
-													<div className="absolute top-[-25px] right-[0px] rounded-[20px] px-8 py-2 min-w-[80px] flex flex-col items-start bg-gradient-to-br from-[#E1ED71] to-[#A9B720]">
+													<div className="absolute top-[-25px] right-[0px] rounded-[20px] px-4 py-2 min-w-[80px] flex flex-col items-start bg-gradient-to-br from-[#E1ED71] to-[#A9B720]">
 														<div
 															className="mb-1 font-bold"
 															style={{
 																fontSize:
-																	"20px",
+																	"18px",
 																color: "#3F581F",
 																WebkitTextStroke:
 																	"0.5px #3F581F",
@@ -1868,19 +2039,21 @@ export default function YourPage() {
 																className="w-full font-bold font-noto-sans-hk"
 																style={{
 																	fontSize:
-																		"28px",
+																		"18px",
 																	color: "#3F581F",
 																	textAlign:
 																		"end",
 																}}
 															>
-																$38
+																{formatPrice(
+																	38
+																)}
 															</div>
 															<div
 																className="w-full font-noto-sans-hk"
 																style={{
 																	fontSize:
-																		"14px",
+																		"12px",
 																	color: "#3F581F",
 																}}
 															>
@@ -1929,7 +2102,7 @@ export default function YourPage() {
 														</div>
 														<div className="flex flex-row items-end justify-end">
 															<div
-																className="text-[32px] font-nano-sans-hk line-through"
+																className="text-[20px] font-nano-sans-hk line-through"
 																style={{
 																	color: "#A1A1A1",
 																	WebkitTextStroke:
@@ -1938,7 +2111,9 @@ export default function YourPage() {
 																		"extrabold",
 																}}
 															>
-																$88
+																{formatPrice(
+																	88
+																)}
 															</div>
 															<div className="text-xs text-[#A1A1A1]">
 																/ 每次
@@ -1956,7 +2131,10 @@ export default function YourPage() {
 									<div className="relative h-32 overflow-hidden ">
 										<div className="relative h-32 overflow-hidden">
 											<Image
-												src="/images/price/wealth.png"
+												src={getRegionSpecificImage(
+													"wealth",
+													region
+												)}
 												alt={t("wealthFortune")}
 												fill
 											/>
@@ -1968,7 +2146,7 @@ export default function YourPage() {
 										<div className="relative h-28 group perspective-1000">
 											{/* Card Inner (Flip Container) */}
 											<div className="relative w-full h-full transition-transform duration-700 ">
-												{/* Front Side - Premium Version ($88) */}
+												{/* Front Side - Premium Version ({formatPrice(88)}) */}
 												<div className="absolute inset-0 w-full h-full mb-2 bg-white ">
 													<div className="flex flex-col justify-between ">
 														<div className="flex flex-col mb-5 sm:flex-row sm:items-center sm:justify-between">
@@ -1978,10 +2156,10 @@ export default function YourPage() {
 																	fontFamily:
 																		"Noto Serif TC, serif",
 																	fontSize:
-																		"27px",
+																		"18px",
 																	color: "#A1A1A1",
 																	WebkitTextStroke:
-																		"1px #A1A1A1",
+																		"0.5px #A1A1A1",
 																}}
 															>
 																{t(
@@ -1994,17 +2172,19 @@ export default function YourPage() {
 																	fontFamily:
 																		"Noto Serif TC, serif",
 																	fontSize:
-																		"27px",
+																		"20px",
 																	color: "#A1A1A1",
 																	WebkitTextStroke:
-																		"1px #A1A1A1",
+																		"0.5px #A1A1A1",
 																}}
 															>
 																<span className="line-through">
-																	$88
+																	{formatPrice(
+																		88
+																	)}
 																</span>
 																/
-																<span className="text-[10px]">
+																<span className="text-[9px]">
 																	{t(
 																		"perTime"
 																	)}
@@ -2049,7 +2229,10 @@ export default function YourPage() {
 																{t("lightPlan")}
 															</span>
 															<span className="text-[28px] sm:text-lg font-bold text-[#A3B116]">
-																$38/
+																{formatPrice(
+																	38
+																)}
+																/
 																<span className="text-[10px]">
 																	{t(
 																		"perTime"
@@ -2359,12 +2542,12 @@ export default function YourPage() {
 												{/* Right - Pricing Section */}
 												<div className="flex flex-col items-end gap-2">
 													{/* Light Version */}
-													<div className="absolute top-[-25px] right-[0px] rounded-[20px] px-8 py-2 min-w-[80px] flex flex-col items-start bg-gradient-to-br from-[#E1ED71] to-[#A9B720]">
+													<div className="absolute top-[-25px] right-[0px] rounded-[20px] px-4 py-2 min-w-[80px] flex flex-col items-start bg-gradient-to-br from-[#E1ED71] to-[#A9B720]">
 														<div
 															className="mb-1 font-bold"
 															style={{
 																fontSize:
-																	"20px",
+																	"18px",
 																color: "#3F581F",
 																WebkitTextStroke:
 																	"0.5px #3F581F",
@@ -2377,19 +2560,21 @@ export default function YourPage() {
 																className="w-full font-bold font-noto-sans-hk"
 																style={{
 																	fontSize:
-																		"28px",
+																		"18px",
 																	color: "#3F581F",
 																	textAlign:
 																		"end",
 																}}
 															>
-																$38
+																{formatPrice(
+																	38
+																)}
 															</div>
 															<div
 																className="w-full font-noto-sans-hk"
 																style={{
 																	fontSize:
-																		"14px",
+																		"12px",
 																	color: "#3F581F",
 																}}
 															>
@@ -2438,7 +2623,7 @@ export default function YourPage() {
 														</div>
 														<div className="flex flex-row items-end justify-end">
 															<div
-																className="text-[32px] font-nano-sans-hk line-through"
+																className="text-[20px] font-nano-sans-hk line-through"
 																style={{
 																	color: "#A1A1A1",
 																	WebkitTextStroke:
@@ -2447,7 +2632,9 @@ export default function YourPage() {
 																		"extrabold",
 																}}
 															>
-																$88
+																{formatPrice(
+																	88
+																)}
 															</div>
 															<div className="text-xs text-[#A1A1A1]">
 																/ 每次
@@ -2465,7 +2652,10 @@ export default function YourPage() {
 									<div className="relative h-32 overflow-hidden ">
 										<div className="relative h-32 overflow-hidden">
 											<Image
-												src="/images/price/relationship.png"
+												src={getRegionSpecificImage(
+													"relationship",
+													region
+												)}
 												alt={t("loveFortune")}
 												fill
 											/>
@@ -2477,7 +2667,7 @@ export default function YourPage() {
 										<div className="relative h-28 group perspective-1000">
 											{/* Card Inner (Flip Container) */}
 											<div className="relative w-full h-full transition-transform duration-700 ">
-												{/* Front Side - Premium Version ($88) */}
+												{/* Front Side - Premium Version ({formatPrice(88)}) */}
 												<div className="absolute inset-0 w-full h-full mb-2 bg-white ">
 													<div className="flex flex-col justify-between ">
 														<div className="flex flex-col mb-5 sm:flex-row sm:items-center sm:justify-between">
@@ -2487,10 +2677,10 @@ export default function YourPage() {
 																	fontFamily:
 																		"Noto Serif TC, serif",
 																	fontSize:
-																		"27px",
+																		"18px",
 																	color: "#A1A1A1",
 																	WebkitTextStroke:
-																		"1px #A1A1A1",
+																		"0.5px #A1A1A1",
 																}}
 															>
 																{t(
@@ -2503,17 +2693,19 @@ export default function YourPage() {
 																	fontFamily:
 																		"Noto Serif TC, serif",
 																	fontSize:
-																		"27px",
+																		"20px",
 																	color: "#A1A1A1",
 																	WebkitTextStroke:
-																		"1px #A1A1A1",
+																		"0.5px #A1A1A1",
 																}}
 															>
 																<span className="line-through">
-																	$88
+																	{formatPrice(
+																		88
+																	)}
 																</span>
 																/
-																<span className="text-[10px]">
+																<span className="text-[9px]">
 																	{t(
 																		"perTime"
 																	)}
@@ -2558,7 +2750,10 @@ export default function YourPage() {
 																{t("lightPlan")}
 															</span>
 															<span className="text-[28px] sm:text-lg font-bold text-[#A3B116]">
-																$38/
+																{formatPrice(
+																	38
+																)}
+																/
 																<span className="text-[10px]">
 																	{t(
 																		"perTime"
@@ -2870,12 +3065,12 @@ export default function YourPage() {
 												{/* Right - Pricing Section */}
 												<div className="flex flex-col items-end gap-2">
 													{/* Light Version */}
-													<div className="absolute top-[-25px] right-[0px] rounded-[20px] px-8 py-2 min-w-[80px] flex flex-col items-start bg-gradient-to-br from-[#E1ED71] to-[#A9B720]">
+													<div className="absolute top-[-25px] right-[0px] rounded-[20px] px-4 py-2 min-w-[80px] flex flex-col items-start bg-gradient-to-br from-[#E1ED71] to-[#A9B720]">
 														<div
 															className="mb-1 font-bold"
 															style={{
 																fontSize:
-																	"20px",
+																	"18px",
 																color: "#3F581F",
 																WebkitTextStroke:
 																	"0.5px #3F581F",
@@ -2888,19 +3083,21 @@ export default function YourPage() {
 																className="w-full font-bold font-noto-sans-hk"
 																style={{
 																	fontSize:
-																		"28px",
+																		"18px",
 																	color: "#3F581F",
 																	textAlign:
 																		"end",
 																}}
 															>
-																$38
+																{formatPrice(
+																	38
+																)}
 															</div>
 															<div
 																className="w-full font-noto-sans-hk"
 																style={{
 																	fontSize:
-																		"14px",
+																		"12px",
 																	color: "#3F581F",
 																}}
 															>
@@ -2949,7 +3146,7 @@ export default function YourPage() {
 														</div>
 														<div className="flex flex-row items-end justify-end">
 															<div
-																className="text-[32px] font-nano-sans-hk line-through"
+																className="text-[20px] font-nano-sans-hk line-through"
 																style={{
 																	color: "#A1A1A1",
 																	WebkitTextStroke:
@@ -2958,7 +3155,9 @@ export default function YourPage() {
 																		"extrabold",
 																}}
 															>
-																$88
+																{formatPrice(
+																	88
+																)}
 															</div>
 															<div className="text-xs text-[#A1A1A1]">
 																/ 每次
@@ -2973,10 +3172,13 @@ export default function YourPage() {
 								{/* Health Fortune Card-Desktop */}
 								<div className="hidden w-full max-w-xs mx-auto overflow-hidden bg-white shadow-lg lg:block rounded-2xl">
 									{/* Card Image Header */}
-									<div className="relative h-32 overflow-hidden bg-green-600">
+									<div className="relative h-32 overflow-hidden">
 										<div className="relative h-32 overflow-hidden">
 											<Image
-												src="/images/price/health.png"
+												src={getRegionSpecificImage(
+													"health",
+													region
+												)}
 												alt={t("healthFortune")}
 												fill
 											/>
@@ -2988,7 +3190,7 @@ export default function YourPage() {
 										<div className="relative h-28 group perspective-1000">
 											{/* Card Inner (Flip Container) */}
 											<div className="relative w-full h-full transition-transform duration-700 ">
-												{/* Front Side - Premium Version ($88) */}
+												{/* Front Side - Premium Version ({formatPrice(88)}) */}
 												<div className="absolute inset-0 w-full h-full mb-2 bg-white ">
 													<div className="flex flex-col justify-between ">
 														<div className="flex flex-col mb-5 sm:flex-row sm:items-center sm:justify-between">
@@ -2998,10 +3200,10 @@ export default function YourPage() {
 																	fontFamily:
 																		"Noto Serif TC, serif",
 																	fontSize:
-																		"27px",
+																		"18px",
 																	color: "#A1A1A1",
 																	WebkitTextStroke:
-																		"1px #A1A1A1",
+																		"0.5px #A1A1A1",
 																}}
 															>
 																{t(
@@ -3014,17 +3216,19 @@ export default function YourPage() {
 																	fontFamily:
 																		"Noto Serif TC, serif",
 																	fontSize:
-																		"27px",
+																		"20px",
 																	color: "#A1A1A1",
 																	WebkitTextStroke:
-																		"1px #A1A1A1",
+																		"0.5px #A1A1A1",
 																}}
 															>
 																<span className="line-through">
-																	$88
+																	{formatPrice(
+																		88
+																	)}
 																</span>
 																/
-																<span className="text-[10px]">
+																<span className="text-[9px]">
 																	{t(
 																		"perTime"
 																	)}
@@ -3070,7 +3274,10 @@ export default function YourPage() {
 																{t("lightPlan")}
 															</span>
 															<span className="text-[28px] sm:text-lg font-bold text-[#A3B116]">
-																$38/
+																{formatPrice(
+																	38
+																)}
+																/
 																<span className="text-[10px]">
 																	{t(
 																		"perTime"
@@ -3382,12 +3589,12 @@ export default function YourPage() {
 												{/* Right - Pricing Section */}
 												<div className="flex flex-col items-end gap-2">
 													{/* Light Version */}
-													<div className="absolute top-[-25px] right-[0px] rounded-[20px] px-8 py-2 min-w-[80px] flex flex-col items-start bg-gradient-to-br from-[#E1ED71] to-[#A9B720]">
+													<div className="absolute top-[-25px] right-[0px] rounded-[20px] px-4 py-2 min-w-[80px] flex flex-col items-start bg-gradient-to-br from-[#E1ED71] to-[#A9B720]">
 														<div
 															className="mb-1 font-bold"
 															style={{
 																fontSize:
-																	"20px",
+																	"18px",
 																color: "#3F581F",
 																WebkitTextStroke:
 																	"0.5px #3F581F",
@@ -3400,19 +3607,21 @@ export default function YourPage() {
 																className="w-full font-bold font-noto-sans-hk"
 																style={{
 																	fontSize:
-																		"28px",
+																		"18px",
 																	color: "#3F581F",
 																	textAlign:
 																		"end",
 																}}
 															>
-																$38
+																{formatPrice(
+																	38
+																)}
 															</div>
 															<div
 																className="w-full font-noto-sans-hk"
 																style={{
 																	fontSize:
-																		"14px",
+																		"12px",
 																	color: "#3F581F",
 																}}
 															>
@@ -3461,7 +3670,7 @@ export default function YourPage() {
 														</div>
 														<div className="flex flex-row items-end justify-end">
 															<div
-																className="text-[32px] font-nano-sans-hk line-through"
+																className="text-[20px] font-nano-sans-hk line-through"
 																style={{
 																	color: "#A1A1A1",
 																	WebkitTextStroke:
@@ -3470,7 +3679,9 @@ export default function YourPage() {
 																		"extrabold",
 																}}
 															>
-																$88
+																{formatPrice(
+																	88
+																)}
 															</div>
 															<div className="text-xs text-[#A1A1A1]">
 																/ 每次
@@ -3487,7 +3698,10 @@ export default function YourPage() {
 									{/* Card Image Header */}
 									<div className="relative h-32 overflow-hidden">
 										<Image
-											src="/images/price/career.png"
+											src={getRegionSpecificImage(
+												"career",
+												region
+											)}
 											alt={t("careerFortune")}
 											fill
 										/>
@@ -3499,7 +3713,7 @@ export default function YourPage() {
 										<div className="relative h-28 group perspective-1000">
 											{/* Card Inner (Flip Container) */}
 											<div className="relative w-full h-full transition-transform duration-700 ">
-												{/* Front Side - Premium Version ($88) */}
+												{/* Front Side - Premium Version ({formatPrice(88)}) */}
 												<div className="absolute inset-0 w-full h-full mb-2 bg-white ">
 													<div className="flex flex-col justify-between ">
 														<div className="flex flex-col mb-5 sm:flex-row sm:items-center sm:justify-between">
@@ -3509,10 +3723,10 @@ export default function YourPage() {
 																	fontFamily:
 																		"Noto Serif TC, serif",
 																	fontSize:
-																		"27px",
+																		"18px",
 																	color: "#A1A1A1",
 																	WebkitTextStroke:
-																		"1px #A1A1A1",
+																		"0.5px #A1A1A1",
 																}}
 															>
 																{t(
@@ -3525,17 +3739,19 @@ export default function YourPage() {
 																	fontFamily:
 																		"Noto Serif TC, serif",
 																	fontSize:
-																		"27px",
+																		"20px",
 																	color: "#A1A1A1",
 																	WebkitTextStroke:
-																		"1px #A1A1A1",
+																		"0.5px #A1A1A1",
 																}}
 															>
 																<span className="line-through">
-																	$88
+																	{formatPrice(
+																		88
+																	)}
 																</span>
 																/
-																<span className="text-[10px]">
+																<span className="text-[9px]">
 																	{t(
 																		"perTime"
 																	)}
@@ -3580,7 +3796,10 @@ export default function YourPage() {
 																{t("lightPlan")}
 															</span>
 															<span className="text-[28px] sm:text-lg font-bold text-[#A3B116]">
-																$38/
+																{formatPrice(
+																	38
+																)}
+																/
 																<span className="text-[10px]">
 																	{t(
 																		"perTime"
@@ -3924,12 +4143,12 @@ export default function YourPage() {
 												{/* Right - Pricing Section */}
 												<div className="flex flex-col items-end gap-2">
 													{/* Light Version */}
-													<div className="absolute top-[-25px] right-[0px] rounded-[20px] px-8 py-2 min-w-[80px] flex flex-col items-start bg-gradient-to-br from-[#E1ED71] to-[#A9B720]">
+													<div className="absolute top-[-25px] right-[0px] rounded-[20px] px-4 py-2 min-w-[80px] flex flex-col items-start bg-gradient-to-br from-[#E1ED71] to-[#A9B720]">
 														<div
 															className="mb-1 font-bold"
 															style={{
 																fontSize:
-																	"20px",
+																	"18px",
 																color: "#3F581F",
 																WebkitTextStroke:
 																	"0.5px #3F581F",
@@ -3942,13 +4161,15 @@ export default function YourPage() {
 																className="w-full font-bold font-noto-sans-hk"
 																style={{
 																	fontSize:
-																		"28px",
+																		"18px",
 																	color: "#3F581F",
 																	textAlign:
 																		"end",
 																}}
 															>
-																$88
+																{formatPrice(
+																	88
+																)}
 															</div>
 															<div
 																className="w-full font-noto-sans-hk"
@@ -3993,7 +4214,7 @@ export default function YourPage() {
 														</div>
 														<div className="flex flex-row items-end justify-end">
 															<div
-																className="text-[32px] font-nano-sans-hk line-through"
+																className="text-[17px] font-nano-sans-hk line-through"
 																style={{
 																	color: "#A1A1A1",
 																	WebkitTextStroke:
@@ -4002,7 +4223,9 @@ export default function YourPage() {
 																		"extrabold",
 																}}
 															>
-																$168
+																{formatPrice(
+																	168
+																)}
 															</div>
 															<div className="text-xs text-[#A1A1A1]">
 																/ 每次
@@ -4024,7 +4247,10 @@ export default function YourPage() {
 											<div className="relative">
 												<div className="rounded-2xl">
 													<img
-														src="/images/price/together.png"
+														src={getRegionSpecificImage(
+															"couple",
+															region
+														)}
 														alt={t(
 															"coupleAnalysis"
 														)}
@@ -4246,7 +4472,7 @@ export default function YourPage() {
 												<div className="flex justify-end mt-7">
 													<div className="flex flex-row gap-5 text-right align-center">
 														<div
-															className="mt-2 text-5xl font-semibold"
+															className="text-4xl font-semibold "
 															style={{
 																color: "#A1A1A1",
 																WebkitTextStroke:
@@ -4258,16 +4484,18 @@ export default function YourPage() {
 															)}
 														</div>
 														<div
-															className="text-6xl font-black"
+															className="text-4xl font-black"
 															style={{
 																color: "#A1A1A1",
 															}}
 														>
 															<span className="line-through font-noto-sans-hk">
-																$168
+																{formatPrice(
+																	168
+																)}
 															</span>
-															<span className="text-lg font-medium">
-																/{" "}
+															<span className="text-[20px]">
+																/
 																{t(
 																	"perTimeUnit"
 																)}
@@ -4355,7 +4583,7 @@ export default function YourPage() {
 				)}
 
 				{/* Share Confirmation Modal - Only show for Hong Kong */}
-				{selectedRegion === "hongkong" && showShareConfirm && (
+				{region === "hongkong" && showShareConfirm && (
 					<div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-white/30">
 						<div className="relative max-w-md p-6 bg-white shadow-2xl rounded-2xl">
 							<div className="text-center">

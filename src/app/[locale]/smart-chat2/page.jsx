@@ -462,7 +462,8 @@ export default function SmartChat2() {
 					} else if (usePremiumPayment) {
 						paymentEndpoint = "/api/checkoutSessions/payment2"; // Premium ($188)
 					} else {
-						paymentEndpoint = "/api/payment-fortune"; // Fortune ($38)
+						paymentEndpoint =
+							"/api/checkoutSessions/payment-fortune-category"; // Fortune ($38) with specific concern types
 					}
 
 					console.log(
@@ -476,6 +477,26 @@ export default function SmartChat2() {
 						let paymentResponse;
 
 						if (useComprehensivePayment || usePremiumPayment) {
+							// Get fresh locale and region from localStorage for comprehensive/premium payments
+							const storedRegion =
+								localStorage.getItem("userRegion");
+							const regionToLocaleMap = {
+								china: "zh-CN",
+								hongkong: "zh-TW",
+								taiwan: "zh-TW",
+							};
+							const freshLocale =
+								regionToLocaleMap[storedRegion] ||
+								currentLocale ||
+								"zh-TW";
+
+							console.log(
+								"💰 Smart-chat2 comprehensive/premium payment - Using fresh locale:",
+								freshLocale,
+								"from stored region:",
+								storedRegion
+							);
+
 							// 使用 Stripe Checkout Session APIs (payment4 或 payment2)
 							paymentResponse = await fetch(paymentEndpoint, {
 								method: "POST",
@@ -485,6 +506,8 @@ export default function SmartChat2() {
 								body: JSON.stringify({
 									quantity: 1, // 固定數量
 									directPayment: true, // 標記為直接付款
+									locale: freshLocale, // Add locale parameter
+									region: storedRegion, // Add region parameter for NTD support
 								}),
 							});
 						} else {
@@ -543,12 +566,13 @@ export default function SmartChat2() {
 								"🔥🔥🔥 END INDIVIDUAL PAYMENT DEBUG 🔥🔥🔥"
 							);
 
-							// 使用原本的 fortune payment API
+							// 使用 fortune category API 來支持不同 concern types
 							const requestPayload = {
-								concern: englishConcern,
+								concernType: englishConcern, // Use concernType for the category API
 								specificProblem: problemToUse,
 								fromChat: true,
 								locale: freshLocale, // 🔥 Fix: Use fresh locale from localStorage
+								region: storedRegion, // Add region parameter for NTD support
 							};
 
 							console.log(
@@ -583,7 +607,16 @@ export default function SmartChat2() {
 								}
 							} else {
 								// 處理 Fortune payment 回應 - 使用 Stripe.js
-								if (paymentData.sessionId) {
+								// Handle different response structures
+								const sessionId =
+									paymentData.sessionId ||
+									paymentData.data?.id;
+								console.log(
+									"Smart-chat2 extracted session ID:",
+									sessionId
+								);
+
+								if (sessionId) {
 									// Import Stripe and redirect to checkout
 									const stripePublicKey =
 										process.env
@@ -602,7 +635,7 @@ export default function SmartChat2() {
 
 									if (stripe) {
 										await stripe.redirectToCheckout({
-											sessionId: paymentData.sessionId,
+											sessionId: sessionId,
 										});
 									} else {
 										throw new Error(
@@ -610,6 +643,10 @@ export default function SmartChat2() {
 										);
 									}
 								} else {
+									console.error(
+										"No session ID found in smart-chat2 response:",
+										paymentData
+									);
 									throw new Error(
 										"No session ID received from Fortune payment"
 									);

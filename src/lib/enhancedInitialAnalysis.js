@@ -141,7 +141,8 @@ export class EnhancedInitialAnalysis {
 	static async generateCoupleAnalysis(
 		birthday1,
 		birthday2,
-		specificQuestion = ""
+		specificQuestion = "",
+		region = "hongkong"
 	) {
 		const year1 = birthday1.getFullYear();
 		const year2 = birthday2.getFullYear();
@@ -199,7 +200,8 @@ export class EnhancedInitialAnalysis {
 		const exclusiveInsights = `✨ 專屬感情解析\n根據你們${element1}命和${element2}命的配對特質，以下是專屬的感情發展建議：\n\n🌸 感情發展階段建議**\n• 初期相處：著重建立信任基礎，${element1}命宜展現包容，${element2}命可主動分享\n• 深化關係：利用雙方五行互補優勢，在生活細節中體現相互支持\n• 長期規劃：結合各自的命理特質，制定共同目標和成長方向\n\n🎯 最佳互動時機\n每月農曆初一、十五感情能量最旺，適合深度溝通。${month1}月和${month2}月出生的你們，在對方生日月份前後特別容易產生共鳴。\n\n✨ 進階指引說明\n以上分析僅基於年月框架，若要精準鎖定：\n- 雙方個人桃花宮位與最佳方位\n- 2025-2026具體感情發展時間點\n- 專屬你們的相處節奏與溝通策略\n需提供完整出生時辰（幾點幾分），透過八字排盤解析「夫妻宮格局」與「大運流年」的互動，才能制定個人化感情發展策略。風鈴可為你們製作專屬合婚報告，助你們掌握感情升溫的關鍵契機點。`;
 
 		// 6. 合婚報告推薦
-		const reportRecommendation = this.getCoupleReportRecommendations();
+		const reportRecommendation =
+			this.getCoupleReportRecommendations(region);
 
 		return {
 			basicAnalysis,
@@ -2062,7 +2064,7 @@ ${
 	// 📊 Report Recommendations
 	// ==========================================
 
-	static getReportRecommendations(category) {
+	static getReportRecommendations(category, region = "hongkong") {
 		const categoryNames = {
 			工作: "工作",
 			財運: "財運",
@@ -2075,17 +2077,68 @@ ${
 
 		const concernName = categoryNames[category] || "運勢";
 
-		return `\n\n───────────────────\n💎 **想要更深入的分析嗎？**\n根據你的狀況，風鈴為你推薦：\n\n**1️⃣ 一份關於${concernName}的詳細報告** 價值$88，限時優惠$38\n- 深入分析你的${concernName}運勢，提供具體建議和改善方案\n- 詳細的五行調理方法\n- 最佳行動時機指導\n\n**2️⃣ 一份綜合命理報告** 價值$168，限時優惠$88\n- 全面的八字命盤分析，包含各方面運勢預測\n- 流年大運走勢分析\n- 人際關係和事業發展建議\n\n請回覆「1」或「2」選擇你想要的報告～`;
+		// Regional pricing configuration
+		const getRegionalPricing = (region) => {
+			switch (region) {
+				case "china":
+					return {
+						currency: "¥",
+						fortune: { original: 88, discount: 38 },
+						comprehensive: { original: 168, discount: 88 },
+					};
+				case "taiwan":
+					return {
+						currency: "NT$",
+						fortune: { original: 368, discount: 158 }, // NT$158 for fortune
+						comprehensive: { original: 668, discount: 368 }, // NT$368 for life/comprehensive
+					};
+				case "hongkong":
+				default:
+					return {
+						currency: "HK$",
+						fortune: { original: 88, discount: 38 },
+						comprehensive: { original: 168, discount: 88 },
+					};
+			}
+		};
+
+		const pricing = getRegionalPricing(region);
+
+		return `\n\n───────────────────\n💎 **想要更深入的分析嗎？**\n根據你的狀況，風鈴為你推薦：\n\n**1️⃣ 一份關於${concernName}的詳細報告** 價值${pricing.currency}${pricing.fortune.original}，限時優惠${pricing.currency}${pricing.fortune.discount}\n- 深入分析你的${concernName}運勢，提供具體建議和改善方案\n- 詳細的五行調理方法\n- 最佳行動時機指導\n\n**2️⃣ 一份綜合命理報告** 價值${pricing.currency}${pricing.comprehensive.original}，限時優惠${pricing.currency}${pricing.comprehensive.discount}\n- 全面的八字命盤分析，包含各方面運勢預測\n- 流年大運走勢分析\n- 人際關係和事業發展建議\n\n請回覆「1」或「2」選擇你想要的報告～`;
 	}
 
-	static getCoupleReportRecommendations() {
+	static getCoupleReportRecommendations(region = "hongkong") {
+		// Regional pricing configuration
+		const getRegionalPricing = (region) => {
+			switch (region) {
+				case "china":
+					return {
+						currency: "¥",
+						couple: { original: 168, discount: 88 },
+					};
+				case "taiwan":
+					return {
+						currency: "NT$",
+						couple: { original: 668, discount: 368 }, // NT$368 for couple analysis
+					};
+				case "hongkong":
+				default:
+					return {
+						currency: "HK$",
+						couple: { original: 168, discount: 88 },
+					};
+			}
+		};
+
+		const pricing = getRegionalPricing(region);
+
 		return {
 			options: [
 				{
 					number: "1️⃣",
 					title: "💕 合婚配對詳細報告",
-					price: "$88",
-					originalPrice: "$168",
+					price: `${pricing.currency}${pricing.couple.discount}`,
+					originalPrice: `${pricing.currency}${pricing.couple.original}`,
 					features: [
 						"深入分析你們的感情配對度，提供具體建議和改善方案",
 						"詳細的兩人五行相配分析",
@@ -2097,8 +2150,8 @@ ${
 				{
 					number: "2️⃣",
 					title: "一份綜合命理報告",
-					price: "$88",
-					originalPrice: "$168",
+					price: `${pricing.currency}${pricing.couple.discount}`,
+					originalPrice: `${pricing.currency}${pricing.couple.original}`,
 					features: [
 						"全面的八字命盤分析，包含各方面運勢預測",
 						"流年大運走勢分析",

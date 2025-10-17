@@ -32,16 +32,19 @@ export const detectUserRegion = async () => {
 		} else if (countryCode === "HK") {
 			console.log("🇭🇰 Detected: Hong Kong");
 			return "hongkong";
+		} else if (countryCode === "TW") {
+			console.log("🇹🇼 Detected: Taiwan");
+			return "taiwan";
 		} else {
 			console.log(
-				"� Detected: Other region - using Hong Kong as default"
+				"🌍 Detected: Other region - using Hong Kong as default"
 			);
 			return "hongkong";
 		}
 	} catch (error) {
 		console.warn("⚠️ Region detection failed:", error.message);
-		console.log("🇹🇼 Falling back to Taiwan as default region");
-		return "taiwan"; // Default fallback
+		console.log("�� Falling back to Hong Kong as default region");
+		return "hongkong"; // Default fallback
 	}
 };
 
@@ -66,6 +69,10 @@ export const detectRegionFromLanguage = () => {
 				console.log("🈳 Language detected: Hong Kong Chinese");
 				return "hongkong";
 			}
+			if (langLower.includes("zh-tw") || langLower.includes("zh-hant")) {
+				console.log("🈳 Language detected: Taiwan Chinese");
+				return "taiwan";
+			}
 		}
 
 		console.log(
@@ -74,7 +81,7 @@ export const detectRegionFromLanguage = () => {
 		return "hongkong";
 	} catch (error) {
 		console.warn("⚠️ Language detection failed:", error.message);
-		return "taiwan";
+		return "hongkong";
 	}
 };
 
@@ -86,17 +93,18 @@ export const detectRegionFromLanguage = () => {
 export const getUserRegion = async () => {
 	console.log("🚀 Starting region detection...");
 
-	// Check if user has manually selected a region (stored in localStorage)
+	// Check for stored preference first
 	const storedRegion =
 		typeof window !== "undefined"
 			? localStorage.getItem("userRegion")
 			: null;
-	if (storedRegion && ["china", "hongkong"].includes(storedRegion)) {
+	if (
+		storedRegion &&
+		["china", "hongkong", "taiwan"].includes(storedRegion)
+	) {
 		console.log("💾 Using stored region preference:", storedRegion);
 		return storedRegion;
-	}
-
-	// Try IP-based detection first
+	} // Try IP-based detection first
 	const ipRegion = await detectUserRegion();
 
 	// If IP detection fails, try language detection
@@ -117,7 +125,7 @@ export const getUserRegion = async () => {
 export const saveRegionPreference = (region) => {
 	if (
 		typeof window !== "undefined" &&
-		["china", "hongkong"].includes(region)
+		["china", "hongkong", "taiwan"].includes(region)
 	) {
 		localStorage.setItem("userRegion", region);
 		console.log("💾 Saved region preference:", region);

@@ -27,7 +27,8 @@ async function testCoupleAnalysis() {
 		const result = await EnhancedInitialAnalysis.generateCoupleAnalysis(
 			testInput.userBirthday,
 			testInput.partnerBirthday,
-			testInput.specificProblem
+			testInput.specificProblem,
+			"hongkong" // Default region
 		);
 
 		console.log("✅ Couple Analysis Generated Successfully!");

@@ -3,13 +3,13 @@ export default function () {
 	const t = useTranslations("home.privacy");
 	let arr = Array.from(new Array(4));
 	return (
-		<div className="py-20 bg-[#EFEFEF] min-h-screen">
+		<div className="py-25 bg-[#EFEFEF] min-h-screen">
 			<div className="max-w-4xl px-6 mx-auto">
 				<div className="mb-10 text-center">
-					<h1 className="text-4xl font-bold font-lora text-brown">
+					<h1 className="mb-2 text-4xl font-bold font-lora text-brown">
 						{t("title")}
 					</h1>
-					<p className="max-w-2xl mx-auto mt-4 font-lora text-brown-light">
+					<p className="max-w-2xl mx-auto mt-4 mb-2 font-lora text-brown-light">
 						{t("description")}
 					</p>
 					<p>更新日期：2025年【10】月【3】日</p>

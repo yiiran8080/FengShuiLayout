@@ -6,6 +6,7 @@ import ChatHistory from "@/models/ChatHistory"; // 🆕 新增：使用新的Cha
 import CoupleReportDoc from "@/models/CoupleReportDoc"; // 🎯 新增：合婚報告模型
 import EnhancedConversationMemoryManager from "@/lib/enhancedConversationMemoryManager";
 import DailyAnalysisRateLimit from "@/lib/dailyAnalysisRateLimit"; // 🚫 新增：每日分析限制
+import { getLocaleAndRegionFromRequest } from "@/utils/regionalPricing"; // 🌍 新增：區域定價支援
 
 // 🧹 Markdown 清理工具函數 - 移除格式標記符
 function cleanMarkdownFormatting(text) {
@@ -2739,6 +2740,7 @@ export async function POST(request) {
 			gender,
 			partnerGender,
 			reportType,
+			region: clientRegion, // 🌍 新增：從前端傳來的區域設定
 		} = await request.json();
 
 		console.log("📥 Smart-Chat2 收到的請求數據:", {
@@ -2752,6 +2754,34 @@ export async function POST(request) {
 			userEmail: userEmail, // 🆕 新增：記錄用戶email
 			sessionUser: userEmailFromSession, // 🆕 新增：會話中的用戶信息
 		});
+
+		// 🌍 檢測用戶區域以支援動態定價顯示
+		// 優先使用前端傳來的區域設定，否則從請求標頭檢測
+		let region, locale;
+		if (
+			clientRegion &&
+			["china", "hongkong", "taiwan"].includes(clientRegion)
+		) {
+			region = clientRegion;
+			// 根據區域設定對應的語言環境
+			const regionToLocale = {
+				china: "zh-CN",
+				hongkong: "zh-TW",
+				taiwan: "zh-TW",
+			};
+			locale = regionToLocale[region];
+			console.log(
+				`🌍 Smart-Chat2 - 使用前端區域: ${region} (locale: ${locale})`
+			);
+		} else {
+			// 從請求標頭檢測
+			const detected = getLocaleAndRegionFromRequest(request);
+			locale = detected.locale;
+			region = detected.region;
+			console.log(
+				`🌍 Smart-Chat2 - 從標頭檢測區域: ${region} (locale: ${locale})`
+			);
+		}
 
 		if (!message?.trim() && !userBirthday && !reportType) {
 			return NextResponse.json(
@@ -3195,7 +3225,8 @@ export async function POST(request) {
 					await EnhancedInitialAnalysis.generateCoupleAnalysis(
 						couplesBirthdayData.userBirthday,
 						couplesBirthdayData.partnerBirthday,
-						specificQuestionForAnalysis
+						specificQuestionForAnalysis,
+						region
 					);
 
 				// 🔧 轉換結構化對象為格式化字符串
@@ -3442,7 +3473,8 @@ export async function POST(request) {
 
 				// 添加詳細報告選項菜單 - 現在使用 enhancedInitialAnalysis 中的方法
 				response += EnhancedInitialAnalysis.getReportRecommendations(
-					topicAndBirthdayData.topic
+					topicAndBirthdayData.topic,
+					region
 				);
 
 				analysis = {
@@ -3839,7 +3871,8 @@ export async function POST(request) {
 
 				// 添加詳細報告選項菜單
 				response += EnhancedInitialAnalysis.getReportRecommendations(
-					userIntent.primaryConcern
+					userIntent.primaryConcern,
+					region
 				);
 
 				// 🚫 記錄分析次數

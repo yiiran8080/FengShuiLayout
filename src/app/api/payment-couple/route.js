@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import {
 	getRegionalPriceId,
-	getLocaleFromRequest,
+	getLocaleAndRegionFromRequest,
 } from "@/utils/regionalPricing";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -12,6 +12,7 @@ export async function POST(request) {
 		const body = await request.json();
 		const {
 			locale: requestLocale,
+			region: requestRegion, // 🔥 Add region support
 			specificProblem,
 			concern,
 			fromChat,
@@ -19,19 +20,30 @@ export async function POST(request) {
 
 		console.log("🔍 Payment-couple API received data:", {
 			requestLocale,
+			requestRegion,
 			specificProblem,
 			concern,
 			fromChat,
 		});
 
-		// Detect user's locale (prioritize request body, then headers)
-		const detectedLocale = requestLocale || getLocaleFromRequest(request);
-		console.log(`🌍 Couple payment - Detected locale: ${detectedLocale}`);
+		// Detect user's locale and region (prioritize request body, then headers)
+		const { locale: detectedLocale, region: detectedRegion } =
+			requestLocale || requestRegion
+				? { locale: requestLocale, region: requestRegion }
+				: getLocaleAndRegionFromRequest(request);
 
-		// Get the appropriate price ID for couple based on locale
-		const priceId = getRegionalPriceId(detectedLocale, "couple");
 		console.log(
-			`💰 Couple payment - Using price ID: ${priceId} for couple ${detectedLocale}`
+			`🌍 Couple payment - Detected locale: ${detectedLocale}, region: ${detectedRegion}`
+		);
+
+		// Get the appropriate price ID for couple based on locale and region
+		const priceId = getRegionalPriceId(
+			detectedLocale,
+			"couple",
+			detectedRegion
+		);
+		console.log(
+			`💰 Couple payment - Using price ID: ${priceId} for couple ${detectedLocale} (${detectedRegion})`
 		);
 
 		// Build success URL with chat context if available
@@ -73,7 +85,8 @@ export async function POST(request) {
 							: "完成付款後，您將收到專屬的情侶合盤分析報告",
 				},
 			},
-			locale: detectedLocale === "zh-CN" ? "zh" : "zh-TW", // Stripe locale format
+			// 🔥 REMOVED locale parameter to prevent Stripe automatic currency conversion
+			// locale: detectedLocale === "zh-CN" ? "zh" : "zh-TW", // This causes automatic currency conversion!
 			billing_address_collection: "auto",
 			customer_creation: "always",
 			// 🎨 Payment page customization

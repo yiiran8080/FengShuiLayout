@@ -21,6 +21,7 @@ export async function POST(request) {
 		const {
 			concernType,
 			locale: requestLocale,
+			region: requestRegion,
 			quantity = 1,
 			fromChat,
 			specificProblem,
@@ -33,39 +34,64 @@ export async function POST(request) {
 		console.log(`🌍 Fortune category payment - Request:`, {
 			concernType,
 			requestLocale,
+			requestRegion,
 			quantity,
 			fromChat: !!fromChat,
 		});
 
-		// Map concern types to price IDs based on locale
+		// Map concern types to price IDs based on locale and region
 		const priceIdMap = {
 			// Wealth/Financial
 			financial: {
 				"zh-CN": process.env.PRICE_ID5_CNY, // ¥38 wealth
-				"zh-TW": process.env.PRICE_ID5_HKD, // HK$38 wealth
+				"zh-TW": {
+					hongkong: process.env.PRICE_ID5_HKD, // HK$38 wealth
+					taiwan: process.env.PRICE_ID5_NTD, // NT$150 wealth
+					default: process.env.PRICE_ID5_HKD, // Default to HKD
+				},
 			},
 			wealth: {
 				"zh-CN": process.env.PRICE_ID5_CNY, // ¥38 wealth
-				"zh-TW": process.env.PRICE_ID5_HKD, // HK$38 wealth
+				"zh-TW": {
+					hongkong: process.env.PRICE_ID5_HKD, // HK$38 wealth
+					taiwan: process.env.PRICE_ID5_NTD, // NT$150 wealth
+					default: process.env.PRICE_ID5_HKD, // Default to HKD
+				},
 			},
 			// Relationship/Love
 			love: {
 				"zh-CN": process.env.PRICE_ID7_CNY, // ¥38 relationship
-				"zh-TW": process.env.PRICE_ID7_HKD, // HK$38 relationship
+				"zh-TW": {
+					hongkong: process.env.PRICE_ID7_HKD, // HK$38 relationship
+					taiwan: process.env.PRICE_ID7_NTD, // NT$150 relationship
+					default: process.env.PRICE_ID7_HKD, // Default to HKD
+				},
 			},
 			relationship: {
 				"zh-CN": process.env.PRICE_ID7_CNY, // ¥38 relationship
-				"zh-TW": process.env.PRICE_ID7_HKD, // HK$38 relationship
+				"zh-TW": {
+					hongkong: process.env.PRICE_ID7_HKD, // HK$38 relationship
+					taiwan: process.env.PRICE_ID7_NTD, // NT$150 relationship
+					default: process.env.PRICE_ID7_HKD, // Default to HKD
+				},
 			},
 			// Health
 			health: {
 				"zh-CN": process.env.PRICE_ID8_CNY, // ¥38 health
-				"zh-TW": process.env.PRICE_ID8_HKD, // HK$38 health
+				"zh-TW": {
+					hongkong: process.env.PRICE_ID8_HKD, // HK$38 health
+					taiwan: process.env.PRICE_ID8_NTD, // NT$150 health
+					default: process.env.PRICE_ID8_HKD, // Default to HKD
+				},
 			},
 			// Career
 			career: {
 				"zh-CN": process.env.PRICE_ID9_CNY, // ¥38 career
-				"zh-TW": process.env.PRICE_ID9_HKD, // HK$38 career
+				"zh-TW": {
+					hongkong: process.env.PRICE_ID9_HKD, // HK$38 career
+					taiwan: process.env.PRICE_ID9_NTD, // NT$150 career
+					default: process.env.PRICE_ID9_HKD, // Default to HKD
+				},
 			},
 		};
 
@@ -79,7 +105,29 @@ export async function POST(request) {
 
 		// Determine locale - default to zh-TW if not specified
 		const locale = requestLocale || "zh-TW";
-		const priceId = priceIds[locale];
+
+		// Get region from multiple sources (request body has highest priority)
+		const requestHeaders = await headers();
+		const url = new URL(request.url);
+		const regionParam = url.searchParams.get("region");
+		const regionHeader = requestHeaders.get("x-user-region");
+		const region =
+			requestRegion || regionParam || regionHeader || "hongkong"; // Default to hongkong
+
+		let priceId;
+		if (locale === "zh-CN") {
+			priceId = priceIds["zh-CN"];
+		} else {
+			// For zh-TW, check if we have region-specific pricing
+			const zhTwPrices = priceIds["zh-TW"];
+			if (typeof zhTwPrices === "object" && !Array.isArray(zhTwPrices)) {
+				// Region-specific pricing available
+				priceId = zhTwPrices[region] || zhTwPrices.default;
+			} else {
+				// Simple pricing (backward compatibility)
+				priceId = zhTwPrices;
+			}
+		}
 
 		if (!priceId) {
 			console.error(
@@ -93,7 +141,7 @@ export async function POST(request) {
 		}
 
 		console.log(
-			`💰 Using price ID: ${priceId} for concern: ${concernType}, locale: ${locale}`
+			`💰 Using price ID: ${priceId} for concern: ${concernType}, locale: ${locale}, region: ${region}`
 		);
 
 		// Build success URL with locale and context
@@ -121,7 +169,8 @@ export async function POST(request) {
 			allow_promotion_codes: true,
 			success_url: successUrl,
 			cancel_url: `${origin}/${locale}/price?payment=cancelled`,
-			locale: locale === "zh-CN" ? "zh" : "zh-TW", // Stripe locale format
+			// 🔥 REMOVED locale parameter to prevent Stripe automatic currency conversion
+			// locale: locale === "zh-CN" ? "zh" : "zh-TW", // This causes automatic currency conversion!
 			custom_text: {
 				submit: {
 					message:

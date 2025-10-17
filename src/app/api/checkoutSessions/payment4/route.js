@@ -9,7 +9,7 @@ import { stripe } from "@/lib/stripe";
 import { getUserInfo } from "@/lib/session";
 import {
 	getRegionalPriceId,
-	getLocaleFromRequest,
+	getLocaleAndRegionFromRequest,
 } from "@/utils/regionalPricing";
 
 export async function POST(request) {
@@ -20,21 +20,32 @@ export async function POST(request) {
 		const headersList = await headers();
 		const origin = headersList.get("origin");
 
-		// Get quantity and locale from request body
+		// Get request body
 		const body = await request.json();
 		const quantity = Number(body.quantity) || 1;
 		const requestLocale = body.locale;
+		const requestRegion = body.region;
 
-		// Detect user's locale to determine pricing (use request body locale if provided)
-		const locale = requestLocale || getLocaleFromRequest(request);
-		console.log(`🌍 Detected locale: ${locale}`);
-		console.log(`🔍 Payment4 - Request body locale: ${requestLocale}`);
+		// Detect user's locale and region to determine pricing
+		const { locale: headerLocale, region: headerRegion } =
+			getLocaleAndRegionFromRequest(request);
+
+		// Use request body values if provided, otherwise fall back to headers
+		const locale = requestLocale || headerLocale;
+		const region = requestRegion || headerRegion;
+
 		console.log(
-			`🔍 Payment4 - Headers locale: ${getLocaleFromRequest(request)}`
+			`🌍 Life payment - Detected locale: ${locale}, region: ${region}`
+		);
+		console.log(
+			`🔍 Payment4 - Request body locale: ${requestLocale}, region: ${requestRegion}`
+		);
+		console.log(
+			`🔍 Payment4 - Headers locale: ${headerLocale}, region: ${headerRegion}`
 		);
 
-		// Get the appropriate price ID for life based on locale
-		const priceId = getRegionalPriceId(locale, "life");
+		// Get the appropriate price ID for life based on locale and region
+		const priceId = getRegionalPriceId(locale, "life", region);
 		console.log(`💰 Using price ID: ${priceId} for life ${locale}`);
 
 		console.log("Payment4 API - Regional pricing:", {

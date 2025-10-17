@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import {
 	getRegionalPriceId,
-	getLocaleFromRequest,
+	getLocaleAndRegionFromRequest,
 } from "@/utils/regionalPricing";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -15,6 +15,7 @@ export async function POST(req) {
 			fromChat,
 			specificProblem,
 			locale: requestLocale,
+			region: requestRegion, // 🔥 Add region support
 			priceId: customPriceId, // Accept custom price ID from frontend
 			paymentType,
 		} = body;
@@ -26,11 +27,13 @@ export async function POST(req) {
 			);
 		}
 
-		// Detect user's locale to determine pricing
-		const headerLocale = getLocaleFromRequest(req);
+		// Detect user's locale and region to determine pricing
+		const { locale: headerLocale, region: headerRegion } =
+			getLocaleAndRegionFromRequest(req);
 
 		// Enhanced locale detection with URL path fallback
 		let detectedLocale = requestLocale || headerLocale;
+		let detectedRegion = requestRegion || headerRegion;
 
 		// If still zh-TW, check if URL indicates zh-CN route from referer or origin
 		const referer = req.headers.get("referer") || "";
@@ -44,17 +47,23 @@ export async function POST(req) {
 				urlPath.includes("/zh-CN"))
 		) {
 			detectedLocale = "zh-CN";
+			detectedRegion = "china";
 			console.log(
-				"🔄 Fortune payment - Overriding locale from URL context: zh-CN"
+				"🔄 Fortune payment - Overriding locale and region from URL context: zh-CN, china"
 			);
 		}
 
 		const locale = detectedLocale;
-		console.log(`🌍 Fortune payment - Detected locale: ${locale}`);
+		const region = detectedRegion;
 		console.log(
-			`🔍 Fortune payment - Request body locale: ${requestLocale}`
+			`🌍 Fortune payment - Detected locale: ${locale}, region: ${region}`
 		);
-		console.log(`🔍 Fortune payment - Headers locale: ${headerLocale}`);
+		console.log(
+			`🔍 Fortune payment - Request body locale: ${requestLocale}, region: ${requestRegion}`
+		);
+		console.log(
+			`🔍 Fortune payment - Headers locale: ${headerLocale}, region: ${headerRegion}`
+		);
 		console.log(`🔍 Fortune payment - Referer URL: ${referer}`);
 
 		// Use custom price ID if provided, otherwise fall back to regional pricing
@@ -66,9 +75,9 @@ export async function POST(req) {
 			);
 		} else {
 			// Fallback to regional pricing for backward compatibility
-			priceId = getRegionalPriceId(locale, "fortune");
+			priceId = getRegionalPriceId(locale, "fortune", region);
 			console.log(
-				`💰 Fortune payment - Using regional price ID: ${priceId} for fortune ${locale}`
+				`💰 Fortune payment - Using regional price ID: ${priceId} for fortune ${locale} (${region})`
 			);
 		}
 
@@ -96,7 +105,8 @@ export async function POST(req) {
 			mode: "payment",
 			success_url: successUrl,
 			cancel_url: `${baseUrl}/${locale}/price`,
-			locale: locale === "zh-CN" ? "zh" : "zh-TW", // Stripe locale format
+			// 🔥 REMOVED locale parameter to prevent Stripe automatic currency conversion
+			// locale: locale === "zh-CN" ? "zh" : "zh-TW", // This causes automatic currency conversion!
 			custom_text: {
 				submit: {
 					message:

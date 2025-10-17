@@ -470,6 +470,11 @@ export default function Home() {
 		setIsLoading(true);
 
 		try {
+			// Get current region for pricing display
+			const currentRegion =
+				localStorage.getItem("userRegion") || "hongkong";
+			console.log("🌍 Sending region to smart-chat2:", currentRegion);
+
 			const response = await fetch("/api/smart-chat2", {
 				method: "POST",
 				headers: {
@@ -479,6 +484,7 @@ export default function Home() {
 					message: userMessage.content,
 					sessionId: sessionId,
 					userId: currentUserId,
+					region: currentRegion, // 🌍 Add current region for accurate pricing display
 				}),
 			});
 
@@ -689,6 +695,7 @@ export default function Home() {
 									quantity: 1, // 固定數量
 									directPayment: true, // 標記為直接付款
 									locale: freshLocale, // 🔥 Fix: Add locale parameter for comprehensive/premium too
+									region: storedRegion, // 🔥 Add region parameter for NTD support
 								}),
 							});
 						} else {
@@ -734,6 +741,7 @@ export default function Home() {
 								body: JSON.stringify({
 									concernType: concernType, // 使用 concernType 而不是 concern
 									locale: freshLocale,
+									region: storedRegion, // 🔥 Add region parameter for NTD support
 									quantity: 1,
 									specificProblem: problemToUse,
 									fromChat: true,

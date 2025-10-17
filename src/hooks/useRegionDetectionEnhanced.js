@@ -31,6 +31,7 @@ export const useRegionDetectionWithRedirect = (options = {}) => {
 	const regionLocaleMap = {
 		china: "zh-CN",
 		hongkong: "zh-TW",
+		taiwan: "zh-TW",
 	};
 
 	// Initialize region detection
@@ -84,23 +85,28 @@ export const useRegionDetectionWithRedirect = (options = {}) => {
 		router,
 	]);
 
-	// Method to manually change region (also changes locale)
-	const changeRegion = (newRegion) => {
-		if (["china", "hongkong"].includes(newRegion)) {
+	// Method to manually change region (optimized for instant updates)
+	const changeRegion = async (newRegion) => {
+		console.log("🚀 changeRegion called with:", newRegion);
+		if (["china", "hongkong", "taiwan"].includes(newRegion)) {
 			const config = getRegionConfig(newRegion);
-			const targetLocale = regionLocaleMap[newRegion];
 
+			// Immediate state update for instant UI response
+			console.log("⚡ Updating region state instantly:", newRegion);
 			setRegion(newRegion);
 			setRegionConfig(config);
-			saveRegionPreference(newRegion);
 
-			console.log("🔄 Region changed to:", newRegion);
-
-			// Redirect to appropriate locale
-			if (targetLocale && targetLocale !== currentLocale) {
-				const newPathname = `/${pathname.split("/").slice(2).join("/")}`;
-				router.push(newPathname, { locale: targetLocale });
+			// Save preference asynchronously (non-blocking)
+			try {
+				saveRegionPreference(newRegion);
+				console.log("� Region preference saved:", newRegion);
+			} catch (error) {
+				console.warn("⚠️ Failed to save region preference:", error);
 			}
+
+			console.log("✅ Region changed instantly to:", newRegion);
+		} else {
+			console.error("❌ Invalid region:", newRegion);
 		}
 	};
 
@@ -113,6 +119,11 @@ export const useRegionDetectionWithRedirect = (options = {}) => {
 	const getStripePriceId = (plan = "basic") => {
 		return regionConfig?.stripePriceIds?.[plan] || null;
 	};
+
+	// Debug effect to track region changes
+	useEffect(() => {
+		console.log("📍 Region state changed to:", region);
+	}, [region]);
 
 	return {
 		// State

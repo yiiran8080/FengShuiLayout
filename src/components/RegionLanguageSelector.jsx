@@ -31,6 +31,7 @@ export default function RegionLanguageSelector({
 		skipFirstRedirect: true,
 	});
 	const [mounted, setMounted] = useState(false);
+	const [switching, setSwitching] = useState(false);
 
 	// Prevent hydration mismatch
 	useEffect(() => {
@@ -45,38 +46,49 @@ export default function RegionLanguageSelector({
 		{
 			key: "china",
 			name: "中国大陆",
-			flag: "🇨🇳",
 			locale: "zh-CN",
 			currency: "CNY",
 			symbol: "¥",
-			displayText: "🇨🇳 简体中文",
+			displayText: "简体中文",
 		},
 		{
 			key: "hongkong",
 			name: "香港",
-			flag: "🇭🇰",
 			locale: "zh-TW",
 			currency: "HKD",
 			symbol: "HK$",
-			displayText: "🇭🇰 繁體中文",
+			displayText: "繁體中文",
 		},
-	];
-
-	// Get current region config
+		{
+			key: "taiwan",
+			name: "台灣",
+			locale: "zh-TW",
+			currency: "TWD",
+			symbol: "NT$",
+			displayText: "繁體中文",
+		},
+	]; // Get current region config
 	const currentRegionConfig =
-		regions.find((r) => r.key === region) || regions[1];
+		regions.find((r) => r.key === region) || regions[2]; // Default to Taiwan
 
 	// Get display text based on current state
 	const getDisplayText = () => {
 		if (!mounted) return compact ? "…" : "🌍 Loading...";
-		if (isLoading) return compact ? "…" : "🌍 Detecting...";
+		if (isLoading || switching) return compact ? "…" : "🔄 Switching...";
 
 		// Find region that matches current locale
 		const matchingRegion = regions.find((r) => r.locale === currentLocale);
 
 		if (compact) {
-			// Return simplified Chinese character based on locale
-			return currentLocale === "zh-CN" ? "簡" : "繁";
+			// Return simplified Chinese character based on locale, with region indicator
+			if (currentLocale === "zh-CN") {
+				return "簡";
+			} else {
+				// For Traditional Chinese, show different indicators based on region
+				if (region === "hongkong") return "港";
+				if (region === "taiwan") return "台";
+				return "繁"; // Default
+			}
 		}
 
 		return matchingRegion
@@ -84,19 +96,39 @@ export default function RegionLanguageSelector({
 			: currentRegionConfig.displayText;
 	};
 
-	// Handle region change - this will change both language and pricing
-	const handleRegionChange = (selectedRegion) => {
+	// Handle region change - optimized for instant smooth transitions
+	const handleRegionChange = async (selectedRegion) => {
 		const regionConfig = regions.find((r) => r.key === selectedRegion);
-		if (!regionConfig) return;
+		if (!regionConfig || switching) return;
 
-		// Update region (for pricing)
-		changeRegion(selectedRegion);
+		console.log(`🔄 Switching to region: ${selectedRegion}`);
+		setSwitching(true);
 
-		// Update language (for locale) by navigating to new locale
-		const newPathname = `/${pathname.split("/").slice(2).join("/")}`;
+		try {
+			// Update region state immediately (for instant pricing updates)
+			await changeRegion(selectedRegion);
 
-		// Use Next.js navigation to change locale
-		router.push(newPathname, { locale: regionConfig.locale });
+			// Only navigate to new locale if it's actually different
+			if (regionConfig.locale !== currentLocale) {
+				console.log(
+					`🔄 Navigating from ${currentLocale} to ${regionConfig.locale}`
+				);
+				const newPathname = `/${pathname.split("/").slice(2).join("/")}`;
+
+				// Use replace instead of push for smoother transition
+				router.replace(newPathname, { locale: regionConfig.locale });
+			} else {
+				// Same locale but different region (HK vs TW) - instant update complete
+				console.log(
+					`✅ Same locale (${regionConfig.locale}), region switched instantly`
+				);
+			}
+		} catch (error) {
+			console.error("❌ Region change error:", error);
+		} finally {
+			// Small delay to prevent rapid clicking
+			setTimeout(() => setSwitching(false), 300);
+		}
 	};
 
 	if (!mounted) {
@@ -115,57 +147,77 @@ export default function RegionLanguageSelector({
 	}
 
 	return (
-		<DropdownMenu>
-			<DropdownMenuTrigger
-				asChild
-				className={cn(
-					"cursor-pointer flex items-center space-x-1 hover:opacity-80",
-					className
-				)}
-			>
-				<div style={{ color: navTextColor }}>
-					{getDisplayText()}
-					{!compact && (
-						<ChevronDownIcon className="w-4 h-4 ml-1 inline" />
+		<div className="relative inline-block">
+			<DropdownMenu modal={false}>
+				<DropdownMenuTrigger
+					asChild
+					className={cn(
+						"cursor-pointer flex items-center space-x-1 hover:opacity-80 outline-none transition-all duration-200 ease-in-out",
+						switching && "opacity-60 scale-95",
+						className
 					)}
-				</div>
-			</DropdownMenuTrigger>
-
-			<DropdownMenuContent className="bg-white rounded-lg shadow-lg p-1 min-w-[160px]">
-				{regions.map((regionConfig) => (
-					<DropdownMenuItem
-						key={regionConfig.key}
-						className="focus:bg-inherit"
+				>
+					<div
+						style={{ color: navTextColor }}
+						className="transition-all duration-200 ease-in-out"
 					>
-						<button
+						{getDisplayText()}
+						{!compact && (
+							<ChevronDownIcon
+								className={cn(
+									"inline w-4 h-4 ml-1 transition-transform duration-200",
+									switching && "animate-spin"
+								)}
+							/>
+						)}
+					</div>
+				</DropdownMenuTrigger>{" "}
+				<DropdownMenuContent
+					className="bg-white rounded-lg shadow-lg p-1 min-w-[160px] z-[9999] border border-gray-200 max-h-[300px] overflow-y-auto"
+					sideOffset={8}
+					align="end"
+					avoidCollisions={true}
+					sticky="always"
+				>
+					{regions.map((regionConfig) => (
+						<DropdownMenuItem
+							key={regionConfig.key}
+							className="focus:bg-inherit p-0"
 							onClick={() => handleRegionChange(regionConfig.key)}
-							className={cn(
-								"w-full text-left px-4 py-2 text-sm hover:text-primary rounded text-foreground flex items-center justify-between",
-								region === regionConfig.key &&
-									currentLocale === regionConfig.locale
-									? "bg-green-50 text-green-600 font-medium"
-									: ""
-							)}
+							disabled={switching}
 						>
-							<span>{regionConfig.displayText}</span>
-							<span className="text-xs text-gray-500 ml-2">
-								{regionConfig.symbol}
-							</span>
-						</button>
-					</DropdownMenuItem>
-				))}
+							<div
+								className={cn(
+									"w-full text-left px-4 py-2 text-sm hover:text-primary rounded text-foreground flex items-center justify-between cursor-pointer transition-all duration-150",
+									region === regionConfig.key
+										? "bg-green-50 text-green-600 font-medium"
+										: "",
+									switching && "opacity-50 cursor-wait"
+								)}
+							>
+								<span>{regionConfig.displayText}</span>
+								<span className="ml-2 text-xs text-gray-500">
+									{regionConfig.symbol}
+								</span>
+								{switching && region === regionConfig.key && (
+									<span className="ml-1 text-xs">⏳</span>
+								)}
+							</div>
+						</DropdownMenuItem>
+					))}
 
-				{/* Debug info in development */}
-				{process.env.NODE_ENV === "development" && (
-					<>
-						<div className="border-t border-gray-100 my-1"></div>
-						<div className="px-4 py-2 text-xs text-gray-400">
-							<div>Region: {region}</div>
-							<div>Locale: {currentLocale}</div>
-						</div>
-					</>
-				)}
-			</DropdownMenuContent>
-		</DropdownMenu>
+					{/* Debug info in development */}
+					{process.env.NODE_ENV === "development" && (
+						<>
+							<div className="my-1 border-t border-gray-100"></div>
+							<div className="px-4 py-2 text-xs text-gray-400">
+								<div>Region: {region}</div>
+								<div>Locale: {currentLocale}</div>
+							</div>
+						</>
+					)}
+				</DropdownMenuContent>
+			</DropdownMenu>
+		</div>
 	);
 }

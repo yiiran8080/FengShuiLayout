@@ -377,6 +377,23 @@ export default function DemoPage() {
 				endpoint = "/api/checkoutSessions/payment4"; // $88 for other categories
 			}
 
+			// Get fresh locale and region from localStorage to ensure consistency
+			const storedRegion = localStorage.getItem("userRegion");
+			const regionToLocaleMap = {
+				china: "zh-CN",
+				hongkong: "zh-TW",
+				taiwan: "zh-TW",
+			};
+			const freshLocale =
+				regionToLocaleMap[storedRegion] || locale || "zh-TW";
+
+			console.log(
+				"💰 Demo page premium payment - Using fresh locale:",
+				freshLocale,
+				"from stored region:",
+				storedRegion
+			);
+
 			const response = await fetch(endpoint, {
 				method: "POST",
 				headers: {
@@ -385,6 +402,8 @@ export default function DemoPage() {
 				body: JSON.stringify({
 					quantity: 1,
 					directPayment: true,
+					locale: freshLocale, // Add locale parameter
+					region: storedRegion, // Add region parameter for NTD support
 				}),
 			});
 
@@ -473,6 +492,23 @@ export default function DemoPage() {
 				return;
 			} else if (activeTag === "life") {
 				// For 命理流年測算, use $88 payment
+				// Get fresh locale and region from localStorage to ensure consistency
+				const storedRegion = localStorage.getItem("userRegion");
+				const regionToLocaleMap = {
+					china: "zh-CN",
+					hongkong: "zh-TW",
+					taiwan: "zh-TW",
+				};
+				const freshLocale =
+					regionToLocaleMap[storedRegion] || locale || "zh-TW";
+
+				console.log(
+					"💰 Demo page life payment - Using fresh locale:",
+					freshLocale,
+					"from stored region:",
+					storedRegion
+				);
+
 				const response = await fetch("/api/checkoutSessions/payment4", {
 					method: "POST",
 					headers: {
@@ -481,6 +517,8 @@ export default function DemoPage() {
 					body: JSON.stringify({
 						quantity: 1,
 						directPayment: true,
+						locale: freshLocale, // Add locale parameter
+						region: storedRegion, // Add region parameter for NTD support
 					}),
 				});
 
@@ -528,20 +566,30 @@ export default function DemoPage() {
 					storedRegion
 				);
 
-				const response = await fetch("/api/payment-fortune", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
-						concern: concernType,
-						locale: freshLocale, // 🔥 Fix: Add locale parameter like couple payment
-					}),
-				});
+				const response = await fetch(
+					"/api/checkoutSessions/payment-fortune-category",
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({
+							concernType: concernType, // Use concernType instead of concern for the category API
+							locale: freshLocale, // 🔥 Fix: Add locale parameter like couple payment
+							region: storedRegion, // Add region parameter for NTD support
+						}),
+					}
+				);
 
 				if (response.ok) {
 					const data = await response.json();
-					if (data.sessionId) {
+					console.log("Demo Fortune Payment Response:", data);
+
+					// Handle different response structures
+					const sessionId = data.sessionId || data.data?.id;
+					console.log("Demo Extracted session ID:", sessionId);
+
+					if (sessionId) {
 						const stripe = await import("@stripe/stripe-js").then(
 							(mod) =>
 								mod.loadStripe(
@@ -552,12 +600,16 @@ export default function DemoPage() {
 
 						if (stripe) {
 							await stripe.redirectToCheckout({
-								sessionId: data.sessionId,
+								sessionId: sessionId,
 							});
 						} else {
 							throw new Error("Failed to load Stripe");
 						}
 					} else {
+						console.error(
+							"No session ID found in demo response:",
+							data
+						);
 						throw new Error("No session ID received");
 					}
 				} else {

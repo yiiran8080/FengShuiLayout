@@ -3489,7 +3489,7 @@ export default function ReportPage({
 													alt="風水妹運算中"
 													width={80}
 													height={80}
-													className="mx-auto object-contain"
+													className="object-contain mx-auto"
 												/>
 												<div className="absolute inset-0 flex items-center justify-center">
 													<div className="w-6 h-6 border-b-2 border-pink-500 rounded-full animate-spin"></div>
@@ -3860,7 +3860,7 @@ export default function ReportPage({
 													alt="風水妹運算中"
 													width={80}
 													height={80}
-													className="mx-auto object-contain"
+													className="object-contain mx-auto"
 												/>
 												<div className="absolute inset-0 flex items-center justify-center">
 													<div className="w-6 h-6 border-b-2 border-pink-500 rounded-full animate-spin"></div>
@@ -4235,7 +4235,7 @@ export default function ReportPage({
 													alt="風水妹運算中"
 													width={80}
 													height={80}
-													className="mx-auto object-contain"
+													className="object-contain mx-auto"
 												/>
 												<div className="absolute inset-0 flex items-center justify-center">
 													<div className="w-6 h-6 border-b-2 border-pink-500 rounded-full animate-spin"></div>
@@ -4606,7 +4606,7 @@ export default function ReportPage({
 													alt="風水妹運算中"
 													width={80}
 													height={80}
-													className="mx-auto object-contain"
+													className="object-contain mx-auto"
 												/>
 												<div className="absolute inset-0 flex items-center justify-center">
 													<div className="w-6 h-6 border-b-2 border-pink-500 rounded-full animate-spin"></div>
@@ -4936,7 +4936,7 @@ export default function ReportPage({
 																					"clamp(12px, 3vw, 14px)",
 																			}}
 																		>
-																			總量(包括藏干):
+																			分數(包括藏干):
 																		</span>
 																		<span
 																			className="font-bold text-[#374A37]"
@@ -5253,7 +5253,7 @@ export default function ReportPage({
 														'"Noto Sans HK", sans-serif',
 												}}
 											>
-												<div className="relative mb-4 inline-block">
+												<div className="relative inline-block mb-4">
 													<Image
 														src={fengshuiLoading}
 														alt="風水妹運算中"
@@ -6182,7 +6182,7 @@ export default function ReportPage({
 													alt="風水妹運算中"
 													width={100}
 													height={100}
-													className="mx-auto object-contain"
+													className="object-contain mx-auto"
 												/>
 												<div className="absolute inset-0 flex items-center justify-center">
 													<div className="w-6 h-6 border-b-2 border-pink-500 rounded-full animate-spin"></div>

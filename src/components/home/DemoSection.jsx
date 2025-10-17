@@ -51,6 +51,12 @@ export default function DemoSection() {
 			description: t("tags.relationship.description"),
 		},
 		{
+			id: "couple",
+			name: t("tags.couple.name"),
+			image: "/images/demo/couple2.png",
+			description: t("tags.couple.description"),
+		},
+		{
 			id: "career",
 			name: t("tags.career.name"),
 			image: "/images/demo/career.png",
@@ -67,12 +73,6 @@ export default function DemoSection() {
 			name: t("tags.wealth.name"),
 			image: "/images/demo/wealth.png",
 			description: t("tags.wealth.description"),
-		},
-		{
-			id: "couple",
-			name: t("tags.couple.name"),
-			image: "/images/demo/couple2.png",
-			description: t("tags.couple.description"),
 		},
 	];
 
