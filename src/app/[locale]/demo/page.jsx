@@ -10,6 +10,7 @@ import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/home/Footer";
+import { getCurrencySymbol } from "@/utils/regionalPricing";
 
 export default function DemoPage() {
 	const t = useTranslations("demoPage");
@@ -24,6 +25,9 @@ export default function DemoPage() {
 	const [showExistingReportDialog, setShowExistingReportDialog] =
 		useState(false);
 	const [couplePreviewType, setCouplePreviewType] = useState("compatibility"); // "compatibility" or "exclusive"
+
+	// 🌍 Region detection for dynamic pricing
+	const [currentRegion, setCurrentRegion] = useState("hongkong");
 
 	// Debug dialog state changes
 	useEffect(() => {
@@ -40,6 +44,41 @@ export default function DemoPage() {
 		}
 	}, [existingReport, activeTag]);
 	const scrollContainerRef = useRef(null);
+
+	// 🌍 Detect region changes for dynamic pricing
+	useEffect(() => {
+		const updateRegion = () => {
+			if (typeof window !== "undefined") {
+				const storedRegion =
+					localStorage.getItem("userRegion") || "hongkong";
+				setCurrentRegion(storedRegion);
+				console.log(
+					"🌍 Demo page - Current region updated to:",
+					storedRegion
+				);
+			}
+		};
+
+		// Initial region detection
+		updateRegion();
+
+		// Listen for storage changes (when user switches region)
+		const handleStorageChange = (e) => {
+			if (e.key === "userRegion") {
+				updateRegion();
+			}
+		};
+
+		window.addEventListener("storage", handleStorageChange);
+
+		// Also check periodically in case region changes within same tab
+		const interval = setInterval(updateRegion, 1000);
+
+		return () => {
+			window.removeEventListener("storage", handleStorageChange);
+			clearInterval(interval);
+		};
+	}, []);
 
 	// Handle URL parameters
 	useEffect(() => {
@@ -624,36 +663,73 @@ export default function DemoPage() {
 		}
 	};
 
-	// Get pricing based on active tag
+	// Get pricing based on active tag and current region
 	const getPricing = () => {
+		// Get currency symbol for current region
+		const currencySymbol = getCurrencySymbol(currentRegion);
+
+		// Define regional pricing structures
+		const getRegionalPricing = (baseHKPrices) => {
+			const { original, discount } = baseHKPrices;
+
+			switch (currentRegion) {
+				case "china":
+					return {
+						originalPrice: `¥${original}`,
+						discountPrice: `¥${discount}`,
+						unit: t("pricing.perTime"),
+					};
+				case "taiwan":
+					// Taiwan uses different pricing structure
+					const taiwanMapping = {
+						// Fengshui: HK$388 -> NT$1518, HK$188 -> NT$738
+						388: { original: 1518, discount: 738 },
+						// Life: HK$168 -> NT$668, HK$88 -> NT$368
+						168: { original: 668, discount: 368 },
+						// Couple: HK$188 -> NT$668, HK$88 -> NT$368
+						188: { original: 668, discount: 368 },
+						// Individual: HK$88 -> NT$368, HK$38 -> NT$158
+						88: { original: 368, discount: 158 },
+					};
+					const taiwanPrices = taiwanMapping[original] || {
+						original: 368,
+						discount: 158,
+					};
+					return {
+						originalPrice: `NT$${taiwanPrices.original}`,
+						discountPrice: `NT$${taiwanPrices.discount}`,
+						unit: t("pricing.perTime"),
+					};
+				case "hongkong":
+				default:
+					return {
+						originalPrice: `HK$${original}`,
+						discountPrice: `HK$${discount}`,
+						unit: t("pricing.perTime"),
+					};
+			}
+		};
+
 		let pricing;
 		if (activeTag === "fengshui") {
-			pricing = {
-				originalPrice: "$388",
-				discountPrice: "$188",
-				unit: t("pricing.perTime"),
-			};
+			pricing = getRegionalPricing({ original: 388, discount: 188 });
 		} else if (activeTag === "life") {
-			pricing = {
-				originalPrice: "$168",
-				discountPrice: "$88",
-				unit: t("pricing.perTime"),
-			};
+			pricing = getRegionalPricing({ original: 168, discount: 88 });
 		} else if (activeTag === "couple") {
-			pricing = {
-				originalPrice: "$188",
-				discountPrice: "$88",
-				unit: t("pricing.perTime"),
-			};
+			pricing = getRegionalPricing({ original: 188, discount: 88 });
 		} else {
 			// For 感情, 財運, 健康, 事業
-			pricing = {
-				originalPrice: "$88",
-				discountPrice: "$38",
-				unit: t("pricing.perTime"),
-			};
+			pricing = getRegionalPricing({ original: 88, discount: 38 });
 		}
-		console.log("Current pricing for", activeTag, ":", pricing);
+
+		console.log(
+			"Current pricing for",
+			activeTag,
+			"region",
+			currentRegion,
+			":",
+			pricing
+		);
 		return pricing;
 	};
 
@@ -663,11 +739,11 @@ export default function DemoPage() {
 			<Navbar />
 
 			{/* Horizontal Tags Navigation */}
-			<div className="w-[95%] mx-auto px-2 md:px-4 pt-20 mb-1 md:mb-15">
+			<div className="w-[95%] mx-auto px-1 sm:px-2 md:px-4 pt-20 mb-1 md:mb-15">
 				{/* Tags Container with Drag */}
 				<div
 					ref={scrollContainerRef}
-					className="flex px-4 py-6 space-x-3 overflow-x-auto md:px-12 md:space-x-6 scrollbar-hide cursor-grab active:cursor-grabbing"
+					className="flex px-2 py-6 space-x-2 overflow-x-auto sm:px-4 sm:space-x-3 md:px-12 md:space-x-6 scrollbar-hide cursor-grab active:cursor-grabbing"
 					style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
 					onMouseDown={handleMouseDown}
 					onMouseLeave={handleMouseLeave}
@@ -687,7 +763,7 @@ export default function DemoPage() {
 							<div className="relative group">
 								{/* Image Container */}
 								<div
-									className={`relative overflow-hidden rounded-xl transition-all duration-300 w-[120px] md:w-[200px] h-[90px] md:h-[150px] ${
+									className={`relative overflow-hidden rounded-xl transition-all duration-300 w-[100px] sm:w-[120px] md:w-[200px] h-[75px] sm:h-[90px] md:h-[150px] ${
 										activeTag === tag.id
 											? " transform -translate-y-2"
 											: " group-hover:transform group-hover:-translate-y-3"
@@ -732,12 +808,12 @@ export default function DemoPage() {
 												<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-400 mt-2"></div>
 											</h2>
 										</div>
-										<div className="flex justify-center px-1 space-x-4 md:px-4 md:space-x-8">
+										<div className="flex justify-center px-1 space-x-2 sm:space-x-4 md:px-4 md:space-x-10">
 											{/* Overlapping Cards Container */}
-											<div className="relative flex items-center justify-center w-full max-w-sm mb-4 mr-8 sm:mr-20 md:max-w-md lg:max-w-md md:mb-0">
+											<div className="relative flex items-center justify-center w-full max-w-[280px] sm:max-w-sm mb-4 mr-4 sm:mr-8 sm:max-w-md md:max-w-lg lg:max-w-lg md:mb-0 md:mr-20">
 												{/* Top Card - 限時優惠 (Green Discount) */}
 												<div
-													className="relative z-20 flex items-center w-full h-20 gap-3 px-3 sm:h-23 md:h-28 sm:px-5 md:px-7 rounded-xl"
+													className="relative z-20 flex items-center w-full h-16 gap-2 px-2 sm:h-20 sm:gap-3 sm:px-3 md:h-28 md:px-7 rounded-xl"
 													style={{
 														background:
 															"linear-gradient(to right, #E8F37A, #A6B41B)",
@@ -747,12 +823,12 @@ export default function DemoPage() {
 												>
 													<div className="flex flex-col">
 														<div
-															className="px-0 py-1 text-sm sm:text-3xl md:px-3 md:py-2 md:text-[36px]"
+															className="px-0 py-1 text-xs sm:text-sm md:text-3xl md:px-3 md:py-2 xl:text-[30px]"
 															style={{
 																fontFamily:
 																	"Noto Serif TC, serif",
 																WebkitTextStroke:
-																	" 1.5px #635D3B",
+																	"0.5px #635D3B sm:1.5px #635D3B",
 															}}
 														>
 															{t(
@@ -760,9 +836,9 @@ export default function DemoPage() {
 															)}
 														</div>
 														{/* Right Side Button */}
-														<div className="flex items-center mb-2">
+														<div className="flex items-center mb-1 sm:mb-2">
 															<button
-																className="bg-white text-[#A3B116] px-1 sm:px-10 rounded-full text-sm sm:text-sm md:text-base font-extrabold hover:bg-gray-100 hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+																className="bg-white text-[#A3B116] px-1 sm:px-4 md:px-10 py-1 rounded-full text-xs sm:text-sm md:text-base font-extrabold hover:bg-gray-100 hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
 																style={{
 																	background:
 																		"linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)",
@@ -802,13 +878,13 @@ export default function DemoPage() {
 																className="absolute inset-0 font-noto-sans-hk text-stroke-white"
 																style={{
 																	fontSize:
-																		"clamp(2rem, 8vw, 4rem)",
+																		"clamp(1.5rem, 6vw, 4rem)",
 																	fontWeight:
 																		"900",
 																	WebkitTextFillColor:
 																		"transparent",
 																	WebkitTextStroke:
-																		"10px white", // Custom thicker stroke
+																		"8px white", // Slightly thinner for small screens
 																}}
 																aria-hidden="true"
 															>
@@ -822,7 +898,7 @@ export default function DemoPage() {
 																className="relative bg-gradient-to-r from-[#99A800] to-[#5D6600] font-noto-sans-hk bg-clip-text text-transparent"
 																style={{
 																	fontSize:
-																		"clamp(2rem, 8vw, 4rem)",
+																		"clamp(1.5rem, 6vw, 4rem)",
 																	fontWeight:
 																		"900",
 																	backgroundImage:
@@ -839,14 +915,14 @@ export default function DemoPage() {
 														</span>
 
 														<div
-															className="text-[10px] text-white sm:text-sm font-noto-sans-hk md:text-base"
+															className="text-[8px] sm:text-[10px] text-white md:text-sm font-noto-sans-hk xl:text-base"
 															style={{
 																marginTop:
 																	"auto",
 																marginBottom:
-																	"8px",
+																	"6px",
 																marginLeft:
-																	"4px",
+																	"2px",
 																fontWeight:
 																	"bold",
 															}}
@@ -858,26 +934,26 @@ export default function DemoPage() {
 
 												{/* Bottom Card - 專享版 (White Premium) - Partially Visible */}
 												<div
-													className="absolute z-10 flex items-center justify-between w-full h-12 px-2 py-2 bg-white border-2 border-gray-300 sm:h-16 left-8 top-18 sm:left-16 sm:top-22 md:left-48 md:top-24 md:h-24 sm:px-4 md:px-6 md:py-4 rounded-xl"
+													className="absolute z-10 flex items-center justify-between w-full h-10 px-1 py-1 bg-white border-2 border-gray-300 sm:h-12 sm:px-2 sm:py-2 left-4 sm:left-8 top-15 sm:top-18 md:left-48 md:top-24 md:h-24 md:px-6 md:py-4 rounded-xl"
 													style={{
 														boxShadow:
 															"0 4px 8px rgba(0, 0, 0, 0.25)",
 													}}
 												>
 													<div
-														className="px-2 py-1 text-lg sm:text-2xl md:text-[36px] font-bold text-[#A1A1A1]"
+														className="px-1 sm:px-2 py-1 text-sm sm:text-lg md:text-[36px] font-bold text-[#A1A1A1]"
 														style={{
 															fontFamily:
 																"Noto Serif TC, serif",
 															WebkitTextStroke:
-																" 1.0px #A1A1A1",
+																"0.5px #A1A1A1 sm:1.0px #A1A1A1",
 														}}
 													>
 														{t("ui.premiumVersion")}
 													</div>
 													<div className="flex flex-col items-center">
 														<div
-															className="text-2xl font-extrabold text-center sm:text-4xl md:text-5xl"
+															className="text-lg font-extrabold text-center sm:text-2xl md:text-4xl xl:text-5xl"
 															style={{
 																fontFamily:
 																	"Noto Sans HK",
@@ -891,7 +967,7 @@ export default function DemoPage() {
 																	textDecorationColor:
 																		"#ef4444",
 																	textDecorationThickness:
-																		"3px",
+																		"2px",
 																}}
 															>
 																{
@@ -900,7 +976,7 @@ export default function DemoPage() {
 																}
 															</span>
 															<span
-																className="text-xs font-normal sm:text-sm md:text-base"
+																className="text-[10px] sm:text-xs font-normal md:text-sm xl:text-base"
 																style={{
 																	textDecoration:
 																		"none !important",
@@ -995,14 +1071,14 @@ export default function DemoPage() {
 											<div className="flex flex-col items-center px-4 space-y-6 md:px-0">
 												{/* Toggle Buttons */}
 												{/* Toggle Buttons */}
-												<div className="flex flex-row space-x-2 md:flex-row md:space-y-0 md:space-x-14">
+												<div className="flex flex-row space-x-1 sm:space-x-2 md:flex-row md:space-y-0 md:space-x-14">
 													<button
 														onClick={() =>
 															setCouplePreviewType(
 																"compatibility"
 															)
 														}
-														className={`px-10 md:px-18 py-3 font-bold text-sm md:text-lg transition-colors duration-300 ${
+														className={`px-4 sm:px-10 md:px-18 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-lg transition-colors duration-300 ${
 															couplePreviewType ===
 															"compatibility"
 																? "bg-[#A3B116] text-white"
@@ -1030,7 +1106,7 @@ export default function DemoPage() {
 																"exclusive"
 															)
 														}
-														className={`px-10 md:px-18 py-3 font-bold text-sm md:text-lg transition-colors duration-300 ${
+														className={`px-4 sm:px-10 md:px-18 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-lg transition-colors duration-300 ${
 															couplePreviewType ===
 															"exclusive"
 																? "bg-[#A3B116] text-white"
@@ -1079,14 +1155,14 @@ export default function DemoPage() {
 											/* Special life preview section with toggle buttons */
 											<div className="flex flex-col items-center px-4 space-y-6 md:px-0">
 												{/* Toggle Buttons */}
-												<div className="flex flex-row space-x-2 md:flex-row md:space-y-0 md:space-x-14">
+												<div className="flex flex-row space-x-1 sm:space-x-2 md:flex-row md:space-y-0 md:space-x-14">
 													<button
 														onClick={() =>
 															setCouplePreviewType(
 																"compatibility"
 															)
 														}
-														className={`px-10 md:px-18 py-3 font-bold text-sm md:text-lg transition-colors duration-300 ${
+														className={`px-4 sm:px-10 md:px-18 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-lg transition-colors duration-300 ${
 															couplePreviewType ===
 															"compatibility"
 																? "bg-[#A3B116] text-white"
@@ -1114,7 +1190,7 @@ export default function DemoPage() {
 																"exclusive"
 															)
 														}
-														className={`px-10 md:px-18 py-3 font-bold text-sm md:text-lg transition-colors duration-300 ${
+														className={`px-4 sm:px-10 md:px-18 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-lg transition-colors duration-300 ${
 															couplePreviewType ===
 															"exclusive"
 																? "bg-[#A3B116] text-white"
@@ -1271,6 +1347,38 @@ export default function DemoPage() {
 				/* Glow effect for flip card on hover */
 				.flip-card-glow:hover {
 					filter: drop-shadow(0 8px 16px rgba(163, 177, 22, 0.2));
+				}
+
+				/* Galaxy Fold 5 specific styles (344px - 374px width) */
+				@media screen and (max-width: 380px) {
+					/* Ensure main title scales properly */
+					h2 {
+						font-size: clamp(24px, 6vw, 32px) !important;
+						line-height: clamp(28px, 7vw, 40px) !important;
+					}
+
+					/* Reduce spacing in overlapping cards */
+					.relative.flex.items-center.justify-center {
+						margin-right: 8px !important;
+					}
+
+					/* Ensure buttons don't overflow */
+					button {
+						font-size: 10px !important;
+						padding: 6px 8px !important;
+						white-space: nowrap;
+					}
+
+					/* Price text scaling */
+					.relative.inline-block span {
+						font-size: clamp(1.2rem, 5vw, 1.5rem) !important;
+					}
+
+					/* Toggle buttons specific sizing */
+					.flex.flex-row.space-x-1 button {
+						padding: 8px 12px !important;
+						font-size: 10px !important;
+					}
 				}
 			`}</style>
 

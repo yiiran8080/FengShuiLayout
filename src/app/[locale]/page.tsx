@@ -644,19 +644,23 @@ export default function Home() {
 					const useComprehensivePayment =
 						data.paymentType === "comprehensive";
 					const usePremiumPayment = data.paymentType === "premium";
+					const isCouplePayment =
+						data.hasCouplesBirthdays || data.isCoupleAnalysis;
 
 					let paymentEndpoint;
 					if (useComprehensivePayment) {
 						paymentEndpoint = "/api/checkoutSessions/payment4"; // Expert88 ($88)
 					} else if (usePremiumPayment) {
 						paymentEndpoint = "/api/checkoutSessions/payment2"; // Premium ($188)
+					} else if (isCouplePayment) {
+						paymentEndpoint = "/api/payment-couple"; // 🎯 Couple analysis ($88) - Use couple-specific API
 					} else {
 						paymentEndpoint =
 							"/api/checkoutSessions/payment-fortune-category"; // Fortune ($38) - Updated to use new category API
 					}
 
 					console.log(
-						`💳 使用付款端點: ${paymentEndpoint} (comprehensive: ${useComprehensivePayment}, premium: ${usePremiumPayment})`
+						`💳 使用付款端點: ${paymentEndpoint} (comprehensive: ${useComprehensivePayment}, premium: ${usePremiumPayment}, couple: ${isCouplePayment})`
 					);
 
 					// 直接觸發付款 API
@@ -696,6 +700,37 @@ export default function Home() {
 									directPayment: true, // 標記為直接付款
 									locale: freshLocale, // 🔥 Fix: Add locale parameter for comprehensive/premium too
 									region: storedRegion, // 🔥 Add region parameter for NTD support
+								}),
+							});
+						} else if (isCouplePayment) {
+							// 🎯 Handle couple analysis payment
+							const storedRegion =
+								localStorage.getItem("userRegion");
+							const regionToLocaleMap = {
+								china: "zh-CN",
+								hongkong: "zh-TW",
+								taiwan: "zh-TW",
+							};
+							const freshLocale =
+								regionToLocaleMap[storedRegion || "hongkong"] ||
+								currentLocale;
+
+							console.log(
+								"💰 Main page couple payment - Using fresh locale:",
+								freshLocale,
+								"from stored region:",
+								storedRegion
+							);
+
+							// 使用 couple payment API
+							paymentResponse = await fetch(paymentEndpoint, {
+								method: "POST",
+								headers: {
+									"Content-Type": "application/json",
+								},
+								body: JSON.stringify({
+									locale: freshLocale,
+									region: storedRegion,
 								}),
 							});
 						} else {
@@ -752,16 +787,45 @@ export default function Home() {
 						if (paymentResponse.ok) {
 							const paymentData = await paymentResponse.json();
 							console.log(
-								`💳 ${useComprehensivePayment ? "Expert88 ($88)" : usePremiumPayment ? "Premium ($188)" : "Fortune ($38)"} Payment Response:`,
+								`💳 ${useComprehensivePayment ? "Expert88 ($88)" : usePremiumPayment ? "Premium ($188)" : isCouplePayment ? "Couple ($88)" : "Fortune ($38)"} Payment Response:`,
 								paymentData
 							);
 
-							if (
+							if (isCouplePayment) {
+								// 🎯 Handle couple payment response (uses sessionId structure)
+								if (paymentData.sessionId) {
+									const stripe = await import(
+										"@stripe/stripe-js"
+									).then((mod) =>
+										mod.loadStripe(
+											process.env
+												.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+										)
+									);
+
+									if (stripe) {
+										console.log(
+											"🚀 Redirecting to Stripe checkout for couple payment"
+										);
+										await stripe.redirectToCheckout({
+											sessionId: paymentData.sessionId,
+										});
+									} else {
+										throw new Error(
+											"Failed to load Stripe"
+										);
+									}
+								} else {
+									throw new Error(
+										"No session ID received from couple payment"
+									);
+								}
+							} else if (
 								useComprehensivePayment ||
 								usePremiumPayment ||
 								!useComprehensivePayment
 							) {
-								// 處理所有付款回應 - 直接重定向到 Stripe URL (fortune category API 也返回 data.url)
+								// 處理其他付款回應 - 直接重定向到 Stripe URL (fortune category API 也返回 data.url)
 								if (paymentData.data?.url) {
 									window.location.href = paymentData.data.url;
 								} else {
@@ -776,7 +840,7 @@ export default function Home() {
 						}
 					} catch (paymentError) {
 						console.error(
-							`💳 ${useComprehensivePayment ? "Comprehensive ($88)" : usePremiumPayment ? "Premium ($188)" : "Fortune ($38)"} payment error:`,
+							`💳 ${useComprehensivePayment ? "Comprehensive ($88)" : usePremiumPayment ? "Premium ($188)" : isCouplePayment ? "Couple ($88)" : "Fortune ($38)"} payment error:`,
 							paymentError
 						);
 						setIsLoading(false);
